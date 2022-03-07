@@ -1,16 +1,19 @@
 ﻿using EatMyFat.Api.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EatMyFat.Api.Services
 {
-    interface IProductService
+    public interface IProductService
     {
-        List<Product> GetAll();
+        Task<List<Product>> GetAll();
 
-        DatabaseActionResult<Product> Create(Product product);
+        Task<Product> GetById(int id);
 
-        DatabaseActionResult<Product> Update(int id, Product product);
+        Task<DatabaseActionResult<Product>> Create(Product product);
 
-        DatabaseActionResult<Product> DeleteById(int id);
+        Task<DatabaseActionResult<Product>> Update(int id, Product product);
+
+        Task<DatabaseActionResult<Product>> DeleteById(int id);
     }
 }

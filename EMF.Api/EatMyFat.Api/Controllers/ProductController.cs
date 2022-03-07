@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EatMyFat.Api.Models;
+using EatMyFat.Api.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EatMyFat.Api.Controllers
 {
@@ -12,36 +12,86 @@ namespace EatMyFat.Api.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        public ProductController()
-        {
+        private readonly IProductService _productService;
 
+        public ProductController(IProductService productService)
+        {
+            _productService = productService;
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return new string[] { "value1", "value2" };
+            return await _productService.GetAll();
         }
 
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet]
+        public async Task<ActionResult<Product>> GetById(int id)
         {
-            return "value";
+            var product =  await _productService.GetById(id);
+
+            if (product is null)
+            {
+                return NotFound(new { Message = $"Product with id {id} no found" });
+            }
+
+            return product;
+
         }
 
         [HttpPost]
-        public void Post([FromBody] string value)
+        [ActionName(nameof(PostAsync))]
+        public async Task<IActionResult> PostAsync([FromBody] Product product)
         {
+            DatabaseActionResult<Product> result = await _productService.Create(product);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] Product product)
         {
+            if (id != product.Id)
+            {
+                return BadRequest();
+            }
+
+            DatabaseActionResult<Product> result = await _productService.Update(id, product);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            if (!result.Success)
+            {
+                return NotFound(new { Message = "Product no found" });
+            }
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            DatabaseActionResult<Product> result = await _productService.DeleteById(id);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            if (!result.Success)
+            {
+                return NotFound(new { Message = "Product no found" });
+            }
+
+            return NoContent();
         }
     }
 }
