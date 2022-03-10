@@ -1,0 +1,39 @@
+<app-nav-bar></app-nav-bar>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-6">
+      <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+        <ngb-panel title="Breakfast">
+          <ng-template ngbPanelContent>
+            Add product + 
+          </ng-template>
+        </ngb-panel>
+
+        <ngb-panel title="Launch">
+          <ng-template ngbPanelContent>
+            Launch
+          </ng-template>
+        </ngb-panel>
+
+        <ngb-panel title="Dinner">
+          <ng-template ngbPanelContent>
+            Dinner
+          </ng-template>
+        </ngb-panel>
+
+        <ngb-panel title="Supper">
+          <ng-template ngbPanelContent>
+            Supper
+          </ng-template>
+        </ngb-panel>
+
+      </ngb-accordion>
+    </div>
+    <div class="col">
+      <ngb-datepicker #d></ngb-datepicker> 
+    </div>
+  </div> 
+  <div class="progress m-4">
+    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+  </div>
+</div>
