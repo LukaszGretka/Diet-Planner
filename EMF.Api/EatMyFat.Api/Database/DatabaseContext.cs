@@ -14,9 +14,15 @@ namespace EatMyFat.Api.Database
             builder.Entity<Product>()
                    .HasIndex(u => u.Id)
                    .IsUnique();
+
+            builder.Entity<Measurement>()
+                   .HasIndex(u => u.Id)
+                   .IsUnique();
         }
 
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<Measurement> Measurements { get; set;}
 
     }
 }

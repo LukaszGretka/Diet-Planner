@@ -2,7 +2,6 @@
 using EatMyFat.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,6 +19,7 @@ namespace EatMyFat.Api.Controllers
         }
 
         [HttpGet]
+        [Route("all")]
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _productService.GetAll();
