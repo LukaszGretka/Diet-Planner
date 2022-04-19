@@ -6,7 +6,7 @@
             <tr>
               <th scope="col">Data</th>
               <th scope="col">Waga</th>
-              <th scope="col">Bruch (cm)</th>
+              <th scope="col">Bruch</th>
               <th scope="col">Klatka</th>
               <th scope="col">Pas</th>
               <th scope="col">Biceps (P)</th>
@@ -20,23 +20,20 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td colspan="2">Larry the Bird</td>
-              <td>@twitter</td>
-            </tr>
+            <tr *ngFor='let measurement of (measurements$ | async)'> 
+                <td>{{measurement.date}}</td>
+                <td>{{measurement.weight}} kg</td>
+                <td>{{measurement.belly}} cm</td>
+                <td>{{measurement.chest}} cm</td>
+                <td>{{measurement.waist}} cm</td>
+                <td>{{measurement.bicepsRight}} cm</td>
+                <td>{{measurement.bicepsLeft}} cm</td>
+                <td>{{measurement.forearmRight}} cm</td>
+                <td>{{measurement.forearmLeft}} cm</td>
+                <td>{{measurement.thighRight}} cm</td>
+                <td>{{measurement.thighLeft}} cm</td>
+                <td>{{measurement.calfRight}} cm</td>
+                <td>{{measurement.calfLeft}} cm</td>
           </tbody>
       </table>
 </div>

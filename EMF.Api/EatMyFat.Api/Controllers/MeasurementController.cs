@@ -27,6 +27,11 @@ namespace EatMyFat.Api.Controllers
         [ActionName(nameof(PostAsync))]
         public async Task<IActionResult> PostAsync([FromBody] Measurement measurement)
         {
+            if (measurement == null)
+            {
+                return BadRequest();
+            }
+
             DatabaseActionResult<Measurement> result = await _measurementService.Create(measurement);
 
             if (result.Exception != null)

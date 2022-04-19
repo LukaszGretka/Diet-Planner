@@ -20,6 +20,8 @@ namespace EatMyFat.Api.Services
 
         public async Task<DatabaseActionResult<Measurement>> Create(Measurement measurement)
         {
+            measurement.Date = System.DateTime.UtcNow.ToString();
+
             try
             {
                 await _databaseContext.AddAsync(measurement);

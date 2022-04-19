@@ -27,11 +27,11 @@
             <div class="row">
                 <div class="col">
                     <label for="biceps-left-label" class="form-label">Biceps lewy [cm]</label>
-                    <input type="number" class="form-control" id="biceps-left" formControlName="biceps-left">
+                    <input type="number" class="form-control" id="biceps-left" formControlName="bicepsLeft">
                 </div>
                 <div class="col">
                     <label for="biceps-right-label" class="form-label">Biceps prawy [cm]</label>
-                    <input type="number" class="form-control" id="biceps-right" formControlName="biceps-right">
+                    <input type="number" class="form-control" id="biceps-right" formControlName="bicepsRight">
                 </div>
             </div>
         </div>
@@ -40,11 +40,11 @@
             <div class="row">
                 <div class="col">
                     <label for="forearm-left-label" class="form-label">Przedramie lewe [cm]</label>
-                    <input type="number" class="form-control" id="forearm-left" formControlName="forearm-left">
+                    <input type="number" class="form-control" id="forearm-left" formControlName="forearmLeft">
                 </div>
                 <div class="col">
                     <label for="forearm-right-label" class="form-label">Przedramie prawe [cm]</label>
-                    <input type="number" class="form-control" id="forearm-right" formControlName="forearm-right">
+                    <input type="number" class="form-control" id="forearm-right" formControlName="forearmRight">
                 </div>
             </div>
         </div>
@@ -54,11 +54,11 @@
             <div class="row">
                 <div class="col">
                     <label for="thigh-left-label" class="form-label">Udo lewe [cm]</label>
-                    <input type="number" class="form-control" id="thigh-left" formControlName="thigh-left">
+                    <input type="number" class="form-control" id="thigh-left" formControlName="thighLeft">
                 </div>
                 <div class="col">
                     <label for="thigh-right-label" class="form-label">Udo prawe [cm]</label>
-                    <input type="number" class="form-control" id="thigh-right" formControlName="thigh-right">
+                    <input type="number" class="form-control" id="thigh-right" formControlName="thighRight">
                 </div>
             </div>
         </div>
@@ -67,15 +67,19 @@
             <div class="row">
                 <div class="col">
                     <label for="calf-left-label" class="form-label">Łydka lewa [cm]</label>
-                    <input type="number" class="form-control" id="calf-left" formControlName="calf-left">
+                    <input type="number" class="form-control" id="calf-left" formControlName="calfLeft">
                 </div>
                 <div class="col">
                     <label for="calf-right-label" class="form-label">Łydka prawa [cm]</label>
-                    <input type="number" class="form-control" id="calf-right" formControlName="calf-right">
+                    <input type="number" class="form-control" id="calf-right" formControlName="calfRight">
                 </div>
             </div>
         </div>
-
+        <div *ngIf="addMeasurementError" class="alert alert-danger d-flex align-items-center" role="alert">
+            <div>
+              Wystąpił błąd podczas dodawania pomiaru.
+            </div>
+          </div>
         <div class="mb-3">
             <div class="row">
                 <div class="col">

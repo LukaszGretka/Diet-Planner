@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace EatMyFat.Api.Models
 {
@@ -6,7 +7,7 @@ namespace EatMyFat.Api.Models
     {
         public int Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         public decimal Weight { get; set; }
 

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Net.Http.Headers;
 
 namespace EatMyFat.Api
 {
@@ -18,21 +19,24 @@ namespace EatMyFat.Api
 
         public IConfiguration Configuration { get; }
 
+        const string CorsPolicyName = "DefaultCorsPolicy";
+
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddCors(options =>
             {
-                options.AddPolicy(
-                  "CorsPolicy",
-                  builder => builder.WithOrigins("http://localhost:4200")
-                  .AllowAnyMethod());
+                options.AddPolicy(name: CorsPolicyName, policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
             });
-            services.AddControllers();
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,9 +46,9 @@ namespace EatMyFat.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            //app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors("CorsPolicy");
-           // app.UseHttpsRedirection();
+            app.UseCors(CorsPolicyName);
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
