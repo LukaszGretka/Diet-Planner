@@ -5,35 +5,35 @@
         <thead>
             <tr>
               <th scope="col">Data</th>
-              <th scope="col">Waga</th>
-              <th scope="col">Bruch</th>
-              <th scope="col">Klatka</th>
-              <th scope="col">Pas</th>
-              <th scope="col">Biceps (P)</th>
-              <th scope="col">Biceps (L)</th>
-              <th scope="col">Przedramie (P)</th>
-              <th scope="col">Przedramie (L)</th>
-              <th scope="col">Udo (P)</th>
-              <th scope="col">Udo (L)</th>
-              <th scope="col">Łydka (P)</th>
-              <th scope="col">Łydka (L)</th>
+              <th scope="col">Waga [kg]</th>
+              <th scope="col">Bruch [cm]</th>
+              <th scope="col">Klatka [cm]</th>
+              <th scope="col">Pas [cm]</th>
+              <th scope="col">Biceps (P) [cm]</th>
+              <th scope="col">Biceps (L) [cm]</th>
+              <th scope="col">Przedramie (P) [cm]</th>
+              <th scope="col">Przedramie (L) [cm]</th>
+              <th scope="col">Udo (P) [cm]</th>
+              <th scope="col">Udo (L) [cm]</th>
+              <th scope="col">Łydka (P) [cm]</th>
+              <th scope="col">Łydka (L) [cm]  </th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor='let measurement of (measurements$ | async)'> 
                 <td>{{measurement.date}}</td>
-                <td>{{measurement.weight}} kg</td>
-                <td>{{measurement.belly}} cm</td>
-                <td>{{measurement.chest}} cm</td>
-                <td>{{measurement.waist}} cm</td>
-                <td>{{measurement.bicepsRight}} cm</td>
-                <td>{{measurement.bicepsLeft}} cm</td>
-                <td>{{measurement.forearmRight}} cm</td>
-                <td>{{measurement.forearmLeft}} cm</td>
-                <td>{{measurement.thighRight}} cm</td>
-                <td>{{measurement.thighLeft}} cm</td>
-                <td>{{measurement.calfRight}} cm</td>
-                <td>{{measurement.calfLeft}} cm</td>
+                <td>{{measurement.weight}}</td>
+                <td>{{measurement.belly}}</td>
+                <td>{{measurement.chest}}</td>
+                <td>{{measurement.waist}}</td>
+                <td>{{measurement.bicepsRight}}</td>
+                <td>{{measurement.bicepsLeft}}</td>
+                <td>{{measurement.forearmRight}}</td>
+                <td>{{measurement.forearmLeft}}</td>
+                <td>{{measurement.thighRight}}</td>
+                <td>{{measurement.thighLeft}}</td>
+                <td>{{measurement.calfRight}}</td>
+                <td>{{measurement.calfLeft}}</td>
           </tbody>
       </table>
 </div>

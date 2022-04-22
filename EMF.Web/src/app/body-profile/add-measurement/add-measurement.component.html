@@ -75,9 +75,9 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="addMeasurementError" class="alert alert-danger d-flex align-items-center" role="alert">
+        <div *ngIf="(addMeasurementError$ | async) !== ''" class="alert alert-danger d-flex align-items-center" role="alert">
             <div>
-              Wystąpił błąd podczas dodawania pomiaru.
+                Wystąpił błąd podczas dodawania pomiaru.
             </div>
           </div>
         <div class="mb-3">

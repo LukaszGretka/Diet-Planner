@@ -9,8 +9,13 @@ import { ProductsComponent } from './products/products.component';
 import { BodyProfileComponent } from './body-profile/body-profile.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
-import { AddMeasurementComponent } from './add-measurement/add-measurement.component';
+import { AddMeasurementComponent } from './body-profile/add-measurement/add-measurement.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
+import { BodyProfileReducer } from './body-profile/stores/body-profile.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -26,7 +31,15 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     HttpClientModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forRoot({
+      bodyProfile: BodyProfileReducer
+    }
+    ),
+    EffectsModule.forRoot([
+      BodyProfileEffects
+    ]),
+    StoreDevtoolsModule.instrument()
   ],
   providers: [],
   bootstrap: [AppComponent]

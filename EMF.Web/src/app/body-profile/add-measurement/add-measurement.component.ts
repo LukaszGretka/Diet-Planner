@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { Measurement } from 'src/models/measurement';
-import { MeasurementService } from 'src/services/measurement.service';
+import * as BodyProfileActions from '../stores/body-profile.actions';
+import { BodyProfileState } from '../stores/body-profile.state';
+import * as BodyProfileSelectors from '../stores/body-profile.selectors'
 
 @Component({
   selector: 'app-add-measurement',
@@ -10,7 +13,7 @@ import { MeasurementService } from 'src/services/measurement.service';
 })
 export class AddMeasurementComponent {
 
-  public addMeasurementError = false;
+  public addMeasurementError$ = this.store.select(BodyProfileSelectors.getAddMeasurementError);
 
   measurementForm = this.formBuilder.group({
     weight: '',
@@ -27,7 +30,7 @@ export class AddMeasurementComponent {
     calfLeft: ''
   });
 
-  constructor(private formBuilder: FormBuilder, private measurementService: MeasurementService) { }
+  constructor(private formBuilder: FormBuilder, private store: Store<BodyProfileState>) { }
 
   public measurementSubmit(): void {
     const measurementFormValue = this.measurementForm.value;
@@ -48,7 +51,8 @@ export class AddMeasurementComponent {
       date: new Date().toISOString()
     };
 
-    this.measurementService.addMeasurement(measurementData).subscribe(measurement => {console.log(measurement)});
+    this.store.dispatch(BodyProfileActions.setMeasurement({measurement: measurementData}));
+    this.store.dispatch(BodyProfileActions.submitMeasurementRequest());
   }
 
 }
