@@ -23,13 +23,4 @@ export class MeasurementService {
   getMeasurements(): Observable<Measurement[]> {
     return this.http.get<Measurement[]>(this.measurementUrl);
   }
-
-  addMeasurement(measurement: Measurement): Observable<Measurement> { 
-    return this.http.post<Measurement>(this.measurementUrl, measurement, this.httpOptions).pipe(
-      tap(() => {
-        this.router.navigate(['body-profile']);
-      }),
-      catchError((error) => {console.log('error: ' + error.message); return EMPTY})
-    );
-  }
 }

@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Measurement } from 'src/models/measurement';
-import * as BodyProfileActions from '../stores/body-profile.actions';
-import { BodyProfileState } from '../stores/body-profile.state';
-import * as BodyProfileSelectors from '../stores/body-profile.selectors'
+import * as GeneralActions from '../../stores/store.actions';
+import { GeneralState } from '../../stores/store.state';
+import * as BodyProfileSelectors from '../../stores/store.selectors'
 
 @Component({
   selector: 'app-add-measurement',
@@ -30,7 +30,7 @@ export class AddMeasurementComponent {
     calfLeft: ''
   });
 
-  constructor(private formBuilder: FormBuilder, private store: Store<BodyProfileState>) { }
+  constructor(private formBuilder: FormBuilder, private store: Store<GeneralState>) { }
 
   public measurementSubmit(): void {
     const measurementFormValue = this.measurementForm.value;
@@ -51,8 +51,8 @@ export class AddMeasurementComponent {
       date: new Date().toISOString()
     };
 
-    this.store.dispatch(BodyProfileActions.setMeasurement({measurement: measurementData}));
-    this.store.dispatch(BodyProfileActions.submitMeasurementRequest());
+    this.store.dispatch(GeneralActions.setMeasurement({measurement: measurementData}));
+    this.store.dispatch(GeneralActions.submitMeasurementRequest());
   }
 
 }

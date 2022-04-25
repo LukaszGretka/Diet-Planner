@@ -1,20 +1,47 @@
 <div class="container-lg m-4">
-    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-        <button type="button" class="btn btn-primary">Add</button>
-        <button type="button" class="btn btn-secondary">Edit</button>
-        <button type="button" class="btn btn-danger">Remove</button>
-      </div>
-
-      <div *ngFor='let product of (products$ | async)'> 
-        <div class="card" style="width: 18rem;">
-          <img src="{{product.imagePath}}" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">{{product.name}}</h5>
-            <p class="card-text">{{product.description}}</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+      <form>
+        <div class="mb-3 row">
+          <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
+          <div class="col-xs-3 col-sm-auto">
+            <input id="table-filtering-search" class="form-control" type="text" [formControl]="filter">
           </div>
         </div>
-      </div>
+      </form>
+      
+      <button type="button" class="btn btn-primary" routerLink="./add">Dodaj</button>
 
-
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Carbohydrates</th>
+          <th scope="col">Proteins</th>
+          <th scope="col">Fats</th>
+          <th scope="col">Calories</th>
+          <th scope="col">Rating</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let product of products$ | async; index as i">
+          <th scope="row">{{ i + 1 }}</th>
+          <td><ngb-highlight [result]="product.name" [term]="filter.value"></ngb-highlight></td>
+          <td><ngb-highlight [result]="product.description"></ngb-highlight></td>
+          <td><ngb-highlight [result]="product.carbohydrates | number"></ngb-highlight></td>
+          <td><ngb-highlight [result]="product.proteins | number"></ngb-highlight></td>
+          <td><ngb-highlight [result]="product.fats | number"></ngb-highlight></td>
+          <td><ngb-highlight [result]="product.calories | number"></ngb-highlight></td>
+          <td>
+            <ngb-rating [(rate)]="product.currentRate"></ngb-rating>
+            <pre>Rate: <b>{{product.currentRate}}</b></pre>
+          </td>
+          <td>
+            <button type="button" class="btn btn-secondary">Edytuj</button>
+            <button type="button" class="btn btn-danger">Remove</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
 </div>

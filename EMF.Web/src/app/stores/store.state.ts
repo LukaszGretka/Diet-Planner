@@ -1,6 +1,9 @@
 import { Measurement } from "src/models/measurement";
+import { Product } from "src/models/product";
 
-export interface BodyProfileState {
+export interface GeneralState {
     measurementData: Measurement;
     addMeasurementError: string;
+
+    productData: Product;
 }

@@ -12,16 +12,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { AddMeasurementComponent } from './body-profile/add-measurement/add-measurement.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
-import { BodyProfileReducer } from './body-profile/stores/body-profile.reducer';
+import { GeneralReducer } from './stores/store.reducer';
 import { EffectsModule } from '@ngrx/effects';
-import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
+import { GeneralEffects } from './stores/store.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AddProductComponent } from './products/add-product/add-product.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
     ProductsComponent,
+    AddProductComponent,
     BodyProfileComponent,
     DashboardComponent,
     AddMeasurementComponent,
@@ -33,11 +35,11 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     NgbModule,
     ReactiveFormsModule,
     StoreModule.forRoot({
-      bodyProfile: BodyProfileReducer
+      generalState: GeneralReducer
     }
     ),
     EffectsModule.forRoot([
-      BodyProfileEffects
+      GeneralEffects
     ]),
     StoreDevtoolsModule.instrument()
   ],

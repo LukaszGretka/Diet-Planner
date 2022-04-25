@@ -1,8 +1,7 @@
 export interface Product {
-    id: number;
     name: string;
     description: string;
-    imagePath: string;
+    //imagePath: string;
     carbohydrates: number;
     proteins: number;
     fats: number;

@@ -1,0 +1,53 @@
+<div class="container-sm m-4" style="max-width: 720px">
+    <div class="alert alert-info" role="alert">
+        Fill product's properties.
+      </div>
+    <form [formGroup]="addProductForm" (ngSubmit)="addProductSubmit()">
+        <div class="mb-3">
+            <label for="name-label" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" formControlName="name">
+        </div>
+
+        <div class="mb-3">
+            <label for="description-label" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description" formControlName="description">
+        </div>
+
+        <div class="mb-3">
+            <label for="barcode-label" class="form-label">Barcode</label>
+            <input type="number" class="form-control" id="barcode" formControlName="barcode">
+        </div>  
+
+        <div class="mb-3">
+            <label for="calories-label" class="form-label">Calories</label>
+            <input type="number" class="form-control" id="calories" formControlName="calories">
+        </div>
+
+        <div class="mb-3">
+            <div class="row">
+                <div class="col">
+                    <label for="carbohydrates-label" class="form-label">Carbohydrates</label>
+                    <input type="number" class="form-control" id="carbohydrates" formControlName="carbohydrates">
+                </div>
+                <div class="col">
+                    <label for="proteins-label" class="form-label">Proteins</label>
+                    <input type="number" class="form-control" id="proteins" formControlName="proteins">
+                </div>
+                <div class="col">
+                    <label for="fats-label" class="form-label">Fats</label>
+                    <input type="number" class="form-control" id="fats" formControlName="fats">
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-secondary" role="button" routerLink= "/products">Back</a>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary" style="float: right;">Add</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
