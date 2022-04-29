@@ -22,7 +22,9 @@ export class AddProductComponent implements OnInit {
     barcode: ''
   });
 
-  constructor(private formBuilder: FormBuilder, private store: Store<GeneralState>) { }
+  constructor(private formBuilder: FormBuilder, private store: Store<GeneralState>) {
+    
+   }
 
   ngOnInit(): void {
   }
@@ -31,16 +33,16 @@ export class AddProductComponent implements OnInit {
     const productFormValue = this.addProductForm.value;
 
     const productData: Product = {
-      name : productFormValue.name,
+      name: productFormValue.name,
       barcode: productFormValue.barcode,
       calories: productFormValue.calories,
-      carbohydrates : productFormValue.carbohydrates,
+      carbohydrates: productFormValue.carbohydrates,
       proteins: productFormValue.proteins,
       fats: productFormValue.fats,
       description: productFormValue.description
     };
 
-    this.store.dispatch(GeneralActions.setProduct({product: productData}));
+    this.store.dispatch(GeneralActions.setProduct({ product: productData }));
     this.store.dispatch(GeneralActions.submitAddProductRequest());
   }
 }

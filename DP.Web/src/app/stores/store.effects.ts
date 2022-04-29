@@ -4,10 +4,11 @@ import { select, Store } from "@ngrx/store";
 import { catchError, of, switchMap, withLatestFrom } from "rxjs";
 import * as GeneralActions from './store.actions';
 import { GeneralState } from "./store.state";
-import { getMeasurementData, getProductData } from "./store.selectors";
+import { getMeasurementData, getProductData, getProcessingProductId } from "./store.selectors";
 import { Measurement } from "src/models/measurement";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
+import { Product } from "src/models/product";
 
 @Injectable()
 export class GeneralEffects {
@@ -22,7 +23,7 @@ export class GeneralEffects {
         })
     };
 
-    submitAddMeasurement$ = createEffect(() => this.actions$.pipe(
+    addMeasurementEffect$ = createEffect(() => this.actions$.pipe(
         ofType(GeneralActions.submitMeasurementRequest),
         withLatestFrom(this.store.pipe(select(getMeasurementData))),
         switchMap(([_, measurementData]) => {
@@ -37,11 +38,11 @@ export class GeneralEffects {
                     }))
         })));
 
-        submitAddProdct$ = createEffect(() => this.actions$.pipe(
+        addProductEffect$ = createEffect(() => this.actions$.pipe(
             ofType(GeneralActions.submitAddProductRequest),
             withLatestFrom(this.store.pipe(select(getProductData))),
             switchMap(([_, productData]) => {
-                return this.httpClient.post<Measurement>(this.productsUrl, productData, this.httpOptions)
+                return this.httpClient.post<Product>(this.productsUrl, productData, this.httpOptions)
                     .pipe(
                         switchMap(() => {
                             this.router.navigate(['products']);
@@ -52,6 +53,35 @@ export class GeneralEffects {
                         }))
             })));
 
+        removeProductEffect$ = createEffect(() => this.actions$.pipe(
+            ofType(GeneralActions.submitRemoveProductRequest),
+            withLatestFrom(this.store.pipe(select(getProcessingProductId))),
+            switchMap(([_, productId]) => {
+                return this.httpClient.delete<Product>(this.productsUrl + "/" + productId, this.httpOptions)
+                    .pipe(
+                        switchMap(() => {
+                            return of(GeneralActions.submitRemoveProductRequestSuccess);
+                        }),
+                        catchError(error => {
+                            return of(GeneralActions.setError({ message: error }));
+                        }))
+            })));
+
+            editProductEffect$ = createEffect(() => this.actions$.pipe(
+                ofType(GeneralActions.submitEditProductRequest),
+                withLatestFrom(this.store.pipe(select(getProductData))),
+                switchMap(([_, productData]) => {
+                    return this.httpClient.put<Product>(this.productsUrl, productData, this.httpOptions)
+                    .pipe(
+                        switchMap(() =>{
+                            return of(GeneralActions.submitEditProductRequestSuccess);
+                        }),
+                        catchError(error => {
+                            return of(GeneralActions.setError({message: error}));
+                        })
+                    )
+                })
+            ))
 
     constructor(private actions$: Actions, private store: Store<GeneralState>, private httpClient: HttpClient,
         private router: Router) {

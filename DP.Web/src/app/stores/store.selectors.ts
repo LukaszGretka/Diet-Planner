@@ -18,3 +18,8 @@ export const getProductData = createSelector(
     state => state.productData
 );
 
+export const getProcessingProductId = createSelector(
+    getState,
+    state => state.processingProductId
+);
+
