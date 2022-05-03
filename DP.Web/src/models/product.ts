@@ -1,4 +1,5 @@
-export interface Product {
+export class Product {
+    id: string;
     name: string;
     description: string;
     //imagePath: string;
@@ -6,5 +7,5 @@ export interface Product {
     proteins: number;
     fats: number;
     calories: number;
-    barcode: number;
+    barCode: number;
 }

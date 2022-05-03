@@ -2,6 +2,7 @@
 using DietPlanner.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,9 +24,11 @@ namespace DietPlanner.Api.Controllers
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _productService.GetAll();
+                
         }
 
         [HttpGet]
+        [Route("{id}")]
         public async Task<ActionResult<Product>> GetById(int id)
         {
             var product =  await _productService.GetById(id);
@@ -53,7 +56,7 @@ namespace DietPlanner.Api.Controllers
             return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("edit/{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Product product)
         {
             if (id != product.Id)

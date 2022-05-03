@@ -10,20 +10,24 @@ import { BodyProfileComponent } from './body-profile/body-profile.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AddMeasurementComponent } from './body-profile/add-measurement/add-measurement.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { GeneralReducer } from './stores/store.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { GeneralEffects } from './stores/store.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AddProductComponent } from './products/add-product/add-product.component';
+import { ProductTemplateComponent } from './products/product-template/product-template.component';
+import { EditProductComponent } from './products/edit-product/edit-product.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
+    ProductTemplateComponent,
     ProductsComponent,
     AddProductComponent,
+    EditProductComponent,
     BodyProfileComponent,
     DashboardComponent,
     AddMeasurementComponent,
@@ -34,6 +38,7 @@ import { AddProductComponent } from './products/add-product/add-product.componen
     HttpClientModule,
     NgbModule,
     ReactiveFormsModule,
+    FormsModule,
     StoreModule.forRoot({
       generalState: GeneralReducer
     }

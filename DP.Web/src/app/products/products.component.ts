@@ -2,7 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { Component, OnInit, PipeTransform } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { map, Observable, startWith } from 'rxjs';
+import { filter, lastValueFrom, map, Observable, startWith } from 'rxjs';
 import { Product } from 'src/models/product';
 import { ProductService } from 'src/services/product.service';
 import { GeneralState } from '../stores/store.state';
@@ -29,16 +29,15 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.products$ = this.productService.getProducts().pipe(x => x);
+    this.products$ = this.productService.getProducts();
   }
 
   onEditButtonClick(event: Event): void {
-    this.store.dispatch(GeneralActions.setProcessingProductId({ id: (event.target as HTMLInputElement).value }));
-    this.router.navigate(['products/add']);
+    this.router.navigate(['products/edit/'+ (event.target as HTMLInputElement).value ]);
   }
 
   onRemoveButtonClick(event: Event): void {
-    this.store.dispatch(GeneralActions.setProcessingProductId({ id: (event.target as HTMLInputElement).value }));
+    this.store.dispatch(GeneralActions.setProcessingProductId({ id:  (event.target as HTMLInputElement).value }));
   }
 
   removeConfirmationButtonClick(): void {
