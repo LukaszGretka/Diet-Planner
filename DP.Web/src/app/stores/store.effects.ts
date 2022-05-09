@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
-import { catchError, of, switchMap, withLatestFrom } from "rxjs";
+import { catchError, EMPTY, of, switchMap, withLatestFrom } from "rxjs";
 import * as GeneralActions from './store.actions';
 import { GeneralState } from "./store.state";
 import { getMeasurementData, getProductData, getProcessingProductId } from "./store.selectors";
@@ -31,7 +31,7 @@ export class GeneralEffects {
                 .pipe(
                     switchMap(() => {
                         this.router.navigate(['body-profile']);
-                        return of(GeneralActions.submitMeasurementRequestSuccess);
+                        return of(GeneralActions.submitMeasurementRequestSuccess());
                     }),
                     catchError(error => {
                         return of(GeneralActions.setError({ message: error }));
@@ -46,7 +46,7 @@ export class GeneralEffects {
                     .pipe(
                         switchMap(() => {
                             this.router.navigate(['products']);
-                            return of(GeneralActions.submitAddProductRequestSuccess);
+                            return of(GeneralActions.submitAddProductRequestSuccess());
                         }),
                         catchError(error => {
                             return of(GeneralActions.setError({ message: error }));
@@ -60,7 +60,8 @@ export class GeneralEffects {
                 return this.httpClient.delete<Product>(this.productsUrl + "/" + productId, this.httpOptions)
                     .pipe(
                         switchMap(() => {
-                            return of(GeneralActions.submitRemoveProductRequestSuccess);
+                            window.location.reload();
+                            return EMPTY;
                         }),
                         catchError(error => {
                             return of(GeneralActions.setError({ message: error }));
@@ -71,10 +72,11 @@ export class GeneralEffects {
                 ofType(GeneralActions.submitEditProductRequest),
                 withLatestFrom(this.store.pipe(select(getProductData))),
                 switchMap(([_, productData]) => {
-                    return this.httpClient.put<Product>(this.productsUrl, productData, this.httpOptions)
+                    return this.httpClient.put<Product>(this.productsUrl + '/' + productData.id, productData, this.httpOptions)
                     .pipe(
                         switchMap(() =>{
-                            return of(GeneralActions.submitEditProductRequestSuccess);
+                            this.router.navigate(['products']);
+                            return of(GeneralActions.submitEditProductRequestSuccess());
                         }),
                         catchError(error => {
                             return of(GeneralActions.setError({message: error}));

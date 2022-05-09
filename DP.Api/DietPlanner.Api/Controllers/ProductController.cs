@@ -56,7 +56,7 @@ namespace DietPlanner.Api.Controllers
             return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
         }
 
-        [HttpPut("edit/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Product product)
         {
             if (id != product.Id)

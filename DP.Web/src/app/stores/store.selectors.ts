@@ -8,9 +8,9 @@ export const getMeasurementData = createSelector(
     state => state.measurementData
 );
 
-export const getAddMeasurementError = createSelector(
+export const getError = createSelector(
     getState,
-    state => state.addMeasurementError
+    state => state.error
 );
 
 export const getProductData = createSelector(

@@ -1,7 +1,7 @@
 <div class="container-sm m-4" style="max-width: 720px">
     <div class="alert alert-info" role="alert">
         Dodaj swoje pomiary.
-      </div>
+    </div>
     <form [formGroup]="measurementForm" (ngSubmit)="measurementSubmit()">
         <div class="mb-3">
             <label for="weight" class="form-label">Waga [cm]</label>
@@ -75,15 +75,16 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="(addMeasurementError$ | async) !== ''" class="alert alert-danger d-flex align-items-center" role="alert">
+        <div *ngIf="(addMeasurementError$ | async) !== ''" class="alert alert-danger d-flex align-items-center"
+            role="alert">
             <div>
                 Wystąpił błąd podczas dodawania pomiaru.
             </div>
-          </div>
+        </div>
         <div class="mb-3">
             <div class="row">
                 <div class="col">
-                    <a class="btn btn-secondary" role="button" routerLink= "/body-profile">Wróć</a>
+                    <a class="btn btn-secondary" role="button" routerLink="/body-profile">Wróć</a>
                 </div>
                 <div class="col">
                     <button type="submit" class="btn btn-primary" style="float: right;">Dodaj</button>

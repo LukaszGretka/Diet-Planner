@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Measurement } from 'src/models/measurement';
 import * as GeneralActions from '../../stores/store.actions';
 import { GeneralState } from '../../stores/store.state';
-import * as BodyProfileSelectors from '../../stores/store.selectors'
+import * as StoreSelector from '../../stores/store.selectors'
 
 @Component({
   selector: 'app-add-measurement',
@@ -13,7 +13,7 @@ import * as BodyProfileSelectors from '../../stores/store.selectors'
 })
 export class AddMeasurementComponent {
 
-  public addMeasurementError$ = this.store.select(BodyProfileSelectors.getAddMeasurementError);
+  public addMeasurementError$ = this.store.select(StoreSelector.getError);
 
   measurementForm = this.formBuilder.group({
     weight: '',

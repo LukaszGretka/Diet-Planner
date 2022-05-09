@@ -2,12 +2,14 @@ import { DecimalPipe } from '@angular/common';
 import { Component, OnInit, PipeTransform } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { filter, lastValueFrom, map, Observable, startWith } from 'rxjs';
+import { map, Observable, startWith } from 'rxjs';
 import { Product } from 'src/models/product';
 import { ProductService } from 'src/services/product.service';
 import { GeneralState } from '../stores/store.state';
 import * as GeneralActions from '../stores/store.actions';
 import { Router } from '@angular/router';
+import * as StoreSelector from '../stores/store.selectors'
+
 
 @Component({
   selector: 'app-products',
@@ -19,6 +21,7 @@ export class ProductsComponent implements OnInit {
 
   public filter = new FormControl('');
   public products$: Observable<Product[]> = new Observable<Product[]>();
+  public error$ = this.store.select(StoreSelector.getError);
 
   constructor(private productService: ProductService, pipe: DecimalPipe, private store: Store<GeneralState>,
     private router: Router) {
@@ -33,15 +36,16 @@ export class ProductsComponent implements OnInit {
   }
 
   onEditButtonClick(event: Event): void {
-    this.router.navigate(['products/edit/'+ (event.target as HTMLInputElement).value ]);
+    this.router.navigate(['products/edit/' + (event.target as HTMLInputElement).value]);
   }
 
   onRemoveButtonClick(event: Event): void {
-    this.store.dispatch(GeneralActions.setProcessingProductId({ id:  (event.target as HTMLInputElement).value }));
+    this.store.dispatch(GeneralActions.setProcessingProductId({ id: (event.target as HTMLInputElement).value }));
   }
 
   removeConfirmationButtonClick(): void {
-    this.store.dispatch(GeneralActions.submitRemoveProductRequest())
+
+    this.store.dispatch(GeneralActions.submitRemoveProductRequest());
   }
 }
 

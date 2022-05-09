@@ -35,7 +35,7 @@ export class EditProductComponent implements OnInit, OnDestroy{
   }
 
   public editProductSubmit(): void {
-    // this.store.dispatch(GeneralActions.setProduct({ product: this.processingProduct }));
-    // this.store.dispatch(GeneralActions.submitAddProductRequest());
+    this.store.dispatch(GeneralActions.setProduct({ product: this.product }));
+    this.store.dispatch(GeneralActions.submitEditProductRequest({product: this.product}));
   }
 }

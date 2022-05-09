@@ -4,7 +4,7 @@ import { GeneralState } from "./store.state";
 
 export const initialState: GeneralState = {
     measurementData: null,
-    addMeasurementError: '',
+    error: '',
     productData: null,
     processingProductId: ''
 };
@@ -15,7 +15,7 @@ const reducerFactory = createReducer(
         (state) => ({
             ...state,
             measurementData: null,
-            addMeasurementError: '',
+            error: '',
             productData: null,
             processingProductId: ''
         })),
@@ -27,7 +27,7 @@ const reducerFactory = createReducer(
     on(generalActions.setError,
         (state, action) => ({
             ...state,
-            addMeasurementError: action.payload.message
+            error: action.payload.message
         })),
     on(generalActions.setProduct,
         (state, action) => ({
@@ -39,7 +39,7 @@ const reducerFactory = createReducer(
             ...state,
             processingProductId: action.payload.id
         })),
-);
+)
 
 export function GeneralReducer(
     state: GeneralState = initialState,
