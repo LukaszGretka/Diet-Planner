@@ -20,7 +20,7 @@ namespace DietPlanner.Api.Services
 
         public async Task<DatabaseActionResult<Measurement>> Create(Measurement measurement)
         {
-            measurement.Date = System.DateTime.UtcNow.ToString();
+            measurement.Date = System.DateTime.Now.ToString();
 
             try
             {

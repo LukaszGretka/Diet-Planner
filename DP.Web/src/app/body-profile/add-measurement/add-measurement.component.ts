@@ -17,8 +17,6 @@ export class AddMeasurementComponent {
   constructor(private store: Store<GeneralState>) {}
 
   public measurementSubmit(): void {
-    this.measurement.date = new Date().toISOString();
-
     this.store.dispatch(
       GeneralActions.setMeasurement({ measurement: this.measurement })
     );
