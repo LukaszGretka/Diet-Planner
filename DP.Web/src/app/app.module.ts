@@ -19,6 +19,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AddProductComponent } from './products/add-product/add-product.component';
 import { ProductTemplateComponent } from './products/product-template/product-template.component';
 import { EditProductComponent } from './products/edit-product/edit-product.component';
+import { MeasurementTemplateComponent } from './body-profile/measurement-template/measurement-template.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { EditProductComponent } from './products/edit-product/edit-product.compo
     BodyProfileComponent,
     DashboardComponent,
     AddMeasurementComponent,
+    MeasurementTemplateComponent,
   ],
   imports: [
     BrowserModule,

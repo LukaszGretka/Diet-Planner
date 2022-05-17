@@ -1,15 +1,15 @@
-export interface Measurement {
-    date: string;
-    weight: number;
-    chest: number;
-    belly: number;
-    waist: number;
-    bicepsRight: number;
-    bicepsLeft: number;
-    forearmRight: number;
-    forearmLeft : number;
-    thighRight: number;
-    thighLeft: number;
-    calfRight: number;
-    calfLeft: number;
+export class Measurement {
+  date: string;
+  weight: number;
+  chest: number;
+  belly: number;
+  waist: number;
+  bicepsRight: number;
+  bicepsLeft: number;
+  forearmRight: number;
+  forearmLeft: number;
+  thighRight: number;
+  thighLeft: number;
+  calfRight: number;
+  calfLeft: number;
 }

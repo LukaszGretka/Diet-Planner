@@ -1,95 +1,24 @@
 <div class="container-sm m-4" style="max-width: 720px">
-    <div class="alert alert-info" role="alert">
-        Dodaj swoje pomiary.
+  <div class="alert alert-info" role="alert">Add your measurement</div>
+  <form (ngSubmit)="measurementSubmit()">
+    <app-measurement-template [measurement]="measurement">
+    </app-measurement-template>
+
+    <div *ngIf="(addMeasurementError$ | async) !== ''" class="alert alert-danger d-flex align-items-center"
+      role="alert">
+      <div>An error occurred during processing request.</div>
     </div>
-    <form [formGroup]="measurementForm" (ngSubmit)="measurementSubmit()">
-        <div class="mb-3">
-            <label for="weight" class="form-label">Waga [cm]</label>
-            <input type="number" class="form-control" id="weight" formControlName="weight">
+    <div class="mb-3">
+      <div class="row">
+        <div class="col">
+          <a class="btn btn-secondary" role="button" routerLink="/body-profile">Back</a>
         </div>
-
-        <div class="mb-3">
-            <label for="chest" class="form-label">Klatka piersiowa [cm]</label>
-            <input type="number" class="form-control" id="chest" formControlName="chest">
+        <div class="col">
+          <button type="submit" class="btn btn-primary" style="float: right">
+            Add
+          </button>
         </div>
-
-        <div class="mb-3">
-            <label for="belly" class="form-label">Brzuch [cm]</label>
-            <input type="number" class="form-control" id="belly" formControlName="belly">
-        </div>
-
-        <div class="mb-3">
-            <label for="waist" class="form-label">Pas [cm]</label>
-            <input type="number" class="form-control" id="waist" formControlName="waist">
-        </div>
-
-        <div class="mb-3">
-            <div class="row">
-                <div class="col">
-                    <label for="biceps-left-label" class="form-label">Biceps lewy [cm]</label>
-                    <input type="number" class="form-control" id="biceps-left" formControlName="bicepsLeft">
-                </div>
-                <div class="col">
-                    <label for="biceps-right-label" class="form-label">Biceps prawy [cm]</label>
-                    <input type="number" class="form-control" id="biceps-right" formControlName="bicepsRight">
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <div class="row">
-                <div class="col">
-                    <label for="forearm-left-label" class="form-label">Przedramie lewe [cm]</label>
-                    <input type="number" class="form-control" id="forearm-left" formControlName="forearmLeft">
-                </div>
-                <div class="col">
-                    <label for="forearm-right-label" class="form-label">Przedramie prawe [cm]</label>
-                    <input type="number" class="form-control" id="forearm-right" formControlName="forearmRight">
-                </div>
-            </div>
-        </div>
-
-
-        <div class="mb-3">
-            <div class="row">
-                <div class="col">
-                    <label for="thigh-left-label" class="form-label">Udo lewe [cm]</label>
-                    <input type="number" class="form-control" id="thigh-left" formControlName="thighLeft">
-                </div>
-                <div class="col">
-                    <label for="thigh-right-label" class="form-label">Udo prawe [cm]</label>
-                    <input type="number" class="form-control" id="thigh-right" formControlName="thighRight">
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <div class="row">
-                <div class="col">
-                    <label for="calf-left-label" class="form-label">Łydka lewa [cm]</label>
-                    <input type="number" class="form-control" id="calf-left" formControlName="calfLeft">
-                </div>
-                <div class="col">
-                    <label for="calf-right-label" class="form-label">Łydka prawa [cm]</label>
-                    <input type="number" class="form-control" id="calf-right" formControlName="calfRight">
-                </div>
-            </div>
-        </div>
-        <div *ngIf="(addMeasurementError$ | async) !== ''" class="alert alert-danger d-flex align-items-center"
-            role="alert">
-            <div>
-                Wystąpił błąd podczas dodawania pomiaru.
-            </div>
-        </div>
-        <div class="mb-3">
-            <div class="row">
-                <div class="col">
-                    <a class="btn btn-secondary" role="button" routerLink="/body-profile">Wróć</a>
-                </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary" style="float: right;">Dodaj</button>
-                </div>
-            </div>
-        </div>
-    </form>
+      </div>
+    </div>
+  </form>
 </div>
