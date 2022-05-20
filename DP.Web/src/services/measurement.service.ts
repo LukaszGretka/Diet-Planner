@@ -13,7 +13,7 @@ export class MeasurementService {
   private measurementUrl = 'http://localhost:5000/api/measurement';
 
   httpOptions = {
-    headers: new HttpHeaders({ 
+    headers: new HttpHeaders({
       'Content-Type': 'application/json'
     })
   };
@@ -22,5 +22,9 @@ export class MeasurementService {
 
   getMeasurements(): Observable<Measurement[]> {
     return this.http.get<Measurement[]>(this.measurementUrl);
+  }
+
+  getById(id: string): Observable<Measurement> {
+    return this.http.get<Measurement>(this.measurementUrl + '/' + id);
   }
 }

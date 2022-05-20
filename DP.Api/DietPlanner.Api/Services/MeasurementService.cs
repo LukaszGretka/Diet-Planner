@@ -17,6 +17,15 @@ namespace DietPlanner.Api.Services
             _logger = logger;
             _databaseContext = databaseContext;
         }
+        public async Task<List<Measurement>> GetAll()
+        {
+            return await _databaseContext.Measurements.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Measurement> GetById(int id)
+        {
+            return await _databaseContext.Measurements.FindAsync(id);
+        }
 
         public async Task<DatabaseActionResult<Measurement>> Create(Measurement measurement)
         {
@@ -39,11 +48,6 @@ namespace DietPlanner.Api.Services
         public async Task<DatabaseActionResult<Measurement>> DeleteById(int id)
         {
             throw new System.NotImplementedException();
-        }
-
-        public async Task<List<Measurement>> GetAll()
-        {
-            return await _databaseContext.Measurements.AsNoTracking().ToListAsync();
         }
 
         public async Task<DatabaseActionResult<Measurement>> Update(int id, Measurement measurement)

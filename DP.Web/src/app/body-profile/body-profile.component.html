@@ -4,6 +4,7 @@
   <table class="table table-striped mt-4">
     <thead>
       <tr>
+        <th scope="col">Id </th>
         <th scope="col">Date</th>
         <th scope="col">Weight [kg]</th>
         <th scope="col">Belly [cm]</th>
@@ -21,6 +22,7 @@
     </thead>
     <tbody>
       <tr *ngFor='let measurement of measurements$ | async'>
+        <td>{{measurement.id}}</td>
         <td>{{measurement.date}}</td>
         <td>{{measurement.weight}}</td>
         <td>{{measurement.belly}}</td>
@@ -36,7 +38,8 @@
         <td>{{measurement.calfLeft}}</td>
         <td>
           <div class="button-group">
-            <button type="button" class="btn btn-secondary m-1">Edit</button>
+            <button type="button" class="btn btn-secondary m-1" (click)="onEditButtonClick($event)"
+              [value]="measurement.id">Edit</button>
             <button type="button" class="btn btn-danger" data-bs-toggle="modal"
               data-bs-target="#deleteMeasurementConfirmationModal">Remove</button>
           </div>
