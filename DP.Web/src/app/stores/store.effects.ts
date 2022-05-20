@@ -16,7 +16,6 @@ export class GeneralEffects {
     private measurementUrl = 'http://localhost:5000/api/measurement';
     private productsUrl = 'http://localhost:5000/api/product';
  
-
     httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json'

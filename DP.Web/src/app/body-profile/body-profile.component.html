@@ -1,43 +1,67 @@
 <div class="container-lg m-4">
   <a class="btn btn-primary" role="button" routerLink="./add">Add new measurement</a>
 
-    <table class="table table-striped mt-4">
-        <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Weight [kg]</th>
-              <th scope="col">Belly [cm]</th>
-              <th scope="col">Chest [cm]</th>
-              <th scope="col">Waist [cm]</th>
-              <th scope="col">Biceps (R) [cm]</th>
-              <th scope="col">Biceps (L) [cm]</th>
-              <th scope="col">Forearm (R) [cm]</th>
-              <th scope="col">Forearm (L) [cm]</th>
-              <th scope="col">Thigh (R) [cm]</th>
-              <th scope="col">Thigh (L) [cm]</th>
-              <th scope="col">Calf (R) [cm]</th>
-              <th scope="col">Calf (L) [cm]  </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor='let measurement of (measurements$ | async)'> 
-                <td>{{measurement.date}}</td>
-                <td>{{measurement.weight}}</td>
-                <td>{{measurement.belly}}</td>
-                <td>{{measurement.chest}}</td>
-                <td>{{measurement.waist}}</td>
-                <td>{{measurement.bicepsRight}}</td>
-                <td>{{measurement.bicepsLeft}}</td>
-                <td>{{measurement.forearmRight}}</td>
-                <td>{{measurement.forearmLeft}}</td>
-                <td>{{measurement.thighRight}}</td>
-                <td>{{measurement.thighLeft}}</td>
-                <td>{{measurement.calfRight}}</td>
-                <td>{{measurement.calfLeft}}</td>      
-                <div class="button-group">
-                  <button type="button" class="btn btn-secondary m-1">Edit</button>
-                  <button type="button" class="btn btn-danger">Remove</button>
-                </div>
-          </tbody>
-      </table>
+  <table class="table table-striped mt-4">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Weight [kg]</th>
+        <th scope="col">Belly [cm]</th>
+        <th scope="col">Chest [cm]</th>
+        <th scope="col">Waist [cm]</th>
+        <th scope="col">Biceps (R) [cm]</th>
+        <th scope="col">Biceps (L) [cm]</th>
+        <th scope="col">Forearm (R) [cm]</th>
+        <th scope="col">Forearm (L) [cm]</th>
+        <th scope="col">Thigh (R) [cm]</th>
+        <th scope="col">Thigh (L) [cm]</th>
+        <th scope="col">Calf (R) [cm]</th>
+        <th scope="col">Calf (L) [cm] </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor='let measurement of measurements$ | async'>
+        <td>{{measurement.date}}</td>
+        <td>{{measurement.weight}}</td>
+        <td>{{measurement.belly}}</td>
+        <td>{{measurement.chest}}</td>
+        <td>{{measurement.waist}}</td>
+        <td>{{measurement.bicepsRight}}</td>
+        <td>{{measurement.bicepsLeft}}</td>
+        <td>{{measurement.forearmRight}}</td>
+        <td>{{measurement.forearmLeft}}</td>
+        <td>{{measurement.thighRight}}</td>
+        <td>{{measurement.thighLeft}}</td>
+        <td>{{measurement.calfRight}}</td>
+        <td>{{measurement.calfLeft}}</td>
+        <td>
+          <div class="button-group">
+            <button type="button" class="btn btn-secondary m-1">Edit</button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+              data-bs-target="#deleteMeasurementConfirmationModal">Remove</button>
+          </div>
+        </td>
+    </tbody>
+  </table>
+
+  <div class="modal fade" id="deleteMeasurementConfirmationModal" tabindex="-1"
+    aria-labelledby="deleteConfirmationModallLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation required</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Do you really want to remove this measurement from the list?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="removeConfirmationButtonClick()"
+            data-bs-dismiss="modal">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

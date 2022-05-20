@@ -22,6 +22,8 @@ export const submitRemoveProductRequestSuccess = createAction("Submit remove pro
 export const submitEditProductRequest = createAction("Submit edit product request", prop<{ product: Product}>());
 export const submitEditProductRequestSuccess = createAction("Submit edit product request success");
 
+export const submitRemoveMeasurementRequest = createAction("Submit remove measurement request");
+
 const actions = union({
     clearState,
     setError,
@@ -35,7 +37,8 @@ const actions = union({
     submitRemoveProductRequest,
     submitRemoveProductRequestSuccess,
     submitEditProductRequest,
-    submitEditProductRequestSuccess
+    submitEditProductRequestSuccess,
+    submitRemoveMeasurementRequest,
 });
 
 export type GeneralActions = typeof actions;
