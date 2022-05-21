@@ -54,5 +54,46 @@ namespace DietPlanner.Api.Controllers
 
             return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] Measurement measurement)
+        {
+            if (id != measurement.Id)
+            {
+                return BadRequest();
+            }
+
+            DatabaseActionResult<Measurement> result = await _measurementService.Update(id, measurement);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            if (!result.Success)
+            {
+                return NotFound(new { Message = "Measurement no found" });
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            DatabaseActionResult<Measurement> result = await _measurementService.DeleteById(id);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            if (!result.Success)
+            {
+                return NotFound(new { Message = "Measurement no found" });
+            }
+
+            return NoContent();
+        }
     }
 }
