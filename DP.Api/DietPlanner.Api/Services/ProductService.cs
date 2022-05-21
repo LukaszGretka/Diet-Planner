@@ -87,7 +87,7 @@ namespace DietPlanner.Api.Services
 
             try
             {
-                await _databaseContext  .SaveChangesAsync();
+                await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
