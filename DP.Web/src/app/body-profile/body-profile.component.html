@@ -1,6 +1,8 @@
 <div class="container-lg m-4">
+  <div *ngIf="(errors$ | async) !== ''" class="alert alert-danger d-flex align-items-center mt-3" role="alert">
+    <div>{{(errors$ | async) }}</div>
+  </div>
   <a class="btn btn-primary" role="button" routerLink="./add">Add new measurement</a>
-
   <table class="table table-striped mt-4">
     <thead>
       <tr>
@@ -41,7 +43,8 @@
             <button type="button" class="btn btn-secondary m-1" (click)="onEditButtonClick($event)"
               [value]="measurement.id">Edit</button>
             <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-              data-bs-target="#deleteMeasurementConfirmationModal">Remove</button>
+              data-bs-target="#deleteMeasurementConfirmationModal" [value]="measurement.id"
+              (click)="onRemoveButtonClick($event)">Remove</button>
           </div>
         </td>
     </tbody>

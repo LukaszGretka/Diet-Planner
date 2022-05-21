@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
-import { catchError, EMPTY, of, switchMap, withLatestFrom } from "rxjs";
+import { catchError, EMPTY, map, mergeMap, of, pipe, switchMap, withLatestFrom } from "rxjs";
 import * as GeneralActions from './store.actions';
 import { GeneralState } from "./store.state";
 import { getMeasurementData, getProductData, getProcessingProductId } from "./store.selectors";
@@ -31,6 +31,36 @@ export class GeneralEffects {
           switchMap(() => {
             this.router.navigate(['body-profile']);
             return of(GeneralActions.submitMeasurementRequestSuccess());
+          }),
+          catchError(error => {
+            return of(GeneralActions.setError({ message: error }));
+          }))
+    })));
+
+  editMeasurementEffect$ = createEffect(() => this.actions$.pipe(
+    ofType(GeneralActions.submitEditMeasurementRequest),
+    switchMap(({ payload }) => {
+      return this.httpClient.put<Measurement>(this.measurementUrl + '/' + payload.measurement.id, payload.measurement, this.httpOptions)
+        .pipe(
+          switchMap(() => {
+            this.router.navigate(['body-profile']);
+            return of(GeneralActions.submitEditMeasurementRequestSuccess());
+          }),
+          catchError(error => {
+            return of(GeneralActions.setError({ message: error }));
+          })
+        )
+    })
+  ))
+
+  removeMeasurementEffect$ = createEffect(() => this.actions$.pipe(
+    ofType(GeneralActions.submitRemoveMeasurementRequest),
+    switchMap(({ payload }) => {
+      return this.httpClient.delete<Measurement>(this.measurementUrl + "/" + payload.id, this.httpOptions)
+        .pipe(
+          switchMap(() => {
+            window.location.reload();
+            return EMPTY;
           }),
           catchError(error => {
             return of(GeneralActions.setError({ message: error }));

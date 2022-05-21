@@ -1,4 +1,7 @@
 <div class="container-lg m-4">
+  <div *ngIf="(error$ | async) !== ''" class="alert alert-danger d-flex align-items-center" role="alert">
+    {{(error$ | async)}}
+  </div>
   <form>
     <div class="mb-3 row">
       <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
@@ -8,11 +11,6 @@
     </div>
   </form>
 
-  <div *ngIf="(error$ | async) !== ''" class="alert alert-danger d-flex align-items-center" role="alert">
-    <div>
-      An error occurred during processing request.
-    </div>
-  </div>
   <button type="button" class="btn btn-primary" routerLink="./add">Add new</button>
 
   <table class="table table-striped">

@@ -22,10 +22,12 @@ export const submitRemoveProductRequestSuccess = createAction("Submit remove pro
 export const submitEditProductRequest = createAction("Submit edit product request", prop<{ product: Product }>());
 export const submitEditProductRequestSuccess = createAction("Submit edit product request success");
 
-export const submitRemoveMeasurementRequest = createAction("Submit remove measurement request");
+export const submitRemoveMeasurementRequest = createAction("Submit remove measurement request", prop<{ id: string }>());
 
 export const submitEditMeasurementRequest = createAction("Submit edit measurement request",
   prop<{ measurement: Measurement }>());
+
+export const submitEditMeasurementRequestSuccess = createAction("Submit edit measurement request success");
 
 const actions = union({
   clearState,
@@ -42,7 +44,8 @@ const actions = union({
   submitEditProductRequest,
   submitEditProductRequestSuccess,
   submitRemoveMeasurementRequest,
-  submitEditMeasurementRequest
+  submitEditMeasurementRequest,
+  submitEditMeasurementRequestSuccess
 });
 
 export type GeneralActions = typeof actions;
