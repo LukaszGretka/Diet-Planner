@@ -23,6 +23,19 @@ namespace DietPlanner.Api.Controllers
             return await _measurementService.GetAll();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Measurement>> GetById(int id)
+        {
+            Measurement measurement = await _measurementService.GetById(id);
+
+            if (measurement is null)
+            {
+                return NotFound(new { Message = $"Measurement with id {id} no found" });
+            }
+
+            return measurement;
+        }
+
         [HttpPost]
         [ActionName(nameof(PostAsync))]
         public async Task<IActionResult> PostAsync([FromBody] Measurement measurement)

@@ -1,4 +1,5 @@
 export class Measurement {
+  id: number;
   date: string;
   weight: number;
   chest: number;

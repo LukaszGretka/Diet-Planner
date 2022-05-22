@@ -44,7 +44,6 @@ export class ProductsComponent implements OnInit {
   }
 
   removeConfirmationButtonClick(): void {
-
     this.store.dispatch(GeneralActions.submitRemoveProductRequest());
   }
 }

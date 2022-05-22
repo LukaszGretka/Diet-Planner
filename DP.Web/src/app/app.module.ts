@@ -20,6 +20,7 @@ import { AddProductComponent } from './products/add-product/add-product.componen
 import { ProductTemplateComponent } from './products/product-template/product-template.component';
 import { EditProductComponent } from './products/edit-product/edit-product.component';
 import { MeasurementTemplateComponent } from './body-profile/measurement-template/measurement-template.component';
+import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { MeasurementTemplateComponent } from './body-profile/measurement-templat
     DashboardComponent,
     AddMeasurementComponent,
     MeasurementTemplateComponent,
+    EditMeasurementComponent,
   ],
   imports: [
     BrowserModule,
