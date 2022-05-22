@@ -59,7 +59,7 @@
             <button type="button" class="btn btn-secondary m-1" [value]="product.id"
               (click)="onEditButtonClick($event)">Edit</button>
             <button type="button" class="btn btn-danger" [value]="product.id" data-bs-toggle="modal"
-              data-bs-target="#deleteProductConfirmationModal" (click)="onRemoveButtonClick($event)">Remove</button>
+              data-bs-target="#deleteProductConfirmationModal" (click)="onOpenConfirmationModal($event)">Remove</button>
           </div>
         </td>
       </tr>

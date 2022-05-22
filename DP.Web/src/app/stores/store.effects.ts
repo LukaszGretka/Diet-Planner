@@ -1,14 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { select, Store } from "@ngrx/store";
-import { catchError, EMPTY, map, mergeMap, of, pipe, switchMap, withLatestFrom } from "rxjs";
-import * as GeneralActions from './store.actions';
-import { GeneralState } from "./store.state";
-import { getMeasurementData, getProductData, getProcessingProductId } from "./store.selectors";
-import { Measurement } from "src/models/measurement";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { catchError, EMPTY, of, switchMap } from "rxjs";
+import { HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { Product } from "src/models/product";
+import { MeasurementService } from "src/services/measurement.service";
+import * as GeneralActions from './store.actions';
+import { ProductService } from "src/services/product.service";
 
 @Injectable()
 export class GeneralEffects {
@@ -23,14 +20,13 @@ export class GeneralEffects {
   };
 
   addMeasurementEffect$ = createEffect(() => this.actions$.pipe(
-    ofType(GeneralActions.submitMeasurementRequest),
-    withLatestFrom(this.store.pipe(select(getMeasurementData))),
-    switchMap(([_, measurementData]) => {
-      return this.httpClient.post<Measurement>(this.measurementUrl, measurementData, this.httpOptions)
+    ofType(GeneralActions.addMeasurementRequest),
+    switchMap(({ payload }) => {
+      return this.measurementService.addMeasurement(payload.measurementData)
         .pipe(
           switchMap(() => {
             this.router.navigate(['body-profile']);
-            return of(GeneralActions.submitMeasurementRequestSuccess());
+            return of(GeneralActions.addMeasurementRequestCompleted());
           }),
           catchError(error => {
             return of(GeneralActions.setError({ message: error }));
@@ -38,13 +34,13 @@ export class GeneralEffects {
     })));
 
   editMeasurementEffect$ = createEffect(() => this.actions$.pipe(
-    ofType(GeneralActions.submitEditMeasurementRequest),
+    ofType(GeneralActions.editMeasurementRequest),
     switchMap(({ payload }) => {
-      return this.httpClient.put<Measurement>(this.measurementUrl + '/' + payload.measurement.id, payload.measurement, this.httpOptions)
+      return this.measurementService.editMeasurement(payload.measurementId, payload.measurementData)
         .pipe(
           switchMap(() => {
             this.router.navigate(['body-profile']);
-            return of(GeneralActions.submitEditMeasurementRequestSuccess());
+            return of(GeneralActions.editMeasurementRequestCompleted());
           }),
           catchError(error => {
             return of(GeneralActions.setError({ message: error }));
@@ -54,9 +50,9 @@ export class GeneralEffects {
   ))
 
   removeMeasurementEffect$ = createEffect(() => this.actions$.pipe(
-    ofType(GeneralActions.submitRemoveMeasurementRequest),
+    ofType(GeneralActions.removeMeasurementRequest),
     switchMap(({ payload }) => {
-      return this.httpClient.delete<Measurement>(this.measurementUrl + "/" + payload.id, this.httpOptions)
+      return this.measurementService.deleteMeasurement(payload.measurementId)
         .pipe(
           switchMap(() => {
             window.location.reload();
@@ -68,14 +64,13 @@ export class GeneralEffects {
     })));
 
   addProductEffect$ = createEffect(() => this.actions$.pipe(
-    ofType(GeneralActions.submitAddProductRequest),
-    withLatestFrom(this.store.pipe(select(getProductData))),
-    switchMap(([_, productData]) => {
-      return this.httpClient.post<Product>(this.productsUrl, productData, this.httpOptions)
+    ofType(GeneralActions.addProductRequest),
+    switchMap(({ payload }) => {
+      return this.productService.addProduct(payload.productData)
         .pipe(
           switchMap(() => {
             this.router.navigate(['products']);
-            return of(GeneralActions.submitAddProductRequestSuccess());
+            return of(GeneralActions.addProductRequestCompleted());
           }),
           catchError(error => {
             return of(GeneralActions.setError({ message: error }));
@@ -83,10 +78,9 @@ export class GeneralEffects {
     })));
 
   removeProductEffect$ = createEffect(() => this.actions$.pipe(
-    ofType(GeneralActions.submitRemoveProductRequest),
-    withLatestFrom(this.store.pipe(select(getProcessingProductId))),
-    switchMap(([_, productId]) => {
-      return this.httpClient.delete<Product>(this.productsUrl + "/" + productId, this.httpOptions)
+    ofType(GeneralActions.removeProductRequest),
+    switchMap(({ payload }) => {
+      return this.productService.removeProduct(payload.productId)
         .pipe(
           switchMap(() => {
             window.location.reload();
@@ -98,14 +92,13 @@ export class GeneralEffects {
     })));
 
   editProductEffect$ = createEffect(() => this.actions$.pipe(
-    ofType(GeneralActions.submitEditProductRequest),
-    withLatestFrom(this.store.pipe(select(getProductData))),
-    switchMap(([_, productData]) => {
-      return this.httpClient.put<Product>(this.productsUrl + '/' + productData.id, productData, this.httpOptions)
+    ofType(GeneralActions.editProductRequest),
+    switchMap(({ payload }) => {
+      return this.productService.editProduct(payload.productId, payload.productData)
         .pipe(
           switchMap(() => {
             this.router.navigate(['products']);
-            return of(GeneralActions.submitEditProductRequestSuccess());
+            return of(GeneralActions.editProductRequestCompleted());
           }),
           catchError(error => {
             return of(GeneralActions.setError({ message: error }));
@@ -114,7 +107,7 @@ export class GeneralEffects {
     })
   ))
 
-  constructor(private actions$: Actions, private store: Store<GeneralState>, private httpClient: HttpClient,
-    private router: Router) {
+  constructor(private actions$: Actions, private router: Router,
+    private measurementService: MeasurementService, private productService: ProductService) {
   }
 }

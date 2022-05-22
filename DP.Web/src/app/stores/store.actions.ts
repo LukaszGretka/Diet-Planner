@@ -3,49 +3,47 @@ import { Measurement } from "src/models/measurement";
 import { Product } from "src/models/product";
 
 export const clearState = createAction("Clear state");
+export const setError = createAction("Set error",
+  prop<{ message: string }>());
 
-export const setError = createAction("Set error", prop<{ message: string }>());
-export const setMeasurement = createAction("Set measurement",
-  prop<{ measurement: Measurement }>());
+export const addProductRequest = createAction("Add product request",
+  prop<{ productData: Product }>());
+export const addProductRequestCompleted = createAction("Add product request completed");
 
-export const submitMeasurementRequest = createAction("Submit measurement request");
-export const submitMeasurementRequestSuccess = createAction("Submit measurement request success");
+export const editProductRequest = createAction("Edit product request",
+  prop<{ productId: number, productData: Product }>());
+export const editProductRequestCompleted = createAction("Edit product request completed");
 
-export const setProduct = createAction("Set product", prop<{ product: Product }>());
-export const submitAddProductRequest = createAction("Submit add product request");
-export const submitAddProductRequestSuccess = createAction("Submit add product request success");
+export const removeProductRequest = createAction("Remove product request",
+  prop<{ productId: number }>());
+export const removeProductRequestCompleted = createAction("Remove product request completed");
 
-export const setProcessingProductId = createAction("Set processing product id", prop<{ id: string }>());
-export const submitRemoveProductRequest = createAction("Submit remove product request");
-export const submitRemoveProductRequestSuccess = createAction("Submit remove product request");
+export const addMeasurementRequest = createAction("Add measurement request", prop<{ measurementData: Measurement }>());
+export const addMeasurementRequestCompleted = createAction("Add measurement request completed");
 
-export const submitEditProductRequest = createAction("Submit edit product request", prop<{ product: Product }>());
-export const submitEditProductRequestSuccess = createAction("Submit edit product request success");
+export const editMeasurementRequest = createAction("Edit measurement request",
+  prop<{ measurementId: number, measurementData: Measurement }>());
+export const editMeasurementRequestCompleted = createAction("Edit measurement request completed");
 
-export const submitRemoveMeasurementRequest = createAction("Submit remove measurement request", prop<{ id: string }>());
-
-export const submitEditMeasurementRequest = createAction("Submit edit measurement request",
-  prop<{ measurement: Measurement }>());
-
-export const submitEditMeasurementRequestSuccess = createAction("Submit edit measurement request success");
+export const removeMeasurementRequest = createAction("Remove measurement request",
+  prop<{ measurementId: number }>());
+export const removeMeasurementRequestCompleted = createAction("Remove measurement request completed");
 
 const actions = union({
   clearState,
   setError,
-  setMeasurement,
-  submitMeasurementRequest,
-  submitMeasurementRequestSuccess,
-  setProduct,
-  setProcessingProductId,
-  submitAddProductRequest,
-  submitAddProductRequestSuccess,
-  submitRemoveProductRequest,
-  submitRemoveProductRequestSuccess,
-  submitEditProductRequest,
-  submitEditProductRequestSuccess,
-  submitRemoveMeasurementRequest,
-  submitEditMeasurementRequest,
-  submitEditMeasurementRequestSuccess
+  addProductRequest,
+  addProductRequestCompleted,
+  editProductRequest,
+  editProductRequestCompleted,
+  removeProductRequest,
+  removeProductRequestCompleted,
+  addMeasurementRequest,
+  addMeasurementRequestCompleted,
+  editMeasurementRequest,
+  editMeasurementRequestCompleted,
+  removeMeasurementRequest,
+  removeMeasurementRequestCompleted
 });
 
 export type GeneralActions = typeof actions;
