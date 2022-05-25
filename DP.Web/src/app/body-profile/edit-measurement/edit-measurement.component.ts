@@ -24,10 +24,6 @@ export class EditMeasurementComponent implements OnInit, OnDestroy {
   constructor(private store: Store<GeneralState>, private measurementService: MeasurementService,
     private router: ActivatedRoute) { }
 
-  ngOnDestroy(): void {
-    this.routerSub.unsubscribe();
-  }
-
   ngOnInit(): void {
     this.routerSub = this.router.params.subscribe(params => {
       this.measurementService.getById(params['id']).pipe(map(measurement => {
@@ -35,8 +31,14 @@ export class EditMeasurementComponent implements OnInit, OnDestroy {
       })).subscribe();
     });
   }
-  public measurementEdit(): void {
-    this.store.dispatch(GeneralActions.submitEditMeasurementRequest({ measurement: this.measurement }));
+
+  ngOnDestroy(): void {
+    this.routerSub.unsubscribe();
   }
 
+  public measurementEdit(): void {
+    this.store.dispatch(GeneralActions.editMeasurementRequest({
+      measurementId: this.measurement.id, measurementData: this.measurement
+    }));
+  }
 }

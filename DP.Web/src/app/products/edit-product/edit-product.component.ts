@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GeneralState } from 'src/app/stores/store.state';
 import { Product } from 'src/models/product';
-import * as BodyProfileSelectors from '../../stores/store.selectors';
 import * as GeneralActions from '../../stores/store.actions';
 import { ProductService } from 'src/services/product.service';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +12,7 @@ import { map, Subscription } from 'rxjs';
   templateUrl: './edit-product.component.html',
   styleUrls: ['./edit-product.component.css'],
 })
-export class EditProductComponent implements OnInit, OnDestroy{
+export class EditProductComponent implements OnInit, OnDestroy {
 
   public product: Product;
   private routerSub: Subscription;
@@ -24,7 +23,7 @@ export class EditProductComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.routerSub = this.router.params.subscribe(params => {
-      this.productService.getProductById(params['id']).pipe(map(product =>{
+      this.productService.getProductById(params['id']).pipe(map(product => {
         this.product = product
       })).subscribe();
     });
@@ -35,7 +34,8 @@ export class EditProductComponent implements OnInit, OnDestroy{
   }
 
   public editProductSubmit(): void {
-    this.store.dispatch(GeneralActions.setProduct({ product: this.product }));
-    this.store.dispatch(GeneralActions.submitEditProductRequest({product: this.product}));
+    this.store.dispatch(GeneralActions.editProductRequest({
+      productId: this.product.id, productData: this.product
+    }));
   }
 }

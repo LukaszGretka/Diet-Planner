@@ -14,12 +14,9 @@ export class AddMeasurementComponent {
   public addMeasurementError$ = this.store.select(StoreSelector.getError);
   public measurement: Measurement = new Measurement();
 
-  constructor(private store: Store<GeneralState>) {}
+  constructor(private store: Store<GeneralState>) { }
 
   public measurementSubmit(): void {
-    this.store.dispatch(
-      GeneralActions.setMeasurement({ measurement: this.measurement })
-    );
-    this.store.dispatch(GeneralActions.submitMeasurementRequest());
+    this.store.dispatch(GeneralActions.addMeasurementRequest({ measurementData: this.measurement }));
   }
 }

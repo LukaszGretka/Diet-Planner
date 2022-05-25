@@ -1,7 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { catchError, EMPTY, tap } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { Measurement } from 'src/models/measurement';
 
@@ -18,13 +16,25 @@ export class MeasurementService {
     })
   };
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private httpClient: HttpClient) { }
 
   getMeasurements(): Observable<Measurement[]> {
-    return this.http.get<Measurement[]>(this.measurementUrl);
+    return this.httpClient.get<Measurement[]>(this.measurementUrl);
   }
 
-  getById(id: string): Observable<Measurement> {
-    return this.http.get<Measurement>(this.measurementUrl + '/' + id);
+  getById(id: number): Observable<Measurement> {
+    return this.httpClient.get<Measurement>(this.measurementUrl + '/' + id);
+  }
+
+  addMeasurement(measurementData: Measurement): Observable<Measurement> {
+    return this.httpClient.post<Measurement>(this.measurementUrl, measurementData, this.httpOptions);
+  }
+
+  editMeasurement(measurementId: number, measurementData: Measurement): Observable<Measurement> {
+    return this.httpClient.put<Measurement>(this.measurementUrl + '/' + measurementId, measurementData, this.httpOptions);
+  }
+
+  deleteMeasurement(measurementId: number): Observable<Measurement> {
+    return this.httpClient.delete<Measurement>(this.measurementUrl + "/" + measurementId, this.httpOptions);
   }
 }

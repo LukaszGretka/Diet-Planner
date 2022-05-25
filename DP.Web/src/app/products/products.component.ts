@@ -22,6 +22,7 @@ export class ProductsComponent implements OnInit {
   public filter = new FormControl('');
   public products$: Observable<Product[]> = new Observable<Product[]>();
   public error$ = this.store.select(StoreSelector.getError);
+  private productId: number;
 
   constructor(private productService: ProductService, pipe: DecimalPipe, private store: Store<GeneralState>,
     private router: Router) {
@@ -35,16 +36,16 @@ export class ProductsComponent implements OnInit {
     this.products$ = this.productService.getProducts();
   }
 
-  onEditButtonClick(event: Event): void {
-    this.router.navigate(['products/edit/' + (event.target as HTMLInputElement).value]);
+  onEditButtonClick($event: Event): void {
+    this.router.navigate(['products/edit/' + ($event.target as HTMLInputElement).value]);
   }
 
-  onRemoveButtonClick(event: Event): void {
-    this.store.dispatch(GeneralActions.setProcessingProductId({ id: (event.target as HTMLInputElement).value }));
+  onOpenConfirmationModal($event: Event) {
+    this.productId = Number(($event.target as HTMLInputElement).value);
   }
 
   removeConfirmationButtonClick(): void {
-    this.store.dispatch(GeneralActions.submitRemoveProductRequest());
+    this.store.dispatch(GeneralActions.removeProductRequest({ productId: this.productId }));
   }
 }
 

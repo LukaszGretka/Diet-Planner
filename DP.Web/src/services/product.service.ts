@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Product } from 'src/models/product';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,27 +8,32 @@ import { Observable } from 'rxjs';
 })
 export class ProductService {
 
-  private productsUrl = 'http://localhost:5000/api/product/'; 
+  private productsUrl = 'http://localhost:5000/api/product';
 
-  constructor(private http: HttpClient) { }
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+  constructor(private httpClient: HttpClient) { }
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.productsUrl + 'all');
+    return this.httpClient.get<Product[]>(this.productsUrl + '/all');
   }
 
   getProductById(id: number): Observable<Product> {
-    return this.http.get<Product>(this.productsUrl + id);
+    return this.httpClient.get<Product>(this.productsUrl + '/' + id);
   }
 
-  addProduct(product: Product): Observable<any> {
-    return this.http.post(this.productsUrl, product);
+  addProduct(product: Product): Observable<Product> {
+    return this.httpClient.post<Product>(this.productsUrl, product, this.httpOptions);
   }
 
-  editProduct(id: number): Observable<any> {
-    return this.http.put(this.productsUrl, id);
+  editProduct(productId: number, productData: Product): Observable<Product> {
+    return this.httpClient.put<Product>(this.productsUrl + '/' + productId, productData, this.httpOptions);
   }
 
-  removeProduct(id: number): Observable<any> {
-    return this.http.delete(this.productsUrl + id);
+  removeProduct(productId: number): Observable<Product> {
+    return this.httpClient.delete<Product>(this.productsUrl + "/" + productId, this.httpOptions);
   }
 }

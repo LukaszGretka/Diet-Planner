@@ -17,7 +17,7 @@ export class BodyProfileComponent implements OnInit {
 
   public measurements$: Observable<Measurement[]> = new Observable<Measurement[]>();
   public errors$ = this.store.select(GeneralSelector.getError);
-  private processingMeasurementId: string;
+  private processingMeasurementId: number;
 
   constructor(private measurementService: MeasurementService, private store: Store<GeneralState>,
     private router: Router) { }
@@ -31,17 +31,16 @@ export class BodyProfileComponent implements OnInit {
   }
 
   onRemoveButtonClick($event: Event): void {
-    this.processingMeasurementId = ($event.target as HTMLInputElement).value;
+    this.processingMeasurementId = Number(($event.target as HTMLInputElement).value);
   }
 
   removeConfirmationButtonClick(): void {
-    console.log(this.processingMeasurementId);
-    if (this.processingMeasurementId) {
+    if (!this.processingMeasurementId) {
       this.store.dispatch(GeneralActions.setError({
         message: "An error occurred during editing measurement. Please try again later."
       }))
       return;
     }
-    this.store.dispatch(GeneralActions.submitRemoveMeasurementRequest({ id: this.processingMeasurementId }));
+    this.store.dispatch(GeneralActions.removeMeasurementRequest({ measurementId: this.processingMeasurementId }));
   }
 }
