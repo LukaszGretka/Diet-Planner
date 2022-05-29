@@ -3,21 +3,12 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, EMPTY, of, switchMap } from "rxjs";
 import { HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { MeasurementService } from "src/services/measurement.service";
+import { MeasurementService } from "src/app/body-profile/services/measurement.service";
 import * as GeneralActions from './store.actions';
-import { ProductService } from "src/services/product.service";
+import { ProductService } from "src/app/products/services/product.service";
 
 @Injectable()
 export class GeneralEffects {
-
-  private measurementUrl = 'http://localhost:5000/api/measurement';
-  private productsUrl = 'http://localhost:5000/api/product';
-
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  };
 
   addMeasurementEffect$ = createEffect(() => this.actions$.pipe(
     ofType(GeneralActions.addMeasurementRequest),

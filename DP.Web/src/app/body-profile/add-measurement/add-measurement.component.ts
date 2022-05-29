@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Measurement } from 'src/models/measurement';
+import { Measurement } from 'src/app/body-profile/models/measurement';
 import * as GeneralActions from '../../stores/store.actions';
 import { GeneralState } from '../../stores/store.state';
 import * as StoreSelector from '../../stores/store.selectors';

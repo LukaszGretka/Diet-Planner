@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Measurement } from 'src/models/measurement';
-import { MeasurementService } from 'src/services/measurement.service';
+import { Measurement } from 'src/app/body-profile/models/measurement';
+import { MeasurementService } from 'src/app/body-profile/services/measurement.service';
 import { GeneralState } from '../stores/store.state';
 import * as GeneralActions from '../stores/store.actions';
 import * as GeneralSelector from '../stores/store.selectors';

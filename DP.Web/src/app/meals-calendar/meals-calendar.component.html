@@ -1,0 +1,51 @@
+<div class="m-4">
+  <form class="row row-cols-sm-auto">
+    <div class="col-12">
+      <div class="input-group">
+        <input class="form-control" placeholder="Date" name="dp" [(ngModel)]="dateModel" ngbDatepicker
+          #d="ngbDatepicker">
+        <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+          <i class="bi bi-calendar-date"></i></button>
+      </div>
+    </div>
+  </form>
+
+  <div class="accordion-container mt-4">
+    <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+      <ngb-panel title="Breakfast">
+        <ng-template ngbPanelContent>
+          <button type="button" class="meal-add-button btn btn-primary" (click)="addToBreakfast()">Add</button>
+          <table class="table table-striped mt-4">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let breakfastMeal of breakfastMeals$ | async'>
+                <td>{{breakfastMeal.name}}</td>
+                <td>
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#deleteMeasurementConfirmationModal" [value]="breakfastMeal.id"
+                    (click)="onRemoveButtonClick($event)">Remove</button>
+                </td>
+            </tbody>
+          </table>
+        </ng-template>
+      </ngb-panel>
+
+      <ngb-panel title="Lunch">
+        <ng-template ngbPanelContent>
+          <button type="button" class="meal-add-button btn btn-primary" (click)="addToLunch()">Add</button>
+        </ng-template>
+      </ngb-panel>
+
+      <ngb-panel title="Dinner">
+        <ng-template ngbPanelContent>
+          <button type="button" class="meal-add-button btn btn-primary" (click)="addToDinner()">Add</button>
+        </ng-template>
+      </ngb-panel>
+
+    </ngb-accordion>
+  </div>
+</div>

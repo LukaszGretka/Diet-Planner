@@ -1,12 +1,12 @@
 using DietPlanner.Api.Database;
 using DietPlanner.Api.Services;
+using DietPlanner.Api.Services.MealsCalendar;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Net.Http.Headers;
 
 namespace DietPlanner.Api
 {
@@ -37,6 +37,7 @@ namespace DietPlanner.Api
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
+            services.AddTransient<IMealsCalendarService, MealsCalendarService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

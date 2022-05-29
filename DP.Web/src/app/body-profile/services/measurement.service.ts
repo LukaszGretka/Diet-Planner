@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { Measurement } from 'src/models/measurement';
+import { Measurement } from 'src/app/body-profile/models/measurement';
 
 @Injectable({
   providedIn: 'root'

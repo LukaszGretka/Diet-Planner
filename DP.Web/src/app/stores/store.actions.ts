@@ -1,6 +1,6 @@
 import { createAction, union } from "@ngrx/store";
-import { Measurement } from "src/models/measurement";
-import { Product } from "src/models/product";
+import { Measurement } from "src/app/body-profile/models/measurement";
+import { Product } from "src/app/products/models/product";
 
 export const clearState = createAction("Clear state");
 export const setError = createAction("Set error",
@@ -28,6 +28,8 @@ export const editMeasurementRequestCompleted = createAction("Edit measurement re
 export const removeMeasurementRequest = createAction("Remove measurement request",
   prop<{ measurementId: number }>());
 export const removeMeasurementRequestCompleted = createAction("Remove measurement request completed");
+
+
 
 const actions = union({
   clearState,

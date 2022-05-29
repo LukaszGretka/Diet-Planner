@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GeneralState } from 'src/app/stores/store.state';
 import * as GeneralActions from '../../stores/store.actions';
-import { Product } from 'src/models/product';
+import { Product } from 'src/app/products/models/product';
 
 @Component({
   selector: 'app-add-product',

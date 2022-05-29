@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, Observable, Subscription } from 'rxjs';
 import { GeneralState } from 'src/app/stores/store.state';
-import { Measurement } from 'src/models/measurement';
-import { MeasurementService } from 'src/services/measurement.service';
+import { Measurement } from 'src/app/body-profile/models/measurement';
+import { MeasurementService } from 'src/app/body-profile/services/measurement.service';
 import * as GeneralActions from '../../stores/store.actions';
 import * as StoreSelector from '../../stores/store.selectors'
 

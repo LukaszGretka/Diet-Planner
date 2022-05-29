@@ -4,6 +4,7 @@ import { AddMeasurementComponent } from './body-profile/add-measurement/add-meas
 import { BodyProfileComponent } from './body-profile/body-profile.component';
 import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { MealsCalendarComponent } from './meals-calendar/meals-calendar.component';
 import { AddProductComponent } from './products/add-product/add-product.component';
 import { EditProductComponent } from './products/edit-product/edit-product.component';
 import { ProductsComponent } from './products/products.component';
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'products/add', component: AddProductComponent },
   { path: 'body-profile', component: BodyProfileComponent },
   { path: 'body-profile/add', component: AddMeasurementComponent },
-  { path: 'body-profile/edit/:id', component: EditMeasurementComponent }
+  { path: 'body-profile/edit/:id', component: EditMeasurementComponent },
+  { path: 'meals-calendar', component: MealsCalendarComponent }
 ];
 
 @NgModule({

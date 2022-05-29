@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Measurement } from 'src/models/measurement';
+import { Measurement } from 'src/app/body-profile/models/measurement';
 
 @Component({
   selector: 'app-measurement-template',

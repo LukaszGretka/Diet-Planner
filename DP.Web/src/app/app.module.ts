@@ -21,6 +21,7 @@ import { ProductTemplateComponent } from './products/product-template/product-te
 import { EditProductComponent } from './products/edit-product/edit-product.component';
 import { MeasurementTemplateComponent } from './body-profile/measurement-template/measurement-template.component';
 import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
+import { MealsCalendarComponent } from './meals-calendar/meals-calendar.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-m
     AddMeasurementComponent,
     MeasurementTemplateComponent,
     EditMeasurementComponent,
+    MealsCalendarComponent,
   ],
   imports: [
     BrowserModule,

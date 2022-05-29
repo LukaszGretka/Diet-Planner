@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GeneralState } from 'src/app/stores/store.state';
-import { Product } from 'src/models/product';
+import { Product } from 'src/app/products/models/product';
 import * as GeneralActions from '../../stores/store.actions';
-import { ProductService } from 'src/services/product.service';
+import { ProductService } from 'src/app/products/services/product.service';
 import { ActivatedRoute } from '@angular/router';
 import { map, Subscription } from 'rxjs';
 
