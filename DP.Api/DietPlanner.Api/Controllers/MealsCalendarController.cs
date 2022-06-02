@@ -21,7 +21,7 @@ namespace DietPlanner.Api.Controllers
         [Route("{date}")]
         public async Task<ActionResult<DailyMeals>> GetDailyMeals(DateTime date)
         {
-            var result = await _mealsCalendarService.GetDailyMeals(date);
+           var result = await _mealsCalendarService.GetDailyMeals(date);
 
             return Ok(result);
         }

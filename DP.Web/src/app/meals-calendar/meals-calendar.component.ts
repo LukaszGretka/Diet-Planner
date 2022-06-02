@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Product } from '../products/models/product';
-import { GeneralState } from '../stores/store.state';
 import { DailyMeals } from './models/daily-meals';
 import { DatePickerSelection } from './models/date-picker-selection';
-import { SpecifiedMeal } from './models/specified-meal';
 import { MealsCalendarService } from './services/meals-calendar.service';
 
 @Component({
@@ -16,7 +14,11 @@ import { MealsCalendarService } from './services/meals-calendar.service';
 export class MealsCalendarComponent implements OnInit {
 
   public dailyMeals$: Observable<DailyMeals>;
-  public breakfastMeals$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
+
+  public breakfastProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
+  public lunchProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
+  public dinnerProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
+  public supperProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
 
   public dateModel: DatePickerSelection;
 
@@ -24,17 +26,26 @@ export class MealsCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     const dateNow = new Date();
+
     this.dateModel = {
-      day: dateNow.getDay(),
-      month: dateNow.getMonth(),
+      day: dateNow.getDate(),
+      month: dateNow.getMonth() + 1, // getMonth method is off by 1. (0-11)
       year: dateNow.getFullYear()
     }
-
-    this.dailyMeals$ = this.mealsCalendarService.getDailyMeals(dateNow);
+    //TODO: Next step is to send proper date to controller.
+    this.dailyMeals$ = // here we should use stream from selector
+      this.mealsCalendarService.getDailyMeals(dateNow);
     this.dailyMeals$.subscribe(dailyMeals => {
-      this.breakfastMeals$.next(dailyMeals.breakfast?.products);
-      // Add more of dialy meals
+      this.breakfastProducts$.next(dailyMeals.breakfast?.products);
+      this.lunchProducts$.next(dailyMeals.lunch?.products);
+      this.dinnerProducts$.next(dailyMeals.dinner?.products);
+      this.supperProducts$.next(dailyMeals.supper?.products);
     })
+  }
+
+  onDateSelection(ngbDate: NgbDate): void {
+    const convertedDate = new Date(ngbDate.year, ngbDate.month, ngbDate.day)
+    this.dailyMeals$ = this.mealsCalendarService.getDailyMeals(convertedDate);
   }
 
   addToBreakfast(): void {

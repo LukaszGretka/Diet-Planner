@@ -1,4 +1,5 @@
 import { createAction, union } from "@ngrx/store";
+import { create } from "domain";
 import { Measurement } from "src/app/body-profile/models/measurement";
 import { Product } from "src/app/products/models/product";
 
@@ -29,7 +30,7 @@ export const removeMeasurementRequest = createAction("Remove measurement request
   prop<{ measurementId: number }>());
 export const removeMeasurementRequestCompleted = createAction("Remove measurement request completed");
 
-
+export const getDailyMealsRequest = createAction("Get daily meals request");
 
 const actions = union({
   clearState,
@@ -45,7 +46,8 @@ const actions = union({
   editMeasurementRequest,
   editMeasurementRequestCompleted,
   removeMeasurementRequest,
-  removeMeasurementRequestCompleted
+  removeMeasurementRequestCompleted,
+  getDailyMealsRequest
 });
 
 export type GeneralActions = typeof actions;

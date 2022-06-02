@@ -6,6 +6,7 @@ import { Router } from "@angular/router";
 import { MeasurementService } from "src/app/body-profile/services/measurement.service";
 import * as GeneralActions from './store.actions';
 import { ProductService } from "src/app/products/services/product.service";
+import { MealsCalendarService } from "../meals-calendar/services/meals-calendar.service";
 
 @Injectable()
 export class GeneralEffects {
@@ -96,7 +97,7 @@ export class GeneralEffects {
           })
         )
     })
-  ))
+  ));
 
   constructor(private actions$: Actions, private router: Router,
     private measurementService: MeasurementService, private productService: ProductService) {
