@@ -1,9 +1,10 @@
 ﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Models;
-using DietPlanner.Api.Models.MealsCalendar;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using DietPlanner.Api.Models.Dto.MealsCalendar;
+using DietPlanner.Api.Models;
+using DietPlanner.Api.Models.MealsCalendar;
 
 namespace DietPlanner.Api.Services.MealsCalendar
 {
@@ -18,10 +19,10 @@ namespace DietPlanner.Api.Services.MealsCalendar
             this._databaseContext = databaseContext;
         }
 
-        public async Task<DailyMeals> GetDailyMeals(DateTime date)
+        public async Task<DailyMealsDTO> GetDailyMeals(DateTime date)
         {
             //TODO: Mock for now. Must be replaced with database data.
-            return await Task.FromResult(new DailyMeals
+            return await Task.FromResult(new DailyMealsDTO
             {
                 Breakfast = new SpecifiedMeal()
                 {

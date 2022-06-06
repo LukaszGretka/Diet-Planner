@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.Models.MealsCalendar;
+﻿using DietPlanner.Api.Models.Dto.MealsCalendar;
 using DietPlanner.Api.Services.MealsCalendar;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,7 +19,7 @@ namespace DietPlanner.Api.Controllers
 
         [HttpGet]
         [Route("{date}")]
-        public async Task<ActionResult<DailyMeals>> GetDailyMeals(DateTime date)
+        public async Task<ActionResult<DailyMealsDTO>> GetDailyMeals(DateTime date)
         {
            var result = await _mealsCalendarService.GetDailyMeals(date);
 
