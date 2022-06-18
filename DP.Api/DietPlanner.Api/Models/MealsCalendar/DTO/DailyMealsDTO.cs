@@ -7,10 +7,10 @@ namespace DietPlanner.Api.Models.Dto.MealsCalendar
     {
         public DateTime Date { get; set; }
         public Guid UserId { get; set; }
-        public SpecifiedMeal Breakfast { get; set; }
-        public SpecifiedMeal Lunch { get; set; }
-        public SpecifiedMeal Dinner { get; set; }
-        public SpecifiedMeal Supper { get; set; }
+        public Meal Breakfast { get; set; }
+        public Meal Lunch { get; set; }
+        public Meal Dinner { get; set; }
+        public Meal Supper { get; set; }
 
     }
 }

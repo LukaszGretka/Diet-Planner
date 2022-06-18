@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DietPlanner.Api.Models.Dto.MealsCalendar;
 using DietPlanner.Api.Models;
 using DietPlanner.Api.Models.MealsCalendar;
+using Microsoft.EntityFrameworkCore;
 
 namespace DietPlanner.Api.Services.MealsCalendar
 {
@@ -15,8 +16,8 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         public MealsCalendarService(ILogger<MealsCalendarService> logger, DatabaseContext databaseContext)
         {
-            this._logger = logger;
-            this._databaseContext = databaseContext;
+            _logger = logger;
+            _databaseContext = databaseContext;
         }
 
         public async Task<DailyMealsDTO> GetDailyMeals(DateTime date)
@@ -24,7 +25,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
             //TODO: Mock for now. Must be replaced with database data.
             return await Task.FromResult(new DailyMealsDTO
             {
-                Breakfast = new SpecifiedMeal()
+                Breakfast = new Meal()
                 {
                     Products = new Product[]
                     {
@@ -41,7 +42,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
                         }
                     }
                 },
-                Dinner = new SpecifiedMeal
+                Dinner = new Meal
                 {
                     Products = new Product[]
                     {
@@ -68,7 +69,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
                         }
                     }
                 },
-                Lunch = new SpecifiedMeal()
+                Lunch = new Meal()
                 {
                     Products = new Product[]
                     {
@@ -87,6 +88,22 @@ namespace DietPlanner.Api.Services.MealsCalendar
                     }
                 }
             });
+        }
+
+        public async Task<DatabaseActionResult<Meal>> AddMeal(DateTime date, Meal meal)
+        {
+            try
+            {
+                await _databaseContext.AddAsync(meal);
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Meal>(false, exception: ex);
+            }
+
+            return new DatabaseActionResult<Meal>(true, obj: meal);
         }
     }
 }
