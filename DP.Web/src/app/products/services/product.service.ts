@@ -1,39 +1,48 @@
 import { Injectable } from '@angular/core';
 import { Product } from 'src/app/products/models/product';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class ProductService {
+	private productsUrl = 'http://localhost:5000/api/product';
 
-  private productsUrl = 'http://localhost:5000/api/product';
+	httpOptions = {
+		headers: new HttpHeaders({
+			'Content-Type': 'application/json',
+		}),
+	};
+	constructor(private httpClient: HttpClient) {}
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  };
-  constructor(private httpClient: HttpClient) { }
+	getProducts(): Observable<Product[]> {
+		return this.httpClient.get<Product[]>(this.productsUrl + '/all');
+	}
 
-  getProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.productsUrl + '/all');
-  }
+	getProductById(id: number): Observable<Product> {
+		return this.httpClient.get<Product>(this.productsUrl + '/' + id);
+	}
 
-  getProductById(id: number): Observable<Product> {
-    return this.httpClient.get<Product>(this.productsUrl + '/' + id);
-  }
+	getProductByName(name: string): Observable<Product> {
+		let params = new HttpParams();
+		params = params.append('productName', name);
+		return this.httpClient.get<Product>(this.productsUrl, { params: params });
+	}
 
-  addProduct(product: Product): Observable<Product> {
-    return this.httpClient.post<Product>(this.productsUrl, product, this.httpOptions);
-  }
+	addProduct(product: Product): Observable<Product> {
+		return this.httpClient.post<Product>(this.productsUrl, product, this.httpOptions);
+	}
 
-  editProduct(productId: number, productData: Product): Observable<Product> {
-    return this.httpClient.put<Product>(this.productsUrl + '/' + productId, productData, this.httpOptions);
-  }
+	editProduct(productId: number, productData: Product): Observable<Product> {
+		return this.httpClient.put<Product>(
+			this.productsUrl + '/' + productId,
+			productData,
+			this.httpOptions
+		);
+	}
 
-  removeProduct(productId: number): Observable<Product> {
-    return this.httpClient.delete<Product>(this.productsUrl + "/" + productId, this.httpOptions);
-  }
+	removeProduct(productId: number): Observable<Product> {
+		return this.httpClient.delete<Product>(this.productsUrl + '/' + productId, this.httpOptions);
+	}
 }

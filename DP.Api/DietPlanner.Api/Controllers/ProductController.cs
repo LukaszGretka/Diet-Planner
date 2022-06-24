@@ -26,8 +26,7 @@ namespace DietPlanner.Api.Controllers
                 
         }
 
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetById(int id)
         {
             var product =  await _productService.GetById(id);
@@ -38,7 +37,19 @@ namespace DietPlanner.Api.Controllers
             }
 
             return product;
+        }
 
+        [HttpGet]
+        public async Task<ActionResult<Product>> GetByName([FromQuery] string productName)
+        {
+            var product = await _productService.GetByName(productName);
+
+            if (product is null)
+            {
+                return NotFound(new { Message = $"Product with name '{productName}' no found" });
+            }
+
+            return product;
         }
 
         [HttpPost]

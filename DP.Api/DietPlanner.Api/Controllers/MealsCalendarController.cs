@@ -19,8 +19,7 @@ namespace DietPlanner.Api.Controllers
             this._mealsCalendarService = mealsCalendarService;
         }
 
-        [HttpGet]
-        [Route("{date}")]
+        [HttpGet("{date}")]
         public async Task<ActionResult<DailyMealsDTO>> GetDailyMeals(DateTime date)
         {
             var result = await _mealsCalendarService.GetDailyMeals(date);
@@ -29,17 +28,17 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{date}")]
-        public async Task<ActionResult<DailyMealsDTO>> GetDailyMeals(DateTime date, [FromBody] Meal meal)
+        public async Task<ActionResult<DailyMealsDTO>> AddDailyMeal([FromBody] MealByDay mealByDate)
         {
-            var result = await _mealsCalendarService.AddMeal(date, meal);
+            var result = await _mealsCalendarService.AddMeal(mealByDate);
 
             if (result.Exception != null)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtAction(nameof(GetDailyMeals), result.Obj);
+            return Ok();
+            //return CreatedAtAction(nameof(GetDailyMeals), result.Obj);
         }
 
     }

@@ -6,6 +6,7 @@ using DietPlanner.Api.Models.Dto.MealsCalendar;
 using DietPlanner.Api.Models;
 using DietPlanner.Api.Models.MealsCalendar;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace DietPlanner.Api.Services.MealsCalendar
 {
@@ -22,6 +23,9 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         public async Task<DailyMealsDTO> GetDailyMeals(DateTime date)
         {
+            string formattedDate = date.ToShortDateString();
+            var dailyMeals = await _databaseContext.DailyMeals.Where(dailyMeal => dailyMeal.Date.Equals(formattedDate)).FirstOrDefaultAsync();
+
             //TODO: Mock for now. Must be replaced with database data.
             return await Task.FromResult(new DailyMealsDTO
             {
@@ -90,20 +94,27 @@ namespace DietPlanner.Api.Services.MealsCalendar
             });
         }
 
-        public async Task<DatabaseActionResult<Meal>> AddMeal(DateTime date, Meal meal)
+        public async Task<DatabaseActionResult<DailyMeals>> AddMeal(MealByDay mealByDay)
         {
+            var meal = new DailyMeals
+            {
+                Date = mealByDay.Date.ToShortDateString(),
+                MealType = new MealType { MealName = mealByDay.MealType.ToString() },
+                ProductsId = string.Join(",", mealByDay.Products.ToList().Select(product => product.Id.ToString()))
+            };
+
             try
             {
-                await _databaseContext.AddAsync(meal);
+                await _databaseContext.DailyMeals.AddAsync(meal);
                 await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<Meal>(false, exception: ex);
+                return new DatabaseActionResult<DailyMeals>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<Meal>(true, obj: meal);
+            return new DatabaseActionResult<DailyMeals>(true, obj: meal);
         }
     }
 }
