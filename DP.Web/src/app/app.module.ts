@@ -22,39 +22,37 @@ import { EditProductComponent } from './products/edit-product/edit-product.compo
 import { MeasurementTemplateComponent } from './body-profile/measurement-template/measurement-template.component';
 import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
 import { MealsCalendarComponent } from './meals-calendar/meals-calendar.component';
+import { MealCalendarEffects } from './meals-calendar/stores/meals-calendar.effects';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavBarComponent,
-    ProductTemplateComponent,
-    ProductsComponent,
-    AddProductComponent,
-    EditProductComponent,
-    BodyProfileComponent,
-    DashboardComponent,
-    AddMeasurementComponent,
-    MeasurementTemplateComponent,
-    EditMeasurementComponent,
-    MealsCalendarComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    NgbModule,
-    ReactiveFormsModule,
-    FormsModule,
-    StoreModule.forRoot({
-      generalState: GeneralReducer
-    }
-    ),
-    EffectsModule.forRoot([
-      GeneralEffects
-    ]),
-    StoreDevtoolsModule.instrument()
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+		NavBarComponent,
+		ProductTemplateComponent,
+		ProductsComponent,
+		AddProductComponent,
+		EditProductComponent,
+		BodyProfileComponent,
+		DashboardComponent,
+		AddMeasurementComponent,
+		MeasurementTemplateComponent,
+		EditMeasurementComponent,
+		MealsCalendarComponent,
+	],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		HttpClientModule,
+		NgbModule,
+		ReactiveFormsModule,
+		FormsModule,
+		StoreModule.forRoot({
+			generalState: GeneralReducer,
+		}),
+		EffectsModule.forRoot([GeneralEffects, MealCalendarEffects]),
+		StoreDevtoolsModule.instrument(),
+	],
+	providers: [],
+	bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

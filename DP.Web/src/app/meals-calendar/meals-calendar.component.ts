@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { Store } from '@ngrx/store';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -15,6 +16,8 @@ import { DailyMealsOverview } from './models/daily-meals-overview';
 import { DatePickerSelection } from './models/date-picker-selection';
 import { MealType } from './models/meal-type';
 import { MealsCalendarService } from './services/meals-calendar.service';
+import { MealCalendarState } from './stores/meals-calendar.state';
+import * as MealCalendarActions from './stores/meals-calendar.actions';
 
 @Component({
 	selector: 'app-meals-calendar',
@@ -38,14 +41,15 @@ export class MealsCalendarComponent implements OnInit, OnDestroy {
 	public lunchSearchModel: string;
 	public dinnerSearchModel: string;
 
-	public localBreakfastProducts: Product[];
+	public localBreakfastProducts: Product[] = [];
 
 	private dailyMealsOverviewSub: Subscription;
 	private productsNamesSub: Subscription;
 
 	constructor(
 		private mealsCalendarService: MealsCalendarService,
-		private productService: ProductService
+		private productService: ProductService,
+		private store: Store<MealCalendarState>
 	) {}
 
 	ngOnInit(): void {
@@ -59,11 +63,6 @@ export class MealsCalendarComponent implements OnInit, OnDestroy {
 		this.dailyMealsOverviewSub = this.mealsCalendarService
 			.getDailyMeals(dateNow)
 			.subscribe((dailyMealsOverview) => {
-				this.localBreakfastProducts = dailyMealsOverview.breakfast?.products;
-				// this.localLunchProducts = dailyMealsOverview.lunch?.products;
-				// this.localDinnerProducts = dailyMealsOverview.dinner?.products;
-				// this.localSupperProducts = dailyMealsOverview.supper?.products;
-
 				this.breakfastProducts$.next(dailyMealsOverview.breakfast?.products);
 				this.lunchProducts$.next(dailyMealsOverview.lunch?.products);
 				this.dinnerProducts$.next(dailyMealsOverview.dinner?.products);
@@ -91,6 +90,7 @@ export class MealsCalendarComponent implements OnInit, OnDestroy {
 			product.subscribe((product) => {
 				if (product) {
 					this.localBreakfastProducts.push(product);
+					this.breakfastProducts$.next(this.localBreakfastProducts);
 				} else {
 					// product no exists, want to add a product with this name?
 				}
@@ -99,11 +99,19 @@ export class MealsCalendarComponent implements OnInit, OnDestroy {
 	}
 
 	saveBreafastMeals(): void {
-		this.mealsCalendarService.addDialyMeal({
-			date: new Date(this.dateModel.year, this.dateModel.month, this.dateModel.day).toISOString(),
-			products: this.localBreakfastProducts,
-			mealType: MealType.breakfast,
-		});
+		this.store.dispatch(
+			MealCalendarActions.addMealRequest({
+				mealByDay: {
+					date: new Date(
+						this.dateModel.year,
+						this.dateModel.month,
+						this.dateModel.day
+					).toISOString(),
+					products: this.localBreakfastProducts,
+					mealType: MealType.breakfast,
+				},
+			})
+		);
 	}
 
 	addToLunch(): void {

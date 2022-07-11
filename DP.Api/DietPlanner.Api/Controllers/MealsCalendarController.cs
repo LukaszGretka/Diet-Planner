@@ -38,7 +38,6 @@ namespace DietPlanner.Api.Controllers
             }
 
             return Ok();
-            //return CreatedAtAction(nameof(GetDailyMeals), result.Obj);
         }
 
     }

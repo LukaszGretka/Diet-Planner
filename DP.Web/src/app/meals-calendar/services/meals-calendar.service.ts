@@ -25,6 +25,7 @@ export class MealsCalendarService {
 	}
 
 	addDialyMeal(mealByDay: MealByDay): Observable<MealByDay> {
+		console.log(JSON.stringify(mealByDay));
 		return this.httpClient.post<MealByDay>(this.mealsCalendarUrl, mealByDay, this.httpOptions);
 	}
 
