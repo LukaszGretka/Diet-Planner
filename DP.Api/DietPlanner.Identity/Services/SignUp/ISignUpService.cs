@@ -1,7 +1,7 @@
-﻿using DietPlanner.Api.Models;
-using System.Threading.Tasks;
+﻿using DietPlanner.Identity.Models;
+using DietPlanner.Shared.Models;
 
-namespace DietPlanner.Api.Services.SignUp
+namespace DietPlanner.Identity.Services.SignUp
 {
     public interface ISignUpService
     {

@@ -1,7 +1,6 @@
 using DietPlanner.Api.Database;
 using DietPlanner.Api.Services;
 using DietPlanner.Api.Services.MealsCalendar;
-using DietPlanner.Api.Services.SignUp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +38,6 @@ namespace DietPlanner.Api
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMealsCalendarService, MealsCalendarService>();
-            services.AddTransient<ISignUpService, SignUpService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -52,6 +50,8 @@ namespace DietPlanner.Api
             //app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors(CorsPolicyName);
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

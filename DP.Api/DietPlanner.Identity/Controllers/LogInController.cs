@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DietPlanner.Api.Controllers
+namespace DietPlanner.Identity.Controllers
 {
     [Route("api/[controller]")]
     public class LogInController : Controller

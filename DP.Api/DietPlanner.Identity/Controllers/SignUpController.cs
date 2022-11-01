@@ -1,10 +1,9 @@
-﻿using DietPlanner.Api.Models;
-using DietPlanner.Api.Services.SignUp;
-using Microsoft.AspNetCore.Http;
+﻿using DietPlanner.Identity.Models;
+using DietPlanner.Identity.Services.SignUp;
+using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Controllers
+namespace DietPlanner.Identity.Controllers
 {
     [Route("api/[controller]")]
     public class SignUpController : Controller
@@ -27,7 +26,8 @@ namespace DietPlanner.Api.Controllers
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
+            return Ok();
+            //return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
         }
     }
 }

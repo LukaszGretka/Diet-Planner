@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Api.Models
+﻿namespace DietPlanner.Identity.Models
 {
     public class SignUpRequest
     {

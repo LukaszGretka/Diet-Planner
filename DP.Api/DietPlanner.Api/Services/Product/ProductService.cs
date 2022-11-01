@@ -1,5 +1,6 @@
 ﻿using DietPlanner.Api.Database;
 using DietPlanner.Api.Models;
+using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
