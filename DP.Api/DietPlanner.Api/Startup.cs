@@ -34,7 +34,7 @@ namespace DietPlanner.Api
                 });
             });
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(Configuration.GetConnectionString("ProductsDatabase")));
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMealsCalendarService, MealsCalendarService>();

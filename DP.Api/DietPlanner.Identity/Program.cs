@@ -1,14 +1,18 @@
 using DietPlanner.Identity.Database;
+using DietPlanner.Identity.Services.SignUp;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+services.AddDefaultIdentity<IdentityUser>(options =>
     options.SignIn.RequireConfirmedAccount = true)
 .AddEntityFrameworkStores<IdentityDatabaseContext>();
 
-builder.Services.AddIdentityServer()
+services.AddIdentityServer()
     .AddApiAuthorization<IdentityUser, IdentityDatabaseContext>();
+
+services.AddTransient<ISignUpService, SignUpService>();
 
 var app = builder.Build();
 app.UseIdentityServer();
