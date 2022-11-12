@@ -22,11 +22,15 @@ import { EditProductComponent } from './products/edit-product/edit-product.compo
 import { MeasurementTemplateComponent } from './body-profile/measurement-template/measurement-template.component';
 import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
 import { MealsCalendarComponent } from './meals-calendar/meals-calendar.component';
+import { LogInComponent } from './log-in/log-in.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
+    LogInComponent,
+    SignUpComponent,
     ProductTemplateComponent,
     ProductsComponent,
     AddProductComponent,

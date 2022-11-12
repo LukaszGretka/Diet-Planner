@@ -8,10 +8,14 @@ import { MealsCalendarComponent } from './meals-calendar/meals-calendar.componen
 import { AddProductComponent } from './products/add-product/add-product.component';
 import { EditProductComponent } from './products/edit-product/edit-product.component';
 import { ProductsComponent } from './products/products.component';
+import { LogInComponent } from './log-in/log-in.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'log-in', component: LogInComponent },
+  { path: 'sign-up', component: SignUpComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'products/edit/:id', component: EditProductComponent },
   { path: 'products/add', component: AddProductComponent },

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace DietPlanner.Api.Models
+﻿namespace DietPlanner.Shared.Models
 {
     public class DatabaseActionResult<T> where T : class
     {
