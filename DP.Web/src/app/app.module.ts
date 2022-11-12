@@ -22,6 +22,7 @@ import { EditProductComponent } from './products/edit-product/edit-product.compo
 import { MeasurementTemplateComponent } from './body-profile/measurement-template/measurement-template.component';
 import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
 import { MealsCalendarComponent } from './meals-calendar/meals-calendar.component';
+import { MealCalendarEffects } from './meals-calendar/stores/meals-calendar.effects';
 import { LogInComponent } from './log-in/log-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 
@@ -54,11 +55,12 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     }
     ),
     EffectsModule.forRoot([
-      GeneralEffects
+        GeneralEffects,
+        MealCalendarEffects
     ]),
     StoreDevtoolsModule.instrument()
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -38,7 +38,18 @@
                 </td>
             </tbody>
           </table>
-          <button type="button" class="meal-add-button btn btn-primary" (click)="addToBreakfast()">Add</button>
+          <div class="row">
+            <div class="col">
+              <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="breakfastSearchModel"
+                [ngbTypeahead]="searchProducts" />
+            </div>
+            <div class="col">
+              <button type="button" class="meal-add-button btn btn-primary" (click)="addToBreakfast()">Add</button>
+            </div>
+            <div class="col meal-save-button">
+              <button type="button" class="btn btn-primary" (click)="saveBreafastMeals()">Save</button>
+            </div>
+          </div>
         </ng-template>
       </ngb-panel>
 
@@ -68,7 +79,15 @@
                 </td>
             </tbody>
           </table>
-          <button type="button" class="meal-add-button btn btn-primary" (click)="addToLunch()">Add</button>
+          <div class="row">
+            <div class="col">
+              <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="lunchSearchModel"
+                [ngbTypeahead]="searchProducts" />
+            </div>
+            <div class="col">
+              <button type="button" class="meal-add-button btn btn-primary" (click)="addToLunch()">Add</button>
+            </div>
+          </div>
         </ng-template>
       </ngb-panel>
 
@@ -98,7 +117,15 @@
                 </td>
             </tbody>
           </table>
-          <button type="button" class="meal-add-button btn btn-primary" (click)="addToDinner()">Add</button>
+          <div class="row">
+            <div class="col">
+              <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="dinnerSearchModel"
+                [ngbTypeahead]="searchProducts" />
+            </div>
+            <div class="col">
+              <button type="button" class="meal-add-button btn btn-primary" (click)="addToDinner()">Add</button>
+            </div>
+          </div>
         </ng-template>
       </ngb-panel>
 

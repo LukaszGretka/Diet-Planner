@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DietPlanner.Identity", "Die
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DietPlanner.Shared", "DietPlanner.Shared\DietPlanner.Shared.csproj", "{9464DBE2-250E-407F-86A8-7129ED1774E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DietPlanner.Api.UnitTests", "DietPlanner.Api.UnitTests\DietPlanner.Api.UnitTests.csproj", "{2F92D425-29E9-4989-A441-3DF8F60C2295}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9464DBE2-250E-407F-86A8-7129ED1774E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9464DBE2-250E-407F-86A8-7129ED1774E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9464DBE2-250E-407F-86A8-7129ED1774E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F92D425-29E9-4989-A441-3DF8F60C2295}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F92D425-29E9-4989-A441-3DF8F60C2295}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F92D425-29E9-4989-A441-3DF8F60C2295}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F92D425-29E9-4989-A441-3DF8F60C2295}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

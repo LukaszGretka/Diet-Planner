@@ -11,6 +11,8 @@ namespace DietPlanner.Api.Services
 
         Task<Product> GetById(int id);
 
+        Task<Product> GetByName(string name);
+
         Task<DatabaseActionResult<Product>> Create(Product product);
 
         Task<DatabaseActionResult<Product>> Update(int id, Product product);

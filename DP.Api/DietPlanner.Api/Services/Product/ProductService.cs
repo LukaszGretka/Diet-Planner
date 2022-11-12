@@ -4,6 +4,7 @@ using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services
@@ -66,6 +67,11 @@ namespace DietPlanner.Api.Services
         public async Task<Product> GetById(int id)
         {
             return await _databaseContext.Products.FindAsync(id);
+        }
+
+        public async Task<Product> GetByName(string name)
+        {
+            return await _databaseContext.Products.Where(product => product.Name.Equals(name)).FirstOrDefaultAsync();
         }
 
         public async Task<DatabaseActionResult<Product>> Update(int id, Product product)
