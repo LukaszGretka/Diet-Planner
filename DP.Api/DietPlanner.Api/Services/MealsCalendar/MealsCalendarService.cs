@@ -7,6 +7,7 @@ using DietPlanner.Api.Models;
 using DietPlanner.Api.Models.MealsCalendar;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using DietPlanner.Shared.Models;
 
 namespace DietPlanner.Api.Services.MealsCalendar
 {

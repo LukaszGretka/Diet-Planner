@@ -1,6 +1,7 @@
 ﻿using DietPlanner.Api.Models;
 using DietPlanner.Api.Models.Dto.MealsCalendar;
 using DietPlanner.Api.Models.MealsCalendar;
+using DietPlanner.Shared.Models;
 using System;
 using System.Threading.Tasks;
 
