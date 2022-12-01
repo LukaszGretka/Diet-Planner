@@ -7,14 +7,14 @@ namespace DietPlanner.Api.Services
 {
     public interface IMeasurementService
     {
-        Task<List<Measurement>> GetAll();
+        Task<List<UserMeasurement>> GetAll();
 
-        Task<Measurement> GetById(int id);
+        Task<UserMeasurement> GetById(int id);
 
-        Task<DatabaseActionResult<Measurement>> Create(Measurement product);
+        Task<DatabaseActionResult<UserMeasurement>> Create(UserMeasurement product);
 
-        Task<DatabaseActionResult<Measurement>> Update(int id, Measurement product);
+        Task<DatabaseActionResult<UserMeasurement>> Update(int id, UserMeasurement product);
 
-        Task<DatabaseActionResult<Measurement>> DeleteById(int id);
+        Task<DatabaseActionResult<UserMeasurement>> DeleteById(int id);
     }
 }

@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DietPlanner.Api.Models
 {
-    public class Measurement
+    public class UserMeasurement
     {
+        [Key]
         public int Id { get; set; }
 
         public string Date { get; set; }

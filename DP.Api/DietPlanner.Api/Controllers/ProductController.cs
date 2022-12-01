@@ -24,13 +24,12 @@ namespace DietPlanner.Api.Controllers
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _productService.GetAll();
-                
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetById(int id)
         {
-            var product =  await _productService.GetById(id);
+            var product = await _productService.GetById(id);
 
             if (product is null)
             {
@@ -43,11 +42,15 @@ namespace DietPlanner.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<Product>> GetByName([FromQuery] string productName)
         {
+            if (productName is null)
+            {
+                return BadRequest($"Missing parameter: '{nameof(productName)}'");
+            }
             var product = await _productService.GetByName(productName);
 
             if (product is null)
             {
-                return NotFound(new { Message = $"Product with name '{productName}' no found" });
+                return NotFound(new { Message = $"Product with name '{productName}' not found" });
             }
 
             return product;

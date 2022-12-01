@@ -9,8 +9,8 @@ namespace DietPlanner.Api.Services.MealsCalendar
 {
     public interface IMealsCalendarService
     {
-        Task<DailyMealsDTO> GetDailyMeals(DateTime date);
+        Task<DailyMealsDTO> GetMeals(DateTime date);
 
-        Task<DatabaseActionResult<DailyMeals>> AddMeal(MealByDay mealByDay);
+        Task<DatabaseActionResult<Meal>> AddMeal(MealByDay mealByDay);
     }
 }

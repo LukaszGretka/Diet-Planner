@@ -22,7 +22,7 @@ namespace DietPlanner.Api.Controllers
         [HttpGet("{date}")]
         public async Task<ActionResult<DailyMealsDTO>> GetDailyMeals(DateTime date)
         {
-            var result = await _mealsCalendarService.GetDailyMeals(date);
+            var result = await _mealsCalendarService.GetMeals(date);
 
             return Ok(result);
         }

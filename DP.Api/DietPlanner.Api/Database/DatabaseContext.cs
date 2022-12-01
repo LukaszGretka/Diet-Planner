@@ -15,26 +15,31 @@ namespace DietPlanner.Api.Database
                    .HasIndex(u => u.Id)
                    .IsUnique();
 
-            builder.Entity<Measurement>()
-                   .HasIndex(u => u.Id)
-                   .IsUnique();
-
-            builder.Entity<DailyMeals>()
+            builder.Entity<Meal>()
                    .HasIndex(u => u.Id)
                    .IsUnique();
 
             builder.Entity<MealType>()
                 .HasIndex(u => u.Id)
                 .IsUnique();
+
+            builder.Entity<MealProduct>()
+                .HasIndex(u => u.Id)
+                .IsUnique();
+
+            builder.Entity<UserMeasurement>()
+               .HasIndex(u => u.Id)
+               .IsUnique();
         }
 
         public DbSet<Product> Products { get; set; }
 
-        public DbSet<Measurement> Measurements { get; set;}
+        public DbSet<Meal> Meals { get; set; }
 
-        public DbSet<DailyMeals> DailyMeals { get; set; }
+        public DbSet<MealType> MealTypes { get; set; }
 
-        public DbSet<MealType> MealType { get; set; }
+        public DbSet<MealProduct> MealProducts { get; set; }
 
+        public DbSet<UserMeasurement> UserMeasurements { get; set; }
     }
 }

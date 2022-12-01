@@ -2,13 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import {
-	BehaviorSubject,
-	debounceTime,
-	distinctUntilChanged,
-	map,
-	Observable,
-	OperatorFunction,
-	Subscription,
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  OperatorFunction,
+  Subscription,
 } from 'rxjs';
 import { Product } from '../products/models/product';
 import { ProductService } from '../products/services/product.service';
@@ -20,124 +20,123 @@ import { MealCalendarState } from './stores/meals-calendar.state';
 import * as MealCalendarActions from './stores/meals-calendar.actions';
 
 @Component({
-	selector: 'app-meals-calendar',
-	templateUrl: './meals-calendar.component.html',
-	styleUrls: ['./meals-calendar.component.css'],
+  selector: 'app-meals-calendar',
+  templateUrl: './meals-calendar.component.html',
+  styleUrls: ['./meals-calendar.component.css'],
 })
 export class MealsCalendarComponent implements OnInit, OnDestroy {
-	public dailyMealsOverview$: Observable<DailyMealsOverview>;
-	public productsNames$: Observable<string[]> = this.productService
-		.getProducts()
-		.pipe(map((products) => products.map((product) => product.name)));
-	public currentProducts: string[];
+  public dailyMealsOverview$: Observable<DailyMealsOverview>;
+  public productsNames$: Observable<string[]> = this.productService
+    .getProducts()
+    .pipe(map((products) => products.map((product) => product.name)));
+  public currentProducts: string[];
 
-	public breakfastProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
-	public lunchProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
-	public dinnerProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
-	public supperProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
+  public breakfastProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
+  public lunchProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
+  public dinnerProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
+  public supperProducts$: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>(null);
 
-	public dateModel: DatePickerSelection;
-	public breakfastSearchModel: string;
-	public lunchSearchModel: string;
-	public dinnerSearchModel: string;
+  public dateModel: DatePickerSelection;
+  public breakfastSearchModel: string;
+  public lunchSearchModel: string;
+  public dinnerSearchModel: string;
 
-	public localBreakfastProducts: Product[] = [];
+  public localBreakfastProducts: Product[] = [];
 
-	private dailyMealsOverviewSub: Subscription;
-	private productsNamesSub: Subscription;
+  private dailyMealsOverviewSub: Subscription;
+  private productsNamesSub: Subscription;
 
-	constructor(
-		private mealsCalendarService: MealsCalendarService,
-		private productService: ProductService,
-		private store: Store<MealCalendarState>
-	) {}
+  constructor(
+    private mealsCalendarService: MealsCalendarService,
+    private productService: ProductService,
+    private store: Store<MealCalendarState>
+  ) { }
 
-	ngOnInit(): void {
-		const dateNow = new Date();
+  ngOnInit(): void {
+    const dateNow = new Date();
 
-		this.dateModel = {
-			day: dateNow.getDate(),
-			month: dateNow.getMonth() + 1, // getMonth method is off by 1. (0-11)
-			year: dateNow.getFullYear(),
-		};
-		this.dailyMealsOverviewSub = this.mealsCalendarService
-			.getDailyMeals(dateNow)
-			.subscribe((dailyMealsOverview) => {
-				this.breakfastProducts$.next(dailyMealsOverview.breakfast?.products);
-				this.lunchProducts$.next(dailyMealsOverview.lunch?.products);
-				this.dinnerProducts$.next(dailyMealsOverview.dinner?.products);
-				this.supperProducts$.next(dailyMealsOverview.supper?.products);
-			});
+    this.dateModel = {
+      day: dateNow.getDate(),
+      month: dateNow.getMonth() + 1, // getMonth method is off by 1. (0-11)
+      year: dateNow.getFullYear(),
+    };
 
-		this.productsNamesSub = this.productsNames$.subscribe((productNames) => {
-			this.currentProducts = productNames;
-		});
-	}
+    this.dailyMealsOverviewSub = this.mealsCalendarService
+      .getDailyMeals(dateNow)
+      .subscribe((dailyMealsOverview) => {
+        this.breakfastProducts$.next(dailyMealsOverview.breakfast?.products);
+        dailyMealsOverview.breakfast?.products.forEach(product => {
+          this.localBreakfastProducts.push(product);
+        })
 
-	ngOnDestroy(): void {
-		this.dailyMealsOverviewSub.unsubscribe();
-		this.productsNamesSub.unsubscribe();
-	}
+        this.lunchProducts$.next(dailyMealsOverview.lunch?.products);
+        this.dinnerProducts$.next(dailyMealsOverview.dinner?.products);
+        this.supperProducts$.next(dailyMealsOverview.supper?.products);
+      });
 
-	onDateSelection(ngbDate: NgbDate): void {
-		const convertedDate = new Date(ngbDate.year, ngbDate.month, ngbDate.day);
-		this.dailyMealsOverview$ = this.mealsCalendarService.getDailyMeals(convertedDate);
-	}
+    this.productsNamesSub = this.productsNames$.subscribe((productNames) => {
+      this.currentProducts = productNames;
+    });
+  }
 
-	addToBreakfast(): void {
-		if (this.breakfastSearchModel) {
-			const product = this.productService.getProductByName(this.breakfastSearchModel);
-			product.subscribe((product) => {
-				if (product) {
-					this.localBreakfastProducts.push(product);
-					this.breakfastProducts$.next(this.localBreakfastProducts);
-				} else {
-					// product no exists, want to add a product with this name?
-				}
-			});
-		}
-	}
+  ngOnDestroy(): void {
+    this.dailyMealsOverviewSub.unsubscribe();
+    this.productsNamesSub.unsubscribe();
+  }
 
-	saveBreafastMeals(): void {
-		this.store.dispatch(
-			MealCalendarActions.addMealRequest({
-				mealByDay: {
-					date: new Date(
-						this.dateModel.year,
-						this.dateModel.month,
-						this.dateModel.day
-					).toISOString(),
-					products: this.localBreakfastProducts,
-					mealType: MealType.breakfast,
-				},
-			})
-		);
-	}
+  onDateSelection(ngbDate: NgbDate): void {
+    const convertedDate = new Date(ngbDate.year, ngbDate.month, ngbDate.day);
+    this.dailyMealsOverview$ = this.mealsCalendarService.getDailyMeals(convertedDate);
+  }
 
-	addToLunch(): void {
-		if (this.lunchSearchModel) {
-			console.log('adding to lunch');
-		}
-	}
+  addBreakfastMeal(): void {
+    if (this.breakfastSearchModel) {
+      const product = this.productService.getProductByName(this.breakfastSearchModel);
+      product.subscribe((product) => {
+        if (product) {
+          this.localBreakfastProducts.push(product);
+          this.breakfastProducts$.next(this.localBreakfastProducts);
+        } else {
+          // product no exists, want to add a product with this name?
+        }
+      });
+    }
+  }
 
-	addToDinner(): void {
-		if (this.dinnerSearchModel) {
-			console.log('adding to dinner');
-		}
-	}
+  saveBreakfastMeals(): void {
+    this.store.dispatch(MealCalendarActions.addMealRequest({
+      mealByDay: {
+        date: new Date(),
+        products: this.localBreakfastProducts,
+        mealType: MealType.breakfast
+      }
+    }));
+  }
 
-	onRemoveButtonClick($event) {}
+  addToLunch(): void {
+    if (this.lunchSearchModel) {
+      console.log('adding to lunch');
+    }
+  }
 
-	searchProducts: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
-		text$.pipe(
-			debounceTime(200),
-			distinctUntilChanged(),
-			map((searchText) =>
-				searchText.length < 1
-					? []
-					: this.currentProducts
-							.filter((product) => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
-							.slice(0, 10)
-			)
-		);
+  addToDinner(): void {
+    if (this.dinnerSearchModel) {
+      console.log('adding to dinner');
+    }
+  }
+
+  onRemoveButtonClick($event) { }
+
+  searchProducts: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map((searchText) =>
+        searchText.length < 1
+          ? []
+          : this.currentProducts
+            .filter((product) => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+            .slice(0, 10)
+      )
+    );
 }

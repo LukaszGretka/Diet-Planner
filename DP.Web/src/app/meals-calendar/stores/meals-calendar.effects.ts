@@ -8,25 +8,25 @@ import * as GeneralActions from './../../stores/store.actions';
 
 @Injectable()
 export class MealCalendarEffects {
-	addMealEffect$ = createEffect(() =>
-		this.actions$.pipe(
-			ofType(MealCalendarActions.addMealRequest),
-			switchMap(({ payload }) => {
-				return this.mealsCalendarService.addDialyMeal(payload.mealByDay).pipe(
-					switchMap(() => {
-						return of(MealCalendarActions.addMealRequestCompleted());
-					}),
-					catchError((error) => {
-						return of(GeneralActions.setError({ message: error }));
-					})
-				);
-			})
-		)
-	);
+  addMealEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MealCalendarActions.addMealRequest),
+      switchMap(({ payload }) => {
+        return this.mealsCalendarService.addDialyMeal(payload.mealByDay).pipe(
+          switchMap(() => {
+            return of(MealCalendarActions.addMealRequestCompleted());
+          }),
+          catchError((error) => {
+            return of(GeneralActions.setError({ message: error }));
+          })
+        );
+      })
+    )
+  );
 
-	constructor(
-		private actions$: Actions,
-		private router: Router,
-		private mealsCalendarService: MealsCalendarService
-	) {}
+  constructor(
+    private actions$: Actions,
+    private router: Router,
+    private mealsCalendarService: MealsCalendarService
+  ) { }
 }
