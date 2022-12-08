@@ -1,6 +1,6 @@
 export enum MealType {
-  breakfast = 0,
-  lunch = 1,
-  dinner = 2,
-  supper = 3,
+  breakfast = 1,
+  lunch = 2,
+  dinner = 3,
+  supper = 4,
 }

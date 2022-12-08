@@ -5,17 +5,10 @@ namespace DietPlanner.Api.Models
 {
     public class MealProduct
     {
-        [Key]
         public int Id { get; set; }
 
-        [ForeignKey("Product")]
-        public int ProductId { get; set; }
+        public Product Product { get; set; }
 
-        public virtual Product Product { get; set; }
-
-        [ForeignKey("Meals")]
-        public int MealId { get; set; }
-
-        public virtual Meal Meals { get; set; }
+        public Meal Meal { get; set; }
     }
 }

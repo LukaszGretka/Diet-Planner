@@ -11,21 +11,20 @@ namespace DietPlanner.Api.Database
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Product>()
-                   .HasIndex(u => u.Id)
-                   .IsUnique();
-
             builder.Entity<Meal>()
-                   .HasIndex(u => u.Id)
-                   .IsUnique();
+                   .HasOne(m => m.MealType)
+                   .WithOne(m => m.Meal)
+                   .HasForeignKey<MealType>(m => m.Id);
 
             builder.Entity<MealType>()
-                .HasIndex(u => u.Id)
-                .IsUnique();
+                   .HasIndex(m => m.Id)
+                   .IsUnique();
+            
 
-            builder.Entity<MealProduct>()
-                .HasIndex(u => u.Id)
-                .IsUnique();
+            builder.Entity<Product>()
+                     .HasIndex(u => u.Id)
+                     .IsUnique();
+
 
             builder.Entity<UserMeasurement>()
                .HasIndex(u => u.Id)

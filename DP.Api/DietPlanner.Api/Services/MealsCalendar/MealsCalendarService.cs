@@ -1,6 +1,5 @@
 ﻿using DietPlanner.Api.Database;
 using DietPlanner.Api.Models;
-using DietPlanner.Api.Models.Dto.MealsCalendar;
 using DietPlanner.Api.Models.MealsCalendar;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -23,64 +22,63 @@ namespace DietPlanner.Api.Services.MealsCalendar
             _databaseContext = databaseContext;
         }
 
-        public async Task<DailyMealsDTO> GetMeals(DateTime date)
+        public async Task<List<MealDTO>> GetMeals(DateTime date)
         {
             string formattedDate = date.ToShortDateString();
 
-            var productsIds = await _databaseContext.Meals.Join(
-                _databaseContext.MealProducts,
-                meals => meals.Id,
-                mealProducts => mealProducts.MealId,
-                (meal, mealProduct) => new 
-                { 
-                    mealId = meal.Id,
-                    mealDate = meal.Date,
-                    productId = mealProduct.ProductId,
-                    mealType = meal.MealType
+            return await _databaseContext.Meals
+                .Join(
+                    _databaseContext.MealProducts,
+                    meals => meals.Id,
+                    mealProducts => mealProducts.Meal.Id,
+                    (meal, mealProduct) => new
+                    {
+                        mealDate = meal.Date,
+                        productId = mealProduct.Product.Id,
+                        mealTypeId = meal.MealTypeId
+                    })
+                .Join(
+                    _databaseContext.Products,
+                    joinResult => joinResult.productId,
+                    product => product.Id,
+                    (joinResult, product) => new
+                    {
+                        joinResult.mealDate,
+                        joinResult.mealTypeId,
+                        product,
+                    })
+                .Where(finalJoinResult => finalJoinResult.mealDate.Equals(formattedDate))
+                .GroupBy(x => x.mealTypeId, (mealTypeId, product) => new MealDTO
+                {
+                    Products = product.Select(x => x.product).ToList(),
+                    MealTypeId = (MealTypeEnum)mealTypeId
                 })
-                .Where(joinResult => joinResult.mealDate.Equals(formattedDate))
-                .Select(x => x.productId)
                 .ToListAsync();
-
-            var products = await _databaseContext.Products.Where(product =>
-                productsIds.Contains(product.Id)).ToListAsync();
-
-            return new DailyMealsDTO
-            {
-                Breakfast = new MealDTO
-                { 
-                    MealType = MealTypeEnum.Breakfast, 
-                    Products = new Product[] { }
-                }
-            };
         }
 
         public async Task<DatabaseActionResult<Meal>> AddMeal(MealByDay mealByDay)
         {
-            var products = mealByDay.Products.ToList();
+            var products = mealByDay.Products;
             var mealProducts = new List<MealProduct>();
-
-            foreach (var product in products)
-            {
-                mealProducts.Add(new MealProduct
-                {
-                    ProductId = product.Id
-                });
-            }
 
             var meal = new Meal
             {
                 Date = mealByDay.Date.ToShortDateString(),
-                MealType = new MealType 
-                { 
-                    Name = mealByDay.MealType.ToString() 
-                },
+                MealTypeId = (int)mealByDay.MealTypeId
             };
+
+            products.ForEach(product => mealProducts.Add(
+                new MealProduct
+                {
+                    Product = product,
+                    Meal = meal
+                })
+            );
 
             try
             {
+                _databaseContext.MealProducts.AttachRange(mealProducts);
                 await _databaseContext.Meals.AddAsync(meal);
-                await _databaseContext.MealProducts.AddRangeAsync(mealProducts);
                 await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)

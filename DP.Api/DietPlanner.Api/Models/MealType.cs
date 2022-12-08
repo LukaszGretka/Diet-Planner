@@ -5,9 +5,10 @@ namespace DietPlanner.Api.Models
 {
     public class MealType
     {
-        [Key]
-        public MealTypeEnum Id { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public Meal Meal { get; set; }
     }
 }

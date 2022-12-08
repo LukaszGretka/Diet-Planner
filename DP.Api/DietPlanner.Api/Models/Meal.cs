@@ -9,9 +9,8 @@ namespace DietPlanner.Api.Models
 
         public string Date { get; set; }
 
-        [ForeignKey("MealType")]
-        public MealTypeEnum MealTypeId { get; set; }
+        public MealType MealType { get; set; }
 
-        public virtual MealType MealType { get; set; }
+        public int MealTypeId { get; set; }
     }
 }
