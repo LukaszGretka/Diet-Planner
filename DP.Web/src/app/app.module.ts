@@ -25,6 +25,7 @@ import { MealsCalendarComponent } from './meals-calendar/meals-calendar.componen
 import { MealCalendarEffects } from './meals-calendar/stores/meals-calendar.effects';
 import { LogInComponent } from './log-in/log-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { MealCalendarReducer } from './meals-calendar/stores/meals-calendar.reducer';
 
 @NgModule({
   declarations: [
@@ -51,16 +52,18 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     ReactiveFormsModule,
     FormsModule,
     StoreModule.forRoot({
-      generalState: GeneralReducer
+      generalState: GeneralReducer,
+      mealCalendarState: MealCalendarReducer,
     }
     ),
     EffectsModule.forRoot([
-        GeneralEffects,
-        MealCalendarEffects
+      GeneralEffects,
+      MealCalendarEffects,
+
     ]),
     StoreDevtoolsModule.instrument()
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

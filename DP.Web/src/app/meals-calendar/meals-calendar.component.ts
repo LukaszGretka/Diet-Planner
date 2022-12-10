@@ -15,17 +15,21 @@ import { ProductService } from '../products/services/product.service';
 import { DailyMealsOverview } from './models/daily-meals-overview';
 import { DatePickerSelection } from './models/date-picker-selection';
 import { MealType } from './models/meal-type';
-import { MealsCalendarService } from './services/meals-calendar.service';
 import { MealCalendarState } from './stores/meals-calendar.state';
 import * as MealCalendarActions from './stores/meals-calendar.actions';
+import * as MealCalendarSelectors from './stores/meals-calendar.selectors';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Meal } from './models/meal';
 
+@UntilDestroy()
 @Component({
   selector: 'app-meals-calendar',
   templateUrl: './meals-calendar.component.html',
   styleUrls: ['./meals-calendar.component.css'],
 })
 export class MealsCalendarComponent implements OnInit, OnDestroy {
-  public dailyMealsOverview$: Observable<DailyMealsOverview>;
+
+  public dailyMealsOverview$ = this.store.select(MealCalendarSelectors.getDailyMealsOverview);
   public productsNames$: Observable<string[]> = this.productService
     .getProducts()
     .pipe(map((products) => products.map((product) => product.name)));
@@ -42,12 +46,14 @@ export class MealsCalendarComponent implements OnInit, OnDestroy {
   public dinnerSearchModel: string;
 
   public localBreakfastProducts: Product[] = [];
+  public localLunchProducts: Product[] = [];
+  public localDinnerProducts: Product[] = [];
+  public localSupperProducts: Product[] = [];
 
   private dailyMealsOverviewSub: Subscription;
   private productsNamesSub: Subscription;
 
   constructor(
-    private mealsCalendarService: MealsCalendarService,
     private productService: ProductService,
     private store: Store<MealCalendarState>
   ) { }
@@ -61,22 +67,52 @@ export class MealsCalendarComponent implements OnInit, OnDestroy {
       year: dateNow.getFullYear(),
     };
 
-    this.dailyMealsOverviewSub = this.mealsCalendarService
-      .getDailyMeals(dateNow)
-      .subscribe((dailyMealsOverview) => {
-        this.breakfastProducts$.next(dailyMealsOverview.breakfast?.products);
-        dailyMealsOverview.breakfast?.products.forEach(product => {
-          this.localBreakfastProducts.push(product);
-        })
+    this.store.dispatch(MealCalendarActions.getMealsRequest({ date: dateNow }));
 
-        this.lunchProducts$.next(dailyMealsOverview.lunch?.products);
-        this.dinnerProducts$.next(dailyMealsOverview.dinner?.products);
-        this.supperProducts$.next(dailyMealsOverview.supper?.products);
+    this.dailyMealsOverview$.pipe(
+      untilDestroyed(this))
+      .subscribe((dailyMealsOverview) => {
+        if (!dailyMealsOverview || dailyMealsOverview.length === 0) {
+          return;
+        }
+        const mealTypes = Object.keys(MealType).filter((mealType) => isNaN(Number(mealType)));
+        mealTypes.forEach((_, mealTypeId) => this.initializeMealsData(dailyMealsOverview, mealTypeId + 1)
+        )
       });
 
     this.productsNamesSub = this.productsNames$.subscribe((productNames) => {
       this.currentProducts = productNames;
     });
+  }
+
+  private initializeMealsData(meals: Meal[], mealType: MealType) {
+    const mealProducts = meals.filter(r => r.mealTypeId === mealType)[0]?.products;
+    switch (mealType) {
+      case MealType.breakfast: {
+        this.breakfastProducts$.next(mealProducts);
+        mealProducts?.forEach(product => {
+          this.localBreakfastProducts.push(product);
+        })
+      }
+      case MealType.lunch: {
+        this.lunchProducts$.next(mealProducts);
+        mealProducts?.forEach(product => {
+          this.localLunchProducts.push(product);
+        })
+      }
+      case MealType.dinner: {
+        this.dinnerProducts$.next(mealProducts);
+        mealProducts?.forEach(product => {
+          this.localDinnerProducts.push(product);
+        })
+      }
+      case MealType.supper: {
+        this.supperProducts$.next(mealProducts);
+        mealProducts?.forEach(product => {
+          this.localSupperProducts.push(product);
+        })
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -85,8 +121,8 @@ export class MealsCalendarComponent implements OnInit, OnDestroy {
   }
 
   onDateSelection(ngbDate: NgbDate): void {
-    const convertedDate = new Date(ngbDate.year, ngbDate.month, ngbDate.day);
-    this.dailyMealsOverview$ = this.mealsCalendarService.getDailyMeals(convertedDate);
+    const convertedDate = new Date(ngbDate.year + '-' + ngbDate.month + '-' + ngbDate.day);
+    this.store.dispatch(MealCalendarActions.getMealsRequest({ date: convertedDate }));
   }
 
   addBreakfastMeal(): void {
@@ -108,7 +144,7 @@ export class MealsCalendarComponent implements OnInit, OnDestroy {
       mealByDay: {
         date: new Date(),
         products: this.localBreakfastProducts,
-        mealType: MealType.breakfast
+        mealTypeId: MealType.breakfast
       }
     }));
   }

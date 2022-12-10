@@ -18,20 +18,19 @@ export class MealsCalendarService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getDailyMeals(selectedDate: Date): Observable<DailyMealsOverview> {
-    return this.httpClient.get<DailyMealsOverview>(
-      this.mealsCalendarUrl + '/' + selectedDate.toISOString()
+  getDailyMeals(selectedDate: Date): Observable<Meal[]> {
+    return this.httpClient.get<Meal[]>(
+      this.mealsCalendarUrl + '/' + selectedDate.toDateString()
     );
   }
 
   addDialyMeal(mealByDay: MealByDay): Observable<MealByDay> {
-    console.log(mealByDay.date);
     return this.httpClient.post<MealByDay>(this.mealsCalendarUrl, mealByDay, this.httpOptions);
   }
 
   removeDailyMeal(selectedDate: Date, meal: Meal) {
     return this.httpClient.delete<Meal>(
-      this.mealsCalendarUrl + `/${selectedDate.toISOString()}`,
+      this.mealsCalendarUrl + `/${selectedDate.toDateString()}`,
       this.httpOptions
     );
   }

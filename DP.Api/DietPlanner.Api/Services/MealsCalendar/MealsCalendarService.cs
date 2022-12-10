@@ -13,7 +13,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 {
     public class MealsCalendarService : IMealsCalendarService
     {
-        private readonly ILogger<MealsCalendarService> _logger;
+        private readonly ILogger<MealsCalendarService> _logger;     
         private readonly DatabaseContext _databaseContext;
 
         public MealsCalendarService(ILogger<MealsCalendarService> logger, DatabaseContext databaseContext)
