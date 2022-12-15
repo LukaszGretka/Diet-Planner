@@ -42,7 +42,7 @@ import { MealCalendarReducer } from './meals-calendar/stores/meals-calendar.redu
     AddMeasurementComponent,
     MeasurementTemplateComponent,
     EditMeasurementComponent,
-    MealsCalendarComponent,
+    MealsCalendarComponent
   ],
   imports: [
     BrowserModule,
