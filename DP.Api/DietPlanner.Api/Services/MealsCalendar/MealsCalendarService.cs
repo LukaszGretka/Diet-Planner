@@ -13,7 +13,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 {
     public class MealsCalendarService : IMealsCalendarService
     {
-        private readonly ILogger<MealsCalendarService> _logger;     
+        private readonly ILogger<MealsCalendarService> _logger;
         private readonly DatabaseContext _databaseContext;
 
         public MealsCalendarService(ILogger<MealsCalendarService> logger, DatabaseContext databaseContext)
@@ -56,29 +56,38 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 .ToListAsync();
         }
 
-        public async Task<DatabaseActionResult<Meal>> AddMeal(MealByDay mealByDay)
+        public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(MealByDay mealByDay)
         {
-            var products = mealByDay.Products;
-            var mealProducts = new List<MealProduct>();
+            var existingMeal = _databaseContext.Meals.AsNoTracking().SingleOrDefault(x =>
+                x.Date.Equals(mealByDay.Date.ToLocalTime().ToShortDateString())
+                    && x.MealTypeId == (int)mealByDay.MealTypeId);
 
-            var meal = new Meal
+            if (existingMeal is not null)
             {
-                Date = mealByDay.Date.ToShortDateString(),
+                return await UpdateMeal(existingMeal, mealByDay);
+            }
+
+            Meal newMeal = new()
+            {
+                Date = mealByDay.Date.ToLocalTime().ToShortDateString(),
                 MealTypeId = (int)mealByDay.MealTypeId
             };
+
+            var mealProducts = new List<MealProduct>();
+            var products = mealByDay.Products;
 
             products.ForEach(product => mealProducts.Add(
                 new MealProduct
                 {
                     Product = product,
-                    Meal = meal
+                    Meal = newMeal
                 })
             );
 
             try
             {
                 _databaseContext.MealProducts.AttachRange(mealProducts);
-                await _databaseContext.Meals.AddAsync(meal);
+                await _databaseContext.Meals.AddAsync(newMeal);
                 await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
@@ -87,7 +96,41 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 return new DatabaseActionResult<Meal>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<Meal>(true, obj: meal);
+            return new DatabaseActionResult<Meal>(true, obj: newMeal);
+        }
+
+        private async Task<DatabaseActionResult<Meal>> UpdateMeal(Meal existingMeal, MealByDay mealByDay)
+        {
+            var newMealProducts = new List<MealProduct>();
+            var products = mealByDay.Products;
+
+            products.ForEach(product => newMealProducts.Add(
+                new MealProduct
+                {
+                    Product = product,
+                    Meal = existingMeal
+                })
+            );
+
+            try
+            {
+                var currentProducts = await _databaseContext.MealProducts
+                    .Where(mp => mp.Meal.Id == existingMeal.Id).ToListAsync();
+
+                _databaseContext.MealProducts.RemoveRange(currentProducts);
+                _databaseContext.MealProducts.AttachRange(newMealProducts);
+                _databaseContext.Meals.Update(existingMeal);
+
+                await _databaseContext.SaveChangesAsync();
+
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Meal>(false, exception: ex);
+            }
+
+            return new DatabaseActionResult<Meal>(true, obj: existingMeal);
         }
     }
 }

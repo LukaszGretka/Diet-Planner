@@ -45,6 +45,8 @@ export class MealsCalendarComponent implements OnInit {
   public lunchSearchModel: string;
   public dinnerSearchModel: string;
 
+  private selectedDate: Date;
+
   constructor(
     private productService: ProductService,
     private store: Store<MealCalendarState>
@@ -59,7 +61,8 @@ export class MealsCalendarComponent implements OnInit {
       year: dateNow.getFullYear(),
     };
 
-    this.store.dispatch(MealCalendarActions.getMealsRequest({ date: dateNow }));
+    this.selectedDate = dateNow;
+    this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
 
     this.dailyMealsOverview$.pipe(untilDestroyed(this)).subscribe((meals) => {
       this.breakfastProducts$.next(meals.filter(m => m.mealTypeId === MealType.breakfast)[0]?.products ?? [])
@@ -76,8 +79,8 @@ export class MealsCalendarComponent implements OnInit {
   }
 
   onDateSelection(ngbDate: NgbDate): void {
-    const convertedDate = new Date(ngbDate.year + '-' + ngbDate.month + '-' + ngbDate.day);
-    this.store.dispatch(MealCalendarActions.getMealsRequest({ date: convertedDate }));
+    this.selectedDate = new Date(ngbDate.year + '-' + ngbDate.month + '-' + ngbDate.day);
+    this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
   }
 
   // Update local products list for particular collection given in parameter.
@@ -101,14 +104,15 @@ export class MealsCalendarComponent implements OnInit {
   public onRemoveProductButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): void {
     const productsBehaviorSubject = behaviorSubject as BehaviorSubject<Product[]>
     const products = productsBehaviorSubject.getValue();
-    products.splice(index, 1);
-    productsBehaviorSubject.next(products);
+    let productsLocal = [...products]
+    productsLocal.splice(index, 1);
+    productsBehaviorSubject.next(productsLocal);
   }
 
   public onMealSaveButtonClick(behaviorSubject: BehaviorSubject<any>, mealType: MealType) {
     this.store.dispatch(MealCalendarActions.addMealRequest({
       mealByDay: {
-        date: new Date(), // TODO: fix to utc
+        date: this.selectedDate,
         products: behaviorSubject.getValue(),
         mealTypeId: mealType
       }

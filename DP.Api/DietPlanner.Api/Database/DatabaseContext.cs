@@ -19,9 +19,13 @@ namespace DietPlanner.Api.Database
             builder.Entity<MealType>()
                    .HasIndex(m => m.Id)
                    .IsUnique();
-            
+
 
             builder.Entity<Product>()
+                     .HasIndex(u => u.Id)
+                     .IsUnique();
+
+            builder.Entity<MealProduct>()
                      .HasIndex(u => u.Id)
                      .IsUnique();
 

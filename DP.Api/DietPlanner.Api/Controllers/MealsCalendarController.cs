@@ -28,9 +28,9 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<DailyMealsDTO>> AddDailyMeal([FromBody] MealByDay mealByDate)
+        public async Task<ActionResult<DailyMealsDTO>> AddOrUpdateMeal([FromBody] MealByDay mealByDate)
         {
-            var result = await _mealsCalendarService.AddMeal(mealByDate);
+            var result = await _mealsCalendarService.AddOrUpdateMeal(mealByDate);
 
             if (result.Exception != null)
             {
@@ -39,6 +39,5 @@ namespace DietPlanner.Api.Controllers
 
             return Ok();
         }
-
     }
 }
