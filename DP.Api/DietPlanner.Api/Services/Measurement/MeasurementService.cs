@@ -18,17 +18,17 @@ namespace DietPlanner.Api.Services
             _logger = logger;
             _databaseContext = databaseContext;
         }
-        public async Task<List<Measurement>> GetAll()
+        public async Task<List<UserMeasurement>> GetAll()
         {
-            return await _databaseContext.Measurements.AsNoTracking().ToListAsync();
+            return await _databaseContext.UserMeasurements.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Measurement> GetById(int id)
+        public async Task<UserMeasurement> GetById(int id)
         {
-            return await _databaseContext.Measurements.FindAsync(id);
+            return await _databaseContext.UserMeasurements.FindAsync(id);
         }
 
-        public async Task<DatabaseActionResult<Measurement>> Create(Measurement measurement)
+        public async Task<DatabaseActionResult<UserMeasurement>> Create(UserMeasurement measurement)
         {
             measurement.Date = System.DateTime.Now.ToString();
 
@@ -40,42 +40,42 @@ namespace DietPlanner.Api.Services
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<Measurement>(false, exception: ex);
+                return new DatabaseActionResult<UserMeasurement>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<Measurement>(true, obj: measurement);
+            return new DatabaseActionResult<UserMeasurement>(true, obj: measurement);
         }
 
-        public async Task<DatabaseActionResult<Measurement>> DeleteById(int id)
+        public async Task<DatabaseActionResult<UserMeasurement>> DeleteById(int id)
         {
-            Measurement foundMeasurement = await _databaseContext.Measurements.FindAsync(id);
+            UserMeasurement foundMeasurement = await _databaseContext.UserMeasurements.FindAsync(id);
 
             if (foundMeasurement is null)
             {
-                return new DatabaseActionResult<Measurement>(false, "Measurement no found");
+                return new DatabaseActionResult<UserMeasurement>(false, "Measurement no found");
             }
 
             try
             {
-                _databaseContext.Measurements.Remove(foundMeasurement);
+                _databaseContext.UserMeasurements.Remove(foundMeasurement);
                 await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<Measurement>(false, exception: ex);
+                return new DatabaseActionResult<UserMeasurement>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<Measurement>(true);
+            return new DatabaseActionResult<UserMeasurement>(true);
         }
 
-        public async Task<DatabaseActionResult<Measurement>> Update(int id, Measurement measurement)
+        public async Task<DatabaseActionResult<UserMeasurement>> Update(int id, UserMeasurement measurement)
         {
-            Measurement existingMeasurment = await _databaseContext.Measurements.FindAsync(id);
+            UserMeasurement existingMeasurment = await _databaseContext.UserMeasurements.FindAsync(id);
 
             if (existingMeasurment is null)
             {
-                return new DatabaseActionResult<Measurement>(false, "Measurement no found");
+                return new DatabaseActionResult<UserMeasurement>(false, "Measurement no found");
             }
 
             existingMeasurment.Weight = measurement.Weight;
@@ -98,10 +98,10 @@ namespace DietPlanner.Api.Services
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<Measurement>(false, exception: ex);
+                return new DatabaseActionResult<UserMeasurement>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<Measurement>(true);
+            return new DatabaseActionResult<UserMeasurement>(true);
         }
     }
 }

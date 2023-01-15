@@ -3,6 +3,7 @@ using System;
 using DietPlanner.Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietPlanner.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20221201205303_adjust_database_structure")]
+    partial class adjust_database_structure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
@@ -31,6 +33,11 @@ namespace DietPlanner.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("MealTypeId");
+
                     b.ToTable("Meals");
                 });
 
@@ -40,10 +47,10 @@ namespace DietPlanner.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MealId")
+                    b.Property<int>("MealId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -165,35 +172,34 @@ namespace DietPlanner.Api.Migrations
                     b.ToTable("UserMeasurements");
                 });
 
-            modelBuilder.Entity("DietPlanner.Api.Models.MealProduct", b =>
+            modelBuilder.Entity("DietPlanner.Api.Models.Meal", b =>
                 {
-                    b.HasOne("DietPlanner.Api.Models.Meal", "Meal")
+                    b.HasOne("DietPlanner.Api.Models.MealType", "MealType")
                         .WithMany()
-                        .HasForeignKey("MealId");
-
-                    b.HasOne("DietPlanner.Api.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId");
-
-                    b.Navigation("Meal");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("DietPlanner.Api.Models.MealType", b =>
-                {
-                    b.HasOne("DietPlanner.Api.Models.Meal", "Meal")
-                        .WithOne("MealType")
-                        .HasForeignKey("DietPlanner.Api.Models.MealType", "Id")
+                        .HasForeignKey("MealTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Meal");
+                    b.Navigation("MealType");
                 });
 
-            modelBuilder.Entity("DietPlanner.Api.Models.Meal", b =>
+            modelBuilder.Entity("DietPlanner.Api.Models.MealProduct", b =>
                 {
-                    b.Navigation("MealType");
+                    b.HasOne("DietPlanner.Api.Models.Meal", "Meals")
+                        .WithMany()
+                        .HasForeignKey("MealId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DietPlanner.Api.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Meals");
+
+                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }

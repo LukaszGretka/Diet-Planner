@@ -48,6 +48,7 @@ namespace DietPlanner.Api
             }
 
             //app.UseHttpsRedirection();
+            app.UseHttpLogging();
             app.UseRouting();
             app.UseCors(CorsPolicyName);
 

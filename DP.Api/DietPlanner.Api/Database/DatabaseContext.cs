@@ -11,30 +11,38 @@ namespace DietPlanner.Api.Database
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Product>()
-                   .HasIndex(u => u.Id)
-                   .IsUnique();
-
-            builder.Entity<Measurement>()
-                   .HasIndex(u => u.Id)
-                   .IsUnique();
-
-            builder.Entity<DailyMeals>()
-                   .HasIndex(u => u.Id)
-                   .IsUnique();
+            builder.Entity<Meal>()
+                   .HasOne(m => m.MealType)
+                   .WithOne(m => m.Meal)
+                   .HasForeignKey<MealType>(m => m.Id);
 
             builder.Entity<MealType>()
-                .HasIndex(u => u.Id)
-                .IsUnique();
+                   .HasIndex(m => m.Id)
+                   .IsUnique();
+
+
+            builder.Entity<Product>()
+                     .HasIndex(u => u.Id)
+                     .IsUnique();
+
+            builder.Entity<MealProduct>()
+                     .HasIndex(u => u.Id)
+                     .IsUnique();
+
+
+            builder.Entity<UserMeasurement>()
+               .HasIndex(u => u.Id)
+               .IsUnique();
         }
 
         public DbSet<Product> Products { get; set; }
 
-        public DbSet<Measurement> Measurements { get; set;}
+        public DbSet<Meal> Meals { get; set; }
 
-        public DbSet<DailyMeals> DailyMeals { get; set; }
+        public DbSet<MealType> MealTypes { get; set; }
 
-        public DbSet<MealType> MealType { get; set; }
+        public DbSet<MealProduct> MealProducts { get; set; }
 
+        public DbSet<UserMeasurement> UserMeasurements { get; set; }
     }
 }

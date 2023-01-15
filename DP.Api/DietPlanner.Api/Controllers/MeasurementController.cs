@@ -19,15 +19,15 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Measurement>> GetAllAsync()
+        public async Task<IEnumerable<UserMeasurement>> GetAllAsync()
         {
             return await _measurementService.GetAll();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Measurement>> GetById(int id)
+        public async Task<ActionResult<UserMeasurement>> GetById(int id)
         {
-            Measurement measurement = await _measurementService.GetById(id);
+            UserMeasurement measurement = await _measurementService.GetById(id);
 
             if (measurement is null)
             {
@@ -39,14 +39,14 @@ namespace DietPlanner.Api.Controllers
 
         [HttpPost]
         [ActionName(nameof(PostAsync))]
-        public async Task<IActionResult> PostAsync([FromBody] Measurement measurement)
+        public async Task<IActionResult> PostAsync([FromBody] UserMeasurement measurement)
         {
             if (measurement == null)
             {
                 return BadRequest();
             }
 
-            DatabaseActionResult<Measurement> result = await _measurementService.Create(measurement);
+            DatabaseActionResult<UserMeasurement> result = await _measurementService.Create(measurement);
 
             if (result.Exception != null)
             {
@@ -57,14 +57,14 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Measurement measurement)
+        public async Task<IActionResult> Put(int id, [FromBody] UserMeasurement measurement)
         {
             if (id != measurement.Id)
             {
                 return BadRequest();
             }
 
-            DatabaseActionResult<Measurement> result = await _measurementService.Update(id, measurement);
+            DatabaseActionResult<UserMeasurement> result = await _measurementService.Update(id, measurement);
 
             if (result.Exception != null)
             {
@@ -82,7 +82,7 @@ namespace DietPlanner.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            DatabaseActionResult<Measurement> result = await _measurementService.DeleteById(id);
+            DatabaseActionResult<UserMeasurement> result = await _measurementService.DeleteById(id);
 
             if (result.Exception != null)
             {

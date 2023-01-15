@@ -24,6 +24,7 @@ namespace DietPlanner.Identity.Database
                 builder.UseSqlite(_configuration.GetConnectionString("IdentityDatabase"));
             }
 
+            builder.EnableSensitiveDataLogging();
             base.OnConfiguring(builder);
         }
 

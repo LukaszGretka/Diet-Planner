@@ -1,5 +1,7 @@
 ﻿using DietPlanner.Api.Models.Dto.MealsCalendar;
+using DietPlanner.Api.Models.MealsCalendar;
 using DietPlanner.Api.Services.MealsCalendar;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -17,13 +19,25 @@ namespace DietPlanner.Api.Controllers
             this._mealsCalendarService = mealsCalendarService;
         }
 
-        [HttpGet]
-        [Route("{date}")]
+        [HttpGet("{date}")]
         public async Task<ActionResult<DailyMealsDTO>> GetDailyMeals(DateTime date)
         {
-           var result = await _mealsCalendarService.GetDailyMeals(date);
+            var result = await _mealsCalendarService.GetMeals(date);
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<DailyMealsDTO>> AddOrUpdateMeal([FromBody] MealByDay mealByDate)
+        {
+            var result = await _mealsCalendarService.AddOrUpdateMeal(mealByDate);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok();
         }
     }
 }

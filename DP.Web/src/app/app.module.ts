@@ -22,8 +22,10 @@ import { EditProductComponent } from './products/edit-product/edit-product.compo
 import { MeasurementTemplateComponent } from './body-profile/measurement-template/measurement-template.component';
 import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
 import { MealsCalendarComponent } from './meals-calendar/meals-calendar.component';
+import { MealCalendarEffects } from './meals-calendar/stores/meals-calendar.effects';
 import { LogInComponent } from './log-in/log-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { MealCalendarReducer } from './meals-calendar/stores/meals-calendar.reducer';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     AddMeasurementComponent,
     MeasurementTemplateComponent,
     EditMeasurementComponent,
-    MealsCalendarComponent,
+    MealsCalendarComponent
   ],
   imports: [
     BrowserModule,
@@ -50,11 +52,14 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     ReactiveFormsModule,
     FormsModule,
     StoreModule.forRoot({
-      generalState: GeneralReducer
+      generalState: GeneralReducer,
+      mealCalendarState: MealCalendarReducer,
     }
     ),
     EffectsModule.forRoot([
-      GeneralEffects
+      GeneralEffects,
+      MealCalendarEffects,
+
     ]),
     StoreDevtoolsModule.instrument()
   ],

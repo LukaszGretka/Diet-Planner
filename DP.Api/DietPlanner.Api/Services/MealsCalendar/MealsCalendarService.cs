@@ -1,10 +1,13 @@
 ﻿using DietPlanner.Api.Database;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
-using DietPlanner.Api.Models.Dto.MealsCalendar;
 using DietPlanner.Api.Models;
 using DietPlanner.Api.Models.MealsCalendar;
+using DietPlanner.Shared.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services.MealsCalendar
 {
@@ -15,78 +18,119 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         public MealsCalendarService(ILogger<MealsCalendarService> logger, DatabaseContext databaseContext)
         {
-            this._logger = logger;
-            this._databaseContext = databaseContext;
+            _logger = logger;
+            _databaseContext = databaseContext;
         }
 
-        public async Task<DailyMealsDTO> GetDailyMeals(DateTime date)
+        public async Task<List<MealDTO>> GetMeals(DateTime date)
         {
-            //TODO: Mock for now. Must be replaced with database data.
-            return await Task.FromResult(new DailyMealsDTO
-            {
-                Breakfast = new SpecifiedMeal()
-                {
-                    Products = new Product[]
-                    {
-                        new Product()
-                        {
-                            Name = "Chleb",
-                            Calories = 300,
-                            Carbohydrates = 24.3f,
-                            Proteins = 2.4f,
-                            Fats = 3,
-                            Description = "Razowy",
-                            Id = 83,
-                            BarCode = 220111487771
-                        }
-                    }
-                },
-                Dinner = new SpecifiedMeal
-                {
-                    Products = new Product[]
-                    {
-                        new Product()
-                        {
-                            Name = "Filet z kurczaka",
-                            Calories = 200,
-                            Carbohydrates = 6.4f,
-                            Proteins = 14,
-                            Fats = 8,
-                            Description = "Marki Rzeźnik",
-                            Id = 4
-                        },
-                        new Product()
-                        {
-                            Name = "Ryż biały",
-                            BarCode = 2000211124551,
-                            Calories = 280,
-                            Carbohydrates = 41,
-                            Fats = 4.3f,
-                            Proteins = 8,
-                            Description = "Firmy Kupiec"
+            string formattedDate = date.ToShortDateString();
 
-                        }
-                    }
-                },
-                Lunch = new SpecifiedMeal()
-                {
-                    Products = new Product[]
+            return await _databaseContext.Meals
+                .Join(
+                    _databaseContext.MealProducts,
+                    meals => meals.Id,
+                    mealProducts => mealProducts.Meal.Id,
+                    (meal, mealProduct) => new
                     {
-                        new Product 
-                        { 
-                            Name = "Snickers", 
-                            Id = 66, 
-                            Calories = 421, 
-                            Carbohydrates = 18.1f,
-                            Proteins = 6.4f,
-                            Fats = 10.1f, 
-                            Description = "Batonik karmelowy z masą czekoladą i orzechami",
-                            BarCode = 5000159461122,
-                            
-                        }
-                    }
-                }
-            });
+                        mealDate = meal.Date,
+                        productId = mealProduct.Product.Id,
+                        mealTypeId = meal.MealTypeId
+                    })
+                .Join(
+                    _databaseContext.Products,
+                    joinResult => joinResult.productId,
+                    product => product.Id,
+                    (joinResult, product) => new
+                    {
+                        joinResult.mealDate,
+                        joinResult.mealTypeId,
+                        product,
+                    })
+                .Where(finalJoinResult => finalJoinResult.mealDate.Equals(formattedDate))
+                .GroupBy(x => x.mealTypeId, (mealTypeId, product) => new MealDTO
+                {
+                    Products = product.Select(x => x.product).ToList(),
+                    MealTypeId = (MealTypeEnum)mealTypeId
+                })
+                .ToListAsync();
+        }
+
+        public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(MealByDay mealByDay)
+        {
+            var existingMeal = _databaseContext.Meals.AsNoTracking().SingleOrDefault(x =>
+                x.Date.Equals(mealByDay.Date.ToLocalTime().ToShortDateString())
+                    && x.MealTypeId == (int)mealByDay.MealTypeId);
+
+            if (existingMeal is not null)
+            {
+                return await UpdateMeal(existingMeal, mealByDay);
+            }
+
+            Meal newMeal = new()
+            {
+                Date = mealByDay.Date.ToLocalTime().ToShortDateString(),
+                MealTypeId = (int)mealByDay.MealTypeId
+            };
+
+            List<MealProduct> newMealProducts = await AddProductsToMeal(newMeal, mealByDay);
+
+            try
+            {
+                _databaseContext.MealProducts.AttachRange(newMealProducts);
+                await _databaseContext.Meals.AddAsync(newMeal);
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Meal>(false, exception: ex);
+            }
+
+            return new DatabaseActionResult<Meal>(true, obj: newMeal);
+        }
+
+        private async Task<DatabaseActionResult<Meal>> UpdateMeal(Meal existingMeal, MealByDay mealByDay)
+        {
+            List<MealProduct> newMealProducts = await AddProductsToMeal(existingMeal, mealByDay);
+
+            try
+            {
+                var currentProducts = await _databaseContext.MealProducts
+                    .Where(mp => mp.Meal.Id == existingMeal.Id).ToListAsync();
+
+                _databaseContext.MealProducts.RemoveRange(currentProducts);
+                _databaseContext.MealProducts.AttachRange(newMealProducts);
+                _databaseContext.Meals.Update(existingMeal);
+
+                await _databaseContext.SaveChangesAsync();
+
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Meal>(false, exception: ex);
+            }
+
+            return new DatabaseActionResult<Meal>(true, obj: existingMeal);
+        }
+
+        private async Task<List<MealProduct>> AddProductsToMeal(Meal meal, MealByDay mealByDay)
+        {
+            var mealProducts = new List<MealProduct>();
+            var products = mealByDay.Products;
+
+            foreach (var product in products)
+            {
+                var existingProduct = await _databaseContext.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
+                mealProducts.Add(new MealProduct
+                {
+                    Product = existingProduct,
+                    Meal = meal
+                });
+            }
+
+            return mealProducts;
         }
     }
 }

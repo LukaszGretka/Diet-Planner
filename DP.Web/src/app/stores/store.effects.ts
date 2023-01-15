@@ -1,12 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, EMPTY, of, switchMap } from "rxjs";
-import { HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { MeasurementService } from "src/app/body-profile/services/measurement.service";
 import * as GeneralActions from './store.actions';
 import { ProductService } from "src/app/products/services/product.service";
-import { MealsCalendarService } from "../meals-calendar/services/meals-calendar.service";
 
 @Injectable()
 export class GeneralEffects {
