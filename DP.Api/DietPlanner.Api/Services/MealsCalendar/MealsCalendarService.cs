@@ -101,10 +101,17 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
                 _databaseContext.MealProducts.RemoveRange(currentProducts);
                 _databaseContext.MealProducts.AttachRange(newMealProducts);
-                _databaseContext.Meals.Update(existingMeal);
+
+                if (newMealProducts.Count > 0)
+                {
+                    _databaseContext.Meals.Update(existingMeal);
+                }
+                else
+                {
+                    _databaseContext.Meals.Remove(existingMeal);
+                }
 
                 await _databaseContext.SaveChangesAsync();
-
             }
             catch (DbUpdateException ex)
             {
