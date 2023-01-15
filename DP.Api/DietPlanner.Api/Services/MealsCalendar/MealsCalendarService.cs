@@ -73,20 +73,11 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 MealTypeId = (int)mealByDay.MealTypeId
             };
 
-            var mealProducts = new List<MealProduct>();
-            var products = mealByDay.Products;
-
-            products.ForEach(product => mealProducts.Add(
-                new MealProduct
-                {
-                    Product = product,
-                    Meal = newMeal
-                })
-            );
+            List<MealProduct> newMealProducts = await AddProductsToMeal(newMeal, mealByDay);
 
             try
             {
-                _databaseContext.MealProducts.AttachRange(mealProducts);
+                _databaseContext.MealProducts.AttachRange(newMealProducts);
                 await _databaseContext.Meals.AddAsync(newMeal);
                 await _databaseContext.SaveChangesAsync();
             }
@@ -101,16 +92,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         private async Task<DatabaseActionResult<Meal>> UpdateMeal(Meal existingMeal, MealByDay mealByDay)
         {
-            var newMealProducts = new List<MealProduct>();
-            var products = mealByDay.Products;
-
-            products.ForEach(product => newMealProducts.Add(
-                new MealProduct
-                {
-                    Product = product,
-                    Meal = existingMeal
-                })
-            );
+            List<MealProduct> newMealProducts = await AddProductsToMeal(existingMeal, mealByDay);
 
             try
             {
@@ -131,6 +113,24 @@ namespace DietPlanner.Api.Services.MealsCalendar
             }
 
             return new DatabaseActionResult<Meal>(true, obj: existingMeal);
+        }
+
+        private async Task<List<MealProduct>> AddProductsToMeal(Meal meal, MealByDay mealByDay)
+        {
+            var mealProducts = new List<MealProduct>();
+            var products = mealByDay.Products;
+
+            foreach (var product in products)
+            {
+                var existingProduct = await _databaseContext.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
+                mealProducts.Add(new MealProduct
+                {
+                    Product = existingProduct,
+                    Meal = meal
+                });
+            }
+
+            return mealProducts;
         }
     }
 }
