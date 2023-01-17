@@ -1,3 +1,7 @@
-<div class="container mt-4">
+<app-error-page
+  *ngIf="errorCode$ | async; else dashboardTemplate"
+  [httpsStatusError]="errorCode$ | async"></app-error-page>
 
-</div>
+<ng-template #dashboardTemplate>
+  <div class="container mt-4"></div>
+</ng-template>

@@ -1,6 +1,5 @@
-import { Meal } from "../models/meal";
+import {Meal} from '../models/meal';
 
 export interface MealCalendarState {
   dailyMealsOverview: Meal[];
-  error: string;
 }

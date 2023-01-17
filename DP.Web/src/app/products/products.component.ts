@@ -1,51 +1,50 @@
-import { DecimalPipe } from '@angular/common';
-import { Component, OnInit, PipeTransform } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { map, Observable, startWith } from 'rxjs';
-import { Product } from 'src/app/products/models/product';
-import { ProductService } from 'src/app/products/services/product.service';
-import { GeneralState } from '../stores/store.state';
+import {DecimalPipe} from '@angular/common';
+import {Component, OnInit, PipeTransform} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {filter, map, Observable, startWith} from 'rxjs';
+import {Product} from 'src/app/products/models/product';
+import {ProductService} from 'src/app/products/services/product.service';
+import {GeneralState} from '../stores/store.state';
 import * as GeneralActions from '../stores/store.actions';
-import { Router } from '@angular/router';
-import * as StoreSelector from '../stores/store.selectors'
-
+import {Router} from '@angular/router';
+import * as StoreSelector from '../stores/store.selectors';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
-  providers: [DecimalPipe]
+  providers: [DecimalPipe],
 })
 export class ProductsComponent implements OnInit {
-
   public filter = new FormControl('');
-  public products$: Observable<Product[]> = new Observable<Product[]>();
-  public error$ = this.store.select(StoreSelector.getError);
+  public filteredProducts$: Observable<Product[]>;
+
+  public products$ = this.store.select(StoreSelector.getProducts);
+  public errorCode$ = this.store.select(StoreSelector.getErrorCode);
   private productId: number;
 
-  constructor(private productService: ProductService, pipe: DecimalPipe, private store: Store<GeneralState>,
-    private router: Router) {
-    this.products$ = this.filter.valueChanges.pipe(
+  constructor(pipe: DecimalPipe, private store: Store<GeneralState>, private router: Router) {
+    this.filteredProducts$ = this.filter.valueChanges.pipe(
+      filter(x => x !== ''),
       startWith(''),
-      map(text => search(text, pipe))
+      map(text => search(text, pipe)),
     );
   }
-
   ngOnInit(): void {
-    this.products$ = this.productService.getProducts();
+    this.store.dispatch(GeneralActions.getProductsRequest());
   }
 
-  onEditButtonClick($event: Event): void {
-    this.router.navigate(['products/edit/' + ($event.target as HTMLInputElement).value]);
+  onEditButtonClick($event: any): void {
+    this.router.navigate(['products/edit/' + ($event.target.parentElement as HTMLInputElement).value]);
   }
 
-  onOpenConfirmationModal($event: Event) {
-    this.productId = Number(($event.target as HTMLInputElement).value);
+  onOpenConfirmationModal($event: any) {
+    this.productId = Number(($event.target.parentElement as HTMLInputElement).value);
   }
 
   removeConfirmationButtonClick(): void {
-    this.store.dispatch(GeneralActions.removeProductRequest({ productId: this.productId }));
+    this.store.dispatch(GeneralActions.removeProductRequest({productId: this.productId}));
   }
 }
 

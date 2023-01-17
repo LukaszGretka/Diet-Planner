@@ -1,3 +1,8 @@
+import {Measurement} from '../body-profile/models/measurement';
+import {Product} from '../products/models/product';
+
 export interface GeneralState {
-  error: string;
+  errorCode: number | null;
+  measurements: Measurement[];
+  products: Product[];
 }

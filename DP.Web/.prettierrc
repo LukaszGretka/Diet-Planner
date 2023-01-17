@@ -1,5 +1,25 @@
 {
-  "printWidth": 100,
+  "arrowParens": "avoid",
+  "bracketSpacing": false,
+  "endOfLine": "lf",
+  "htmlWhitespaceSensitivity": "css",
+  "jsxBracketSameLine": true,
+  "printWidth": 120,
+  "proseWrap": "preserve",
+  "requirePragma": false,
+  "semi": true,
   "singleQuote": true,
-  "useTabs": true
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "useTabs": false,
+  "bracketSameLine": true,
+  "vueIndentScriptAndStyle": true,
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 200
+      }
+    }
+  ]
 }

@@ -26,6 +26,7 @@ import { MealCalendarEffects } from './meals-calendar/stores/meals-calendar.effe
 import { LogInComponent } from './log-in/log-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { MealCalendarReducer } from './meals-calendar/stores/meals-calendar.reducer';
+import { ErrorPageComponent } from './shared/error-page/error-page.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { MealCalendarReducer } from './meals-calendar/stores/meals-calendar.redu
     AddMeasurementComponent,
     MeasurementTemplateComponent,
     EditMeasurementComponent,
-    MealsCalendarComponent
+    MealsCalendarComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,

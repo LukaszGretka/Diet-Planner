@@ -1,10 +1,10 @@
 <div class="container-sm m-4" style="max-width: 720px">
   <div class="alert alert-info" role="alert">Add your measurement</div>
   <form (ngSubmit)="measurementSubmit()">
-    <app-measurement-template [measurement]="measurement">
-    </app-measurement-template>
-
-    <div *ngIf="(addMeasurementError$ | async) !== ''" class="alert alert-danger d-flex align-items-center"
+    <app-measurement-template [measurement]="measurement"> </app-measurement-template>
+    <div
+      *ngIf="(errorCode$ | async)"
+      class="alert alert-danger d-flex align-items-center"
       role="alert">
       <div>An error occurred during processing request.</div>
     </div>
@@ -14,9 +14,7 @@
           <a class="btn btn-secondary" role="button" routerLink="/body-profile">Back</a>
         </div>
         <div class="col">
-          <button type="submit" class="btn btn-primary" style="float: right">
-            Add
-          </button>
+          <button type="submit" class="btn btn-primary" style="float: right">Add</button>
         </div>
       </div>
     </div>
