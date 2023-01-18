@@ -2,3 +2,19 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.delete-button-icon {
+  margin: 0;
+  padding: 0;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-size: large;
+}
+
+.edit-button-icon {
+  margin: 0;
+  padding: 0;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-size: large;
+}

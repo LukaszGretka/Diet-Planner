@@ -1,38 +1,35 @@
-import { Injectable } from '@angular/core';
-import { MealsCalendarService } from '../services/meals-calendar.service';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, exhaustMap, of, switchMap } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {MealsCalendarService} from '../services/meals-calendar.service';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {catchError, exhaustMap, of, switchMap} from 'rxjs';
 import * as MealCalendarActions from './meals-calendar.actions';
+import * as GeneralActions from './../../stores/store.actions';
 
 @Injectable()
 export class MealCalendarEffects {
-
   getMealsEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MealCalendarActions.getMealsRequest),
-      exhaustMap(({ payload }) => {
+      exhaustMap(({payload}) => {
         return this.mealsCalendarService.getDailyMeals(payload.date).pipe(
-          switchMap((result) => of(MealCalendarActions.getMealsRequestSuccess({ result }))),
-          catchError((error) => of(MealCalendarActions.getMealsRequestFailed({ error })))
-        )
-      })
-    )
-  )
+          switchMap(result => of(MealCalendarActions.getMealsRequestSuccess({result}))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+        );
+      }),
+    ),
+  );
 
   addMealEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MealCalendarActions.addMealRequest),
-      switchMap(({ payload }) => {
+      switchMap(({payload}) => {
         return this.mealsCalendarService.addDialyMeal(payload.mealByDay).pipe(
           switchMap(() => of(MealCalendarActions.addMealRequestSuccess())),
-          catchError((error) => of(MealCalendarActions.addMealRequestFailed({ error })))
+          catchError((error: number) => of(GeneralActions.setErrorCode({errorCode: error}))),
         );
-      })
-    )
+      }),
+    ),
   );
 
-  constructor(
-    private actions$: Actions,
-    private mealsCalendarService: MealsCalendarService
-  ) { }
+  constructor(private actions$: Actions, private mealsCalendarService: MealsCalendarService) {}
 }

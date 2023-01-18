@@ -11,7 +11,7 @@ import * as StoreSelector from '../../stores/store.selectors';
   styleUrls: ['./add-measurement.component.css'],
 })
 export class AddMeasurementComponent {
-  public addMeasurementError$ = this.store.select(StoreSelector.getError);
+  public errorCode$ = this.store.select(StoreSelector.getErrorCode);
   public measurement: Measurement = new Measurement();
 
   constructor(private store: Store<GeneralState>) { }

@@ -1,20 +1,27 @@
-<div class="container mt-4">
-  <h3>Log in into your account</h3>
-  <form (ngSubmit)="logInSubmit()">
-    <div class="mb-3 mt-4">
-      <label for="emailInput" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="emailInput">
-    </div>
-    <div class="mb-3">
-      <label for="passwordInput" class="form-label">Password</label>
-      <input type="password" id="passwordInput" class="form-control">
-    </div>
-    <button class="btn btn-primary" type="submit">Log in</button>
-  </form>
+<app-error-page
+  *ngIf="errorCode$ | async; else logInTemplate"
+  [httpsStatusError]="errorCode$ | async"></app-error-page>
 
-  <div class="mb-3 mt-5">
-    <div class="text-secondary mb-1">You don't have an account yet?
-      <a routerLink="/sign-up" class="redirection-link">Sign-up</a>
+<ng-template #logInTemplate>
+  <div class="container mt-4">
+    <h3>Log in into your account</h3>
+    <form (ngSubmit)="logInSubmit()">
+      <div class="mb-3 mt-4">
+        <label for="emailInput" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="emailInput" />
+      </div>
+      <div class="mb-3">
+        <label for="passwordInput" class="form-label">Password</label>
+        <input type="password" id="passwordInput" class="form-control" />
+      </div>
+      <button class="btn btn-primary" type="submit">Log in</button>
+    </form>
+
+    <div class="mb-3 mt-5">
+      <div class="text-secondary mb-1">
+        You don't have an account yet?
+        <a routerLink="/sign-up" class="redirection-link">Sign-up</a>
+      </div>
     </div>
   </div>
-</div>
+</ng-template>
