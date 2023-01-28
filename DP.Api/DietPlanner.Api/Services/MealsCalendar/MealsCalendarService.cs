@@ -69,7 +69,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             Meal newMeal = new()
             {
-                Date = mealByDay.Date.ToLocalTime().ToShortDateString(),
+                Date = mealByDay.Date.ToUniversalTime().ToString("yyyy-MM-dd"),
                 MealTypeId = (int)mealByDay.MealTypeId
             };
 
