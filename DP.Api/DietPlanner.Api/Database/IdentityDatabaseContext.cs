@@ -1,18 +1,16 @@
-﻿using Duende.IdentityServer.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace DietPlanner.Api.Database
 {
-    public class IdentityDatabaseContext : ApiAuthorizationDbContext<IdentityUser>
+    public class IdentityDatabaseContext : IdentityDbContext<IdentityUser>
     {
         private readonly IConfiguration _configuration;
 
-        public IdentityDatabaseContext(DbContextOptions options, 
-            IOptions<OperationalStoreOptions> operationalStoreOptions,
-            IConfiguration configuration) : base(options, operationalStoreOptions)
+        public IdentityDatabaseContext(DbContextOptions options,
+            IConfiguration configuration) : base(options)
         {
             _configuration = configuration;
         }

@@ -8,8 +8,8 @@ import { MealsCalendarComponent } from './meals-calendar/meals-calendar.componen
 import { AddProductComponent } from './products/add-product/add-product.component';
 import { EditProductComponent } from './products/edit-product/edit-product.component';
 import { ProductsComponent } from './products/products.component';
-import { LogInComponent } from './log-in/log-in.component';
-import { SignUpComponent } from './sign-up/sign-up.component';
+import { LogInComponent } from './account/log-in/log-in.component';
+import { SignUpComponent } from './account/sign-up/sign-up.component';
 import { ErrorPageComponent } from './shared/error-page/error-page.component';
 
 const routes: Routes = [

@@ -23,10 +23,11 @@ import { MeasurementTemplateComponent } from './body-profile/measurement-templat
 import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
 import { MealsCalendarComponent } from './meals-calendar/meals-calendar.component';
 import { MealCalendarEffects } from './meals-calendar/stores/meals-calendar.effects';
-import { LogInComponent } from './log-in/log-in.component';
-import { SignUpComponent } from './sign-up/sign-up.component';
+import { LogInComponent } from './account/log-in/log-in.component';
+import { SignUpComponent } from './account/sign-up/sign-up.component';
 import { MealCalendarReducer } from './meals-calendar/stores/meals-calendar.reducer';
 import { ErrorPageComponent } from './shared/error-page/error-page.component';
+import { AccountEffects } from './account/stores/account.effects';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,7 @@ import { ErrorPageComponent } from './shared/error-page/error-page.component';
     EffectsModule.forRoot([
       GeneralEffects,
       MealCalendarEffects,
-
+      AccountEffects
     ]),
     StoreDevtoolsModule.instrument()
   ],
