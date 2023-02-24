@@ -58,12 +58,6 @@ namespace DietPlanner.Api
                 options.Password.RequireUppercase = false;
             });
 
-            services.AddAuthentication();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options =>
-            {
-                options.ExpireTimeSpan = TimeSpan.FromHours(8);
-            });
             services.AddAuthorization();
 
             services.AddTransient<IProductService, ProductService>();

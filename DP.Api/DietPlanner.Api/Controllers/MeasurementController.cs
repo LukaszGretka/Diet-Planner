@@ -1,6 +1,7 @@
 ﻿using DietPlanner.Api.Models;
 using DietPlanner.Api.Services;
 using DietPlanner.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace DietPlanner.Api.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class MeasurementController : Controller
     {
         private readonly IMeasurementService _measurementService;

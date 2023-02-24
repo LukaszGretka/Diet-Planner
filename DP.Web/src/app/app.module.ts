@@ -28,6 +28,7 @@ import { SignUpComponent } from './account/sign-up/sign-up.component';
 import { MealCalendarReducer } from './meals-calendar/stores/meals-calendar.reducer';
 import { ErrorPageComponent } from './shared/error-page/error-page.component';
 import { AccountEffects } from './account/stores/account.effects';
+import { AccountReducer } from './account/stores/account.reducer';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { AccountEffects } from './account/stores/account.effects';
     StoreModule.forRoot({
       generalState: GeneralReducer,
       mealCalendarState: MealCalendarReducer,
+      accountState: AccountReducer
     }
     ),
     EffectsModule.forRoot([

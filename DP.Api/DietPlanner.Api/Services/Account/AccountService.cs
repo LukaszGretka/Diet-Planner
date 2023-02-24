@@ -28,7 +28,7 @@ namespace DietPlanner.Api.Services.Account
 
         public async Task<IdentityUser> GetUser(string email)
         {
-            IdentityUser user = await _userManager.FindByEmailAsync(email);
+            IdentityUser user = await _userManager.FindByNameAsync(email);
 
             if (user is null)
             {
@@ -39,32 +39,9 @@ namespace DietPlanner.Api.Services.Account
         }
 
         public async Task<SignInResult> LogIn(HttpContext httpContext, LogInRequest loginRequest)
-        {
-            var user = new IdentityUser(loginRequest.Email);
-
-
+        {   
             return await _signInManager.PasswordSignInAsync(loginRequest.Email,
                 loginRequest.Password, false, false);
-
-            //if (!result.Succeeded)
-            //{
-            //    return result;
-            //}
-
-            //var claims = new List<Claim>
-            //{
-            //    new Claim(ClaimTypes.Name, loginRequest.Email)
-            //};
-
-            //var claimsIdentity = new ClaimsIdentity(
-            //        claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-
-
-            //await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-            //    new ClaimsPrincipal(claimsIdentity));
-
-            //return SignInResult.Success;
         }
 
         public async Task Logout()
@@ -84,7 +61,10 @@ namespace DietPlanner.Api.Services.Account
                 return new DatabaseActionResult<IdentityUser>(false, "error during user creation");
             }
 
-            await _signInManager.SignInAsync(user, false);
+            if (!_userManager.Options.SignIn.RequireConfirmedAccount)
+            {
+                await _signInManager.SignInAsync(user, false);
+            }
 
             return new DatabaseActionResult<IdentityUser>(true, obj: user);
         }

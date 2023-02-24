@@ -19,6 +19,7 @@ namespace DietPlanner.Api.Controllers
             _accountService = accountService;
         }
 
+        [AllowAnonymous]
         [HttpPost("signup")]
         public async Task<IActionResult> SignUpAsync([FromBody] SignUpRequest signUpRequest)
         {
@@ -37,6 +38,14 @@ namespace DietPlanner.Api.Controllers
             return NoContent();
         }
 
+        [HttpGet("login")]
+        public async Task<IActionResult> LoginPageRedirect(string returnUrl)
+        {
+            return Redirect("http//localhost:4200/log-in");
+        }
+
+
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> LogInAsync([FromBody] LogInRequest loginRequest)
         {
@@ -52,7 +61,9 @@ namespace DietPlanner.Api.Controllers
                 return Unauthorized("invalid_credential");
             }
 
-            return Ok();
+            IdentityUser user = await _accountService.GetUser(loginRequest.Email);
+
+            return Ok(user);
         }
 
         [Authorize]
