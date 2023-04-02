@@ -4,37 +4,50 @@ import { Observable } from 'rxjs/internal/Observable';
 import { Measurement } from 'src/app/body-profile/models/measurement';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class MeasurementService {
+	private measurementUrl = 'http://localhost:5000/api/measurement';
 
-  private measurementUrl = 'http://localhost:5000/api/measurement';
+	httpOptions = {
+		withCredentials: true,
+		headers: new HttpHeaders({
+			'Content-Type': 'application/json',
+		}),
+	};
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  };
+	constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient: HttpClient) { }
+	getMeasurements(): Observable<Measurement[]> {
+		return this.httpClient.get<Measurement[]>(this.measurementUrl, { withCredentials: true });
+	}
 
-  getMeasurements(): Observable<Measurement[]> {
-    return this.httpClient.get<Measurement[]>(this.measurementUrl);
-  }
+	getById(id: number): Observable<Measurement> {
+		return this.httpClient.get<Measurement>(this.measurementUrl + '/' + id, {
+			withCredentials: true,
+		});
+	}
 
-  getById(id: number): Observable<Measurement> {
-    return this.httpClient.get<Measurement>(this.measurementUrl + '/' + id);
-  }
+	addMeasurement(measurementData: Measurement): Observable<Measurement> {
+		return this.httpClient.post<Measurement>(
+			this.measurementUrl,
+			measurementData,
+			this.httpOptions
+		);
+	}
 
-  addMeasurement(measurementData: Measurement): Observable<Measurement> {
-    return this.httpClient.post<Measurement>(this.measurementUrl, measurementData, this.httpOptions);
-  }
+	editMeasurement(measurementId: number, measurementData: Measurement): Observable<Measurement> {
+		return this.httpClient.put<Measurement>(
+			this.measurementUrl + '/' + measurementId,
+			measurementData,
+			this.httpOptions
+		);
+	}
 
-  editMeasurement(measurementId: number, measurementData: Measurement): Observable<Measurement> {
-    return this.httpClient.put<Measurement>(this.measurementUrl + '/' + measurementId, measurementData, this.httpOptions);
-  }
-
-  deleteMeasurement(measurementId: number): Observable<Measurement> {
-    return this.httpClient.delete<Measurement>(this.measurementUrl + "/" + measurementId, this.httpOptions);
-  }
+	deleteMeasurement(measurementId: number): Observable<Measurement> {
+		return this.httpClient.delete<Measurement>(
+			this.measurementUrl + '/' + measurementId,
+			this.httpOptions
+		);
+	}
 }

@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Controllers
@@ -38,13 +41,6 @@ namespace DietPlanner.Api.Controllers
             return NoContent();
         }
 
-        [HttpGet("login")]
-        public async Task<IActionResult> LoginPageRedirect(string returnUrl)
-        {
-            return Redirect("http//localhost:4200/log-in");
-        }
-
-
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> LogInAsync([FromBody] LogInRequest loginRequest)
@@ -67,24 +63,23 @@ namespace DietPlanner.Api.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> GetUser(string email)
+        public IActionResult GetUser()
         {
-            if (string.IsNullOrEmpty(email))
+            if (HttpContext.User is null)
             {
-                return BadRequest("invalid email provided");
+                return Unauthorized();
             }
 
-            IdentityUser user = await _accountService.GetUser(email);
+            var claims = HttpContext.User.Claims.ToList();
 
-            if (user is null)
+            return Ok(new
             {
-                return NotFound("user not found");
-            }
-
-            return Ok(user);
+                Username = claims.FirstOrDefault(claim => claim.Type.Equals(ClaimTypes.Name))?.Value
+            });
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _accountService.Logout();

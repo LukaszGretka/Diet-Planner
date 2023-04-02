@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Threading.Tasks;
 
 namespace DietPlanner.Api
 {
@@ -47,7 +48,10 @@ namespace DietPlanner.Api
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDatabaseContext>()
-                .AddSignInManager();
+                .AddSignInManager<SignInManager<IdentityUser>>();
+
+            // Override cookie options to work with SPA
+            this.ConfigureCookieRedirection(services);
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -84,6 +88,35 @@ namespace DietPlanner.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+        }
+
+        private void ConfigureCookieRedirection(IServiceCollection services)
+        {
+            services.ConfigureApplicationCookie(o =>
+            {
+                o.Events = new CookieAuthenticationEvents() 
+                {
+                    OnRedirectToLogin = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 401;
+                            ctx.Response.WriteAsJsonAsync(new { redirectUri = ctx.RedirectUri });
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToAccessDenied = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 403;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
         }
     }

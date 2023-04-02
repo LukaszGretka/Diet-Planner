@@ -11,6 +11,7 @@ namespace DietPlanner.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MeasurementController : Controller
     {
         private readonly IMeasurementService _measurementService;
