@@ -1,6 +1,6 @@
-import { createReducer, on } from '@ngrx/store';
+import {createReducer, on} from '@ngrx/store';
 import * as generalActions from './store.actions';
-import { GeneralState } from './store.state';
+import {GeneralState} from './store.state';
 
 export const initialState: GeneralState = {
   errorCode: null,
@@ -26,14 +26,6 @@ const reducerFactory = createReducer(
     ...state,
     measurements: action.payload.measurements,
   })),
-  on(generalActions.setError, (state, action) => ({
-    ...state,
-    error: action.payload.message,
-  })),
-  on(generalActions.clearError, state => ({
-    ...state,
-    error: '',
-  }))
 );
 
 export function GeneralReducer(

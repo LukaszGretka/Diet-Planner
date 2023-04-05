@@ -1,32 +1,24 @@
-import { Component, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { LogInRequest } from '../models/log-in-request';
+import {Component, OnDestroy} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {LogInRequest} from '../models/log-in-request';
 import * as AccountActions from '../stores/account.actions';
 import * as GeneralActions from '../../stores/store.actions';
 import * as AccountSelector from '../stores/account.selector';
 import * as GeneralSelector from './../../stores/store.selectors';
-import { GeneralState } from './../../stores/store.state';
-import { AccountState } from '../stores/account.state';
+import {GeneralState} from './../../stores/store.state';
+import {AccountState} from '../stores/account.state';
 
 @Component({
-	selector: 'app-log-in',
-	templateUrl: './log-in.component.html',
-	styleUrls: ['./log-in.component.css'],
+  selector: 'app-log-in',
+  templateUrl: './log-in.component.html',
+  styleUrls: ['./log-in.component.css'],
 })
-export class LogInComponent implements OnDestroy {
-	public error$ = this.generalStore.select(GeneralSelector.getError);
-	public user$ = this.accountStore.select(AccountSelector.getUser);
+export class LogInComponent {
+  public user$ = this.accountStore.select(AccountSelector.getUser);
 
-	constructor(
-		private generalStore: Store<GeneralState>,
-		private accountStore: Store<AccountState>
-	) {}
+  constructor(private accountStore: Store<AccountState>) {}
 
-	ngOnDestroy(): void {
-		this.generalStore.dispatch(GeneralActions.setError({ message: '' }));
-	}
-
-	public onLogInSubmit(logInRequest: LogInRequest): void {
-		this.accountStore.dispatch(AccountActions.logInRequest({ logInRequest }));
-	}
+  public onLogInSubmit(logInRequest: LogInRequest): void {
+    this.accountStore.dispatch(AccountActions.logInRequest({logInRequest}));
+  }
 }
