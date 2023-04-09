@@ -3,7 +3,7 @@ import * as accountActions from "./account.actions";
 import { AccountState } from "./account.state";
 
 export const initialState: AccountState = {
-  user: null
+  authenticatedUser: null
 };
 
 const reducerFactory = createReducer(
@@ -11,12 +11,12 @@ const reducerFactory = createReducer(
   on(accountActions.logInRequestSuccess,
     (state, action) => ({
       ...state,
-      user: action.payload.user,
+      authenticatedUser: action.payload.logInResult.user
     })),
   on(accountActions.signUpSuccess,
     (state, action) => ({
       ...state,
-      user: action.payload.user,
+      authenticatedUser: action.payload.user
     })),
 )
 

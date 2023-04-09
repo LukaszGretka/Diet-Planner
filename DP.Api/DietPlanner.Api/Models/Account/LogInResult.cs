@@ -1,18 +1,12 @@
-﻿using System;
-using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace DietPlanner.Api.Models.Account
 {
-    public class LogInResult : StatusCodeResult
+    public class LogInResult
     {
-        public LogInResult(HttpStatusCode statusCode) : base((int)statusCode)
-        {
-        }
+        public string Username { get; set; }
 
-        public bool IsSuccess { get; set; }
-
-        public Exception Exception { get; set; }
+        // Navigates user after successful sign-in. If not defined, navigates to dashboard
+        public string ReturnUrl { get; set; }
     }
 }

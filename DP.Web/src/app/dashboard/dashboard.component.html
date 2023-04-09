@@ -1,7 +1,6 @@
-<app-error-page
-  *ngIf="errorCode$ | async; else dashboardTemplate"
-  [httpsStatusError]="errorCode$ | async"></app-error-page>
+<app-error-page *ngIf="errorCode$ | async; else dashboardTemplate" [httpsStatusError]="errorCode$ | async">
+</app-error-page>
 
 <ng-template #dashboardTemplate>
-  <div class="container mt-4"></div>
+  <div class="container mt-4">Hello {{ (user$ | async)?.username }}</div>
 </ng-template>

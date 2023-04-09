@@ -4,9 +4,9 @@ using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -59,9 +59,14 @@ namespace DietPlanner.Api.Controllers
 
             IdentityUser user = await _accountService.GetUser(loginRequest.Email);
 
-            return Ok(user);
+            return Ok(new
+            {
+                User = new { username = user.UserName },
+                ReturnUrl = loginRequest.ReturnUrl ?? string.Empty 
+            });
         }
 
+        [HttpGet]
         [Authorize]
         public IActionResult GetUser()
         {
@@ -78,13 +83,13 @@ namespace DietPlanner.Api.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost("signout")]
         [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _accountService.Logout();
 
-            return Ok(); 
+            return Ok();
         }
     }
 }

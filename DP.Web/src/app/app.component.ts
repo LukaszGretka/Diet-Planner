@@ -1,4 +1,6 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
+import { AccountService } from './account/services/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,10 @@ import {Component} from '@angular/core';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'DietPlanner.Web';
+  constructor(private accountService: AccountService) {
+    if (accountService.isAuthenticated()) {
+      this.accountService.getUserClaims()
+        .subscribe(user => this.accountService.authenticatedUser$.next(user));
+    }
+  }
 }

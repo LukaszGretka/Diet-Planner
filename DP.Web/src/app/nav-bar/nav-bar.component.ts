@@ -12,7 +12,7 @@ export class NavBarComponent implements OnInit {
   public user$: Observable<User>;
 
   constructor(private accountService: AccountService) {
-    this.user$ = this.accountService.user$;
+    this.user$ = this.accountService.authenticatedUser$;
   }
 
   ngOnInit(): void {}
