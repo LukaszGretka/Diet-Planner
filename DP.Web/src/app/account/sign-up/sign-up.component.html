@@ -1,17 +1,17 @@
 <div class="container mt-4">
   <h3>Create your account</h3>
-  <form (ngSubmit)="signUpSubmit()">
+  <form #signUpUser="ngForm" (ngSubmit)="onSignUpSubmit(signUpUser.value)">
     <div class="mb-3 mt-4">
       <label for="usernameInput" class="form-label">Username</label>
-      <input class="form-control" id="username">
+      <input class="form-control" name="username" ngModel>
     </div>
     <div class="mb-3">
       <label for="emailInput" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="emailInput">
+      <input type="email" class="form-control" name="email" ngModel>
     </div>
     <div class="mb-3">
       <label for="passwordInput" class="form-label">Password</label>
-      <input type="password" id="passwordInput" class="form-control">
+      <input type="password" name="password" class="form-control" ngModel>
     </div>
     <button class="btn btn-primary" type="submit">Sign-up</button>
   </form>

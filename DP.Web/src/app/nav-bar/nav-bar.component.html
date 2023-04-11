@@ -7,20 +7,41 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" routerLink="/dashboard">Dashboard</a>
+          <a class="nav-link" aria-current="page" routerLink="/dashboard">
+            <i class="bi bi-house"></i>
+            Dashboard
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/meals-calendar">Meals calendar</a>
+          <a class="nav-link" routerLink="/meals-calendar">
+            <i class="bi bi-calendar-event"></i>
+            Meals calendar
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/products">Products database</a>
+          <a class="nav-link" routerLink="/products">
+            <i class="bi bi-database"></i>
+            Products
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/body-profile">Body profile</a>
+          <a class="nav-link" routerLink="/body-profile">
+            <i class="bi bi-person-vcard"></i>
+            Body profile
+          </a>
         </li>
       </ul>
-      <div class="navbar-dark navbar-nav">
-        <a class="nav-link" routerLink="/log-in">Sign-in</a>
+      <div *ngIf="!(user$ | async)" class="navbar-dark navbar-nav">
+        <a class="nav-link" routerLink="/log-in">
+          <i class="bi bi-person-up"></i>
+          Sign in
+        </a>
+      </div>
+      <div *ngIf="user$ | async" class="navbar-dark navbar-nav">
+        <a class="nav-link" routerLink="/sign-out">
+          <i class="bi bi-box-arrow-right"></i>
+          Sign out
+        </a>
       </div>
     </div>
   </div>

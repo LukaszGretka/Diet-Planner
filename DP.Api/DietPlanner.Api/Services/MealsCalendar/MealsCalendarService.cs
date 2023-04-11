@@ -1,4 +1,5 @@
 ﻿using DietPlanner.Api.Database;
+using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Models;
 using DietPlanner.Api.Models.MealsCalendar;
 using DietPlanner.Shared.Models;
@@ -24,7 +25,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         public async Task<List<MealDTO>> GetMeals(DateTime date)
         {
-            string formattedDate = date.ToShortDateString();
+            string formattedDate = date.Normalize();
 
             return await _databaseContext.Meals
                 .Join(
@@ -59,7 +60,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
         public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(MealByDay mealByDay)
         {
             var existingMeal = _databaseContext.Meals.AsNoTracking().SingleOrDefault(x =>
-                x.Date.Equals(mealByDay.Date.ToLocalTime().ToShortDateString())
+                x.Date.Equals(mealByDay.Date.Normalize())
                     && x.MealTypeId == (int)mealByDay.MealTypeId);
 
             if (existingMeal is not null)
@@ -69,7 +70,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             Meal newMeal = new()
             {
-                Date = mealByDay.Date.ToUniversalTime().ToString("yyyy-MM-dd"),
+                Date = mealByDay.Date.Normalize(),
                 MealTypeId = (int)mealByDay.MealTypeId
             };
 

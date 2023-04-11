@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DietPlanner.Identity.Migrations
+namespace DietPlanner.Api.Migrations
 {
     public partial class identity_init : Migration
     {

@@ -11,6 +11,7 @@ export class MealsCalendarService {
   private mealsCalendarUrl = 'http://localhost:5000/api/mealsCalendar';
 
   httpOptions = {
+    withCredentials: true,
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
     }),
@@ -20,12 +21,11 @@ export class MealsCalendarService {
 
   getDailyMeals(selectedDate: Date): Observable<Meal[]> {
     return this.httpClient.get<Meal[]>(
-      this.mealsCalendarUrl + '/' + selectedDate.toDateString()
+      this.mealsCalendarUrl + '/' + selectedDate.toDateString(), { withCredentials: true }
     );
   }
 
   addDialyMeal(mealByDay: MealByDay): Observable<MealByDay> {
-    console.log(mealByDay.date.toDateString())
     return this.httpClient.post<MealByDay>(this.mealsCalendarUrl, mealByDay, this.httpOptions);
   }
 

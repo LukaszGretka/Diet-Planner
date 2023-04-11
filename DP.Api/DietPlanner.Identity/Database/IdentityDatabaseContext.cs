@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace DietPlanner.Identity.Database
+namespace DietPlanner.Api.Database
 {
     public class IdentityDatabaseContext : ApiAuthorizationDbContext<IdentityUser>
     {

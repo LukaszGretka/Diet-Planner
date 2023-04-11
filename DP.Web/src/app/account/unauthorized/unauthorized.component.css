@@ -1,0 +1,25 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+}
+
+.image {
+    font-size: 8rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 1rem;
+}
+
+.error-title {
+    font-size: 3rem;
+    font-weight: 500;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.error-description {
+    font-size: 2rem;
+    display: flex;
+    justify-content: flex-start;
+}

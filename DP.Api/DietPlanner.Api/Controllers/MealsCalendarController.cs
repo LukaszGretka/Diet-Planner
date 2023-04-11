@@ -1,6 +1,7 @@
 ﻿using DietPlanner.Api.Models.Dto.MealsCalendar;
 using DietPlanner.Api.Models.MealsCalendar;
 using DietPlanner.Api.Services.MealsCalendar;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,6 +11,7 @@ namespace DietPlanner.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MealsCalendarController : ControllerBase
     {
         private readonly IMealsCalendarService _mealsCalendarService;
