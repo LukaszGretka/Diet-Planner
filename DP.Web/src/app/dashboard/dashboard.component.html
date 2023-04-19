@@ -2,5 +2,5 @@
 </app-error-page>
 
 <ng-template #dashboardTemplate>
-  <div class="container mt-4">Hello {{ (user$ | async)?.username }}</div>
+  <div class="container mt-4 lead text-secondary">Hello {{ (authenticatedUser$ | async)?.username }}</div>
 </ng-template>

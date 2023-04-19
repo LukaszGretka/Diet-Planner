@@ -1,38 +1,35 @@
-import { createAction, union } from "@ngrx/store";
-import { LogInRequest } from "../models/log-in-request";
-import { SignUpRequest } from "../models/sign-up-request";
-import { User } from "../models/user";
-import { LogInResult } from "../models/log-in-result";
+import {createAction, union} from '@ngrx/store';
+import {SignInRequest} from '../models/sign-in-request';
+import {SignUpRequest} from '../models/sign-up-request';
+import {User} from '../models/user';
+import {SignInResult} from '../models/sign-in-result';
 
+export const signInRequest = createAction('Sign-in request', prop<{signInRequest: SignInRequest}>());
+export const signInRequestSuccess = createAction('Sign-in request success', prop<{signInResult: SignInResult}>());
+export const signInRequestFailed = createAction('Sign-in request failed', prop<{error: string}>());
 
-export const logInRequest = createAction("Log-in request",
-  prop<{ logInRequest: LogInRequest }>());
-export const logInRequestSuccess = createAction("Log-in request success", prop<{ logInResult: LogInResult }>());
-export const logInRequestFailed = createAction("Log-in request failed", prop<{ error: string }>());
+export const signUpRequest = createAction('Sign-up request', prop<{signUpRequest: SignUpRequest}>());
+export const signUpSuccess = createAction('Sign-up request success', prop<{user: User}>());
+export const signUpRequestFailed = createAction('Sign-up request failed', prop<{error: string}>());
 
-export const signUpRequest = createAction("Sign-up request",
-  prop<{ signUpRequest: SignUpRequest }>());
-export const signUpSuccess = createAction("Sign-up request success", prop<{ user: User }>());
-export const signUpRequestFailed = createAction("Sign-up request failed", prop<{ error: string }>());
-
-export const signOutRequest = createAction("Sign out request");
-export const signOutRequestSuccess = createAction("Sign out request success");
-export const signOutRequestFailed = createAction("Sign out request failed", prop<{ error: string }>());
+export const signOutRequest = createAction('Sign out request');
+export const signOutRequestSuccess = createAction('Sign out request success');
+export const signOutRequestFailed = createAction('Sign out request failed', prop<{error: string}>());
 
 const actions = union({
-  logInRequest,
-  logInRequestSuccess,
-  logInRequestFailed,
+  signInRequest,
+  signInRequestSuccess,
+  signInRequestFailed,
   signUpRequest,
   signUpSuccess,
   signUpRequestFailed,
   signOutRequest,
   signOutRequestSuccess,
-  signOutRequestFailed
+  signOutRequestFailed,
 });
 
 export type AccountActions = typeof actions;
 
 export function prop<T>() {
-  return (payload: T) => ({ payload });
+  return (payload: T) => ({payload});
 }

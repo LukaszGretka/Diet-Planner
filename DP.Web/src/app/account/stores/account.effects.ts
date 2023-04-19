@@ -1,46 +1,63 @@
-import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, exhaustMap, of, switchMap, tap } from "rxjs";
-import { AccountService } from "../services/account.service";
-import * as AccountActions from "./account.actions";
-import { Router } from "@angular/router";
+import {Injectable} from '@angular/core';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {EMPTY, catchError, exhaustMap, of, switchMap, tap} from 'rxjs';
+import {AccountService} from '../services/account.service';
+import * as AccountActions from './account.actions';
+import {Router} from '@angular/router';
+import {NotificationService} from 'src/app/shared/services/notification.service';
 
 @Injectable()
 export class AccountEffects {
-  logInRequestEffect$ = createEffect(() =>
+  signInRequestEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(AccountActions.logInRequest),
-      exhaustMap(({ payload }) => {
-        return this.accountService.performLogIn(payload.logInRequest).pipe(
-          switchMap((logInResult) => of(AccountActions.logInRequestSuccess({ logInResult }))),
-          catchError((error) => of(AccountActions.logInRequestFailed({ error })))
-        )
-      })
-    )
-  )
+      ofType(AccountActions.signInRequest),
+      exhaustMap(({payload}) => {
+        return this.accountService.performSignIn(payload.signInRequest).pipe(
+          switchMap(signInResult => of(AccountActions.signInRequestSuccess({signInResult}))),
+          catchError(error => of(AccountActions.signInRequestFailed({error}))),
+        );
+      }),
+    ),
+  );
+
+  signInRequestSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.signInRequestSuccess),
+        tap(action => {
+          this.accountService.authenticatedUser$.next(action.payload.signInResult.user);
+          this.notificationService.showSuccessToast(
+            'Successfully signed in.',
+            `Welcome ${action.payload.signInResult.user.username}!`,
+          );
+          this.router.navigate([action.payload.signInResult.returnUrl]);
+        }),
+      ),
+    {dispatch: false},
+  );
+
+  signInRequestFailedEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.signInRequestFailed),
+        tap(() => {
+          this.notificationService.showErrorToast('Sign in error.', 'Invalid credentials.');
+        }),
+      ),
+    {dispatch: false},
+  );
 
   signUpRequestEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AccountActions.signUpRequest),
-      exhaustMap(({ payload }) => {
+      exhaustMap(({payload}) => {
         return this.accountService.performSignUp(payload.signUpRequest).pipe(
-          switchMap((user) => of(AccountActions.signUpSuccess({ user }))),
-          catchError((error) => of(AccountActions.signUpRequestFailed({ error })))
-        )
-      })
-    )
-  )
-
-  logInRequestSuccessEffect$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AccountActions.logInRequestSuccess),
-      tap((action) => {
-        this.accountService.authenticatedUser$.next(action.payload.logInResult.user);
-        this.router.navigate([action.payload.logInResult.returnUrl])
-      })
+          switchMap(user => of(AccountActions.signUpSuccess({user}))),
+          catchError(error => of(AccountActions.signUpRequestFailed({error}))),
+        );
+      }),
     ),
-    { dispatch: false }
-  )
+  );
 
   signoutRequestEffect$ = createEffect(() =>
     this.actions$.pipe(
@@ -48,22 +65,25 @@ export class AccountEffects {
       exhaustMap(() => {
         return this.accountService.performSignOut().pipe(
           switchMap(() => of(AccountActions.signOutRequestSuccess())),
-          catchError((error) => of(AccountActions.signOutRequestFailed({ error })))
-        )
-      })
-    ));
-
-  signoutRequestSuccessEffect$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AccountActions.signOutRequestSuccess),
-      tap(() => this.router.navigate(['/log-in'])),
+          catchError(error => of(AccountActions.signOutRequestFailed({error}))),
+        );
+      }),
     ),
-    { dispatch: false })
-    ;
+  );
+
+  signoutRequestSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.signOutRequestSuccess),
+        tap(() => this.router.navigate(['/sign-in'])),
+      ),
+    {dispatch: false},
+  );
 
   constructor(
     private actions$: Actions,
     private accountService: AccountService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private notificationService: NotificationService,
+  ) {}
 }

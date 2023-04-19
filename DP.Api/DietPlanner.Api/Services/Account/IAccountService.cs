@@ -12,7 +12,7 @@ namespace DietPlanner.Api.Services.Account
 
         public Task<DatabaseActionResult<IdentityUser>> SignUp(SignUpRequest signUpRequestData);
 
-        public Task<SignInResult> LogIn(HttpContext httpContext, LogInRequest loginRequest);
+        public Task<SignInResult> SignIn(HttpContext httpContext, SignInRequest loginRequest);
 
         public Task Logout();
     }

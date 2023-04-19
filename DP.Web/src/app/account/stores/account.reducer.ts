@@ -8,10 +8,10 @@ export const initialState: AccountState = {
 
 const reducerFactory = createReducer(
   initialState,
-  on(accountActions.logInRequestSuccess,
+  on(accountActions.signInRequestSuccess,
     (state, action) => ({
       ...state,
-      authenticatedUser: action.payload.logInResult.user
+      authenticatedUser: action.payload.signInResult.user
     })),
   on(accountActions.signUpSuccess,
     (state, action) => ({
