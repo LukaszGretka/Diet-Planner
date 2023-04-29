@@ -1,6 +1,6 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, map} from 'rxjs';
+import {BehaviorSubject, Observable, catchError, map, of} from 'rxjs';
 import {SignInRequest} from '../models/sign-in-request';
 import {SignInResult} from '../models/sign-in-result';
 import {SignUpRequest} from '../models/sign-up-request';
@@ -39,11 +39,25 @@ export class AccountService {
     return this.httpClient.post<any>(this.baseUrl + '/signout', null, this.httpOptions);
   }
 
+  public setUser(user: User) {
+    this.authenticatedUser$.next(user);
+  }
+
+  public getUser(): Observable<User> {
+    return this.authenticatedUser$.asObservable();
+  }
+
   public isAuthenticated(): Observable<boolean> {
-    return this.authenticatedUser$.pipe(
-      map(authenticatedUser => {
-        return authenticatedUser !== null;
+    if (this.authenticatedUser$.getValue()) {
+      return of(true);
+    }
+
+    return this.getUserClaims().pipe(
+      map(user => {
+        this.setUser(user);
+        return user !== null;
       }),
+      catchError(() => of(false)),
     );
   }
 }

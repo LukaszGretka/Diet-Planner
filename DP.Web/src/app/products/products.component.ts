@@ -10,6 +10,7 @@ import {Router} from '@angular/router';
 import * as StoreSelector from '../stores/store.selectors';
 import {AccountState} from '../account/stores/account.state';
 import * as AccountSelector from '../account/stores/account.selector';
+import {AccountService} from '../account/services/account.service';
 
 @Component({
   selector: 'app-products',
@@ -23,7 +24,7 @@ export class ProductsComponent implements OnInit {
 
   public products$ = this.store.select(StoreSelector.getProducts);
   public errorCode$ = this.store.select(StoreSelector.getErrorCode);
-  public authenticatedUser$ = this.accountStore.select(AccountSelector.getAuthenticatedUser);
+  public authenticatedUser$ = this.accountService.getUser();
   private productId: number;
 
   constructor(
@@ -31,6 +32,7 @@ export class ProductsComponent implements OnInit {
     private store: Store<GeneralState>,
     private router: Router,
     private accountStore: Store<AccountState>,
+    private accountService: AccountService,
   ) {
     this.filteredProducts$ = this.filter.valueChanges.pipe(
       filter(x => x !== ''),

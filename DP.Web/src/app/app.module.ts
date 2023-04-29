@@ -27,7 +27,7 @@ import {SignUpComponent} from './account/sign-up/sign-up.component';
 import {MealCalendarReducer} from './meals-calendar/stores/meals-calendar.reducer';
 import {ErrorPageComponent} from './shared/error-page/error-page.component';
 import {AccountEffects} from './account/stores/account.effects';
-import {AccountReducer} from './account/stores/account.reducer';
+//import {AccountReducer} from './account/stores/account.reducer';
 import {AccountService} from './account/services/account.service';
 import {UnauthorizedComponent} from './account/unauthorized/unauthorized.component';
 import {AuthGuardService} from './auth/auth-guard.service';
@@ -63,7 +63,7 @@ import {ToasterComponent} from './shared/toaster/toaster.component';
     StoreModule.forRoot({
       generalState: GeneralReducer,
       mealCalendarState: MealCalendarReducer,
-      accountState: AccountReducer,
+      //accountState: AccountReducer,
     }),
     EffectsModule.forRoot([GeneralEffects, MealCalendarEffects, AccountEffects]),
     StoreDevtoolsModule.instrument(),

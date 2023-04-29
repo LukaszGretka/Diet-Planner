@@ -1,27 +1,14 @@
-import { createReducer, on } from "@ngrx/store";
-import * as accountActions from "./account.actions";
-import { AccountState } from "./account.state";
+import {createReducer} from '@ngrx/store';
+import * as accountActions from './account.actions';
+import {AccountState} from './account.state';
 
-export const initialState: AccountState = {
-  authenticatedUser: null
-};
+export const initialState: AccountState = {};
 
-const reducerFactory = createReducer(
-  initialState,
-  on(accountActions.signInRequestSuccess,
-    (state, action) => ({
-      ...state,
-      authenticatedUser: action.payload.signInResult.user
-    })),
-  on(accountActions.signUpSuccess,
-    (state, action) => ({
-      ...state,
-      authenticatedUser: action.payload.user
-    })),
-)
+const reducerFactory = createReducer(initialState);
 
 export function AccountReducer(
   state: AccountState = initialState,
-  action: accountActions.AccountActions): AccountState {
+  action: accountActions.AccountActions,
+): AccountState {
   return reducerFactory(state, action);
 }

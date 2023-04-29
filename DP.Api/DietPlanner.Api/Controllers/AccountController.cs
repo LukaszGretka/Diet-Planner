@@ -37,7 +37,10 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest("signup_error");
             }
 
-            return NoContent();
+            return Ok(new
+            {
+                User = new { username = result.Obj.UserName },
+            });
         }
 
         [AllowAnonymous]
@@ -61,7 +64,7 @@ namespace DietPlanner.Api.Controllers
             return Ok(new
             {
                 User = new { username = user.UserName },
-                ReturnUrl = loginRequest.ReturnUrl ?? string.Empty
+                ReturnUrl = loginRequest.ReturnUrl
             });
         }
 

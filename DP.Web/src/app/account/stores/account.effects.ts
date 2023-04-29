@@ -8,6 +8,21 @@ import {NotificationService} from 'src/app/shared/services/notification.service'
 
 @Injectable()
 export class AccountEffects {
+  getUserEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AccountActions.getUserRequest),
+      exhaustMap(() => {
+        return this.accountService.getUserClaims().pipe(
+          switchMap(user => {
+            this.accountService.setUser(user);
+            return of(AccountActions.getUserRequestSuccess({user}));
+          }),
+          catchError(error => of(AccountActions.getUserRequestFailed({error}))),
+        );
+      }),
+    ),
+  );
+
   signInRequestEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AccountActions.signInRequest),
@@ -25,12 +40,12 @@ export class AccountEffects {
       this.actions$.pipe(
         ofType(AccountActions.signInRequestSuccess),
         tap(action => {
-          this.accountService.authenticatedUser$.next(action.payload.signInResult.user);
           this.notificationService.showSuccessToast(
             'Successfully signed in.',
             `Welcome ${action.payload.signInResult.user.username}!`,
           );
-          this.router.navigate([action.payload.signInResult.returnUrl]);
+          this.accountService.authenticatedUser$.next(action.payload.signInResult.user);
+          this.router.navigate([action.payload.signInResult.returnUrl ?? 'dashboard']);
         }),
       ),
     {dispatch: false},
@@ -40,8 +55,10 @@ export class AccountEffects {
     () =>
       this.actions$.pipe(
         ofType(AccountActions.signInRequestFailed),
-        tap(() => {
-          this.notificationService.showErrorToast('Sign in error.', 'Invalid credentials.');
+        tap(action => {
+          if ((action.payload.error as any).status == 0) {
+            this.notificationService.showGenericErrorToast(0);
+          } else this.notificationService.showErrorToast('Sign in error.', 'Invalid credentials.');
         }),
       ),
     {dispatch: false},
@@ -57,6 +74,33 @@ export class AccountEffects {
         );
       }),
     ),
+  );
+
+  signUpRequestFailedEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.signUpRequestFailed),
+        tap(() => {
+          this.notificationService.showErrorToast('Sign up error.', 'Unable to sign up new user.');
+        }),
+      ),
+    {dispatch: false},
+  );
+
+  signUpSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.signUpSuccess),
+        tap(action => {
+          this.accountService.authenticatedUser$.next(action.payload.user);
+          this.notificationService.showSuccessToast(
+            'Successfully signed up.',
+            'Hello ' + action?.payload?.user?.username,
+          );
+          this.router.navigate(['/dashboard']);
+        }),
+      ),
+    {dispatch: false},
   );
 
   signoutRequestEffect$ = createEffect(() =>
@@ -75,7 +119,11 @@ export class AccountEffects {
     () =>
       this.actions$.pipe(
         ofType(AccountActions.signOutRequestSuccess),
-        tap(() => this.router.navigate(['/sign-in'])),
+        tap(() => {
+          this.notificationService.showSuccessToast('Successfully signed out.', 'See you soon!');
+          this.accountService.authenticatedUser$.next(null);
+          this.router.navigate(['/sign-in']);
+        }),
       ),
     {dispatch: false},
   );

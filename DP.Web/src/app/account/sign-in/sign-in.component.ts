@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {SignInRequest} from '../models/sign-in-request';
 import * as AccountActions from '../stores/account.actions';
-import * as AccountSelector from '../stores/account.selector';
 import {AccountState} from '../stores/account.state';
 
 @Component({
@@ -11,8 +10,6 @@ import {AccountState} from '../stores/account.state';
   styleUrls: ['./sign-in.component.css'],
 })
 export class SignInComponent {
-  public authenticatedUser$ = this.accountStore.select(AccountSelector.getAuthenticatedUser);
-
   constructor(private accountStore: Store<AccountState>) {}
 
   public onSignInSubmit(signInRequest: SignInRequest): void {
