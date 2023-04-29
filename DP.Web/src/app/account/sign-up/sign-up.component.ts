@@ -1,20 +1,18 @@
-import { Component } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { SignUpRequest } from "../models/sign-up-request";
-import * as AccountActions from "../stores/account.actions";
+import {Component} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {SignUpRequest} from '../models/sign-up-request';
+import * as AccountActions from '../stores/account.actions';
+import {AccountState} from '../stores/account.state';
 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.css']
+  styleUrls: ['./sign-up.component.css'],
 })
 export class SignUpComponent {
-
-  constructor(
-    private store: Store
-  ) { }
+  constructor(private accountStore: Store<AccountState>) {}
 
   public onSignUpSubmit(signUpRequest: SignUpRequest): void {
-    this.store.dispatch(AccountActions.signUpRequest({ signUpRequest }))
+    this.accountStore.dispatch(AccountActions.signUpRequest({signUpRequest}));
   }
 }

@@ -12,6 +12,6 @@ export class UnauthorizedComponent implements OnInit {
   ngOnInit(): void {}
 
   public onGoToSignInClick() {
-    this.router.navigateByUrl('/log-in');
+    this.router.navigateByUrl('/sign-in');
   }
 }

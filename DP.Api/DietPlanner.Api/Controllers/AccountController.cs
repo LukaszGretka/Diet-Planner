@@ -4,9 +4,8 @@ using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -23,7 +22,7 @@ namespace DietPlanner.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("signup")]
+        [HttpPost("sign-up")]
         public async Task<IActionResult> SignUpAsync([FromBody] SignUpRequest signUpRequest)
         {
             DatabaseActionResult<IdentityUser> result = await _accountService.SignUp(signUpRequest);
@@ -38,19 +37,22 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest("signup_error");
             }
 
-            return NoContent();
+            return Ok(new
+            {
+                User = new { username = result.Obj.UserName },
+            });
         }
 
         [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<IActionResult> LogInAsync([FromBody] LogInRequest loginRequest)
+        [HttpPost("sign-in")]
+        public async Task<IActionResult> SignInAsync([FromBody] SignInRequest loginRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("invalid_input");
             }
 
-            var signInResult = await _accountService.LogIn(HttpContext, loginRequest);
+            var signInResult = await _accountService.SignIn(HttpContext, loginRequest);
 
             if (!signInResult.Succeeded)
             {
@@ -62,13 +64,13 @@ namespace DietPlanner.Api.Controllers
             return Ok(new
             {
                 User = new { username = user.UserName },
-                ReturnUrl = loginRequest.ReturnUrl ?? string.Empty 
+                ReturnUrl = loginRequest.ReturnUrl
             });
         }
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetUser()
+        public IActionResult GetUserClaims()
         {
             if (HttpContext.User is null)
             {
@@ -85,7 +87,7 @@ namespace DietPlanner.Api.Controllers
 
         [HttpPost("signout")]
         [Authorize]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> SignoutAsync()
         {
             await _accountService.Logout();
 

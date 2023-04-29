@@ -22,21 +22,22 @@ import {MeasurementTemplateComponent} from './body-profile/measurement-template/
 import {EditMeasurementComponent} from './body-profile/edit-measurement/edit-measurement.component';
 import {MealsCalendarComponent} from './meals-calendar/meals-calendar.component';
 import {MealCalendarEffects} from './meals-calendar/stores/meals-calendar.effects';
-import {LogInComponent} from './account/log-in/log-in.component';
+import {SignInComponent} from './account/sign-in/sign-in.component';
 import {SignUpComponent} from './account/sign-up/sign-up.component';
 import {MealCalendarReducer} from './meals-calendar/stores/meals-calendar.reducer';
 import {ErrorPageComponent} from './shared/error-page/error-page.component';
 import {AccountEffects} from './account/stores/account.effects';
-import {AccountReducer} from './account/stores/account.reducer';
-import {AuthInterceptor} from './interceptors/auth.interceptor';
+//import {AccountReducer} from './account/stores/account.reducer';
 import {AccountService} from './account/services/account.service';
 import {UnauthorizedComponent} from './account/unauthorized/unauthorized.component';
+import {AuthGuardService} from './auth/auth-guard.service';
+import {ToasterComponent} from './shared/toaster/toaster.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
-    LogInComponent,
+    SignInComponent,
     SignUpComponent,
     ProductTemplateComponent,
     ProductsComponent,
@@ -50,6 +51,7 @@ import {UnauthorizedComponent} from './account/unauthorized/unauthorized.compone
     MealsCalendarComponent,
     UnauthorizedComponent,
     ErrorPageComponent,
+    ToasterComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,12 +63,12 @@ import {UnauthorizedComponent} from './account/unauthorized/unauthorized.compone
     StoreModule.forRoot({
       generalState: GeneralReducer,
       mealCalendarState: MealCalendarReducer,
-      accountState: AccountReducer,
+      //accountState: AccountReducer,
     }),
     EffectsModule.forRoot([GeneralEffects, MealCalendarEffects, AccountEffects]),
     StoreDevtoolsModule.instrument(),
   ],
-  providers: [AccountService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
+  providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

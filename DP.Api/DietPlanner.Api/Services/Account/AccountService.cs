@@ -34,7 +34,7 @@ namespace DietPlanner.Api.Services.Account
             return user;
         }
 
-        public async Task<SignInResult> LogIn(HttpContext httpContext, LogInRequest loginRequest)
+        public async Task<SignInResult> SignIn(HttpContext httpContext, SignInRequest loginRequest)
         {   
             return await _signInManager.PasswordSignInAsync(loginRequest.Email,
                 loginRequest.Password, false, false);

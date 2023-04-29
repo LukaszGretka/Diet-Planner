@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { Store } from '@ngrx/store';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, map, Observable, OperatorFunction } from 'rxjs';
-import { Product } from '../products/models/product';
-import { ProductService } from '../products/services/product.service';
-import { DatePickerSelection } from './models/date-picker-selection';
-import { MealType } from './models/meal-type';
-import { MealCalendarState } from './stores/meals-calendar.state';
+import {Component, OnInit} from '@angular/core';
+import {NgbDate} from '@ng-bootstrap/ng-bootstrap';
+import {Store} from '@ngrx/store';
+import {BehaviorSubject, debounceTime, distinctUntilChanged, map, Observable, OperatorFunction} from 'rxjs';
+import {Product} from '../products/models/product';
+import {ProductService} from '../products/services/product.service';
+import {DatePickerSelection} from './models/date-picker-selection';
+import {MealType} from './models/meal-type';
+import {MealCalendarState} from './stores/meals-calendar.state';
 import * as MealCalendarActions from './stores/meals-calendar.actions';
 import * as MealCalendarSelectors from './stores/meals-calendar.selectors';
 import * as GeneralSelector from './../stores/store.selectors';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {AccountState} from '../account/stores/account.state';
 
 @UntilDestroy()
 @Component({
@@ -42,7 +43,7 @@ export class MealsCalendarComponent implements OnInit {
 
   private selectedDate: Date;
 
-  constructor(private productService: ProductService, private store: Store<MealCalendarState>) { }
+  constructor(private productService: ProductService, private store: Store<MealCalendarState>) {}
 
   ngOnInit(): void {
     const dateNow = new Date();
@@ -54,7 +55,7 @@ export class MealsCalendarComponent implements OnInit {
     };
 
     this.selectedDate = dateNow;
-    this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
+    this.store.dispatch(MealCalendarActions.getMealsRequest({date: this.selectedDate}));
 
     this.dailyMealsOverview$.pipe(untilDestroyed(this)).subscribe(meals => {
       this.breakfastProducts$.next(meals.filter(m => m.mealTypeId === MealType.breakfast)[0]?.products ?? []);
@@ -70,7 +71,7 @@ export class MealsCalendarComponent implements OnInit {
 
   onDateSelection(ngbDate: NgbDate): void {
     this.selectedDate = new Date(ngbDate.year + '-' + ngbDate.month + '-' + ngbDate.day);
-    this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
+    this.store.dispatch(MealCalendarActions.getMealsRequest({date: this.selectedDate}));
   }
 
   // Update local products list for particular collection given in parameter.
@@ -120,8 +121,8 @@ export class MealsCalendarComponent implements OnInit {
         searchText.length < 1
           ? []
           : this.currentProducts
-            .filter(product => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
-            .slice(0, 10),
+              .filter(product => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+              .slice(0, 10),
       ),
     );
 }

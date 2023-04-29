@@ -1,24 +1,26 @@
+<app-toaster></app-toaster>
 <div class="container mt-4">
   <h3>Create your account</h3>
   <form #signUpUser="ngForm" (ngSubmit)="onSignUpSubmit(signUpUser.value)">
     <div class="mb-3 mt-4">
       <label for="usernameInput" class="form-label">Username</label>
-      <input class="form-control" name="username" ngModel>
+      <input class="form-control" name="username" ngModel />
     </div>
     <div class="mb-3">
       <label for="emailInput" class="form-label">Email address</label>
-      <input type="email" class="form-control" name="email" ngModel>
+      <input type="email" class="form-control" name="email" ngModel />
     </div>
     <div class="mb-3">
       <label for="passwordInput" class="form-label">Password</label>
-      <input type="password" name="password" class="form-control" ngModel>
+      <input type="password" name="password" class="form-control" ngModel />
     </div>
     <button class="btn btn-primary" type="submit">Sign-up</button>
   </form>
 
   <div class="mb-3 mt-5">
-    <div class="text-secondary mb-1">Already have an account?
-      <a routerLink="/log-in" class="redirection-link">Log-in</a>
+    <div class="text-secondary mb-1">
+      Already have an account?
+      <a routerLink="/sign-in" class="redirection-link">Go to sign-in page.</a>
     </div>
   </div>
 </div>

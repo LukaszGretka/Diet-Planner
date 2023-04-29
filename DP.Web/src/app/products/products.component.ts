@@ -4,11 +4,13 @@ import {FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {filter, map, Observable, startWith} from 'rxjs';
 import {Product} from 'src/app/products/models/product';
-import {ProductService} from 'src/app/products/services/product.service';
 import {GeneralState} from '../stores/store.state';
 import * as GeneralActions from '../stores/store.actions';
 import {Router} from '@angular/router';
 import * as StoreSelector from '../stores/store.selectors';
+import {AccountState} from '../account/stores/account.state';
+import * as AccountSelector from '../account/stores/account.selector';
+import {AccountService} from '../account/services/account.service';
 
 @Component({
   selector: 'app-products',
@@ -22,9 +24,16 @@ export class ProductsComponent implements OnInit {
 
   public products$ = this.store.select(StoreSelector.getProducts);
   public errorCode$ = this.store.select(StoreSelector.getErrorCode);
+  public authenticatedUser$ = this.accountService.getUser();
   private productId: number;
 
-  constructor(pipe: DecimalPipe, private store: Store<GeneralState>, private router: Router) {
+  constructor(
+    pipe: DecimalPipe,
+    private store: Store<GeneralState>,
+    private router: Router,
+    private accountStore: Store<AccountState>,
+    private accountService: AccountService,
+  ) {
     this.filteredProducts$ = this.filter.valueChanges.pipe(
       filter(x => x !== ''),
       startWith(''),
