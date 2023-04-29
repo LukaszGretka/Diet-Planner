@@ -1,10 +1,10 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, catchError, map, of} from 'rxjs';
-import {SignInRequest} from '../models/sign-in-request';
-import {SignInResult} from '../models/sign-in-result';
-import {SignUpRequest} from '../models/sign-up-request';
-import {User} from '../models/user';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
+import { SignInRequest } from '../models/sign-in-request';
+import { SignInResult } from '../models/sign-in-result';
+import { SignUpRequest } from '../models/sign-up-request';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +32,7 @@ export class AccountService {
   }
 
   public getUserClaims(): Observable<User> {
-    return this.httpClient.get<User>(this.baseUrl, {withCredentials: true});
+    return this.httpClient.get<User>(this.baseUrl, { withCredentials: true });
   }
 
   public performSignOut() {

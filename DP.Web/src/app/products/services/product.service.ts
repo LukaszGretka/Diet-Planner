@@ -15,7 +15,7 @@ export class ProductService {
       'Content-Type': 'application/json',
     }),
   };
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.productsUrl + '/all', { withCredentials: true });
@@ -36,11 +36,7 @@ export class ProductService {
   }
 
   editProduct(productId: number, productData: Product): Observable<Product> {
-    return this.httpClient.put<Product>(
-      this.productsUrl + '/' + productId,
-      productData,
-      this.httpOptions
-    );
+    return this.httpClient.put<Product>(this.productsUrl + '/' + productId, productData, this.httpOptions);
   }
 
   removeProduct(productId: number): Observable<Product> {

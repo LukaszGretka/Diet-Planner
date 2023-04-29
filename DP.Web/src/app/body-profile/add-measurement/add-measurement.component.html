@@ -2,10 +2,7 @@
   <div class="alert alert-info" role="alert">Add your measurement</div>
   <form (ngSubmit)="measurementSubmit()">
     <app-measurement-template [measurement]="measurement"> </app-measurement-template>
-    <div
-      *ngIf="(errorCode$ | async)"
-      class="alert alert-danger d-flex align-items-center"
-      role="alert">
+    <div *ngIf="errorCode$ | async" class="alert alert-danger d-flex align-items-center" role="alert">
       <div>An error occurred during processing request.</div>
     </div>
     <div class="mb-3">

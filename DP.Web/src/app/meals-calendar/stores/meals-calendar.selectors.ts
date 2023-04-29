@@ -3,4 +3,4 @@ import { MealCalendarState } from './meals-calendar.state';
 
 const getState = createFeatureSelector<MealCalendarState>('mealCalendarState');
 
-export const getDailyMealsOverview = createSelector(getState, (state) => state?.dailyMealsOverview);
+export const getDailyMealsOverview = createSelector(getState, state => state?.dailyMealsOverview);

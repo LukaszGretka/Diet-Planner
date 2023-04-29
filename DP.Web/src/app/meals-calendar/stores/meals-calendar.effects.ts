@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {MealsCalendarService} from '../services/meals-calendar.service';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {catchError, exhaustMap, of, switchMap} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { MealsCalendarService } from '../services/meals-calendar.service';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, exhaustMap, of, switchMap } from 'rxjs';
 import * as MealCalendarActions from './meals-calendar.actions';
 import * as GeneralActions from './../../stores/store.actions';
 
@@ -10,10 +10,10 @@ export class MealCalendarEffects {
   getMealsEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MealCalendarActions.getMealsRequest),
-      exhaustMap(({payload}) => {
+      exhaustMap(({ payload }) => {
         return this.mealsCalendarService.getDailyMeals(payload.date).pipe(
-          switchMap(result => of(MealCalendarActions.getMealsRequestSuccess({result}))),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          switchMap(result => of(MealCalendarActions.getMealsRequestSuccess({ result }))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
@@ -22,10 +22,10 @@ export class MealCalendarEffects {
   addMealEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MealCalendarActions.addMealRequest),
-      switchMap(({payload}) => {
+      switchMap(({ payload }) => {
         return this.mealsCalendarService.addDialyMeal(payload.mealByDay).pipe(
           switchMap(() => of(MealCalendarActions.addMealRequestSuccess())),
-          catchError((error: number) => of(GeneralActions.setErrorCode({errorCode: error}))),
+          catchError((error: number) => of(GeneralActions.setErrorCode({ errorCode: error }))),
         );
       }),
     ),

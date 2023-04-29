@@ -10,10 +10,9 @@ import { Product } from 'src/app/products/models/product';
   styleUrls: ['./add-product.component.css'],
 })
 export class AddProductComponent {
-
   public product: Product = new Product();
 
-  constructor(private store: Store<GeneralState>) { }
+  constructor(private store: Store<GeneralState>) {}
 
   public addProductSubmit(): void {
     this.store.dispatch(GeneralActions.addProductRequest({ productData: this.product }));

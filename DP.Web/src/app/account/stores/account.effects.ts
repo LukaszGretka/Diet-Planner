@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, catchError, exhaustMap, of, switchMap, tap} from 'rxjs';
-import {AccountService} from '../services/account.service';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, exhaustMap, of, switchMap, tap } from 'rxjs';
+import { AccountService } from '../services/account.service';
 import * as AccountActions from './account.actions';
-import {Router} from '@angular/router';
-import {NotificationService} from 'src/app/shared/services/notification.service';
+import { Router } from '@angular/router';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Injectable()
 export class AccountEffects {
@@ -15,9 +15,9 @@ export class AccountEffects {
         return this.accountService.getUserClaims().pipe(
           switchMap(user => {
             this.accountService.setUser(user);
-            return of(AccountActions.getUserRequestSuccess({user}));
+            return of(AccountActions.getUserRequestSuccess({ user }));
           }),
-          catchError(error => of(AccountActions.getUserRequestFailed({error}))),
+          catchError(error => of(AccountActions.getUserRequestFailed({ error }))),
         );
       }),
     ),
@@ -26,10 +26,10 @@ export class AccountEffects {
   signInRequestEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AccountActions.signInRequest),
-      exhaustMap(({payload}) => {
+      exhaustMap(({ payload }) => {
         return this.accountService.performSignIn(payload.signInRequest).pipe(
-          switchMap(signInResult => of(AccountActions.signInRequestSuccess({signInResult}))),
-          catchError(error => of(AccountActions.signInRequestFailed({error}))),
+          switchMap(signInResult => of(AccountActions.signInRequestSuccess({ signInResult }))),
+          catchError(error => of(AccountActions.signInRequestFailed({ error }))),
         );
       }),
     ),
@@ -48,7 +48,7 @@ export class AccountEffects {
           this.router.navigate([action.payload.signInResult.returnUrl ?? 'dashboard']);
         }),
       ),
-    {dispatch: false},
+    { dispatch: false },
   );
 
   signInRequestFailedEffect$ = createEffect(
@@ -61,16 +61,16 @@ export class AccountEffects {
           } else this.notificationService.showErrorToast('Sign in error.', 'Invalid credentials.');
         }),
       ),
-    {dispatch: false},
+    { dispatch: false },
   );
 
   signUpRequestEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AccountActions.signUpRequest),
-      exhaustMap(({payload}) => {
+      exhaustMap(({ payload }) => {
         return this.accountService.performSignUp(payload.signUpRequest).pipe(
-          switchMap(signUpResult => of(AccountActions.signUpSuccess({signUpResult}))),
-          catchError(error => of(AccountActions.signUpRequestFailed({error}))),
+          switchMap(signUpResult => of(AccountActions.signUpSuccess({ signUpResult }))),
+          catchError(error => of(AccountActions.signUpRequestFailed({ error }))),
         );
       }),
     ),
@@ -84,7 +84,7 @@ export class AccountEffects {
           this.notificationService.showErrorToast('Sign up error.', 'Unable to sign up new user.');
         }),
       ),
-    {dispatch: false},
+    { dispatch: false },
   );
 
   signUpSuccessEffect$ = createEffect(
@@ -100,7 +100,7 @@ export class AccountEffects {
           this.router.navigate(['/dashboard']);
         }),
       ),
-    {dispatch: false},
+    { dispatch: false },
   );
 
   signoutRequestEffect$ = createEffect(() =>
@@ -109,7 +109,7 @@ export class AccountEffects {
       exhaustMap(() => {
         return this.accountService.performSignOut().pipe(
           switchMap(() => of(AccountActions.signOutRequestSuccess())),
-          catchError(error => of(AccountActions.signOutRequestFailed({error}))),
+          catchError(error => of(AccountActions.signOutRequestFailed({ error }))),
         );
       }),
     ),
@@ -125,7 +125,7 @@ export class AccountEffects {
           this.router.navigate(['/sign-in']);
         }),
       ),
-    {dispatch: false},
+    { dispatch: false },
   );
 
   constructor(

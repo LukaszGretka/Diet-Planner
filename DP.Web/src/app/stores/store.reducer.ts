@@ -1,6 +1,6 @@
-import {createReducer, on} from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
 import * as generalActions from './store.actions';
-import {GeneralState} from './store.state';
+import { GeneralState } from './store.state';
 
 export const initialState: GeneralState = {
   errorCode: null,

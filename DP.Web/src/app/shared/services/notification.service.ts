@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 export interface ToastInfo {
   title: string;
@@ -25,11 +25,11 @@ export class NotificationService {
   }
 
   public showSuccessToast(title: string, message: string, delay = this.defaultDelayTime): void {
-    this.toasts.push({title, message, delay, classname: this.toastSuccessClassName});
+    this.toasts.push({ title, message, delay, classname: this.toastSuccessClassName });
   }
 
   public showErrorToast(title: string, message: string, delay = this.defaultDelayTime): void {
-    this.toasts.push({title, message, delay, classname: this.toastErrorClassName});
+    this.toasts.push({ title, message, delay, classname: this.toastErrorClassName });
   }
 
   public showGenericErrorToast(statusCode: number, delay = this.defaultDelayTime) {

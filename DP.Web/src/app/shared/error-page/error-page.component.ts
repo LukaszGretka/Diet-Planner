@@ -1,6 +1,6 @@
-import {HttpStatusCode} from '@angular/common/http';
-import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import { HttpStatusCode } from '@angular/common/http';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-error-page',

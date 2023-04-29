@@ -1,5 +1,5 @@
-import {createReducer, on} from '@ngrx/store';
-import {MealCalendarState} from './meals-calendar.state';
+import { createReducer, on } from '@ngrx/store';
+import { MealCalendarState } from './meals-calendar.state';
 import * as mealCalendarActions from './meals-calendar.actions';
 
 export const initialState: MealCalendarState = {
