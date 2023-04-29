@@ -25,7 +25,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         public async Task<List<MealDTO>> GetMeals(DateTime date)
         {
-            string formattedDate = date.Normalize();
+            string formattedDate = date.ToDatabaseDateFormat();
 
             return await _databaseContext.Meals
                 .Join(
@@ -60,7 +60,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
         public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(MealByDay mealByDay)
         {
             var existingMeal = _databaseContext.Meals.AsNoTracking().SingleOrDefault(x =>
-                x.Date.Equals(mealByDay.Date.Normalize())
+                x.Date.Equals(mealByDay.Date.ToDatabaseDateFormat())
                     && x.MealTypeId == (int)mealByDay.MealTypeId);
 
             if (existingMeal is not null)
@@ -70,7 +70,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             Meal newMeal = new()
             {
-                Date = mealByDay.Date.Normalize(),
+                Date = mealByDay.Date.ToDatabaseDateFormat(),
                 MealTypeId = (int)mealByDay.MealTypeId
             };
 

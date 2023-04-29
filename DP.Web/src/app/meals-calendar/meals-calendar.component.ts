@@ -69,7 +69,12 @@ export class MealsCalendarComponent implements OnInit {
   }
 
   onDateSelection(ngbDate: NgbDate): void {
-    this.selectedDate = new Date(ngbDate.year + '-' + ngbDate.month + '-' + ngbDate.day);
+    const selectedDate = new Date();
+    selectedDate.setFullYear(ngbDate.year);
+    selectedDate.setMonth(ngbDate.month - 1);
+    selectedDate.setDate(ngbDate.day);
+    this.selectedDate = selectedDate;
+    console.log(selectedDate);
     this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
   }
 
