@@ -20,7 +20,8 @@ export class MealsCalendarService {
   constructor(private httpClient: HttpClient) {}
 
   getDailyMeals(selectedDate: Date): Observable<Meal[]> {
-    return this.httpClient.get<Meal[]>(this.mealsCalendarUrl + '/' + selectedDate.toDateString(), {
+    const dateUTC = selectedDate.toUTCString();
+    return this.httpClient.get<Meal[]>(this.mealsCalendarUrl + '/' + dateUTC, {
       withCredentials: true,
     });
   }
@@ -30,6 +31,7 @@ export class MealsCalendarService {
   }
 
   removeDailyMeal(selectedDate: Date, meal: Meal) {
-    return this.httpClient.delete<Meal>(this.mealsCalendarUrl + `/${selectedDate.toDateString()}`, this.httpOptions);
+    const dateUTC = selectedDate.toUTCString();
+    return this.httpClient.delete<Meal>(this.mealsCalendarUrl + '/' + dateUTC, this.httpOptions);
   }
 }
