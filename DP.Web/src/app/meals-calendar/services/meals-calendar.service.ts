@@ -17,12 +17,12 @@ export class MealsCalendarService {
     }),
   };
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   getDailyMeals(selectedDate: Date): Observable<Meal[]> {
-    return this.httpClient.get<Meal[]>(
-      this.mealsCalendarUrl + '/' + selectedDate.toDateString(), { withCredentials: true }
-    );
+    return this.httpClient.get<Meal[]>(this.mealsCalendarUrl + '/' + selectedDate.toDateString(), {
+      withCredentials: true,
+    });
   }
 
   addDialyMeal(mealByDay: MealByDay): Observable<MealByDay> {
@@ -30,9 +30,6 @@ export class MealsCalendarService {
   }
 
   removeDailyMeal(selectedDate: Date, meal: Meal) {
-    return this.httpClient.delete<Meal>(
-      this.mealsCalendarUrl + `/${selectedDate.toDateString()}`,
-      this.httpOptions
-    );
+    return this.httpClient.delete<Meal>(this.mealsCalendarUrl + `/${selectedDate.toDateString()}`, this.httpOptions);
   }
 }

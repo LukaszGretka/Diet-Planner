@@ -7,10 +7,8 @@ import { Product } from 'src/app/products/models/product';
   styleUrls: ['./product-template.component.css'],
 })
 export class ProductTemplateComponent {
-
   @Input()
   public product: Product;
 
-  constructor() {
-  }
+  constructor() {}
 }

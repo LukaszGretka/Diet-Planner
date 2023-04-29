@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {SignInRequest} from '../models/sign-in-request';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { SignInRequest } from '../models/sign-in-request';
 import * as AccountActions from '../stores/account.actions';
-import {AccountState} from '../stores/account.state';
+import { AccountState } from '../stores/account.state';
 
 @Component({
   selector: 'app-sign-in',
@@ -13,6 +13,6 @@ export class SignInComponent {
   constructor(private accountStore: Store<AccountState>) {}
 
   public onSignInSubmit(signInRequest: SignInRequest): void {
-    this.accountStore.dispatch(AccountActions.signInRequest({signInRequest}));
+    this.accountStore.dispatch(AccountActions.signInRequest({ signInRequest }));
   }
 }

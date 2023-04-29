@@ -1,16 +1,16 @@
-import {DecimalPipe} from '@angular/common';
-import {Component, OnInit, PipeTransform} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {Store} from '@ngrx/store';
-import {filter, map, Observable, startWith} from 'rxjs';
-import {Product} from 'src/app/products/models/product';
-import {GeneralState} from '../stores/store.state';
+import { DecimalPipe } from '@angular/common';
+import { Component, OnInit, PipeTransform } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { filter, map, Observable, startWith } from 'rxjs';
+import { Product } from 'src/app/products/models/product';
+import { GeneralState } from '../stores/store.state';
 import * as GeneralActions from '../stores/store.actions';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import * as StoreSelector from '../stores/store.selectors';
-import {AccountState} from '../account/stores/account.state';
+import { AccountState } from '../account/stores/account.state';
 import * as AccountSelector from '../account/stores/account.selector';
-import {AccountService} from '../account/services/account.service';
+import { AccountService } from '../account/services/account.service';
 
 @Component({
   selector: 'app-products',
@@ -53,7 +53,7 @@ export class ProductsComponent implements OnInit {
   }
 
   removeConfirmationButtonClick(): void {
-    this.store.dispatch(GeneralActions.removeProductRequest({productId: this.productId}));
+    this.store.dispatch(GeneralActions.removeProductRequest({ productId: this.productId }));
   }
 }
 

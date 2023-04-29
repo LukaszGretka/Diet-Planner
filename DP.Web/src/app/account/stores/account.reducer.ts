@@ -1,6 +1,6 @@
-import {createReducer} from '@ngrx/store';
+import { createReducer } from '@ngrx/store';
 import * as accountActions from './account.actions';
-import {AccountState} from './account.state';
+import { AccountState } from './account.state';
 
 export const initialState: AccountState = {};
 

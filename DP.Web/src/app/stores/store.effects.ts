@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {catchError, EMPTY, of, switchMap} from 'rxjs';
-import {Router} from '@angular/router';
-import {MeasurementService} from 'src/app/body-profile/services/measurement.service';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, EMPTY, of, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
+import { MeasurementService } from 'src/app/body-profile/services/measurement.service';
 import * as GeneralActions from './store.actions';
-import {ProductService} from 'src/app/products/services/product.service';
+import { ProductService } from 'src/app/products/services/product.service';
 
 @Injectable()
 export class GeneralEffects {
@@ -14,9 +14,9 @@ export class GeneralEffects {
       switchMap(() => {
         return this.measurementService.getMeasurements().pipe(
           switchMap(payload => {
-            return of(GeneralActions.getMeasurementsCompleted({measurements: payload}));
+            return of(GeneralActions.getMeasurementsCompleted({ measurements: payload }));
           }),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
@@ -25,13 +25,13 @@ export class GeneralEffects {
   addMeasurementEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GeneralActions.addMeasurementRequest),
-      switchMap(({payload}) => {
+      switchMap(({ payload }) => {
         return this.measurementService.addMeasurement(payload.measurementData).pipe(
           switchMap(() => {
             this.router.navigate(['body-profile']);
             return of(GeneralActions.addMeasurementRequestCompleted());
           }),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
@@ -40,13 +40,13 @@ export class GeneralEffects {
   editMeasurementEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GeneralActions.editMeasurementRequest),
-      switchMap(({payload}) => {
+      switchMap(({ payload }) => {
         return this.measurementService.editMeasurement(payload.measurementId, payload.measurementData).pipe(
           switchMap(() => {
             this.router.navigate(['body-profile']);
             return of(GeneralActions.editMeasurementRequestCompleted());
           }),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
@@ -55,13 +55,13 @@ export class GeneralEffects {
   removeMeasurementEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GeneralActions.removeMeasurementRequest),
-      switchMap(({payload}) => {
+      switchMap(({ payload }) => {
         return this.measurementService.deleteMeasurement(payload.measurementId).pipe(
           switchMap(() => {
             window.location.reload();
             return EMPTY;
           }),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
@@ -72,8 +72,8 @@ export class GeneralEffects {
       ofType(GeneralActions.getProductsRequest),
       switchMap(() => {
         return this.productService.getProducts().pipe(
-          switchMap(products => of(GeneralActions.getProductsRequestCompleted({products}))),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          switchMap(products => of(GeneralActions.getProductsRequestCompleted({ products }))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
@@ -82,13 +82,13 @@ export class GeneralEffects {
   addProductEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GeneralActions.addProductRequest),
-      switchMap(({payload}) => {
+      switchMap(({ payload }) => {
         return this.productService.addProduct(payload.productData).pipe(
           switchMap(() => {
             this.router.navigate(['products']);
             return of(GeneralActions.addProductRequestCompleted());
           }),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
@@ -97,13 +97,13 @@ export class GeneralEffects {
   removeProductEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GeneralActions.removeProductRequest),
-      switchMap(({payload}) => {
+      switchMap(({ payload }) => {
         return this.productService.removeProduct(payload.productId).pipe(
           switchMap(() => {
             window.location.reload();
             return EMPTY;
           }),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
@@ -112,13 +112,13 @@ export class GeneralEffects {
   editProductEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GeneralActions.editProductRequest),
-      switchMap(({payload}) => {
+      switchMap(({ payload }) => {
         return this.productService.editProduct(payload.productId, payload.productData).pipe(
           switchMap(() => {
             this.router.navigate(['products']);
             return of(GeneralActions.editProductRequestCompleted());
           }),
-          catchError((error: any) => of(GeneralActions.setErrorCode({errorCode: error.status}))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),

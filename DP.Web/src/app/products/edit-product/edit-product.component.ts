@@ -13,19 +13,25 @@ import { map, Subscription } from 'rxjs';
   styleUrls: ['./edit-product.component.css'],
 })
 export class EditProductComponent implements OnInit, OnDestroy {
-
   public product: Product;
   private routerSub: Subscription;
 
-  constructor(private store: Store<GeneralState>, private productService: ProductService,
-    private router: ActivatedRoute) {
-  }
+  constructor(
+    private store: Store<GeneralState>,
+    private productService: ProductService,
+    private router: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     this.routerSub = this.router.params.subscribe(params => {
-      this.productService.getProductById(params['id']).pipe(map(product => {
-        this.product = product
-      })).subscribe();
+      this.productService
+        .getProductById(params['id'])
+        .pipe(
+          map(product => {
+            this.product = product;
+          }),
+        )
+        .subscribe();
     });
   }
 
@@ -34,8 +40,11 @@ export class EditProductComponent implements OnInit, OnDestroy {
   }
 
   public editProductSubmit(): void {
-    this.store.dispatch(GeneralActions.editProductRequest({
-      productId: this.product.id, productData: this.product
-    }));
+    this.store.dispatch(
+      GeneralActions.editProductRequest({
+        productId: this.product.id,
+        productData: this.product,
+      }),
+    );
   }
 }
