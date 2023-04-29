@@ -69,7 +69,7 @@ export class AccountEffects {
       ofType(AccountActions.signUpRequest),
       exhaustMap(({payload}) => {
         return this.accountService.performSignUp(payload.signUpRequest).pipe(
-          switchMap(user => of(AccountActions.signUpSuccess({user}))),
+          switchMap(signUpResult => of(AccountActions.signUpSuccess({signUpResult}))),
           catchError(error => of(AccountActions.signUpRequestFailed({error}))),
         );
       }),
@@ -92,11 +92,11 @@ export class AccountEffects {
       this.actions$.pipe(
         ofType(AccountActions.signUpSuccess),
         tap(action => {
-          this.accountService.authenticatedUser$.next(action.payload.user);
           this.notificationService.showSuccessToast(
             'Successfully signed up.',
-            'Hello ' + action?.payload?.user?.username,
+            'Hello ' + action.payload.signUpResult.user.username,
           );
+          this.accountService.authenticatedUser$.next(action.payload.signUpResult.user);
           this.router.navigate(['/dashboard']);
         }),
       ),

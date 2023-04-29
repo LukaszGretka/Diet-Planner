@@ -23,8 +23,8 @@ export class AccountService {
 
   constructor(private httpClient: HttpClient) {}
 
-  public performSignUp(signupRequest: SignUpRequest): Observable<User> {
-    return this.httpClient.post<User>(this.baseUrl + '/sign-up', signupRequest, this.httpOptions);
+  public performSignUp(signupRequest: SignUpRequest): Observable<SignInResult> {
+    return this.httpClient.post<SignInResult>(this.baseUrl + '/sign-up', signupRequest, this.httpOptions);
   }
 
   public performSignIn(signInRequest: SignInRequest): Observable<SignInResult> {

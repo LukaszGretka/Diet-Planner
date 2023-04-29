@@ -3,6 +3,7 @@ import {SignInRequest} from '../models/sign-in-request';
 import {SignUpRequest} from '../models/sign-up-request';
 import {User} from '../models/user';
 import {SignInResult} from '../models/sign-in-result';
+import { SignUpResult } from '../models/sign-up-result';
 
 export const getUserRequest = createAction('Get user request');
 export const getUserRequestSuccess = createAction('Get user request success', prop<{user: User}>());
@@ -13,7 +14,7 @@ export const signInRequestSuccess = createAction('Sign-in request success', prop
 export const signInRequestFailed = createAction('Sign-in request failed', prop<{error: string}>());
 
 export const signUpRequest = createAction('Sign-up request', prop<{signUpRequest: SignUpRequest}>());
-export const signUpSuccess = createAction('Sign-up request success', prop<{user: User}>());
+export const signUpSuccess = createAction('Sign-up request success', prop<{signUpResult: SignUpResult}>());
 export const signUpRequestFailed = createAction('Sign-up request failed', prop<{error: string}>());
 
 export const signOutRequest = createAction('Sign out request');
