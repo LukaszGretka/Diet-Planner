@@ -4,7 +4,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DietPlanner.Api.Models
 {
-    public class UserMeasurement
+    public class UserMeasurement : Measurement
+    {
+        public string UserId { get; set; }
+    }
+
+    public class Measurement
     {
         [Key]
         public int Id { get; set; }

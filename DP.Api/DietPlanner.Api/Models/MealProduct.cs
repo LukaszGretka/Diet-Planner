@@ -9,6 +9,6 @@ namespace DietPlanner.Api.Models
 
         public Product Product { get; set; }
 
-        public Meal Meal { get; set; }
+        public UserMeal Meal { get; set; }
     }
 }

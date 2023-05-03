@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietPlanner.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20221201205303_adjust_database_structure")]
-    partial class adjust_database_structure
+    [Migration("20230503100521_Init-Stable")]
+    partial class InitStable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,17 +28,18 @@ namespace DietPlanner.Api.Migrations
                     b.Property<string>("Date")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("MealTypeId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.HasIndex("MealTypeId");
-
                     b.ToTable("Meals");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Meal");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Models.MealProduct", b =>
@@ -47,10 +48,10 @@ namespace DietPlanner.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MealId")
+                    b.Property<int?>("MealId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -99,6 +100,10 @@ namespace DietPlanner.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<float?>("Fats")
                         .HasColumnType("REAL");
 
@@ -113,10 +118,9 @@ namespace DietPlanner.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
-
                     b.ToTable("Products");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Product");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Models.UserMeasurement", b =>
@@ -158,6 +162,9 @@ namespace DietPlanner.Api.Migrations
                     b.Property<decimal>("ThighRight")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("Waist")
                         .HasColumnType("TEXT");
 
@@ -172,34 +179,61 @@ namespace DietPlanner.Api.Migrations
                     b.ToTable("UserMeasurements");
                 });
 
-            modelBuilder.Entity("DietPlanner.Api.Models.Meal", b =>
+            modelBuilder.Entity("DietPlanner.Api.Models.UserMeal", b =>
                 {
-                    b.HasOne("DietPlanner.Api.Models.MealType", "MealType")
-                        .WithMany()
-                        .HasForeignKey("MealTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasBaseType("DietPlanner.Api.Models.Meal");
 
-                    b.Navigation("MealType");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasDiscriminator().HasValue("UserMeal");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Models.UserProduct", b =>
+                {
+                    b.HasBaseType("DietPlanner.Api.Models.Product");
+
+                    b.Property<bool>("ExposedForOtherUsers")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasDiscriminator().HasValue("UserProduct");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Models.MealProduct", b =>
                 {
-                    b.HasOne("DietPlanner.Api.Models.Meal", "Meals")
+                    b.HasOne("DietPlanner.Api.Models.Meal", "Meal")
                         .WithMany()
-                        .HasForeignKey("MealId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MealId");
 
                     b.HasOne("DietPlanner.Api.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Meal");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Models.MealType", b =>
+                {
+                    b.HasOne("DietPlanner.Api.Models.UserMeal", "Meal")
+                        .WithOne("MealType")
+                        .HasForeignKey("DietPlanner.Api.Models.MealType", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Meals");
+                    b.Navigation("Meal");
+                });
 
-                    b.Navigation("Product");
+            modelBuilder.Entity("DietPlanner.Api.Models.UserMeal", b =>
+                {
+                    b.Navigation("MealType");
                 });
 #pragma warning restore 612, 618
         }

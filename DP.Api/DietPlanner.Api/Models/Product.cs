@@ -2,6 +2,15 @@
 
 namespace DietPlanner.Api.Models
 {
+    public class UserProduct : Product
+    {
+        // User ID from Identity database (AspNetUser table) 
+        public string UserId { get; set; }
+
+        // Determines if other users can use this product for their meals
+        public bool ExposedForOtherUsers { get; set; }
+    }
+
     public class Product
     {
         [Key]

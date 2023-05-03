@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DietPlanner.Api.Models
 {
-    public class Meal
+    public class UserMeal
     {
         public int Id { get; set; }
+
+        public string UserId { get; set; }
 
         public string Date { get; set; }
 

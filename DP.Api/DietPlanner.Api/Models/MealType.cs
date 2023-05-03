@@ -1,7 +1,4 @@
-﻿using DietPlanner.Api.Models.MealsCalendar;
-using System.ComponentModel.DataAnnotations;
-
-namespace DietPlanner.Api.Models
+﻿namespace DietPlanner.Api.Models
 {
     public class MealType
     {
@@ -9,6 +6,6 @@ namespace DietPlanner.Api.Models
 
         public string Name { get; set; }
 
-        public Meal Meal { get; set; }
+        public UserMeal Meal { get; set; }
     }
 }

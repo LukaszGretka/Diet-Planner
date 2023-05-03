@@ -23,11 +23,11 @@ namespace DietPlanner.Api.Services.MealsCalendar
             _databaseContext = databaseContext;
         }
 
-        public async Task<List<MealDTO>> GetMeals(DateTime date)
+        public async Task<List<MealDTO>> GetMeals(DateTime date, string userId)
         {
             string formattedDate = date.ToDatabaseDateFormat();
 
-            return await _databaseContext.Meals
+            return await _databaseContext.UserMeals
                 .Join(
                     _databaseContext.MealProducts,
                     meals => meals.Id,
@@ -36,7 +36,8 @@ namespace DietPlanner.Api.Services.MealsCalendar
                     {
                         mealDate = meal.Date,
                         productId = mealProduct.Product.Id,
-                        mealTypeId = meal.MealTypeId
+                        mealTypeId = meal.MealTypeId,
+                        userId = meal.UserId
                     })
                 .Join(
                     _databaseContext.Products,
@@ -47,8 +48,11 @@ namespace DietPlanner.Api.Services.MealsCalendar
                         joinResult.mealDate,
                         joinResult.mealTypeId,
                         product,
+                        joinResult.userId
                     })
-                .Where(finalJoinResult => finalJoinResult.mealDate.Equals(formattedDate))
+                .Where(finalJoinResult => finalJoinResult.mealDate.Equals(formattedDate) 
+                        && finalJoinResult.userId.Equals(userId)
+                )
                 .GroupBy(x => x.mealTypeId, (mealTypeId, product) => new MealDTO
                 {
                     Products = product.Select(x => x.product).ToList(),
@@ -57,21 +61,25 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 .ToListAsync();
         }
 
-        public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(MealByDay mealByDay)
+        public async Task<DatabaseActionResult<UserMeal>> AddOrUpdateMeal(MealByDay mealByDay, string userId)
         {
-            var existingMeal = _databaseContext.Meals.AsNoTracking().SingleOrDefault(x =>
-                x.Date.Equals(mealByDay.Date.ToDatabaseDateFormat())
-                    && x.MealTypeId == (int)mealByDay.MealTypeId);
+            string formattedDate = mealByDay.Date.ToDatabaseDateFormat();
+
+            UserMeal existingMeal = _databaseContext.UserMeals.AsNoTracking().SingleOrDefault(meal =>
+                meal.Date.Equals(formattedDate)
+                && meal.MealTypeId == (int)mealByDay.MealTypeId
+                && meal.UserId.Equals(userId));
 
             if (existingMeal is not null)
             {
                 return await UpdateMeal(existingMeal, mealByDay);
             }
 
-            Meal newMeal = new()
+            UserMeal newMeal = new()
             {
-                Date = mealByDay.Date.ToDatabaseDateFormat(),
-                MealTypeId = (int)mealByDay.MealTypeId
+                Date = formattedDate,
+                MealTypeId = (int)mealByDay.MealTypeId,
+                UserId = userId
             };
 
             List<MealProduct> newMealProducts = await AddProductsToMeal(newMeal, mealByDay);
@@ -79,19 +87,19 @@ namespace DietPlanner.Api.Services.MealsCalendar
             try
             {
                 _databaseContext.MealProducts.AttachRange(newMealProducts);
-                await _databaseContext.Meals.AddAsync(newMeal);
+                await _databaseContext.UserMeals.AddAsync(newMeal);
                 await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<Meal>(false, exception: ex);
+                return new DatabaseActionResult<UserMeal>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<Meal>(true, obj: newMeal);
+            return new DatabaseActionResult<UserMeal>(true, obj: newMeal);
         }
 
-        private async Task<DatabaseActionResult<Meal>> UpdateMeal(Meal existingMeal, MealByDay mealByDay)
+        private async Task<DatabaseActionResult<UserMeal>> UpdateMeal(UserMeal existingMeal, MealByDay mealByDay)
         {
             List<MealProduct> newMealProducts = await AddProductsToMeal(existingMeal, mealByDay);
 
@@ -105,11 +113,11 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
                 if (newMealProducts.Count > 0)
                 {
-                    _databaseContext.Meals.Update(existingMeal);
+                    _databaseContext.UserMeals.Update(existingMeal);
                 }
                 else
                 {
-                    _databaseContext.Meals.Remove(existingMeal);
+                    _databaseContext.UserMeals.Remove(existingMeal);
                 }
 
                 await _databaseContext.SaveChangesAsync();
@@ -117,13 +125,13 @@ namespace DietPlanner.Api.Services.MealsCalendar
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<Meal>(false, exception: ex);
+                return new DatabaseActionResult<UserMeal>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<Meal>(true, obj: existingMeal);
+            return new DatabaseActionResult<UserMeal>(true, obj: existingMeal);
         }
 
-        private async Task<List<MealProduct>> AddProductsToMeal(Meal meal, MealByDay mealByDay)
+        private async Task<List<MealProduct>> AddProductsToMeal(UserMeal meal, MealByDay mealByDay)
         {
             var mealProducts = new List<MealProduct>();
             var products = mealByDay.Products;

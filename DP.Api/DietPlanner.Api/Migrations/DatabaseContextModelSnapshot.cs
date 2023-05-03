@@ -17,23 +17,6 @@ namespace DietPlanner.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
 
-            modelBuilder.Entity("DietPlanner.Api.Models.Meal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("MealTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Meals");
-                });
-
             modelBuilder.Entity("DietPlanner.Api.Models.MealProduct", b =>
                 {
                     b.Property<int>("Id")
@@ -92,6 +75,10 @@ namespace DietPlanner.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<float?>("Fats")
                         .HasColumnType("REAL");
 
@@ -106,10 +93,29 @@ namespace DietPlanner.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
-
                     b.ToTable("Products");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Product");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Models.UserMeal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MealTypeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserMeals");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Models.UserMeasurement", b =>
@@ -151,6 +157,9 @@ namespace DietPlanner.Api.Migrations
                     b.Property<decimal>("ThighRight")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("Waist")
                         .HasColumnType("TEXT");
 
@@ -165,9 +174,25 @@ namespace DietPlanner.Api.Migrations
                     b.ToTable("UserMeasurements");
                 });
 
+            modelBuilder.Entity("DietPlanner.Api.Models.UserProduct", b =>
+                {
+                    b.HasBaseType("DietPlanner.Api.Models.Product");
+
+                    b.Property<bool>("ExposedForOtherUsers")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasDiscriminator().HasValue("UserProduct");
+                });
+
             modelBuilder.Entity("DietPlanner.Api.Models.MealProduct", b =>
                 {
-                    b.HasOne("DietPlanner.Api.Models.Meal", "Meal")
+                    b.HasOne("DietPlanner.Api.Models.UserMeal", "Meal")
                         .WithMany()
                         .HasForeignKey("MealId");
 
@@ -182,7 +207,7 @@ namespace DietPlanner.Api.Migrations
 
             modelBuilder.Entity("DietPlanner.Api.Models.MealType", b =>
                 {
-                    b.HasOne("DietPlanner.Api.Models.Meal", "Meal")
+                    b.HasOne("DietPlanner.Api.Models.UserMeal", "Meal")
                         .WithOne("MealType")
                         .HasForeignKey("DietPlanner.Api.Models.MealType", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -191,7 +216,7 @@ namespace DietPlanner.Api.Migrations
                     b.Navigation("Meal");
                 });
 
-            modelBuilder.Entity("DietPlanner.Api.Models.Meal", b =>
+            modelBuilder.Entity("DietPlanner.Api.Models.UserMeal", b =>
                 {
                     b.Navigation("MealType");
                 });
