@@ -15,7 +15,7 @@ namespace DietPlanner.Api.UnitTests.Extensions
         {
             var date = new DateTime(2023, 04, 29, 17, 10, 0);
 
-            var result = DateExtention.ToDatabaseDateFormat(date);
+            var result = DateExtentions.ToDatabaseDateFormat(date);
 
             Assert.Equal("2023-04-29", result);
         }

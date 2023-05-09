@@ -25,6 +25,5 @@ namespace DietPlanner.Api.Database
             builder.EnableSensitiveDataLogging();
             base.OnConfiguring(builder);
         }
-
     }
 }

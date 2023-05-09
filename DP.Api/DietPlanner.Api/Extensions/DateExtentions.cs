@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace DietPlanner.Api.Extensions
 {
-    public static class DateExtention
+    public static class DateExtentions
     {
         public static string ToDatabaseDateFormat(this DateTime date)
         {

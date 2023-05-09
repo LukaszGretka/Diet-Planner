@@ -1,5 +1,5 @@
-﻿using DietPlanner.Api.Models;
-using DietPlanner.Api.Models.MealsCalendar;
+﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -9,8 +9,8 @@ namespace DietPlanner.Api.Services.MealsCalendar
 {
     public interface IMealsCalendarService
     {
-        Task<List<MealDTO>> GetMeals(DateTime date);
+        Task<List<MealDto>> GetMeals(DateTime date, string userId);
 
-        Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(MealByDay mealByDay);
+        Task<DatabaseActionResult<UserMeal>> AddOrUpdateMeal(MealByDay mealByDay, string userId);
     }
 }

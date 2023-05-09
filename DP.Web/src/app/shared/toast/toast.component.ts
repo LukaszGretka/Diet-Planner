@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NotificationService } from '../services/notification.service';
 
 @Component({
-  selector: 'app-toaster',
-  templateUrl: './toaster.component.html',
-  styleUrls: ['./toaster.component.css'],
+  selector: 'app-toast',
+  templateUrl: './toast.component.html',
+  styleUrls: ['./toast.component.css'],
 })
-export class ToasterComponent implements OnInit, OnDestroy {
+export class ToastComponent implements OnInit, OnDestroy {
   constructor(public notificationService: NotificationService) {}
 
   ngOnDestroy(): void {

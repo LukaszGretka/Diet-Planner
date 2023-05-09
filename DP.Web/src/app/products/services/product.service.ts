@@ -10,7 +10,7 @@ export class ProductService {
   private productsUrl = 'http://localhost:5000/api/product';
 
   httpOptions = {
-    withCredentails: true,
+    withCredentials: true,
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
     }),

@@ -1,4 +1,5 @@
-﻿using DietPlanner.Api.Models;
+﻿using DietPlanner.Api.Models.BodyProfile.DbModel;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace DietPlanner.Api.Database
@@ -11,24 +12,22 @@ namespace DietPlanner.Api.Database
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Meal>()
-                   .HasOne(m => m.MealType)
-                   .WithOne(m => m.Meal)
-                   .HasForeignKey<MealType>(m => m.Id);
+            builder.Entity<UserMeal>()
+            .HasOne(m => m.MealType)
+            .WithOne(m => m.Meal)
+            .HasForeignKey<MealType>(m => m.Id);
 
             builder.Entity<MealType>()
                    .HasIndex(m => m.Id)
                    .IsUnique();
 
-
-            builder.Entity<Product>()
+            builder.Entity<UserProduct>()
                      .HasIndex(u => u.Id)
                      .IsUnique();
 
             builder.Entity<MealProduct>()
                      .HasIndex(u => u.Id)
                      .IsUnique();
-
 
             builder.Entity<UserMeasurement>()
                .HasIndex(u => u.Id)
@@ -37,7 +36,7 @@ namespace DietPlanner.Api.Database
 
         public DbSet<Product> Products { get; set; }
 
-        public DbSet<Meal> Meals { get; set; }
+        public DbSet<UserMeal> UserMeals { get; set; }
 
         public DbSet<MealType> MealTypes { get; set; }
 

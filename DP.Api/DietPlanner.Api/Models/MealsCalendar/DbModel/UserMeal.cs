@@ -1,11 +1,12 @@
-﻿using DietPlanner.Api.Models.MealsCalendar;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DietPlanner.Api.Models
+namespace DietPlanner.Api.Models.MealsCalendar.DbModel
 {
-    public class Meal
+    public class UserMeal
     {
         public int Id { get; set; }
+
+        public string UserId { get; set; }
 
         public string Date { get; set; }
 

@@ -1,10 +1,12 @@
-﻿using DietPlanner.Api.Models.Dto.MealsCalendar;
-using DietPlanner.Api.Models.MealsCalendar;
+﻿using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Api.Services.MealsCalendar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Controllers
@@ -22,17 +24,21 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpGet("{date}")]
-        public async Task<ActionResult<DailyMealsDTO>> GetDailyMeals(DateTime date)
+        public async Task<ActionResult<DailyMealsDto>> GetDailyMeals(DateTime date)
         {
-            var result = await _mealsCalendarService.GetMeals(date);
+            string userId = HttpContext.GetUserId();
+
+            var result = await _mealsCalendarService.GetMeals(date, userId);
 
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<DailyMealsDTO>> AddOrUpdateMeal([FromBody] MealByDay mealByDate)
+        public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] MealByDay mealByDate)
         {
-            var result = await _mealsCalendarService.AddOrUpdateMeal(mealByDate);
+            string userId = HttpContext.GetUserId();
+
+            var result = await _mealsCalendarService.AddOrUpdateMeal(mealByDate, userId);
 
             if (result.Exception != null)
             {

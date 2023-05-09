@@ -1,4 +1,5 @@
-﻿using DietPlanner.Api.Models;
+﻿using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Models.BodyProfile.DTO;
 using DietPlanner.Api.Services;
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -22,52 +23,55 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserMeasurement>> GetAllAsync()
+        public async Task<IEnumerable<MeasurementDto>> GetAllAsync()
         {
-            return await _measurementService.GetAll();
+            string userId = HttpContext.GetUserId();
+
+            return await _measurementService.GetAll(userId);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserMeasurement>> GetById(int id)
+        [HttpGet("{measurementId}")]
+        public async Task<ActionResult<MeasurementDto>> GetById(int measurementId)
         {
-            UserMeasurement measurement = await _measurementService.GetById(id);
+            string userId = HttpContext.GetUserId();
+
+            MeasurementDto measurement = await _measurementService.GetById(measurementId, userId);
 
             if (measurement is null)
             {
-                return NotFound(new { Message = $"Measurement with id {id} no found" });
+                return NotFound(new { Message = $"Measurement with id '{measurementId}' no found" });
             }
 
             return measurement;
         }
 
         [HttpPost]
-        [ActionName(nameof(PostAsync))]
-        public async Task<IActionResult> PostAsync([FromBody] UserMeasurement measurement)
+        [ActionName(nameof(AddMeasurement))]
+        public async Task<IActionResult> AddMeasurement([FromBody] MeasurementDto measurement)
         {
-            if (measurement == null)
+            string userId = HttpContext.GetUserId();
+
+            if (measurement is null || userId is null)
             {
                 return BadRequest();
             }
 
-            DatabaseActionResult<UserMeasurement> result = await _measurementService.Create(measurement);
+            DatabaseActionResult<MeasurementDto> result = await _measurementService.Create(measurement, userId);
 
             if (result.Exception != null)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
+            return CreatedAtAction(nameof(AddMeasurement), new { id = result.Obj.Id }, result.Obj);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UserMeasurement measurement)
+        [HttpPut("{measurementId}")]
+        public async Task<IActionResult> UpdateMeasurement(int measurementId, [FromBody] MeasurementDto measurement)
         {
-            if (id != measurement.Id)
-            {
-                return BadRequest();
-            }
+            string userId = HttpContext.GetUserId();
 
-            DatabaseActionResult<UserMeasurement> result = await _measurementService.Update(id, measurement);
+            DatabaseActionResult<MeasurementDto> result = await _measurementService.Update(measurementId, measurement, userId);
 
             if (result.Exception != null)
             {
@@ -85,7 +89,9 @@ namespace DietPlanner.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            DatabaseActionResult<UserMeasurement> result = await _measurementService.DeleteById(id);
+            string userId = HttpContext.GetUserId();
+
+            DatabaseActionResult<MeasurementDto> result = await _measurementService.DeleteById(id, userId);
 
             if (result.Exception != null)
             {

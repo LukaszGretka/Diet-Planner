@@ -1,12 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace DietPlanner.Api.Models
+﻿namespace DietPlanner.Api.Models.BodyProfile.DTO
 {
-    public class UserMeasurement
+    public class MeasurementDto
     {
-        [Key]
         public int Id { get; set; }
 
         public string Date { get; set; }

@@ -3,7 +3,7 @@ import { Measurement } from 'src/app/body-profile/models/measurement';
 import { Product } from 'src/app/products/models/product';
 
 export const clearState = createAction('Clear state');
-export const setErrorCode = createAction('Set error code', prop<{ errorCode: number | null }>());
+export const setErrorCode = createAction('Set error code', prop<{ errorCode: number | null; errorMessage?: string }>());
 
 export const getProductsRequest = createAction('Get products request');
 export const getProductsRequestCompleted = createAction(

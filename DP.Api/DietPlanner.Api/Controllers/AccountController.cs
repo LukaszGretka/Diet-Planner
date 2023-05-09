@@ -23,7 +23,7 @@ namespace DietPlanner.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("sign-up")]
-        public async Task<IActionResult> SignUpAsync([FromBody] SignUpRequest signUpRequest)
+        public async Task<IActionResult> SignUp([FromBody] SignUpRequest signUpRequest)
         {
             DatabaseActionResult<IdentityUser> result = await _accountService.SignUp(signUpRequest);
 
@@ -45,7 +45,7 @@ namespace DietPlanner.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("sign-in")]
-        public async Task<IActionResult> SignInAsync([FromBody] SignInRequest loginRequest)
+        public async Task<IActionResult> SignIn([FromBody] SignInRequest loginRequest)
         {
             if (!ModelState.IsValid)
             {
