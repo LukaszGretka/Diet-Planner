@@ -14,7 +14,7 @@ import { ErrorPageComponent } from './shared/error-page/error-page.component';
 import { UnauthorizedComponent } from './account/unauthorized/unauthorized.component';
 import { SignOutComponent } from './account/sign-out/sign-out.component';
 import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
-import { ToasterComponent } from './shared/toaster/toaster.component';
+import { ToastComponent } from './shared/toast/toast.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
@@ -31,7 +31,7 @@ const routes: Routes = [
   { path: 'body-profile/add', component: AddMeasurementComponent, canActivate: [AuthGuard] },
   { path: 'body-profile/edit/:id', component: EditMeasurementComponent, canActivate: [AuthGuard] },
   { path: 'meals-calendar', component: MealsCalendarComponent, canActivate: [AuthGuard] },
-  { path: 'toast', component: ToasterComponent },
+  { path: 'toast', component: ToastComponent },
 ];
 
 @NgModule({

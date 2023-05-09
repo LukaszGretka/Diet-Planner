@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Api.Models
+namespace DietPlanner.Api.Models.MealsCalendar.DbModel
 {
     public class UserProduct : Product
     {
@@ -19,7 +19,7 @@ namespace DietPlanner.Api.Models
         public string Name { get; set; }
 
         public string Description { get; set; }
-        
+
         public string ImagePath { get; set; }
 
         public float? Carbohydrates { get; set; }

@@ -1,17 +1,13 @@
-﻿using DietPlanner.Api.Models.MealsCalendar;
-using System;
-using System.Collections.Generic;
-
-namespace DietPlanner.Api.Models.Dto.MealsCalendar
+﻿namespace DietPlanner.Api.Models.MealsCalendar.DTO
 {
-    public class DailyMealsDTO
+    public class DailyMealsDto
     {
+        public MealDto Breakfast { get; set; }
 
-        public (MealTypeEnum, List<Product>) Breakfastee { get; set; }
+        public MealDto Lunch { get; set; }
 
-        public MealDTO Breakfast { get; set; }
-        public MealDTO Lunch { get; set; }
-        public MealDTO Dinner { get; set; }
-        public MealDTO Supper { get; set; }
+        public MealDto Dinner { get; set; }
+
+        public MealDto Supper { get; set; }
     }
 }

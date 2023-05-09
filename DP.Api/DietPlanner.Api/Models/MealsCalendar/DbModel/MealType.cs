@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Api.Models
+﻿namespace DietPlanner.Api.Models.MealsCalendar.DbModel
 {
     public class MealType
     {

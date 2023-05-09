@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.Models;
+﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Services;
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -100,14 +100,14 @@ namespace DietPlanner.Api.Controllers
         {
             DatabaseActionResult<Product> result = await _productService.DeleteById(id);
 
-            if (result.Exception != null)
+            if (result?.Exception != null)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
             if (!result.Success)
             {
-                return NotFound(new { Message = "Product no found" });
+                return BadRequest(new { message = result.Message });
             }
 
             return NoContent();

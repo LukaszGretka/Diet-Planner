@@ -1,5 +1,5 @@
 <app-error-page
-  *ngIf="errorCode$ | async; else productsTemplate"
+  *ngIf="(errorCode$ | async) >= 500; else productsTemplate"
   [httpsStatusError]="errorCode$ | async"></app-error-page>
 <ng-template #productsTemplate>
   <div *ngIf="authenticatedUser$ | async" class="container-lg m-4">

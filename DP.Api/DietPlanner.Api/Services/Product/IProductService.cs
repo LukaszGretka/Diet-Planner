@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.Models;
+﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Shared.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;

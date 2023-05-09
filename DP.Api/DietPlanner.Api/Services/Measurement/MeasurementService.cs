@@ -1,9 +1,12 @@
 ﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Models;
+using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Models.BodyProfile.DbModel;
+using DietPlanner.Api.Models.BodyProfile.DTO;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services
@@ -18,41 +21,105 @@ namespace DietPlanner.Api.Services
             _logger = logger;
             _databaseContext = databaseContext;
         }
-        public async Task<List<UserMeasurement>> GetAll()
+        public async Task<List<MeasurementDto>> GetAll(string userId)
         {
-            return await _databaseContext.UserMeasurements.AsNoTracking().ToListAsync();
+            var measurements = await _databaseContext
+                .UserMeasurements
+                .AsNoTracking()
+                .Where(m => m.UserId.Equals(userId))
+                .ToListAsync();
+
+            var measurementsDto = new List<MeasurementDto>();
+
+            measurements.ForEach(m =>
+            {
+                measurementsDto.Add(new MeasurementDto
+                {
+                    Id = m.Id,
+                    Belly = m.Belly,
+                    BicepsLeft = m.BicepsLeft,
+                    BicepsRight = m.BicepsRight,
+                    CalfLeft = m.CalfLeft,
+                    CalfRight = m.CalfRight,
+                    Chest = m.Chest,
+                    Date = m.Date,
+                    ForearmLeft = m.ForearmLeft,
+                    ForearmRight = m.ForearmRight,
+                    ThighLeft = m.ThighLeft,
+                    ThighRight = m.ThighRight,
+                    Waist = m.Waist,
+                    Weight = m.Weight
+                });
+            });
+
+            return measurementsDto;
         }
 
-        public async Task<UserMeasurement> GetById(int id)
+        public async Task<MeasurementDto> GetById(int id, string userId)
         {
-            return await _databaseContext.UserMeasurements.FindAsync(id);
+            var measurement = await _databaseContext
+                .UserMeasurements
+                .SingleAsync(measurement => measurement.UserId.Equals(userId) && measurement.Id == id);
+
+            return new MeasurementDto
+            {
+                Id = measurement.Id,
+                Belly = measurement.Belly,
+                BicepsLeft = measurement.BicepsLeft,
+                BicepsRight = measurement.BicepsRight,
+                CalfLeft = measurement.CalfLeft,
+                CalfRight = measurement.CalfRight,
+                Chest = measurement.Chest,
+                Date = measurement.Date,
+                ForearmLeft = measurement.ForearmLeft,
+                ForearmRight = measurement.ForearmRight,
+                ThighLeft = measurement.ThighLeft,
+                ThighRight = measurement.ThighRight,
+                Waist = measurement.Waist,
+                Weight = measurement.Weight
+            };
         }
 
-        public async Task<DatabaseActionResult<UserMeasurement>> Create(UserMeasurement measurement)
+        public async Task<DatabaseActionResult<MeasurementDto>> Create(MeasurementDto measurement, string userId)
         {
-            measurement.Date = System.DateTime.Now.ToString();
-
             try
             {
-                await _databaseContext.AddAsync(measurement);
+                await _databaseContext.AddAsync(new UserMeasurement
+                {
+                    UserId = userId,
+                    Belly = measurement.Belly,
+                    BicepsLeft = measurement.BicepsLeft,
+                    BicepsRight = measurement.BicepsRight,
+                    CalfLeft = measurement.CalfLeft,
+                    CalfRight = measurement.CalfRight,
+                    Chest = measurement.Chest,
+                    Date = System.DateTime.UtcNow.ToDatabaseDateFormat(),
+                    ForearmLeft = measurement.ForearmLeft,
+                    ForearmRight = measurement.ForearmRight,
+                    ThighLeft = measurement.ThighLeft,
+                    ThighRight = measurement.ThighRight,
+                    Waist = measurement.Waist,
+                    Weight = measurement.Weight
+                });
                 await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<UserMeasurement>(false, exception: ex);
+                return new DatabaseActionResult<MeasurementDto>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<UserMeasurement>(true, obj: measurement);
+            return new DatabaseActionResult<MeasurementDto>(true, obj: measurement);
         }
 
-        public async Task<DatabaseActionResult<UserMeasurement>> DeleteById(int id)
+        public async Task<DatabaseActionResult<MeasurementDto>> DeleteById(int measurementId, string userId)
         {
-            UserMeasurement foundMeasurement = await _databaseContext.UserMeasurements.FindAsync(id);
+            UserMeasurement foundMeasurement = await _databaseContext.UserMeasurements
+                .SingleAsync(measurement => measurement.UserId.Equals(userId) && measurement.Id == measurementId);
 
             if (foundMeasurement is null)
             {
-                return new DatabaseActionResult<UserMeasurement>(false, "Measurement no found");
+                return new DatabaseActionResult<MeasurementDto>(false, "Measurement no found");
             }
 
             try
@@ -63,19 +130,20 @@ namespace DietPlanner.Api.Services
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<UserMeasurement>(false, exception: ex);
+                return new DatabaseActionResult<MeasurementDto>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<UserMeasurement>(true);
+            return new DatabaseActionResult<MeasurementDto>(true);
         }
 
-        public async Task<DatabaseActionResult<UserMeasurement>> Update(int id, UserMeasurement measurement)
+        public async Task<DatabaseActionResult<MeasurementDto>> Update(int measurementId, MeasurementDto measurement, string userId)
         {
-            UserMeasurement existingMeasurment = await _databaseContext.UserMeasurements.FindAsync(id);
+            UserMeasurement existingMeasurment = await _databaseContext.UserMeasurements
+                .SingleAsync(measurement => measurement.UserId.Equals(userId) && measurement.Id == measurementId);
 
             if (existingMeasurment is null)
             {
-                return new DatabaseActionResult<UserMeasurement>(false, "Measurement no found");
+                return new DatabaseActionResult<MeasurementDto>(false, "Measurement no found");
             }
 
             existingMeasurment.Weight = measurement.Weight;
@@ -90,6 +158,7 @@ namespace DietPlanner.Api.Services
             existingMeasurment.ThighLeft = measurement.ThighLeft;
             existingMeasurment.CalfRight = measurement.CalfRight;
             existingMeasurment.CalfLeft = measurement.CalfLeft;
+            existingMeasurment.Date = System.DateTime.UtcNow.ToDatabaseDateFormat();
 
             try
             {
@@ -98,10 +167,10 @@ namespace DietPlanner.Api.Services
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<UserMeasurement>(false, exception: ex);
+                return new DatabaseActionResult<MeasurementDto>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<UserMeasurement>(true);
+            return new DatabaseActionResult<MeasurementDto>(true);
         }
     }
 }

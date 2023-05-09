@@ -30,7 +30,7 @@ import { AccountEffects } from './account/stores/account.effects';
 import { AccountService } from './account/services/account.service';
 import { UnauthorizedComponent } from './account/unauthorized/unauthorized.component';
 import { AuthGuardService } from './auth/auth-guard.service';
-import { ToasterComponent } from './shared/toaster/toaster.component';
+import { ToastComponent } from './shared/toast/toast.component';
 import { AccountReducer } from './account/stores/account.reducer';
 
 @NgModule({
@@ -51,7 +51,7 @@ import { AccountReducer } from './account/stores/account.reducer';
     MealsCalendarComponent,
     UnauthorizedComponent,
     ErrorPageComponent,
-    ToasterComponent,
+    ToastComponent,
   ],
   imports: [
     BrowserModule,

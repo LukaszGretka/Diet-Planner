@@ -1,7 +1,7 @@
 ﻿using DietPlanner.Api.Database;
 using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models;
-using DietPlanner.Api.Models.MealsCalendar;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -23,7 +23,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
             _databaseContext = databaseContext;
         }
 
-        public async Task<List<MealDTO>> GetMeals(DateTime date, string userId)
+        public async Task<List<MealDto>> GetMeals(DateTime date, string userId)
         {
             string formattedDate = date.ToDatabaseDateFormat();
 
@@ -53,7 +53,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 .Where(finalJoinResult => finalJoinResult.mealDate.Equals(formattedDate) 
                         && finalJoinResult.userId.Equals(userId)
                 )
-                .GroupBy(x => x.mealTypeId, (mealTypeId, product) => new MealDTO
+                .GroupBy(x => x.mealTypeId, (mealTypeId, product) => new MealDto
                 {
                     Products = product.Select(x => x.product).ToList(),
                     MealTypeId = (MealTypeEnum)mealTypeId

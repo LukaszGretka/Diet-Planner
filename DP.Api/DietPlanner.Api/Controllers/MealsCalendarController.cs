@@ -1,6 +1,5 @@
 ﻿using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.Dto.MealsCalendar;
-using DietPlanner.Api.Models.MealsCalendar;
+using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Api.Services.MealsCalendar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -25,9 +24,9 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpGet("{date}")]
-        public async Task<ActionResult<DailyMealsDTO>> GetDailyMeals(DateTime date)
+        public async Task<ActionResult<DailyMealsDto>> GetDailyMeals(DateTime date)
         {
-            var userId = HttpContext.GetUserId();
+            string userId = HttpContext.GetUserId();
 
             var result = await _mealsCalendarService.GetMeals(date, userId);
 
@@ -35,9 +34,9 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<DailyMealsDTO>> AddOrUpdateMeal([FromBody] MealByDay mealByDate)
+        public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] MealByDay mealByDate)
         {
-            var userId = HttpContext.GetUserId();
+            string userId = HttpContext.GetUserId();
 
             var result = await _mealsCalendarService.AddOrUpdateMeal(mealByDate, userId);
 

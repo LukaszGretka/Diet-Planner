@@ -1,4 +1,5 @@
-﻿using DietPlanner.Api.Models;
+﻿using DietPlanner.Api.Models.BodyProfile.DbModel;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace DietPlanner.Api.Database

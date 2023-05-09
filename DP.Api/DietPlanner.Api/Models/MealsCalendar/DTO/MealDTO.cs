@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 
-namespace DietPlanner.Api.Models.MealsCalendar
+namespace DietPlanner.Api.Models.MealsCalendar.DTO
 {
-    public class MealDTO
+    public class MealDto
     {
         public MealTypeEnum MealTypeId { get; set; }
 
         public List<Product> Products { get; set; }
     }
 
-    public class MealByDay : MealDTO
+    public class MealByDay : MealDto
     {
         public DateTime Date { get; set; }
     }

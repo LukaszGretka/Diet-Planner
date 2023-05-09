@@ -1,5 +1,5 @@
 ﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Models;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -47,6 +47,15 @@ namespace DietPlanner.Api.Services
 
             try
             {
+                var mealProduct = await _databaseContext.MealProducts
+                    .FirstOrDefaultAsync(mealProduct => mealProduct.Product.Id == id);
+
+                if(mealProduct is not null)
+                {
+                    return new DatabaseActionResult<Product>
+                        (false, $"Product '{foundProduct.Name}' can't be deleted because it's used in one of the meals.");
+                }
+
                 _databaseContext.Products.Remove(foundProduct);
                 await _databaseContext.SaveChangesAsync();
             }
