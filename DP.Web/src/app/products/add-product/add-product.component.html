@@ -1,16 +1,4 @@
 <div class="container-sm m-4" style="max-width: 720px">
   <div class="alert alert-info" role="alert">Fill product's properties.</div>
-  <form (ngSubmit)="addProductSubmit()">
-    <app-product-template [product]="product"></app-product-template>
-    <div class="mb-3">
-      <div class="row">
-        <div class="col">
-          <a class="btn btn-secondary" role="button" routerLink="/products">Back</a>
-        </div>
-        <div class="col">
-          <button type="submit" class="btn btn-primary" style="float: right">Add</button>
-        </div>
-      </div>
-    </div>
-  </form>
+  <app-product-template [submitFunction]="submitFunction"></app-product-template>
 </div>

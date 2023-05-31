@@ -10,11 +10,17 @@ import { Product } from 'src/app/products/models/product';
   styleUrls: ['./add-product.component.css'],
 })
 export class AddProductComponent {
-  public product: Product = new Product();
+  public submitFunction: (store: any) => void;
 
-  constructor(private store: Store<GeneralState>) {}
+  constructor(private store: Store<GeneralState>) {
+    this.submitFunction = this.getSubmitFunction();
+  }
 
-  public addProductSubmit(): void {
-    this.store.dispatch(GeneralActions.addProductRequest({ productData: this.product }));
+  private getSubmitFunction(): (formData: any) => void {
+    return this.submitForm.bind(this);
+  }
+
+  submitForm(product: Product) {
+    this.store.dispatch(GeneralActions.addProductRequest({ productData: product }));
   }
 }

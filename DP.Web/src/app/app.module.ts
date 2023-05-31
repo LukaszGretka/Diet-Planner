@@ -32,6 +32,7 @@ import { UnauthorizedComponent } from './account/unauthorized/unauthorized.compo
 import { AuthGuardService } from './auth/auth-guard.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { AccountReducer } from './account/stores/account.reducer';
+import { FormErrorComponent } from './shared/form-error/form-error.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { AccountReducer } from './account/stores/account.reducer';
     UnauthorizedComponent,
     ErrorPageComponent,
     ToastComponent,
+    FormErrorComponent,
   ],
   imports: [
     BrowserModule,
