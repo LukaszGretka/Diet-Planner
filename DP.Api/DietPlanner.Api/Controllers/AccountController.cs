@@ -2,6 +2,7 @@
 using DietPlanner.Api.Services.Account;
 using DietPlanner.Api.Validators;
 using DietPlanner.Shared.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,18 +17,19 @@ namespace DietPlanner.Api.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
+        private readonly IValidator<SignUpRequest> _signUpValidator;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IValidator<SignUpRequest> signUpValidator)
         {
             _accountService = accountService;
+            _signUpValidator = signUpValidator;
         }
 
         [AllowAnonymous]
         [HttpPost("sign-up")]
         public async Task<IActionResult> SignUpAsync([FromBody] SignUpRequest signUpRequest)
         {
-            SignUpValidator validator = new SignUpValidator();
-            if (!validator.Validate(signUpRequest).IsValid)
+            if (!_signUpValidator.Validate(signUpRequest).IsValid)
             {
                 return BadRequest("signup_error");
             }

@@ -25,15 +25,27 @@ export class SignUpComponent {
   }
 
   private valiteSignUpInput(signUpRequest: SignUpRequest): boolean {
+    let validateResults = [ this.validateUserName(signUpRequest), this.validateEmailAddress(signUpRequest), this.validatePassword(signUpRequest)]
+    if(validateResults.some(x => x === false)) {
+      return false;
+    }
+    return true;
+  }
+
+  private validateUserName(signUpRequest: SignUpRequest): boolean {
     if (!signUpRequest.username) {
       this.notificationService.showErrorToast('Sign up error','User name cannot be empty.');
       return false;
     }
-    else if (signUpRequest.username.length < 6 || signUpRequest.username.length > 20) {
-      this.notificationService.showErrorToast('Sign up error','User name should contains at least six characters.');
+    else if (signUpRequest.username.length < 6 || signUpRequest.username.length >= 20) {
+      this.notificationService.showErrorToast('Sign up error','User name should contains between 6 and 20 characters.');
       return false;
     }
-    else if (!signUpRequest.email)
+    return true;
+  }
+
+  private validateEmailAddress(signUpRequest: SignUpRequest): boolean {
+    if (!signUpRequest.email)
     {
       this.notificationService.showErrorToast('Sign up error','Email address should contains at least one character.');
       return false;
@@ -48,9 +60,13 @@ export class SignUpComponent {
       this.notificationService.showErrorToast('Sign up error','Email format is invalid. Correct format is: example@example.com');
       return false;
     }
-    else if (signUpRequest.password.length < 8)
+    return true;
+  }
+
+  private validatePassword(signUpRequest: SignUpRequest): boolean {
+    if (signUpRequest.password.length < 8)
     {
-      this.notificationService.showErrorToast('Sign up error','Password should contains at least eight characters.');
+      this.notificationService.showErrorToast('Sign up error', 'Password should contains at least eight characters.');
       return false;
     }
     return true;
