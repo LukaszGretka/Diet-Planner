@@ -1,7 +1,10 @@
 using DietPlanner.Api.Database;
+using DietPlanner.Api.Models.Account;
 using DietPlanner.Api.Services;
 using DietPlanner.Api.Services.Account;
 using DietPlanner.Api.Services.MealsCalendar;
+using DietPlanner.Api.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -68,6 +71,7 @@ namespace DietPlanner.Api
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMealsCalendarService, MealsCalendarService>();
             services.AddTransient<IAccountService, AccountService>();
+            services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
@@ -77,7 +81,7 @@ namespace DietPlanner.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
+                
             app.UseHttpLogging();
             app.UseRouting();
             app.UseCors(CorsPolicyName);
