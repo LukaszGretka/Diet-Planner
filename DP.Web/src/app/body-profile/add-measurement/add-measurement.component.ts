@@ -12,11 +12,17 @@ import * as StoreSelector from '../../stores/store.selectors';
 })
 export class AddMeasurementComponent {
   public errorCode$ = this.store.select(StoreSelector.getErrorCode);
-  public measurement: Measurement = new Measurement();
+  public submitFunction: (store: any) => void;
 
-  constructor(private store: Store<GeneralState>) {}
+  constructor(private store: Store<GeneralState>) {
+    this.submitFunction = this.getSubmitFunction();
+  }
 
-  public measurementSubmit(): void {
-    this.store.dispatch(GeneralActions.addMeasurementRequest({ measurementData: this.measurement }));
+  private getSubmitFunction(): (formData: any) => void {
+    return this.submitForm.bind(this);
+  }
+
+  submitForm(measurement: Measurement) {
+    this.store.dispatch(GeneralActions.addMeasurementRequest({ measurementData: measurement }));
   }
 }

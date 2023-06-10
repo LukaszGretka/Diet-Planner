@@ -1,6 +1,6 @@
 <form [formGroup]="measurementForm" (ngSubmit)="onSubmit()">
   <div class="mb-3">
-    <label for="weight-label" class="form-label">Weight [kg]</label>
+    <label for="weight-label" class="form-label">Weight <label class="text-secondary">[kg]</label></label>
     <input type="number" class="form-control" formControlName="weight" id="weight" />
     <app-form-error [control]="measurementForm.get('weight')"></app-form-error>
   </div>
@@ -40,14 +40,16 @@
   <div class="mb-3">
     <div class="row">
       <div class="col">
-        <label for="forearm-left-label" class="form-label">Forearm (L) <label
-            class="text-secondary">[cm]</label></label>
+        <label for="forearm-left-label" class="form-label"
+          >Forearm (L) <label class="text-secondary">[cm]</label></label
+        >
         <input type="number" class="form-control" formControlName="forearm-left" id="forearm-left" />
         <app-form-error [control]="measurementForm.get('forearm-left')"></app-form-error>
       </div>
       <div class="col">
-        <label for="forearm-right-label" class="form-label">Forearm (R) <label
-            class="text-secondary">[cm]</label></label>
+        <label for="forearm-right-label" class="form-label"
+          >Forearm (R) <label class="text-secondary">[cm]</label></label
+        >
         <input type="number" class="form-control" formControlName="forearm-right" id="forearm-right" />
         <app-form-error [control]="measurementForm.get('forearm-right')"></app-form-error>
       </div>
@@ -80,6 +82,16 @@
         <label for="calf-right-label" class="form-label">Calf (R) <label class="text-secondary">[cm]</label></label>
         <input type="number" class="form-control" formControlName="calf-right" id="calf-right" />
         <app-form-error [control]="measurementForm.get('calf-right')"></app-form-error>
+      </div>
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="row">
+      <div class="col">
+        <a class="btn btn-secondary" role="button" routerLink="/body-profile">Back</a>
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" style="float: right">Add</button>
       </div>
     </div>
   </div>

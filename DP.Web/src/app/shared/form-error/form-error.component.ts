@@ -3,13 +3,7 @@ import { AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-form-error',
-  template: `
-    <small class="text-danger" *ngIf="control.invalid && control.touched">
-      <ng-container *ngFor="let errorKey of getErrorKeys()">
-        <div>{{ getErrorMessage(errorKey) }}</div>
-      </ng-container>
-    </small>
-  `,
+  templateUrl: './form-error.component.html',
 })
 export class FormErrorComponent {
   @Input() control: AbstractControl;

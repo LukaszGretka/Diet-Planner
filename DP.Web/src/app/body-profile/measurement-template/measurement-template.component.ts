@@ -14,16 +14,12 @@ export class MeasurementTemplateComponent implements OnInit {
   @Input()
   public submitFunction: Function;
 
-  private defaultMeasurementValidator = [
-    Validators.required,
-    Validators.maxLength(3),
-    Validators.min(1)
-  ];
+  private defaultMeasurementValidator = [Validators.required, Validators.maxLength(3), Validators.min(1)];
 
-  constructor(private formBuilder: FormBuilder) {
-  }
+  constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
+    console.log(this.measurement);
     if (this.measurement) {
       this.measurementForm.get('weight')?.setValue(this.measurement.weight);
       this.measurementForm.get('chest')?.setValue(this.measurement.chest);
@@ -53,7 +49,7 @@ export class MeasurementTemplateComponent implements OnInit {
     'thigh-right': ['', this.defaultMeasurementValidator],
     'calf-left': ['', this.defaultMeasurementValidator],
     'calf-right': ['', this.defaultMeasurementValidator],
-  })
+  });
 
   public onSubmit() {
     if (!this.measurementForm.valid) {
@@ -61,7 +57,7 @@ export class MeasurementTemplateComponent implements OnInit {
       return;
     }
     this.submitFunction({
-      id: this.measurement.id,
+      id: this.measurement?.id,
       weight: this.getControlValue('weight'),
       chest: this.getControlValue('chest'),
       belly: this.getControlValue('belly'),
@@ -73,7 +69,7 @@ export class MeasurementTemplateComponent implements OnInit {
       thighLeft: this.getControlValue('thigh-left'),
       thighRight: this.getControlValue('thigh-right'),
       calfLeft: this.getControlValue('calf-left'),
-      calfRight: this.getControlValue('calf-right')
+      calfRight: this.getControlValue('calf-right'),
     } as Measurement);
   }
 

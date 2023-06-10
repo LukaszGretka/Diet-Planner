@@ -14,8 +14,7 @@ export class ProductTemplateComponent implements OnInit {
   @Input()
   public submitFunction: Function;
 
-  constructor(private formBuilder: FormBuilder) {
-  }
+  constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     if (this.product) {
@@ -37,7 +36,7 @@ export class ProductTemplateComponent implements OnInit {
     carbohydrates: ['', [Validators.required, Validators.maxLength(5)]],
     proteins: ['', [Validators.required, Validators.maxLength(5)]],
     fats: ['', [Validators.required, Validators.maxLength(5)]],
-  })
+  });
 
   public onSubmit() {
     if (!this.productForm.valid) {
@@ -46,7 +45,7 @@ export class ProductTemplateComponent implements OnInit {
     }
 
     this.submitFunction({
-      id: this.product.id,
+      id: this.product?.id,
       name: this.getControlValue('name'),
       description: this.getControlValue('description'),
       barCode: this.getControlValue('barcode'),
