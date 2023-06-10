@@ -36,7 +36,10 @@ export class FormErrorComponent {
       return `Field '${fieldName}' cannot exceed  ${errorValue.requiredLength} characters.`;
     } else if (errorKey === 'pattern') {
       return `Field '${fieldName}' contains invalid characters.`;
+    } else if (errorKey === 'min') {
+      return `Value of field '${fieldName}' is too low.`;
     }
+
     return '';
   }
 }
