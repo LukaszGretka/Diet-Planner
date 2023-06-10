@@ -74,7 +74,6 @@ export class MealsCalendarComponent implements OnInit {
     selectedDate.setMonth(ngbDate.month - 1);
     selectedDate.setDate(ngbDate.day);
     this.selectedDate = selectedDate;
-    console.log(selectedDate);
     this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
   }
 

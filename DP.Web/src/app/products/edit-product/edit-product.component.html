@@ -1,16 +1,4 @@
 <div class="container-sm m-4" style="max-width: 720px">
   <div class="alert alert-info" role="alert">Edit product's properties.</div>
-  <form (ngSubmit)="editProductSubmit()">
-    <app-product-template *ngIf="product" [product]="product"></app-product-template>
-    <div class="mb-3">
-      <div class="row">
-        <div class="col">
-          <a class="btn btn-secondary" role="button" routerLink="/products">Back</a>
-        </div>
-        <div class="col">
-          <button type="submit" class="btn btn-primary" style="float: right">Save</button>
-        </div>
-      </div>
-    </div>
-  </form>
+  <app-product-template *ngIf="product" [product]="product" [submitFunction]="submitFunction"></app-product-template>
 </div>
