@@ -21,7 +21,6 @@ export class FormErrorComponent {
     const errorValue = this.control.getError(errorKey);
     let fieldName = this.getControlName(this.control);
     fieldName = fieldName[0].toUpperCase() + fieldName.slice(1); // Change first letter to capital.
-
     if (errorKey === 'required') {
       return `Field '${fieldName}' is required.`;
     } else if (errorKey === 'minlength') {
@@ -32,6 +31,8 @@ export class FormErrorComponent {
       return `Field '${fieldName}' contains invalid characters.`;
     } else if (errorKey === 'min') {
       return `Value of field '${fieldName}' is too low.`;
+    } else if (errorKey === 'email') {
+      return `Value is not an email. Please provide valid email address.`;
     }
 
     return '';

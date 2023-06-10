@@ -1,17 +1,20 @@
 <div class="container mt-4">
   <h3>Create your account</h3>
-  <form #signUpUser="ngForm" (ngSubmit)="onSignUpSubmit(signUpUser.value)">
+  <form [formGroup]="signUpForm" (ngSubmit)="onSignUpSubmit()">
     <div class="mb-3 mt-4">
-      <label for="usernameInput" class="form-label">Username</label>
-      <input class="form-control" name="username" ngModel />
+      <label class="form-label" id="username-label">Username</label>
+      <input class="form-control" formControlName="username" name="username" />
+      <app-form-error [control]="signUpForm.get('username')"></app-form-error>
     </div>
     <div class="mb-3">
-      <label for="emailInput" class="form-label">Email address</label>
-      <input type="email" class="form-control" name="email" ngModel />
+      <label class="form-label" id="email-label">Email address</label>
+      <input class="form-control" formControlName="email" name="email" type="email" />
+      <app-form-error [control]="signUpForm.get('email')"></app-form-error>
     </div>
     <div class="mb-3">
-      <label for="passwordInput" class="form-label">Password</label>
-      <input type="password" name="password" class="form-control" ngModel />
+      <label class="form-label" id="password-label">Password</label>
+      <input class="form-control" formControlName="password" name="password" type="password" />
+      <app-form-error [control]="signUpForm.get('password')"></app-form-error>
     </div>
     <button class="btn btn-primary" type="submit">Sign-up</button>
   </form>
