@@ -4,7 +4,11 @@
   flex-direction: row;
 }
 
-.meal-save-button {
-  display: flex;
-  justify-content: flex-end;
+
+.meal-type-header {
+  font-size: larger;
+  color: rgba(255, 255, 255, .55);
+  background-color: #212529;
+  padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+
 }

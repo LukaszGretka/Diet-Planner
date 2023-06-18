@@ -1,197 +1,58 @@
-<app-error-page
-  *ngIf="errorCode$ | async; else mealCalendarTemplate"
-  [httpsStatusError]="errorCode$ | async"></app-error-page>
-
+<app-error-page *ngIf="errorCode$ | async; else mealCalendarTemplate" [httpsStatusError]="errorCode$ | async">
+</app-error-page>
 <ng-template #mealCalendarTemplate>
-  <div class="container-lg m-4">
-    <form class="row row-cols-sm-auto">
-      <div class="col-12">
+  <div class="container-lg">
+    <div class="d-flex flex-row bd-highlight mb-3">
+      <div class="p-2 bd-highlight">
         <div class="input-group">
-          <input
-            class="form-control"
-            placeholder="Date"
-            name="dp"
-            [(ngModel)]="dateModel"
-            ngbDatepicker
-            #d="ngbDatepicker"
-            (dateSelect)="onDateSelection($event)" />
+          <input class="form-control" placeholder="Date" name="dp" [(ngModel)]="dateModel" ngbDatepicker
+            #d="ngbDatepicker" (dateSelect)="onDateSelection($event)" />
           <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
             <i class="bi bi-calendar-date"></i>
           </button>
         </div>
       </div>
-    </form>
+      <div class="p-2 bd-highlight">
+        <div class="form-check-inline">Show meals:</div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" checked>
+          <label class="form-check-label" for="inlineCheckbox1">Breakfast</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" checked>
+          <label class="form-check-label" for="inlineCheckbox2">Lunch</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" checked>
+          <label class="form-check-label" for="inlineCheckbox3">Dinner</label>
+        </div>
+      </div>
+      <div class="p-2 bd-highlight"> <button type="button" class="btn btn-primary">
+          Save
+        </button></div>
+    </div>
+  </div>
 
-    <div class="accordion-container mt-4">
-      <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
-        <ngb-panel title="Breakfast">
-          <ng-template ngbPanelContent>
-            <table class="table table-striped mt-4">
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Carbohydrates</th>
-                  <th scope="col">Proteins</th>
-                  <th scope="col">Fats</th>
-                  <th scope="col">Calories</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let breakfastProduct of breakfastProducts$ | async; let productIndex = index">
-                  <td>{{ breakfastProduct.name }}</td>
-                  <td>{{ breakfastProduct.carbohydrates }}g</td>
-                  <td>{{ breakfastProduct.proteins }}g</td>
-                  <td>{{ breakfastProduct.fats }}g</td>
-                  <td>{{ breakfastProduct.calories }}kcal</td>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn delete-button-icon text-danger"
-                      (click)="onRemoveProductButtonClick(breakfastProducts$, productIndex)">
-                      <i class="bi bi-x-lg"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="row">
-              <div class="col">
-                <input
-                  id="typeahead-basic"
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="breakfastSearchModel"
-                  [ngbTypeahead]="searchProducts"
-                  placeholder="Start typing to search for a products..." />
-              </div>
-              <div class="col">
-                <button
-                  type="button"
-                  class="meal-add-button btn btn-primary"
-                  (click)="onAddProductButtonClick(breakfastProducts$, breakfastSearchModel)">
-                  Add
-                </button>
-              </div>
-            </div>
-            <hr class="bg border-1 border-top border" />
-            <div class="col meal-save-button">
-              <button type="button" class="btn btn-primary" (click)="onMealSaveButtonClick(breakfastProducts$, 1)">
-                Save
-              </button>
-            </div>
-          </ng-template>
-        </ngb-panel>
+  <div class="row">
+    <div class="container-m m-4 col-4">
+      <h5>Total calories: {{calculateTotalCalories()}} kcal</h5>
+      <div class="chart-container">
+        <canvas baseChart class="chart" [data]="chart.chart.data.datasets" [type]="'doughnut'">
+        </canvas>
+      </div>
+    </div>
+    <div class="container-lg m-4 col">
+      <div class="meal-type-header">Breakfast</div>
+      <app-meal-calendar-template [mealProducts$]="breakfastProducts$" [selectedDate]="selectedDate">
+      </app-meal-calendar-template>
 
-        <ngb-panel title="Lunch">
-          <ng-template ngbPanelContent>
-            <table class="table table-striped mt-4">
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Carbohydrates</th>
-                  <th scope="col">Proteins</th>
-                  <th scope="col">Fats</th>
-                  <th scope="col">Calories</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let lunchProduct of lunchProducts$ | async; let productIndex = index">
-                  <td>{{ lunchProduct.name }}</td>
-                  <td>{{ lunchProduct.carbohydrates }}g</td>
-                  <td>{{ lunchProduct.proteins }}g</td>
-                  <td>{{ lunchProduct.fats }}g</td>
-                  <td>{{ lunchProduct.calories }}kcal</td>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn btn-close"
-                      (click)="onRemoveProductButtonClick(lunchProducts$, productIndex)"></button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="row">
-              <div class="col">
-                <input
-                  id="typeahead-basic"
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="lunchSearchModel"
-                  [ngbTypeahead]="searchProducts" />
-              </div>
-              <div class="col">
-                <button
-                  type="button"
-                  class="meal-add-button btn btn-primary"
-                  (click)="onAddProductButtonClick(lunchProducts$, lunchSearchModel)">
-                  Add
-                </button>
-              </div>
-            </div>
-            <hr class="bg border-1 border-top border" />
-            <div class="col meal-save-button">
-              <button type="button" class="btn btn-primary" (click)="onMealSaveButtonClick(lunchProducts$, 2)">
-                Save
-              </button>
-            </div>
-          </ng-template>
-        </ngb-panel>
+      <div class="meal-type-header">Lunch</div>
+      <app-meal-calendar-template [mealProducts$]="lunchProducts$" [selectedDate]="selectedDate">
+      </app-meal-calendar-template>
 
-        <ngb-panel title="Dinner">
-          <ng-template ngbPanelContent>
-            <table class="table table-striped mt-4">
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Carbohydrates</th>
-                  <th scope="col">Proteins</th>
-                  <th scope="col">Fats</th>
-                  <th scope="col">Calories</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let dinnerProduct of dinnerProducts$ | async; let productIndex = index">
-                  <td>{{ dinnerProduct.name }}</td>
-                  <td>{{ dinnerProduct.carbohydrates }}g</td>
-                  <td>{{ dinnerProduct.proteins }}g</td>
-                  <td>{{ dinnerProduct.fats }}g</td>
-                  <td>{{ dinnerProduct.calories }}kcal</td>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn btn-close"
-                      (click)="onRemoveProductButtonClick(dinnerProducts$, productIndex)"></button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="row">
-              <div class="col">
-                <input
-                  id="typeahead-basic"
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="dinnerSearchModel"
-                  [ngbTypeahead]="searchProducts" />
-              </div>
-              <div class="col">
-                <button
-                  type="button"
-                  class="meal-add-button btn btn-primary"
-                  (click)="onAddProductButtonClick(dinnerProducts$, dinnerSearchModel)">
-                  Add
-                </button>
-              </div>
-            </div>
-            <hr class="bg border-1 border-top border" />
-            <div class="col meal-save-button">
-              <button type="button" class="btn btn-primary" (click)="onMealSaveButtonClick(dinnerProducts$, 3)">
-                Save
-              </button>
-            </div>
-          </ng-template>
-        </ngb-panel>
-      </ngb-accordion>
+      <div class="meal-type-header">Dinner</div>
+      <app-meal-calendar-template [mealProducts$]="dinnerProducts$" [selectedDate]="selectedDate">
+      </app-meal-calendar-template>
     </div>
   </div>
 </ng-template>

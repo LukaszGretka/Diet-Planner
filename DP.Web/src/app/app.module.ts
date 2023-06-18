@@ -33,6 +33,8 @@ import { AuthGuardService } from './auth/auth-guard.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { AccountReducer } from './account/stores/account.reducer';
 import { FormErrorComponent } from './shared/form-error/form-error.component';
+import { MealCalendarTemplateComponent } from './meals-calendar/meal-calendar-template/meal-calendar-template.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,7 @@ import { FormErrorComponent } from './shared/form-error/form-error.component';
     ErrorPageComponent,
     ToastComponent,
     FormErrorComponent,
+    MealCalendarTemplateComponent
   ],
   imports: [
     BrowserModule,
@@ -62,15 +65,16 @@ import { FormErrorComponent } from './shared/form-error/form-error.component';
     NgbModule,
     ReactiveFormsModule,
     FormsModule,
+    NgChartsModule,
     StoreModule.forRoot({
       generalState: GeneralReducer,
       mealCalendarState: MealCalendarReducer,
       accountState: AccountReducer,
     }),
     EffectsModule.forRoot([GeneralEffects, MealCalendarEffects, AccountEffects]),
-    StoreDevtoolsModule.instrument(),
+    StoreDevtoolsModule.instrument()
   ],
   providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

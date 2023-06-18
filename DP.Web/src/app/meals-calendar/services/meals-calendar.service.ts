@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DailyMealsOverview } from '../models/daily-meals-overview';
 import { Meal, MealByDay } from '../models/meal';
 
 @Injectable({
@@ -17,7 +16,7 @@ export class MealsCalendarService {
     }),
   };
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getDailyMeals(selectedDate: Date): Observable<Meal[]> {
     const dateUTC = selectedDate.toUTCString();

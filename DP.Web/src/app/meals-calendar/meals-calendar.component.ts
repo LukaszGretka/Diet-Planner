@@ -11,6 +11,8 @@ import * as MealCalendarActions from './stores/meals-calendar.actions';
 import * as MealCalendarSelectors from './stores/meals-calendar.selectors';
 import * as GeneralSelector from './../stores/store.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ChartData, ChartType } from 'chart.js';
+import { Meal } from './models/meal';
 
 @UntilDestroy()
 @Component({
@@ -40,9 +42,14 @@ export class MealsCalendarComponent implements OnInit {
   public lunchSearchModel: string;
   public dinnerSearchModel: string;
 
-  private selectedDate: Date;
+  public selectedDate: Date;
 
-  constructor(private productService: ProductService, private store: Store<MealCalendarState>) {}
+  public chartData: ChartData<'doughnut', number[], string | string[]> = {
+    labels: ['Carbohydrates', 'Proteins', 'Fats'],
+    datasets: [{ data: [0, 0, 0] }],
+  };
+
+  constructor(private productService: ProductService, private store: Store<MealCalendarState>) { }
 
   ngOnInit(): void {
     const dateNow = new Date();
@@ -61,6 +68,7 @@ export class MealsCalendarComponent implements OnInit {
       this.lunchProducts$.next(meals.filter(m => m.mealTypeId === MealType.lunch)[0]?.products ?? []);
       this.dinnerProducts$.next(meals.filter(m => m.mealTypeId === MealType.dinner)[0]?.products ?? []);
       this.supperProducts$.next(meals.filter(m => m.mealTypeId === MealType.supper)[0]?.products ?? []);
+      this.chartData.datasets = [{ data: this.buildMacronutrientsChartDataset() }]
     });
 
     this.productsNames$.pipe(untilDestroyed(this)).subscribe(productNames => {
@@ -68,7 +76,7 @@ export class MealsCalendarComponent implements OnInit {
     });
   }
 
-  onDateSelection(ngbDate: NgbDate): void {
+  public onDateSelection(ngbDate: NgbDate): void {
     const selectedDate = new Date();
     selectedDate.setFullYear(ngbDate.year);
     selectedDate.setMonth(ngbDate.month - 1);
@@ -116,7 +124,7 @@ export class MealsCalendarComponent implements OnInit {
     );
   }
 
-  searchProducts: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  public searchProducts: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
@@ -124,8 +132,49 @@ export class MealsCalendarComponent implements OnInit {
         searchText.length < 1
           ? []
           : this.currentProducts
-              .filter(product => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
-              .slice(0, 10),
+            .filter(product => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+            .slice(0, 10),
       ),
     );
+
+  public calculateTotalCalories(): number {
+    let totalSum = 0;
+    this.breakfastProducts$.getValue()
+      .forEach((product: Product) => {
+        totalSum += product.calories;
+      });
+    this.lunchProducts$.getValue()
+      .forEach((product: Product) => {
+        totalSum += product.calories;
+      });
+    this.dinnerProducts$.getValue()
+      .forEach((product: Product) => {
+        totalSum += product.calories;
+      });
+
+    return totalSum;
+  }
+
+  private buildMacronutrientsChartDataset(): [number, number, number] {
+    const breakfastMacros = this.calculateTotalMacronutrientsForMealType(this.breakfastProducts$);
+    const lunchMacros = this.calculateTotalMacronutrientsForMealType(this.lunchProducts$);
+    const dinnerMacros = this.calculateTotalMacronutrientsForMealType(this.dinnerProducts$);
+
+    return [
+      breakfastMacros.carbs + lunchMacros.carbs + dinnerMacros.carbs,
+      breakfastMacros.proteins + lunchMacros.proteins + dinnerMacros.proteins,
+      breakfastMacros.fats + lunchMacros.fats + dinnerMacros.fats];
+  }
+
+  private calculateTotalMacronutrientsForMealType(mealTypeProducts$: any) {
+    let macronutrients = { carbs: 0, proteins: 0, fats: 0 };
+
+    mealTypeProducts$.getValue().forEach((product: Product) => {
+      macronutrients.carbs += product.carbohydrates,
+        macronutrients.proteins += product.proteins,
+        macronutrients.fats += product.fats
+    });
+
+    return macronutrients;
+  }
 }
