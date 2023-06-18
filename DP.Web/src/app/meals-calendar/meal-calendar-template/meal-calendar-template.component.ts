@@ -14,15 +14,17 @@ import { Meal } from '../models/meal';
 @Component({
   selector: 'app-meal-calendar-template',
   templateUrl: './meal-calendar-template.component.html',
-  styleUrls: ['./meal-calendar-template.component.css']
+  styleUrls: ['./meal-calendar-template.component.css'],
 })
 export class MealCalendarTemplateComponent implements OnInit {
-
   @Input()
-  public mealProducts$: BehaviorSubject<(Meal[])>;
+  public mealProducts$: BehaviorSubject<Meal[]>;
 
   @Input()
   public selectedDate: Date;
+
+  @Input()
+  public mealType: MealType;
 
   //TODO move to effect
   //may require refactor if list of products will be long (need to test it)
@@ -33,14 +35,13 @@ export class MealCalendarTemplateComponent implements OnInit {
   public searchItem: string;
   public currentProducts: string[];
 
-  constructor(private productService: ProductService, private store: Store<MealCalendarState>) { }
+  constructor(private productService: ProductService, private store: Store<MealCalendarState>) {}
 
   ngOnInit(): void {
-    this.productsNames$.pipe(
-      untilDestroyed(this))
-      .subscribe(productNames => {
-        this.currentProducts = productNames;
-      });
+    console.log(this.mealType);
+    this.productsNames$.pipe(untilDestroyed(this)).subscribe(productNames => {
+      this.currentProducts = productNames;
+    });
   }
 
   // Update local products list for particular collection given in parameter.
@@ -54,6 +55,15 @@ export class MealCalendarTemplateComponent implements OnInit {
             const productsBehaviorSubject = behaviorSubject as BehaviorSubject<Product[]>;
             const products = (productsBehaviorSubject.getValue() as Product[]).concat(product);
             productsBehaviorSubject.next(products);
+            this.store.dispatch(
+              MealCalendarActions.addMealRequest({
+                mealByDay: {
+                  date: this.selectedDate,
+                  products: productsBehaviorSubject.getValue(),
+                  mealTypeId: this.mealType,
+                },
+              }),
+            );
           } else {
             //TODO: product no exists, want to add a product with this name?
           }
@@ -70,18 +80,6 @@ export class MealCalendarTemplateComponent implements OnInit {
     productsBehaviorSubject.next(productsLocal);
   }
 
-  public onMealSaveButtonClick(behaviorSubject: BehaviorSubject<any>, mealType: MealType) {
-    this.store.dispatch(
-      MealCalendarActions.addMealRequest({
-        mealByDay: {
-          date: this.selectedDate,
-          products: behaviorSubject.getValue(),
-          mealTypeId: mealType,
-        },
-      }),
-    );
-  }
-
   searchProducts: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
@@ -90,8 +88,8 @@ export class MealCalendarTemplateComponent implements OnInit {
         searchText.length < 1
           ? []
           : this.currentProducts
-            .filter(product => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
-            .slice(0, 10),
+              .filter(product => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+              .slice(0, 10),
       ),
     );
 }

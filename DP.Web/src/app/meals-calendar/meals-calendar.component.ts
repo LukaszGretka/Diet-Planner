@@ -49,7 +49,7 @@ export class MealsCalendarComponent implements OnInit {
     datasets: [{ data: [0, 0, 0] }],
   };
 
-  constructor(private productService: ProductService, private store: Store<MealCalendarState>) { }
+  constructor(private productService: ProductService, private store: Store<MealCalendarState>) {}
 
   ngOnInit(): void {
     const dateNow = new Date();
@@ -68,7 +68,7 @@ export class MealsCalendarComponent implements OnInit {
       this.lunchProducts$.next(meals.filter(m => m.mealTypeId === MealType.lunch)[0]?.products ?? []);
       this.dinnerProducts$.next(meals.filter(m => m.mealTypeId === MealType.dinner)[0]?.products ?? []);
       this.supperProducts$.next(meals.filter(m => m.mealTypeId === MealType.supper)[0]?.products ?? []);
-      this.chartData.datasets = [{ data: this.buildMacronutrientsChartDataset() }]
+      this.chartData.datasets = [{ data: this.buildMacronutrientsChartDataset() }];
     });
 
     this.productsNames$.pipe(untilDestroyed(this)).subscribe(productNames => {
@@ -85,72 +85,19 @@ export class MealsCalendarComponent implements OnInit {
     this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
   }
 
-  // Update local products list for particular collection given in parameter.
-  public onAddProductButtonClick(behaviorSubject: BehaviorSubject<any>, productName: string): void {
-    if (productName) {
-      this.productService
-        .getProductByName(productName)
-        .pipe(untilDestroyed(this))
-        .subscribe(product => {
-          if (product) {
-            const productsBehaviorSubject = behaviorSubject as BehaviorSubject<Product[]>;
-            const products = (productsBehaviorSubject.getValue() as Product[]).concat(product);
-            productsBehaviorSubject.next(products);
-          } else {
-            //TODO: product no exists, want to add a product with this name?
-          }
-        });
-    }
-  }
-
-  // Remove product from local list by given index
-  public onRemoveProductButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): void {
-    const productsBehaviorSubject = behaviorSubject as BehaviorSubject<Product[]>;
-    const products = productsBehaviorSubject.getValue();
-    let productsLocal = [...products];
-    productsLocal.splice(index, 1);
-    productsBehaviorSubject.next(productsLocal);
-  }
-
-  public onMealSaveButtonClick(behaviorSubject: BehaviorSubject<any>, mealType: MealType) {
-    this.store.dispatch(
-      MealCalendarActions.addMealRequest({
-        mealByDay: {
-          date: this.selectedDate,
-          products: behaviorSubject.getValue(),
-          mealTypeId: mealType,
-        },
-      }),
-    );
-  }
-
-  public searchProducts: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(searchText =>
-        searchText.length < 1
-          ? []
-          : this.currentProducts
-            .filter(product => product.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
-            .slice(0, 10),
-      ),
-    );
-
+  //TODO: MUST be redesigned after tests
+ 
   public calculateTotalCalories(): number {
     let totalSum = 0;
-    this.breakfastProducts$.getValue()
-      .forEach((product: Product) => {
-        totalSum += product.calories;
-      });
-    this.lunchProducts$.getValue()
-      .forEach((product: Product) => {
-        totalSum += product.calories;
-      });
-    this.dinnerProducts$.getValue()
-      .forEach((product: Product) => {
-        totalSum += product.calories;
-      });
+    this.breakfastProducts$.getValue().forEach((product: Product) => {
+      totalSum += product.calories;
+    });
+    this.lunchProducts$.getValue().forEach((product: Product) => {
+      totalSum += product.calories;
+    });
+    this.dinnerProducts$.getValue().forEach((product: Product) => {
+      totalSum += product.calories;
+    });
 
     return totalSum;
   }
@@ -163,16 +110,17 @@ export class MealsCalendarComponent implements OnInit {
     return [
       breakfastMacros.carbs + lunchMacros.carbs + dinnerMacros.carbs,
       breakfastMacros.proteins + lunchMacros.proteins + dinnerMacros.proteins,
-      breakfastMacros.fats + lunchMacros.fats + dinnerMacros.fats];
+      breakfastMacros.fats + lunchMacros.fats + dinnerMacros.fats,
+    ];
   }
 
   private calculateTotalMacronutrientsForMealType(mealTypeProducts$: any) {
     let macronutrients = { carbs: 0, proteins: 0, fats: 0 };
 
     mealTypeProducts$.getValue().forEach((product: Product) => {
-      macronutrients.carbs += product.carbohydrates,
-        macronutrients.proteins += product.proteins,
-        macronutrients.fats += product.fats
+      (macronutrients.carbs += product.carbohydrates),
+        (macronutrients.proteins += product.proteins),
+        (macronutrients.fats += product.fats);
     });
 
     return macronutrients;

@@ -5,8 +5,14 @@
     <div class="d-flex flex-row bd-highlight mb-3">
       <div class="p-2 bd-highlight">
         <div class="input-group">
-          <input class="form-control" placeholder="Date" name="dp" [(ngModel)]="dateModel" ngbDatepicker
-            #d="ngbDatepicker" (dateSelect)="onDateSelection($event)" />
+          <input
+            class="form-control"
+            placeholder="Date"
+            name="dp"
+            [(ngModel)]="dateModel"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            (dateSelect)="onDateSelection($event)" />
           <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
             <i class="bi bi-calendar-date"></i>
           </button>
@@ -15,43 +21,42 @@
       <div class="p-2 bd-highlight">
         <div class="form-check-inline">Show meals:</div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" checked>
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" checked />
           <label class="form-check-label" for="inlineCheckbox1">Breakfast</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" checked>
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" checked />
           <label class="form-check-label" for="inlineCheckbox2">Lunch</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" checked>
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" checked />
           <label class="form-check-label" for="inlineCheckbox3">Dinner</label>
         </div>
       </div>
-      <div class="p-2 bd-highlight"> <button type="button" class="btn btn-primary">
-          Save
-        </button></div>
     </div>
   </div>
 
   <div class="row">
     <div class="container-m m-4 col-4">
-      <h5>Total calories: {{calculateTotalCalories()}} kcal</h5>
+      <h5>Total calories: {{ calculateTotalCalories() }} kcal</h5>
       <div class="chart-container">
-        <canvas baseChart class="chart" [data]="chart.chart.data.datasets" [type]="'doughnut'">
-        </canvas>
+        <canvas baseChart class="chart" [data]="chartData.datasets" [type]="'doughnut'"> </canvas>
       </div>
     </div>
     <div class="container-lg m-4 col">
       <div class="meal-type-header">Breakfast</div>
-      <app-meal-calendar-template [mealProducts$]="breakfastProducts$" [selectedDate]="selectedDate">
+      <app-meal-calendar-template
+        [mealProducts$]="breakfastProducts$"
+        [selectedDate]="selectedDate"
+        [mealType]="'breakfast'">
       </app-meal-calendar-template>
 
       <div class="meal-type-header">Lunch</div>
-      <app-meal-calendar-template [mealProducts$]="lunchProducts$" [selectedDate]="selectedDate">
+      <app-meal-calendar-template [mealProducts$]="lunchProducts$" [selectedDate]="selectedDate" [mealType]="'lunch'">
       </app-meal-calendar-template>
 
       <div class="meal-type-header">Dinner</div>
-      <app-meal-calendar-template [mealProducts$]="dinnerProducts$" [selectedDate]="selectedDate">
+      <app-meal-calendar-template [mealProducts$]="dinnerProducts$" [selectedDate]="selectedDate" [mealType]="'dinner'">
       </app-meal-calendar-template>
     </div>
   </div>
