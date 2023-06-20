@@ -25,20 +25,24 @@ export class MealCalendarEffects {
       ofType(MealCalendarActions.addMealRequest),
       mergeMap(({ payload }) => {
         return this.mealsCalendarService.addDialyMeal(payload.mealByDay).pipe(
-          switchMap(() => of(MealCalendarActions.addMealRequestSuccess())),
+          switchMap(() => of(MealCalendarActions.addMealRequestSuccess({ addedDate: payload.mealByDay.date }))),
           catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
   );
 
-  addMealSuccessEffect$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(MealCalendarActions.addMealRequestSuccess),
-        tap(() => this.notificationService.showSuccessToast('Changes saved', 'Meals have been successfully updated.')),
-      ),
-    { dispatch: false },
+  addMealSuccessEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MealCalendarActions.addMealRequestSuccess),
+      tap(() => this.notificationService.showSuccessToast('Changes saved', 'Meals have been successfully updated.')),
+      exhaustMap(({ payload }) => {
+        return this.mealsCalendarService.getDailyMeals(payload.addedDate).pipe(
+          switchMap(result => of(MealCalendarActions.getMealsRequestSuccess({ result }))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
+        );
+      }),
+    ),
   );
 
   constructor(

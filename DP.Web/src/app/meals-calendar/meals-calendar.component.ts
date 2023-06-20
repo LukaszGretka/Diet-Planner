@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, map, Observable, OperatorFunction } from 'rxjs';
+import { BehaviorSubject, exhaustMap, map, Observable, of, take } from 'rxjs';
 import { Product } from '../products/models/product';
 import { ProductService } from '../products/services/product.service';
 import { DatePickerSelection } from './models/date-picker-selection';
@@ -12,7 +12,12 @@ import * as MealCalendarSelectors from './stores/meals-calendar.selectors';
 import * as GeneralSelector from './../stores/store.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ChartData, ChartType } from 'chart.js';
+import { Actions, ofType } from '@ngrx/effects';
+import * as ProductsSelectors from './../products/stores/products.selectors';
 import { Meal } from './models/meal';
+import { ProductsState } from '../products/stores/products.state';
+import * as ProductActions from '../products/stores/products.actions';
+import * as GeneralActions from '../stores/store.actions';
 
 @UntilDestroy()
 @Component({
@@ -28,6 +33,7 @@ export class MealsCalendarComponent implements OnInit {
     .pipe(map(products => products.map(product => product.name)));
 
   public currentProducts: string[];
+  public totalCalories: number;
 
   public dailyMealsOverview$ = this.store.select(MealCalendarSelectors.getDailyMealsOverview);
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
@@ -44,14 +50,32 @@ export class MealsCalendarComponent implements OnInit {
 
   public selectedDate: Date;
 
-  public chartData: ChartData<'doughnut', number[], string | string[]> = {
-    labels: ['Carbohydrates', 'Proteins', 'Fats'],
+  public doughnutChartLabels: string[] = ['Carbohydrates', 'Proteins', 'Fats'];
+  public doughnutChartData: ChartData<'doughnut'> = {
+    labels: this.doughnutChartLabels,
     datasets: [{ data: [0, 0, 0] }],
   };
+  public doughnutChartType: ChartType = 'doughnut';
 
-  constructor(private productService: ProductService, private store: Store<MealCalendarState>) {}
+  private callbackMealProduct$ = this.store.select(ProductsSelectors.getCallbackMealProduct);
+
+  constructor(
+    actions$: Actions,
+    private productService: ProductService,
+    private store: Store<MealCalendarState>,
+    private productStore: Store<ProductsState>,
+  ) {
+    actions$.pipe(ofType(MealCalendarActions.addMealRequestSuccess), untilDestroyed(this)).subscribe(() => {
+      this.totalCalories = this.calculateTotalCalories();
+      this.doughnutChartData = {
+        labels: this.doughnutChartLabels,
+        datasets: [{ data: this.buildMacronutrientsChartDataset() }],
+      };
+    });
+  }
 
   ngOnInit(): void {
+    this.store.dispatch(GeneralActions.clearErrors());
     const dateNow = new Date();
 
     this.dateModel = {
@@ -68,12 +92,50 @@ export class MealsCalendarComponent implements OnInit {
       this.lunchProducts$.next(meals.filter(m => m.mealTypeId === MealType.lunch)[0]?.products ?? []);
       this.dinnerProducts$.next(meals.filter(m => m.mealTypeId === MealType.dinner)[0]?.products ?? []);
       this.supperProducts$.next(meals.filter(m => m.mealTypeId === MealType.supper)[0]?.products ?? []);
-      this.chartData.datasets = [{ data: this.buildMacronutrientsChartDataset() }];
+      this.totalCalories = this.calculateTotalCalories();
+      this.doughnutChartData = {
+        labels: this.doughnutChartLabels,
+        datasets: [{ data: this.buildMacronutrientsChartDataset() }],
+      };
     });
 
     this.productsNames$.pipe(untilDestroyed(this)).subscribe(productNames => {
       this.currentProducts = productNames;
     });
+
+    this.callbackMealProduct$.pipe(take(1)).subscribe(callback => {
+      if (!callback) {
+        return;
+      }
+      const targetedMeal = this.dailyMealsOverview$.pipe(untilDestroyed(this)).pipe(
+        exhaustMap(meals => {
+          var targetedMeal = meals.filter(meal => meal.mealTypeId == callback.mealType);
+          return of(targetedMeal[0]);
+        }),
+      );
+      const targetedMealSb = new BehaviorSubject<Meal>(null);
+      targetedMeal.subscribe(targetedMealSb);
+
+      let currentProducts = [...targetedMealSb.getValue().products];
+
+      this.productService
+        .getProductByName(callback.productName)
+        .pipe(take(1))
+        .subscribe(product => {
+          currentProducts.push(product);
+          targetedMealSb.next({ mealTypeId: callback.mealType, products: currentProducts });
+          this.store.dispatch(
+            MealCalendarActions.addMealRequest({
+              mealByDay: {
+                date: this.selectedDate,
+                products: targetedMealSb.getValue().products,
+                mealTypeId: callback.mealType,
+              },
+            }),
+          );
+        });
+    });
+    this.productStore.dispatch(ProductActions.clearCallbackMealProduct());
   }
 
   public onDateSelection(ngbDate: NgbDate): void {
@@ -83,23 +145,6 @@ export class MealsCalendarComponent implements OnInit {
     selectedDate.setDate(ngbDate.day);
     this.selectedDate = selectedDate;
     this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
-  }
-
-  //TODO: MUST be redesigned after tests
- 
-  public calculateTotalCalories(): number {
-    let totalSum = 0;
-    this.breakfastProducts$.getValue().forEach((product: Product) => {
-      totalSum += product.calories;
-    });
-    this.lunchProducts$.getValue().forEach((product: Product) => {
-      totalSum += product.calories;
-    });
-    this.dinnerProducts$.getValue().forEach((product: Product) => {
-      totalSum += product.calories;
-    });
-
-    return totalSum;
   }
 
   private buildMacronutrientsChartDataset(): [number, number, number] {
@@ -112,6 +157,21 @@ export class MealsCalendarComponent implements OnInit {
       breakfastMacros.proteins + lunchMacros.proteins + dinnerMacros.proteins,
       breakfastMacros.fats + lunchMacros.fats + dinnerMacros.fats,
     ];
+  }
+
+  private calculateTotalCalories(): number {
+    let totalSum = 0;
+    this.breakfastProducts$.getValue().forEach((product: Product) => {
+      totalSum += product.calories;
+    });
+    this.lunchProducts$.getValue().forEach((product: Product) => {
+      totalSum += product.calories;
+    });
+    this.dinnerProducts$.getValue().forEach((product: Product) => {
+      totalSum += product.calories;
+    });
+
+    return totalSum;
   }
 
   private calculateTotalMacronutrientsForMealType(mealTypeProducts$: any) {

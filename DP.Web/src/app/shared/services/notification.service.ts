@@ -14,7 +14,7 @@ export class NotificationService {
   private toasts: ToastInfo[] = [];
   private toastSuccessClassName = 'bg-success text-light';
   private toastErrorClassName = 'bg-danger text-light';
-  private defaultDelayTime = 5000;
+  private defaultDelayTime = 3000;
 
   public getToasts() {
     return this.toasts;

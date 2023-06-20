@@ -1,6 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Product } from 'src/app/products/models/product';
+import * as ProductsSelector from './../stores/products.selectors';
+import { ProductsState } from '../stores/products.state';
+import { Store } from '@ngrx/store';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-product-template',
@@ -14,7 +18,21 @@ export class ProductTemplateComponent implements OnInit {
   @Input()
   public submitFunction: Function;
 
-  constructor(private formBuilder: FormBuilder) {}
+  private returnUrl: string;
+  private callbackMealProduct$ = this.store.select(ProductsSelector.getCallbackMealProduct);
+
+  constructor(private formBuilder: FormBuilder, private store: Store<ProductsState>, private route: ActivatedRoute) {
+    this.route.queryParams.subscribe(params => {
+      if (params.hasOwnProperty('redirectUrl')) {
+        this.callbackMealProduct$?.subscribe(item => {
+          if (item) {
+            this.returnUrl = params['redirectUrl'];
+            this.productForm.get('name').setValue(item.productName);
+          }
+        });
+      }
+    });
+  }
 
   ngOnInit(): void {
     if (this.product) {
@@ -44,16 +62,19 @@ export class ProductTemplateComponent implements OnInit {
       return;
     }
 
-    this.submitFunction({
-      id: this.product?.id,
-      name: this.getControlValue('name'),
-      description: this.getControlValue('description'),
-      barCode: this.getControlValue('barcode'),
-      calories: this.getControlValue('calories'),
-      carbohydrates: this.getControlValue('carbohydrates'),
-      proteins: this.getControlValue('proteins'),
-      fats: this.getControlValue('fats'),
-    } as Product);
+    this.submitFunction(
+      {
+        id: this.product?.id,
+        name: this.getControlValue('name'),
+        description: this.getControlValue('description'),
+        barCode: this.getControlValue('barcode'),
+        calories: this.getControlValue('calories'),
+        carbohydrates: this.getControlValue('carbohydrates'),
+        proteins: this.getControlValue('proteins'),
+        fats: this.getControlValue('fats'),
+      } as Product,
+      this.returnUrl,
+    );
   }
 
   private getControlValue(controlName: string): any {

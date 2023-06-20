@@ -45,7 +45,7 @@ namespace DietPlanner.Api.Controllers
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            return Ok();
+            return Ok(result.Obj);
         }
     }
 }

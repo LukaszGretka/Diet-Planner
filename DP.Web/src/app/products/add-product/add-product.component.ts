@@ -20,7 +20,7 @@ export class AddProductComponent {
     return this.submitForm.bind(this);
   }
 
-  submitForm(product: Product) {
-    this.store.dispatch(GeneralActions.addProductRequest({ productData: product }));
+  submitForm(product: Product, returnUrl: string = '') {
+    this.store.dispatch(GeneralActions.addProductRequest({ productData: product, returnUrl }));
   }
 }

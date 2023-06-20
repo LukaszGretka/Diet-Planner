@@ -2,8 +2,8 @@ import { createAction, union } from '@ngrx/store';
 import { Measurement } from 'src/app/body-profile/models/measurement';
 import { Product } from 'src/app/products/models/product';
 
-export const clearState = createAction('Clear state');
 export const setErrorCode = createAction('Set error code', prop<{ errorCode: number | null; errorMessage?: string }>());
+export const clearErrors = createAction('Clear errors');
 
 export const getProductsRequest = createAction('Get products request');
 export const getProductsRequestCompleted = createAction(
@@ -11,7 +11,10 @@ export const getProductsRequestCompleted = createAction(
   prop<{ products: Product[] }>(),
 );
 
-export const addProductRequest = createAction('Add product request', prop<{ productData: Product }>());
+export const addProductRequest = createAction(
+  'Add product request',
+  prop<{ productData: Product; returnUrl?: string }>(),
+);
 export const addProductRequestCompleted = createAction('Add product request completed');
 
 export const editProductRequest = createAction(
@@ -44,7 +47,6 @@ export const removeMeasurementRequestCompleted = createAction('Remove measuremen
 export const getDailyMealsRequest = createAction('Get daily meals request');
 
 const actions = union({
-  clearState,
   setErrorCode,
   getProductsRequest,
   addProductRequest,

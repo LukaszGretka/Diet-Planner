@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, EMPTY, of, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { MeasurementService } from 'src/app/body-profile/services/measurement.service';
 import * as GeneralActions from './store.actions';
 import { ProductService } from 'src/app/products/services/product.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { ProductsState } from '../products/stores/products.state';
+import { Store } from '@ngrx/store';
+import * as ProductsSelector from '../products/stores/products.selectors';
 
 @Injectable()
 export class GeneralEffects {
@@ -95,8 +98,13 @@ export class GeneralEffects {
       ofType(GeneralActions.addProductRequest),
       switchMap(({ payload }) => {
         return this.productService.addProduct(payload.productData).pipe(
-          switchMap(() => {
-            this.router.navigate(['products']);
+          withLatestFrom(this.store.select(ProductsSelector.getCallbackMealProduct)),
+          switchMap(([_, callbackMealProduct]) => {
+            if (callbackMealProduct) {
+              this.router.navigateByUrl('meals-calendar');
+            } else {
+              this.router.navigate(['products']);
+            }
             return of(GeneralActions.addProductRequestCompleted());
           }),
           catchError((error: any) =>
@@ -160,5 +168,6 @@ export class GeneralEffects {
     private measurementService: MeasurementService,
     private productService: ProductService,
     private notificationService: NotificationService,
+    private store: Store<ProductsState>,
   ) {}
 }

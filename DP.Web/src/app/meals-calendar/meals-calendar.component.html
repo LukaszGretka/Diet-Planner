@@ -1,8 +1,8 @@
 <app-error-page *ngIf="errorCode$ | async; else mealCalendarTemplate" [httpsStatusError]="errorCode$ | async">
 </app-error-page>
 <ng-template #mealCalendarTemplate>
-  <div class="container-lg">
-    <div class="d-flex flex-row bd-highlight mb-3">
+  <div class="container-lg mt-4">
+    <div class="d-flex flex-row bd-highlight">
       <div class="p-2 bd-highlight">
         <div class="input-group">
           <input
@@ -21,7 +21,13 @@
       <div class="p-2 bd-highlight">
         <div class="form-check-inline">Show meals:</div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" checked />
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="inlineCheckbox1"
+            value="option1"
+            checked
+            #breakfastCheckbox />
           <label class="form-check-label" for="inlineCheckbox1">Breakfast</label>
         </div>
         <div class="form-check form-check-inline">
@@ -34,30 +40,26 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="container-m m-4 col-4">
-      <h5>Total calories: {{ calculateTotalCalories() }} kcal</h5>
-      <div class="chart-container">
-        <canvas baseChart class="chart" [data]="chartData.datasets" [type]="'doughnut'"> </canvas>
+    <div class="row">
+      <div class="container-lg p-4 col-4 text-center">
+        <p class="fs-4">Total calories: {{ totalCalories }} kcal</p>
+        <canvas baseChart class="chart" [data]="doughnutChartData" [type]="doughnutChartType"> </canvas>
       </div>
-    </div>
-    <div class="container-lg m-4 col">
-      <div class="meal-type-header">Breakfast</div>
-      <app-meal-calendar-template
-        [mealProducts$]="breakfastProducts$"
-        [selectedDate]="selectedDate"
-        [mealType]="'breakfast'">
-      </app-meal-calendar-template>
+      <div class="container-lg m-4 col">
+        <ng-container></ng-container>
+        <div class="meal-type-header">Breakfast</div>
+        <app-meal-calendar-template [mealProducts$]="breakfastProducts$" [selectedDate]="selectedDate" [mealType]="1">
+        </app-meal-calendar-template>
 
-      <div class="meal-type-header">Lunch</div>
-      <app-meal-calendar-template [mealProducts$]="lunchProducts$" [selectedDate]="selectedDate" [mealType]="'lunch'">
-      </app-meal-calendar-template>
+        <div class="meal-type-header">Lunch</div>
+        <app-meal-calendar-template [mealProducts$]="lunchProducts$" [selectedDate]="selectedDate" [mealType]="2">
+        </app-meal-calendar-template>
 
-      <div class="meal-type-header">Dinner</div>
-      <app-meal-calendar-template [mealProducts$]="dinnerProducts$" [selectedDate]="selectedDate" [mealType]="'dinner'">
-      </app-meal-calendar-template>
+        <div class="meal-type-header">Dinner</div>
+        <app-meal-calendar-template [mealProducts$]="dinnerProducts$" [selectedDate]="selectedDate" [mealType]="3">
+        </app-meal-calendar-template>
+      </div>
     </div>
   </div>
 </ng-template>
