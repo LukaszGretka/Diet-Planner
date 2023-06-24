@@ -6,7 +6,7 @@ export const getMealsRequestSuccess = createAction('Get meals request success', 
 export const getMealsRequestFailed = createAction('Get meals request failed', prop<{ errorCode: number }>());
 
 export const addMealRequest = createAction('Add meal by day request', prop<{ mealByDay: MealByDay }>());
-export const addMealRequestSuccess = createAction('Add meal by day success');
+export const addMealRequestSuccess = createAction('Add meal by day success', prop<{ addedDate: Date }>());
 export const addMealRequestFailed = createAction('Add meal by day failed', prop<{ errorCode: number }>());
 
 const actions = union({

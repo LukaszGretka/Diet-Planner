@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DailyMealsOverview } from '../models/daily-meals-overview';
 import { Meal, MealByDay } from '../models/meal';
+import { MealType } from '../models/meal-type';
 
 @Injectable({
   providedIn: 'root',

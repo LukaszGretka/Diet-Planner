@@ -10,13 +10,13 @@ export const initialState: GeneralState = {
 
 const reducerFactory = createReducer(
   initialState,
-  on(generalActions.clearState, state => ({
-    ...state,
-    errorCode: null,
-  })),
   on(generalActions.setErrorCode, (state, action) => ({
     ...state,
     errorCode: action.payload.errorCode == 0 ? 503 : action.payload.errorCode,
+  })),
+  on(generalActions.clearErrors, state => ({
+    ...state,
+    errorCode: null,
   })),
   on(generalActions.getProductsRequestCompleted, (state, action) => ({
     ...state,

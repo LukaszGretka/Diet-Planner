@@ -19,6 +19,7 @@ export class BodyProfileComponent implements OnInit {
   constructor(private store: Store<GeneralState>, private router: Router) {}
 
   ngOnInit(): void {
+    this.store.dispatch(GeneralActions.clearErrors());
     this.store.dispatch(GeneralActions.getMeasurementsRequest());
   }
 

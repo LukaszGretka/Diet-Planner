@@ -19,7 +19,6 @@ export class MeasurementTemplateComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
-    console.log(this.measurement);
     if (this.measurement) {
       this.measurementForm.get('weight')?.setValue(this.measurement.weight);
       this.measurementForm.get('chest')?.setValue(this.measurement.chest);

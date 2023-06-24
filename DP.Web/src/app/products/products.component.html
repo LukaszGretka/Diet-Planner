@@ -2,7 +2,7 @@
   *ngIf="(errorCode$ | async) >= 500; else productsTemplate"
   [httpsStatusError]="errorCode$ | async"></app-error-page>
 <ng-template #productsTemplate>
-  <div *ngIf="authenticatedUser$ | async" class="container-lg m-4">
+  <div *ngIf="authenticatedUser$ | async" class="container-lg mt-4">
     <form>
       <div class="mb-3 row">
         <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
