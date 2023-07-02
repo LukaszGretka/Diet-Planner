@@ -29,6 +29,7 @@ export class MealCalendarTemplateComponent implements OnInit {
   @Input()
   public mealType: MealType;
 
+
   //TODO move to effect
   //may require refactor if list of products will be long (need to test it)
   public products$: Observable<Product[]> = this.productService
@@ -38,13 +39,15 @@ export class MealCalendarTemplateComponent implements OnInit {
   public searchItem: string;
   public currentProducts: Product[];
   public dailyMealsOverview$ = this.store.select(MealCalendarSelectors.getDailyMealsOverview);
+  public defaultPortionSize = 100; //in grams
+  public portionValue = this.defaultPortionSize;
 
   constructor(
     private productService: ProductService,
     private store: Store<MealCalendarState>,
     private router: Router,
     private modalService: NgbModal,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.products$.pipe(untilDestroyed(this)).subscribe(products => {
@@ -103,9 +106,9 @@ export class MealCalendarTemplateComponent implements OnInit {
         searchText.length < 1
           ? []
           : this.currentProducts
-              .filter(product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
-              .slice(0, 10)
-              .map(p => p.name),
+            .filter(product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+            .slice(0, 10)
+            .map(p => p.name),
       ),
     );
 
@@ -123,4 +126,10 @@ export class MealCalendarTemplateComponent implements OnInit {
       }),
     );
   }
-}
+
+  public onPortionValueChange(value) {
+    if (value == this.defaultPortionSize) {
+      //   return 1;
+      // }
+    }
+  }
