@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Measurement } from 'src/app/body-profile/models/measurement';
 
 @Component({
@@ -16,7 +16,7 @@ export class MeasurementTemplateComponent implements OnInit {
 
   private defaultMeasurementValidator = [Validators.required, Validators.maxLength(3), Validators.min(1)];
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     if (this.measurement) {

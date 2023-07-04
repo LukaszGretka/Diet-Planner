@@ -30,25 +30,25 @@
       <tbody>
         <tr *ngFor="let product of products$ | async">
           <th scope="row">
-            <ngb-highlight [result]="product.id"></ngb-highlight>
+            <div>{{product.id}}</div>
           </th>
           <td>
-            <ngb-highlight [result]="product.name" [term]="filter.value"></ngb-highlight>
+            <div>{{product.name}}</div>
           </td>
           <td>
-            <ngb-highlight [result]="product.description"></ngb-highlight>
+            <div>{{product.description}}</div>
           </td>
           <td>
-            <ngb-highlight [result]="product.carbohydrates | number"></ngb-highlight>
+            <div>{{product.carbohydrates}}</div>
           </td>
           <td>
-            <ngb-highlight [result]="product.proteins | number"></ngb-highlight>
+            <div>{{product.proteins}}</div>
           </td>
           <td>
-            <ngb-highlight [result]="product.fats | number"></ngb-highlight>
+            <div>{{product.fats}}</div>
           </td>
           <td>
-            <ngb-highlight [result]="product.calories | number"></ngb-highlight>
+            <div>{{product.calories}}</div>
           </td>
           <td>
             <div class="button-group">

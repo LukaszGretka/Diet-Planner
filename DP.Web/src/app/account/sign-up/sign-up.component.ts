@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { SignUpRequest } from '../models/sign-up-request';
 import * as AccountActions from '../stores/account.actions';
 import { AccountState } from '../stores/account.state';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sign-up',
@@ -11,9 +11,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./sign-up.component.css'],
 })
 export class SignUpComponent implements OnInit {
-  public signUpForm: FormGroup;
+  public signUpForm: UntypedFormGroup;
 
-  constructor(private accountStore: Store<AccountState>, private formBuilder: FormBuilder) {}
+  constructor(private accountStore: Store<AccountState>, private formBuilder: UntypedFormBuilder) {}
   ngOnInit(): void {
     this.signUpForm = this.formBuilder.group({
       email: ['', { updateOn: 'blur', validators: [Validators.required, Validators.email] }],

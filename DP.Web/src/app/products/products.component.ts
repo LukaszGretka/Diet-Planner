@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, OnInit, PipeTransform } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { filter, map, Observable, startWith } from 'rxjs';
 import { Product } from 'src/app/products/models/product';
@@ -17,7 +17,7 @@ import { AccountService } from '../account/services/account.service';
   providers: [DecimalPipe],
 })
 export class ProductsComponent implements OnInit {
-  public filter = new FormControl('');
+  public filter = new UntypedFormControl('');
   public filteredProducts$: Observable<Product[]>;
 
   public products$ = this.store.select(StoreSelector.getProducts);
