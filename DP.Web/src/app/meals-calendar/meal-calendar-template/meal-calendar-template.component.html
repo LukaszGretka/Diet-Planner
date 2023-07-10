@@ -8,22 +8,31 @@
         <th scope="col">Proteins</th>
         <th scope="col">Fats</th>
         <th scope="col">Calories</th>
-        <th scope="col">Portion </th>
+        <th scope="col">Portion</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let mealProduct of mealProducts$ | async; let productIndex = index">
         <td><img src="{{ mealProduct.imagePath }}" /></td>
         <td>{{ mealProduct.name }}</td>
-        <td>{{ mealProduct.carbohydrates }}g</td>
-        <td>{{ mealProduct.proteins }}g</td>
-        <td>{{ mealProduct.fats }}g</td>
-        <td>{{ mealProduct.calories }}kcal</td>
-        <td class="d-flex" style="align-items: center;"><input type="number" id="portion"
-            class="form-control form-control-sm d-flex" style="max-width: 65px" [ngModel]="portionValue"
-            [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="onPortionValueChange($event)"></td>
+        <td>{{ mealProduct.carbohydrates * mealProduct.portionMultiplier | number : '1.0-2' }}g</td>
+        <td>{{ mealProduct.proteins * mealProduct.portionMultiplier | number : '1.0-2' }}g</td>
+        <td>{{ mealProduct.fats * mealProduct.portionMultiplier | number : '1.0-2' }}g</td>
+        <td>{{ mealProduct.calories * mealProduct.portionMultiplier | number : '1.0-2' }}kcal</td>
+        <td class="d-flex" style="align-items: center">
+          <input
+            type="number"
+            id="portion"
+            class="form-control form-control-sm d-flex"
+            style="max-width: 65px"
+            [ngModel]="portionValue * mealProduct.portionMultiplier"
+            [ngModelOptions]="{ updateOn: 'blur' }"
+            (ngModelChange)="onPortionValueChange($event, mealProducts$, productIndex)" />g
+        </td>
         <td>
-          <button type="button" class="btn delete-button-icon text-danger"
+          <button
+            type="button"
+            class="btn delete-button-icon text-danger"
             (click)="onRemoveProductButtonClick(mealProducts$, productIndex)">
             <i class="bi bi-x-lg"></i>
           </button>
@@ -33,9 +42,16 @@
   </table>
 
   <div class="d-flex bd-highlight my-3">
-    <input id="typeahead-basic" type="text" class="p-2 bd-highlight form-control" [(ngModel)]="searchItem"
-      [ngbTypeahead]="searchProducts" placeholder="Start typing to search for a products..." />
-    <button type="button" class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
+    <input
+      id="typeahead-basic"
+      type="text"
+      class="p-2 bd-highlight form-control"
+      [(ngModel)]="searchItem"
+      [ngbTypeahead]="searchProducts"
+      placeholder="Start typing to search for a products..." />
+    <button
+      type="button"
+      class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
       (click)="onAddProductButtonClick(mealProducts$, searchItem, content)">
       Add
     </button>
@@ -44,7 +60,11 @@
   <ng-template #content let-modal>
     <div class="modal-header">
       <h5 class="modal-title" id="ProductNoFoundModalLabel">Product not found</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
         (click)="onCancelModalClick()"></button>
     </div>
     <div class="modal-body">Product no found. Continue by adding it?</div>

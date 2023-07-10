@@ -1,5 +1,6 @@
 import { createAction, union } from '@ngrx/store';
 import { Meal, MealByDay } from '../models/meal';
+import { MealType } from '../models/meal-type';
 
 export const getMealsRequest = createAction('Get meals request', prop<{ date: Date }>());
 export const getMealsRequestSuccess = createAction('Get meals request success', prop<{ result: Meal[] }>());
@@ -9,6 +10,14 @@ export const addMealRequest = createAction('Add meal by day request', prop<{ mea
 export const addMealRequestSuccess = createAction('Add meal by day success', prop<{ addedDate: Date }>());
 export const addMealRequestFailed = createAction('Add meal by day failed', prop<{ errorCode: number }>());
 
+export const updatePortionRequest = createAction(
+  'Update portion request trigger',
+  prop<{ date: Date; mealType: MealType; productId: number; portionMultiplier: number }>(),
+);
+
+export const updatePortionRequestSuccess = createAction('Update portion request success');
+export const updatePortionRequestFailed = createAction('Update portion request failed');
+
 const actions = union({
   getMealsRequest,
   getMealsRequestSuccess,
@@ -16,6 +25,9 @@ const actions = union({
   addMealRequest,
   addMealRequestSuccess,
   addMealRequestFailed,
+  updatePortionRequest,
+  updatePortionRequestSuccess,
+  updatePortionRequestFailed,
 });
 
 export type MealCalendarActions = typeof actions;

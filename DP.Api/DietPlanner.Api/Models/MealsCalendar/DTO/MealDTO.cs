@@ -8,12 +8,17 @@ namespace DietPlanner.Api.Models.MealsCalendar.DTO
     {
         public MealTypeEnum MealTypeId { get; set; }
 
-        public List<Product> Products { get; set; }
+        public List<ProductPortion> PortionProducts { get; set; }
     }
 
     public class MealByDay : MealDto
     {
         public DateTime Date { get; set; }
+    }
+
+    public class ProductPortion: Product
+    {
+        public decimal PortionMultiplier { get; set; }
     }
 
     public enum MealTypeEnum

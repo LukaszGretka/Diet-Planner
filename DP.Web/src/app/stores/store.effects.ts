@@ -83,7 +83,7 @@ export class GeneralEffects {
     this.actions$.pipe(
       ofType(GeneralActions.getProductsRequest),
       switchMap(() => {
-        return this.productService.getProducts().pipe(
+        return this.productService.getProductsWithPortion().pipe(
           switchMap(products => of(GeneralActions.getProductsRequestCompleted({ products }))),
           catchError((error: any) =>
             of(GeneralActions.setErrorCode({ errorCode: error.status, errorMessage: error.error.message })),

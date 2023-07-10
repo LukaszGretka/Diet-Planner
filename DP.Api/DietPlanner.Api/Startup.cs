@@ -2,6 +2,7 @@ using DietPlanner.Api.Database;
 using DietPlanner.Api.Models.Account;
 using DietPlanner.Api.Services;
 using DietPlanner.Api.Services.Account;
+using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Api.Services.MealsCalendar;
 using DietPlanner.Api.Validators;
 using FluentValidation;
@@ -71,6 +72,7 @@ namespace DietPlanner.Api
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMealsCalendarService, MealsCalendarService>();
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IMealProductService, MealProductService>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }

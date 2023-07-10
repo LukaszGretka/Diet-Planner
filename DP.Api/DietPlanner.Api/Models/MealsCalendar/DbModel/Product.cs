@@ -2,6 +2,11 @@
 
 namespace DietPlanner.Api.Models.MealsCalendar.DbModel
 {
+    public class UserPortionProduct : UserProduct
+    {
+        public decimal PortionMultiplier { get; set; }
+    }
+
     public class UserProduct : Product
     {
         // User ID from Identity database (AspNetUser table) 
