@@ -48,6 +48,10 @@ export class MealsCalendarComponent implements OnInit {
   public lunchSearchModel: string;
   public dinnerSearchModel: string;
 
+  public isBreakfastVisible = true;
+  public isLunchVisible = true;
+  public isDinnerVisible = true;
+  public isSupperVisible = true;
   public selectedDate: Date;
 
   public doughnutChartLabels: string[] = ['Carbohydrates', 'Proteins', 'Fats'];

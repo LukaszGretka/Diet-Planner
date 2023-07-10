@@ -64,10 +64,10 @@ namespace DietPlanner.Api.Services.MealsCalendar
                         Description = p.product.Description,
                         BarCode = p.product.BarCode,
                         ImagePath = p.product.ImagePath,
-                        Calories = p.product.Calories,
-                        Carbohydrates = p.product.Carbohydrates,
-                        Proteins = p.product.Proteins,
-                        Fats = p.product.Fats,
+                        Calories = p.product.Calories * (float) p.productPortionMultiplier,
+                        Carbohydrates = p.product.Carbohydrates * (float)p.productPortionMultiplier,
+                        Proteins = p.product.Proteins * (float)p.productPortionMultiplier,
+                        Fats = p.product.Fats * (float)p.productPortionMultiplier,
                         PortionMultiplier = p.productPortionMultiplier
                     }).ToList(),
                     MealTypeId = (MealTypeEnum)mealTypeId

@@ -47,7 +47,7 @@ export class MealCalendarTemplateComponent implements OnInit {
     private router: Router,
     private modalService: NgbModal,
     private notificationService: NotificationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.portionProducts$.pipe(untilDestroyed(this)).subscribe(products => {
@@ -106,15 +106,15 @@ export class MealCalendarTemplateComponent implements OnInit {
         searchText.length < 1
           ? []
           : this.currentProducts
-              .filter(product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
-              .slice(0, 10)
-              .map(p => p.name),
+            .filter(product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+            .slice(0, 10)
+            .map(p => p.name),
       ),
     );
 
   private addFoundProduct(behaviorSubject: BehaviorSubject<any>, foundProduct: PortionProduct): boolean {
     const productsBehaviorSubject = behaviorSubject as BehaviorSubject<PortionProduct[]>;
-    if (productsBehaviorSubject.getValue().filter(p => p.id == foundProduct.id)) {
+    if (productsBehaviorSubject.getValue().filter(p => p.id == foundProduct.id).length > 0) {
       this.notificationService.showWarningToast(
         'Product already exist in this meal.',
         'Please edit portion box to adjust the entry.',
@@ -130,7 +130,7 @@ export class MealCalendarTemplateComponent implements OnInit {
           date: this.selectedDate,
           portionProducts: productsBehaviorSubject.getValue(),
           mealTypeId: this.mealType,
-        },
+        },  
       }),
     );
   }

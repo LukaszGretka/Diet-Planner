@@ -63,9 +63,10 @@ export class MealCalendarEffects {
     () =>
       this.actions$.pipe(
         ofType(MealCalendarActions.updatePortionRequestSuccess),
-        tap(() =>
-          this.notificationService.showSuccessToast('Changes saved', 'Portion have been successfully updated.'),
-        ),
+        tap(() => {
+          window.location.reload(); //not the best solution but for current needs it's ok
+          return this.notificationService.showSuccessToast('Changes saved', 'Portion have been successfully updated.');
+        }),
       ),
     {
       dispatch: false,
@@ -87,5 +88,5 @@ export class MealCalendarEffects {
     private actions$: Actions,
     private mealsCalendarService: MealsCalendarService,
     private notificationService: NotificationService,
-  ) {}
+  ) { }
 }
