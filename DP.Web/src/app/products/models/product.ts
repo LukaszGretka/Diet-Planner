@@ -9,3 +9,7 @@ export class Product {
   calories: number;
   barCode: number;
 }
+
+export interface PortionProduct extends Product {
+  portionMultiplier: number;
+}

@@ -45,9 +45,48 @@ export class MealCalendarEffects {
     ),
   );
 
+  updatePortionEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MealCalendarActions.updatePortionRequest),
+      exhaustMap(({ payload }) => {
+        return this.mealsCalendarService
+          .updatePortionMultiplier(payload.date, payload.mealType, payload.productId, payload.portionMultiplier)
+          .pipe(
+            switchMap(() => of(MealCalendarActions.updatePortionRequestSuccess())),
+            catchError(() => of(MealCalendarActions.updatePortionRequestFailed())),
+          );
+      }),
+    ),
+  );
+
+  updatePortionEffectSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(MealCalendarActions.updatePortionRequestSuccess),
+        tap(() => {
+          window.location.reload(); //not the best solution but for current needs it's ok
+          return this.notificationService.showSuccessToast('Changes saved', 'Portion have been successfully updated.');
+        }),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  updatePortionEffectFailed$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(MealCalendarActions.updatePortionRequestFailed),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during saving portion.')),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
   constructor(
     private actions$: Actions,
     private mealsCalendarService: MealsCalendarService,
     private notificationService: NotificationService,
-  ) {}
+  ) { }
 }

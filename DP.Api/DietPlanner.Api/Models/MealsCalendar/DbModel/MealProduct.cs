@@ -10,5 +10,7 @@ namespace DietPlanner.Api.Models.MealsCalendar.DbModel
         public Product Product { get; set; }
 
         public UserMeal Meal { get; set; }
+
+        public decimal PortionMultiplier { get; set; }
     }
 }

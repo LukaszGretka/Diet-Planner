@@ -18,7 +18,7 @@
   </div>
 
   <div class="mb-3">
-    <label for="name-label" class="form-label">Calories<label class="text-danger">*</label></label>
+    <label for="name-label" class="form-label">Calories<label class="text-danger">*</label> (100g)</label>
     <input type="text" class="form-control" formControlName="calories" id="calories" />
     <app-form-error [control]="productForm.get('calories')"></app-form-error>
   </div>
@@ -26,17 +26,17 @@
   <div class="mb-3">
     <div class="row">
       <div class="col">
-        <label for="name-label" class="form-label">Carbohydrates<label class="text-danger">*</label></label>
+        <label for="name-label" class="form-label">Carbohydrates<label class="text-danger">*</label> (100g)</label>
         <input type="text" class="form-control" formControlName="carbohydrates" id="carbohydrates" />
         <app-form-error [control]="productForm.get('carbohydrates')"></app-form-error>
       </div>
       <div class="col">
-        <label for="name-label" class="form-label">Proteins<label class="text-danger">*</label></label>
+        <label for="name-label" class="form-label">Proteins<label class="text-danger">*</label> (100g)</label>
         <input type="text" class="form-control" formControlName="proteins" id="proteins" />
         <app-form-error [control]="productForm.get('proteins')"></app-form-error>
       </div>
       <div class="col">
-        <label for="name-label" class="form-label">Fats<label class="text-danger">*</label></label>
+        <label for="name-label" class="form-label">Fats<label class="text-danger">*</label> (100g)</label>
         <input type="text" class="form-control" formControlName="fats" id="fats" />
         <app-form-error [control]="productForm.get('fats')"></app-form-error>
       </div>
