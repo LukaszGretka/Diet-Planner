@@ -1,24 +1,31 @@
-﻿using DietPlanner.Api.Models.Account;
+﻿using DietPlanner.Api.Configuration;
+using DietPlanner.Api.Models.Account;
+using DietPlanner.Api.Services.MessageBroker;
 using DietPlanner.Shared.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace DietPlanner.Api.Services.Account
 {
     public class AccountService : IAccountService
     {
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IMessageBrokerService _messageBrokerService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<AccountService> _logger;
 
-        public AccountService(SignInManager<IdentityUser> signInManager, 
+        public AccountService(SignInManager<IdentityUser> signInManager,
+            IMessageBrokerService messageBrokerService,
             UserManager<IdentityUser> userManager,
             ILogger<AccountService> logger)
         {
             _signInManager = signInManager;
-            _userManager= userManager;
+            _messageBrokerService = messageBrokerService;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -28,14 +35,14 @@ namespace DietPlanner.Api.Services.Account
 
             if (user is null)
             {
-                _logger.LogError($"user with email: {email} not found");
+                _logger.LogError($"User with email: {email} not found");
             }
 
             return user;
         }
 
         public async Task<SignInResult> SignIn(HttpContext httpContext, SignInRequest loginRequest)
-        {   
+        {
             return await _signInManager.PasswordSignInAsync(loginRequest.Email,
                 loginRequest.Password, false, false);
         }
@@ -47,7 +54,10 @@ namespace DietPlanner.Api.Services.Account
 
         public async Task<DatabaseActionResult<IdentityUser>> SignUp(SignUpRequest signUpRequestData)
         {
-            var user = new IdentityUser(signUpRequestData.Email);
+            var user = new IdentityUser(signUpRequestData.Username) 
+            { 
+                Email = signUpRequestData.Email
+            };
 
             var createUserResult = await _userManager.CreateAsync(user, signUpRequestData.Password);
 
@@ -60,6 +70,10 @@ namespace DietPlanner.Api.Services.Account
             if (!_userManager.Options.SignIn.RequireConfirmedAccount)
             {
                 await _signInManager.SignInAsync(user, false);
+            }
+            else
+            {
+                 _messageBrokerService.BroadcastSignUpEmail(user.Email);
             }
 
             return new DatabaseActionResult<IdentityUser>(true, obj: user);

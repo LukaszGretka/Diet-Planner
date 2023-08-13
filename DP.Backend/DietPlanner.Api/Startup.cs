@@ -1,8 +1,10 @@
+using DietPlanner.Api.Configuration;
 using DietPlanner.Api.Database;
 using DietPlanner.Api.Models.Account;
 using DietPlanner.Api.Services;
 using DietPlanner.Api.Services.Account;
 using DietPlanner.Api.Services.MealsCalendar;
+using DietPlanner.Api.Services.MessageBroker;
 using DietPlanner.Api.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api
@@ -54,25 +55,24 @@ namespace DietPlanner.Api
                 .AddSignInManager<SignInManager<IdentityUser>>();
 
             // Override cookie options to work with SPA
-            this.ConfigureCookieRedirection(services);
+            ConfigureCookieRedirection(services);
 
+            services.Configure<MessageBrokerOptions>(Configuration.GetSection("MessageBroker"));
             services.Configure<IdentityOptions>(options =>
             {
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
+                ConfigurePasswordPolicy(options);
+                options.SignIn.RequireConfirmedAccount = true; // confirmation by email required
             });
 
             services.AddAuthorization();
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMealsCalendarService, MealsCalendarService>();
             services.AddTransient<IAccountService, AccountService>();
-            services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IMessageBrokerService, MessageBrokerService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -95,7 +95,15 @@ namespace DietPlanner.Api
             });
         }
 
-        private void ConfigureCookieRedirection(IServiceCollection services)
+        private static void ConfigurePasswordPolicy(IdentityOptions options)
+        {
+            options.Password.RequiredLength = 8;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireUppercase = false;
+        }
+        private static void ConfigureCookieRedirection(IServiceCollection services)
         {
             services.ConfigureApplicationCookie(o =>
             {

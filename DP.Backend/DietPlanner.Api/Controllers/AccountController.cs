@@ -73,7 +73,7 @@ namespace DietPlanner.Api.Controllers
             return Ok(new
             {
                 User = new { username = user.UserName },
-                ReturnUrl = loginRequest.ReturnUrl
+                loginRequest.ReturnUrl
             });
         }
 
