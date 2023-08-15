@@ -28,6 +28,8 @@ namespace DietPlanner.EmailService.MessageBroker
                                  autoDelete: false,
                                  arguments: null);
 
+            Console.WriteLine("Waiting to recieve messages");
+
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, eventArgs) =>
             {
@@ -40,7 +42,8 @@ namespace DietPlanner.EmailService.MessageBroker
                                  autoAck: true,
                                  consumer: consumer);
 
-            Console.WriteLine("Waiting to recieve messages");
+            Console.WriteLine(" Press [enter] to exit.");
+            Console.ReadLine();
         }
     }
 }
