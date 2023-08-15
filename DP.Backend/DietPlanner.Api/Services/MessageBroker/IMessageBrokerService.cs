@@ -2,6 +2,6 @@
 {
     public interface IMessageBrokerService
     {
-        public void BroadcastSignUpEmail(string email);
+        public void BroadcastSignUpEmail(string email, string accountConfirmationToken);
     }
 }

@@ -1,12 +1,9 @@
-﻿using DietPlanner.Api.Configuration;
-using DietPlanner.Api.Models.Account;
+﻿using DietPlanner.Api.Models.Account;
 using DietPlanner.Api.Services.MessageBroker;
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services.Account
@@ -73,7 +70,8 @@ namespace DietPlanner.Api.Services.Account
             }
             else
             {
-                 _messageBrokerService.BroadcastSignUpEmail(user.Email);
+                var accountConfirmationToken = await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
+                 _messageBrokerService.BroadcastSignUpEmail(user.Email, accountConfirmationToken);
             }
 
             return new DatabaseActionResult<IdentityUser>(true, obj: user);

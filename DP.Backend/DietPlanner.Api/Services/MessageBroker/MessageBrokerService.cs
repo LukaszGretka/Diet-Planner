@@ -1,8 +1,7 @@
 ﻿using DietPlanner.Api.Configuration;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using System.Collections.Generic;
-using System.Linq;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace DietPlanner.Api.Services.MessageBroker
@@ -18,7 +17,7 @@ namespace DietPlanner.Api.Services.MessageBroker
             _emailServiceQueueName = options.Value.EmailServiceQueueName;
         }
 
-        public void BroadcastSignUpEmail(string email)
+        public void BroadcastSignUpEmail(string email, string accountConfirmationToken)
         {
             using var connection = connectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
@@ -29,8 +28,8 @@ namespace DietPlanner.Api.Services.MessageBroker
                                  autoDelete: false,
                                  arguments: null);
 
-            string message = $"Sending email to {email} (test)";
-            var body = Encoding.UTF8.GetBytes(message);
+            var serializedMessage = JsonConvert.SerializeObject(new { Email = email, accountConfirmationToken = accountConfirmationToken });
+            var body = Encoding.UTF8.GetBytes(serializedMessage);
 
             channel.BasicPublish(exchange: string.Empty,
                                  routingKey: _emailServiceQueueName,

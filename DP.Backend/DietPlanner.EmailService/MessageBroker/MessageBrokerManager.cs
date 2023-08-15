@@ -2,27 +2,31 @@
 using RabbitMQ.Client;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using DietPlanner.EmailService.Emails;
+using Newtonsoft.Json;
+using DietPlanner.Shared.Models;
+using System;
 
 namespace DietPlanner.EmailService.MessageBroker
 {
     internal class MessageBrokerManager
     {
-        private readonly string HostName;
-        private readonly string EmailServiceQueueName;
+        private readonly IConfiguration _configuration;
 
         public MessageBrokerManager(IConfiguration configuration)
         {
-            HostName = configuration["MessageBroker:HostName"] ?? throw new ArgumentNullException();
-            EmailServiceQueueName = configuration["MessageBroker:EmailServiceQueueName"] ?? throw new ArgumentNullException();
+            _configuration = configuration;
         }
 
         internal void RegisterEmailServiceConsumer()
         {
-            var factory = new ConnectionFactory { HostName = HostName };
+            var factory = new ConnectionFactory { HostName = _configuration["MessageBroker:HostName"] ?? throw new ArgumentNullException() };
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: EmailServiceQueueName,
+            var emailServiceQueueName = _configuration["MessageBroker:EmailServiceQueueName"] ?? throw new ArgumentNullException();
+
+            channel.QueueDeclare(queue: emailServiceQueueName,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
@@ -31,14 +35,22 @@ namespace DietPlanner.EmailService.MessageBroker
             Console.WriteLine("Waiting to recieve messages");
 
             var consumer = new EventingBasicConsumer(channel);
+            var emailSenderManager = new EmailSenderManager(_configuration);
             consumer.Received += (model, eventArgs) =>
             {
-                // send email logic goes here...
-                byte[] body = eventArgs.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
+                var message = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
                 Console.WriteLine($"Received {message}");
+                var deserializedMessage = JsonConvert.DeserializeObject<SignUpAccountConfirmationEmail>(message);
+
+                if(deserializedMessage is null)
+                {
+                    Console.WriteLine($"Error during message deserialization!");
+                    return;
+                }
+                emailSenderManager.SendRegistrationEmail(deserializedMessage);
+
             };
-            channel.BasicConsume(queue: EmailServiceQueueName,
+            channel.BasicConsume(queue: emailServiceQueueName,
                                  autoAck: true,
                                  consumer: consumer);
 

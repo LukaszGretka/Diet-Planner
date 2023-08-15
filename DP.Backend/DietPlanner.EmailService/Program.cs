@@ -1,8 +1,10 @@
-﻿using DietPlanner.EmailService.MessageBroker;
+﻿using DietPlanner.EmailService;
+using DietPlanner.EmailService.MessageBroker;
 using Microsoft.Extensions.Configuration;
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
     .Build();
 
 try
