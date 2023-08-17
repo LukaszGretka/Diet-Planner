@@ -39,7 +39,7 @@ namespace DietPlanner.EmailService.MessageBroker
             consumer.Received += (model, eventArgs) =>
             {
                 var message = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
-                Console.WriteLine($"Received {message}");
+                Console.WriteLine($"[{DateTime.UtcNow}] Received message with body: {message}");
                 var deserializedMessage = JsonConvert.DeserializeObject<SignUpAccountConfirmationEmail>(message);
 
                 if(deserializedMessage is null)
@@ -54,7 +54,7 @@ namespace DietPlanner.EmailService.MessageBroker
                                  autoAck: true,
                                  consumer: consumer);
 
-            Console.WriteLine(" Press [enter] to exit.");
+            Console.WriteLine("Press any button to exit.");
             Console.ReadLine();
         }
     }

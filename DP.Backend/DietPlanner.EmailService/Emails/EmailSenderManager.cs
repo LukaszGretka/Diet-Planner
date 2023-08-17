@@ -17,23 +17,29 @@ namespace DietPlanner.EmailService.Emails
 
         public void SendRegistrationEmail(SignUpAccountConfirmationEmail signUpAccountConfirmationEmail)
         {
-            using var smptClient = new SmtpClient(_smptClientConfig.SmptHost, _smptClientConfig.SmptPort)
+            try
             {
-                EnableSsl = true,
-                Credentials = new NetworkCredential(_smptClientConfig.SenderEmail, _smptClientConfig.SenderPassword)
-            };
+                using var smptClient = new SmtpClient(_smptClientConfig.SmptHost, _smptClientConfig.SmptPort)
+                {
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(_smptClientConfig.SenderEmail, _smptClientConfig.SenderPassword),
+                    EnableSsl = _smptClientConfig.EnableSsl
+                };
 
-            //TODO: change localhost to real address.
-            var activationLink = "http://localhost:4200?activationToken=" + signUpAccountConfirmationEmail.AccountConfirmationToken;
+                
+                using MailMessage mailMessage = new MailMessage();
+                mailMessage.To.Add(signUpAccountConfirmationEmail.Email);
+                mailMessage.From = new MailAddress("no-replay@diet-planner.com"); //TODO: replace it after development
+                mailMessage.IsBodyHtml = true;
+                mailMessage.Subject = "Welcome to Diet Planner!";
+                mailMessage.Body = EmailHtmlTemplates.GetSignUpVerificationEmailBody(signUpAccountConfirmationEmail.AccountActivationLink);
 
-            using MailMessage mailMessage = new MailMessage();
-            mailMessage.To.Add(signUpAccountConfirmationEmail.Email);
-            mailMessage.From = new MailAddress(_smptClientConfig.SenderEmail);
-            mailMessage.IsBodyHtml = true;
-            mailMessage.Subject = "Welcome to Diet Planner!";
-            mailMessage.Body = EmailHtmlTemplates.GetSignUpVerificationEmailBody(activationLink);
-
-            smptClient.Send(mailMessage);
+                smptClient.Send(mailMessage);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

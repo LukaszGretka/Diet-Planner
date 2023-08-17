@@ -4,6 +4,7 @@ using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services.Account
@@ -75,6 +76,22 @@ namespace DietPlanner.Api.Services.Account
             }
 
             return new DatabaseActionResult<IdentityUser>(true, obj: user);
+        }
+
+        public async Task<IdentityResult> ConfirmUserEmail(ActivateAccountRequest activateAccountRequest)
+        {
+            var user = new IdentityUser()
+            {
+                Email = activateAccountRequest.Email
+            };
+            var confirmationResult = await _userManager.ConfirmEmailAsync(user, activateAccountRequest.ConfirmationToken);
+
+            if (!confirmationResult.Succeeded)
+            {
+                confirmationResult.Errors.ToList().ForEach(error => _logger.LogError(error.Description));
+            }
+
+            return confirmationResult;
         }
     }
 }

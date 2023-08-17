@@ -52,7 +52,8 @@ namespace DietPlanner.Api
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDatabaseContext>()
-                .AddSignInManager<SignInManager<IdentityUser>>();
+                .AddSignInManager<SignInManager<IdentityUser>>()
+                .AddDefaultTokenProviders();
 
             // Override cookie options to work with SPA
             ConfigureCookieRedirection(services);
@@ -63,6 +64,7 @@ namespace DietPlanner.Api
                 ConfigurePasswordPolicy(options);
                 options.SignIn.RequireConfirmedAccount = true; // confirmation by email required
             });
+
 
             services.AddAuthorization();
 

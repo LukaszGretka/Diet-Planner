@@ -37,6 +37,7 @@ import { MealCalendarTemplateComponent } from './meals-calendar/meal-calendar-te
 import { NgChartsModule } from 'ng2-charts';
 import { ProductsReducer } from './products/stores/products.reducer';
 import { ProductsEffects } from './products/stores/products.effects';
+import { ActivateAccountComponent } from './account/activate-account/activate-account.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { ProductsEffects } from './products/stores/products.effects';
     ToastComponent,
     FormErrorComponent,
     MealCalendarTemplateComponent,
+    ActivateAccountComponent,
   ],
   imports: [
     BrowserModule,

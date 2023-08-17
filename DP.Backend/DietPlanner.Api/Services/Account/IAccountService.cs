@@ -15,5 +15,7 @@ namespace DietPlanner.Api.Services.Account
         public Task<SignInResult> SignIn(HttpContext httpContext, SignInRequest loginRequest);
 
         public Task Logout();
+
+        public Task<IdentityResult> ConfirmUserEmail(ActivateAccountRequest activateAccountRequest);
     }
 }

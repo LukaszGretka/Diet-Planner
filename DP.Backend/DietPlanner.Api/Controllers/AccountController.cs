@@ -102,5 +102,18 @@ namespace DietPlanner.Api.Controllers
 
             return Ok();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmUserEmail([FromBody] ActivateAccountRequest activateAccountRequest)
+        {
+            var result = await _accountService.ConfirmUserEmail(activateAccountRequest);
+
+            if(!result.Succeeded)
+            {
+                return BadRequest("unable_to_confirm_user_email");
+            }
+
+            return Ok();
+        }
     }
 }
