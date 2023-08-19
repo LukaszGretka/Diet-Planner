@@ -3,9 +3,11 @@ using DietPlanner.Api.Services.MessageBroker;
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace DietPlanner.Api.Services.Account
 {
@@ -15,16 +17,19 @@ namespace DietPlanner.Api.Services.Account
         private readonly IMessageBrokerService _messageBrokerService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<AccountService> _logger;
+        private readonly IConfiguration _configuration;
 
         public AccountService(SignInManager<IdentityUser> signInManager,
             IMessageBrokerService messageBrokerService,
             UserManager<IdentityUser> userManager,
-            ILogger<AccountService> logger)
+            ILogger<AccountService> logger,
+            IConfiguration configuration)
         {
             _signInManager = signInManager;
             _messageBrokerService = messageBrokerService;
             _userManager = userManager;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<IdentityUser> GetUser(string email)
@@ -50,10 +55,10 @@ namespace DietPlanner.Api.Services.Account
             await _signInManager.SignOutAsync();
         }
 
-        public async Task<DatabaseActionResult<IdentityUser>> SignUp(SignUpRequest signUpRequestData)
+        public async Task<DatabaseActionResult<SignUpResponse>> SignUp(SignUpRequest signUpRequestData)
         {
-            var user = new IdentityUser(signUpRequestData.Username) 
-            { 
+            var user = new IdentityUser(signUpRequestData.Username)
+            {
                 Email = signUpRequestData.Email
             };
 
@@ -62,7 +67,7 @@ namespace DietPlanner.Api.Services.Account
             if (!createUserResult.Succeeded)
             {
                 _logger.LogError(string.Join(".", createUserResult.Errors));
-                return new DatabaseActionResult<IdentityUser>(false, "error during user creation");
+                return new DatabaseActionResult<SignUpResponse>(false, "error during user creation");
             }
 
             if (!_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -71,20 +76,33 @@ namespace DietPlanner.Api.Services.Account
             }
             else
             {
-                var accountConfirmationToken = await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
-                 _messageBrokerService.BroadcastSignUpEmail(user.Email, accountConfirmationToken);
+                var token = await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
+                var encodedConfirmationToken = HttpUtility.UrlEncode(token);
+                string spaHostAddress = _configuration.GetSection("SpaConfig:HostAddress").Value;
+                string emailConfirmationLink = $"{spaHostAddress}/confirm-email?" +
+                    $"email={user.Email}&confirmationToken={encodedConfirmationToken}";
+                _messageBrokerService.BroadcastSignUpEmail(user.Email, emailConfirmationLink);
             }
 
-            return new DatabaseActionResult<IdentityUser>(true, obj: user);
+            return new DatabaseActionResult<SignUpResponse>(true,
+                obj: new SignUpResponse
+                {
+                    UserName = user.UserName,
+                    RequireEmailConfirmation = _userManager.Options.SignIn.RequireConfirmedAccount
+                });
         }
 
-        public async Task<IdentityResult> ConfirmUserEmail(ActivateAccountRequest activateAccountRequest)
+        public async Task<IdentityResult> ConfirmUserEmail(EmailConfirmationRequest emailConfirmationRequest)
         {
-            var user = new IdentityUser()
+            IdentityUser user = await _userManager.FindByNameAsync(emailConfirmationRequest.Email);
+
+            if(user is null)
             {
-                Email = activateAccountRequest.Email
-            };
-            var confirmationResult = await _userManager.ConfirmEmailAsync(user, activateAccountRequest.ConfirmationToken);
+                _logger.LogError($"Error during email confirmation for: {emailConfirmationRequest.Email}. User not found");
+                return new IdentityResult();
+            }
+
+            var confirmationResult = await _userManager.ConfirmEmailAsync(user, emailConfirmationRequest.ConfirmationToken);
 
             if (!confirmationResult.Succeeded)
             {

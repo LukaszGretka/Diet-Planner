@@ -34,7 +34,7 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest("signup_error");
             }
 
-            DatabaseActionResult<IdentityUser> result = await _accountService.SignUp(signUpRequest);
+            DatabaseActionResult<SignUpResponse> result = await _accountService.SignUp(signUpRequest);
 
             if (result.Exception != null)
             {
@@ -48,7 +48,11 @@ namespace DietPlanner.Api.Controllers
 
             return Ok(new
             {
-                User = new { username = result.Obj.UserName },
+                User = new 
+                {
+                    username = result.Obj.UserName, 
+                },
+                requireEmailConfirmation = result.Obj.RequireEmailConfirmation
             });
         }
 
@@ -103,10 +107,10 @@ namespace DietPlanner.Api.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ConfirmUserEmail([FromBody] ActivateAccountRequest activateAccountRequest)
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmUserEmail([FromBody] EmailConfirmationRequest emailConfirmationRequest)
         {
-            var result = await _accountService.ConfirmUserEmail(activateAccountRequest);
+            var result = await _accountService.ConfirmUserEmail(emailConfirmationRequest);
 
             if(!result.Succeeded)
             {

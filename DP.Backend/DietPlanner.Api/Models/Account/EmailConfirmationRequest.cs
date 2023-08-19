@@ -1,6 +1,6 @@
 ﻿namespace DietPlanner.Api.Models.Account
 {
-    public class ActivateAccountRequest
+    public class EmailConfirmationRequest
     {
         public string Email { get; set; }
 

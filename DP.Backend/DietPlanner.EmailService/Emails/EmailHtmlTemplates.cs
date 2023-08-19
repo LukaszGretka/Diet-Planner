@@ -2,11 +2,11 @@
 {
     internal class EmailHtmlTemplates
     {
-        internal static string GetSignUpVerificationEmailBody(string activationLink)
+        internal static string GetSignUpVerificationEmailBody(string confirmationLink)
         {
             return @"Thank you for signing-up to Diet Planner!" +
-                "<p>Please activate your account by clicking on following link:</p>" +
-                $"<a href=\"{activationLink}\">Activate my account!</a>";
+                "<p>Please confirm your email address by clicking on following link:</p>" +
+                $"<a href=\"{confirmationLink}\">Confirm</a>";
         }
     }
 }

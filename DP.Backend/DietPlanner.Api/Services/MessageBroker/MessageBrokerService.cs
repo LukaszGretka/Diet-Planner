@@ -12,15 +12,14 @@ namespace DietPlanner.Api.Services.MessageBroker
     {
         private readonly ConnectionFactory connectionFactory;
         private readonly string _emailServiceQueueName;
-        private readonly IConfiguration _configuration;
 
-        public MessageBrokerService(IOptions<MessageBrokerOptions> options, IConfiguration config)
+        public MessageBrokerService(IOptions<MessageBrokerOptions> options)
         {
             connectionFactory = new ConnectionFactory { HostName = options.Value.HostName };
             _emailServiceQueueName = options.Value.EmailServiceQueueName;
         }
 
-        public void BroadcastSignUpEmail(string email, string accountConfirmationToken)
+        public void BroadcastSignUpEmail(string email, string emailConfirmationLink)
         {
             using var connection = connectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
@@ -31,9 +30,7 @@ namespace DietPlanner.Api.Services.MessageBroker
                                  autoDelete: false,
                                  arguments: null);
 
-            string spaHostAddress =_configuration.GetSection("SpaConfig:HostAddress").Value;
-            string accountActivationLink = $"{spaHostAddress}/activate-account?token={accountConfirmationToken}";
-            string serializedMessage = JsonConvert.SerializeObject(new { Email = email, signUpAccountConfirmationEmail = accountConfirmationToken });
+            string serializedMessage = JsonConvert.SerializeObject(new { Email = email, ConfirmationLink = emailConfirmationLink });
             byte[] body = Encoding.UTF8.GetBytes(serializedMessage);
 
             channel.BasicPublish(exchange: string.Empty,

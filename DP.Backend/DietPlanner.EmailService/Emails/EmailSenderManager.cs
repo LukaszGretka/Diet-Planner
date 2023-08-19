@@ -32,7 +32,7 @@ namespace DietPlanner.EmailService.Emails
                 mailMessage.From = new MailAddress("no-replay@diet-planner.com"); //TODO: replace it after development
                 mailMessage.IsBodyHtml = true;
                 mailMessage.Subject = "Welcome to Diet Planner!";
-                mailMessage.Body = EmailHtmlTemplates.GetSignUpVerificationEmailBody(signUpAccountConfirmationEmail.AccountActivationLink);
+                mailMessage.Body = EmailHtmlTemplates.GetSignUpVerificationEmailBody(signUpAccountConfirmationEmail.ConfirmationLink);
 
                 smptClient.Send(mailMessage);
             }

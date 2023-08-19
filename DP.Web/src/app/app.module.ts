@@ -37,7 +37,8 @@ import { MealCalendarTemplateComponent } from './meals-calendar/meal-calendar-te
 import { NgChartsModule } from 'ng2-charts';
 import { ProductsReducer } from './products/stores/products.reducer';
 import { ProductsEffects } from './products/stores/products.effects';
-import { ActivateAccountComponent } from './account/activate-account/activate-account.component';
+import { ConfirmEmailComponent } from './account/confirm-email/confirm-email.component';
+import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/confirm-email-required.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { ActivateAccountComponent } from './account/activate-account/activate-ac
     ToastComponent,
     FormErrorComponent,
     MealCalendarTemplateComponent,
-    ActivateAccountComponent,
+    ConfirmEmailComponent,
+    ConfirmEmailRequiredComponent,
   ],
   imports: [
     BrowserModule,
