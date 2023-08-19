@@ -4,6 +4,7 @@ import { SignUpRequest } from '../models/sign-up-request';
 import { User } from '../models/user';
 import { SignInResult } from '../models/sign-in-result';
 import { SignUpResult } from '../models/sign-up-result';
+import { EmailConfirmationRequest } from '../models/email-confirmation-request';
 
 export const getUserRequest = createAction('Get user request');
 export const getUserRequestSuccess = createAction('Get user request success', prop<{ user: User }>());
@@ -21,6 +22,13 @@ export const signOutRequest = createAction('Sign out request');
 export const signOutRequestSuccess = createAction('Sign out request success');
 export const signOutRequestFailed = createAction('Sign out request failed', prop<{ error: string }>());
 
+export const confirmEmailRequest = createAction(
+  'Confirm email request',
+  prop<{ emailConfirmationRequest: EmailConfirmationRequest }>(),
+);
+export const confirmEmailRequestSuccess = createAction('Confirm email request success');
+export const confirmEmailRequestFailed = createAction('Confirm email request failed', prop<{ error: string }>());
+
 const actions = union({
   getUserRequest,
   getUserRequestSuccess,
@@ -34,6 +42,9 @@ const actions = union({
   signOutRequest,
   signOutRequestSuccess,
   signOutRequestFailed,
+  confirmEmailRequest,
+  confirmEmailRequestSuccess,
+  confirmEmailRequestFailed,
 });
 
 export type AccountActions = typeof actions;

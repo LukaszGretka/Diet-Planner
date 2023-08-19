@@ -15,12 +15,16 @@ import { UnauthorizedComponent } from './account/unauthorized/unauthorized.compo
 import { SignOutComponent } from './account/sign-out/sign-out.component';
 import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 import { ToastComponent } from './shared/toast/toast.component';
+import { ConfirmEmailComponent } from './account/confirm-email/confirm-email.component';
+import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/confirm-email-required.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'error', component: ErrorPageComponent },
   { path: 'sign-in', component: SignInComponent },
   { path: 'sign-up', component: SignUpComponent },
+  { path: 'confirm-email-required', component: ConfirmEmailRequiredComponent },
+  { path: 'confirm-email', component: ConfirmEmailComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'sign-out', component: SignOutComponent, canActivate: [AuthGuard] },

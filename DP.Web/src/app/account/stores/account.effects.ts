@@ -92,12 +92,17 @@ export class AccountEffects {
       this.actions$.pipe(
         ofType(AccountActions.signUpSuccess),
         tap(action => {
-          this.notificationService.showSuccessToast(
-            'Successfully signed up.',
-            'Hello ' + action.payload.signUpResult.user.username,
-          );
-          this.accountService.authenticatedUser$.next(action.payload.signUpResult.user);
-          this.router.navigate(['/dashboard']);
+          console.log(action.payload.signUpResult.requireEmailConfirmation);
+          if (action.payload.signUpResult.requireEmailConfirmation === true) {
+            this.router.navigate(['/confirm-email-required']);
+          } else {
+            this.notificationService.showSuccessToast(
+              'Successfully signed up.',
+              'Hello ' + action.payload.signUpResult.user.username,
+            );
+            this.accountService.authenticatedUser$.next(action.payload.signUpResult.user);
+            this.router.navigate(['/dashboard']);
+          }
         }),
       ),
     { dispatch: false },
@@ -123,6 +128,41 @@ export class AccountEffects {
           this.notificationService.showSuccessToast('Successfully signed out.', 'See you soon!');
           this.accountService.authenticatedUser$.next(null);
           this.router.navigate(['/sign-in']);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  confirmEmailEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AccountActions.confirmEmailRequest),
+      exhaustMap(action => {
+        return this.accountService.performConfirmEmail(action.payload.emailConfirmationRequest).pipe(
+          switchMap(() => of(AccountActions.confirmEmailRequestSuccess())),
+          catchError(error => of(AccountActions.confirmEmailRequestFailed({ error }))),
+        );
+      }),
+    ),
+  );
+
+  confirmEmailRequestSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.confirmEmailRequestSuccess),
+        tap(() => {
+          this.notificationService.showSuccessToast('Email confirmed successfully!', 'You might now sign-in.');
+          this.router.navigate(['/sign-in']);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  confirmEmailRequestFailedEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.confirmEmailRequestFailed),
+        tap(action => {
+          this.notificationService.showErrorToast('Email confirmation error', 'Unable to confirm email address.');
         }),
       ),
     { dispatch: false },

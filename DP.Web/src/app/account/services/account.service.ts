@@ -5,6 +5,8 @@ import { SignInRequest } from '../models/sign-in-request';
 import { SignInResult } from '../models/sign-in-result';
 import { SignUpRequest } from '../models/sign-up-request';
 import { User } from '../models/user';
+import { EmailConfirmationRequest } from '../models/email-confirmation-request';
+import { SignUpResult } from '../models/sign-up-result';
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +25,8 @@ export class AccountService {
 
   constructor(private httpClient: HttpClient) {}
 
-  public performSignUp(signupRequest: SignUpRequest): Observable<SignInResult> {
-    return this.httpClient.post<SignInResult>(this.baseUrl + '/sign-up', signupRequest, this.httpOptions);
+  public performSignUp(signupRequest: SignUpRequest): Observable<SignUpResult> {
+    return this.httpClient.post<SignUpResult>(this.baseUrl + '/sign-up', signupRequest, this.httpOptions);
   }
 
   public performSignIn(signInRequest: SignInRequest): Observable<SignInResult> {
@@ -37,6 +39,14 @@ export class AccountService {
 
   public performSignOut() {
     return this.httpClient.post<any>(this.baseUrl + '/signout', null, this.httpOptions);
+  }
+
+  public performConfirmEmail(emailConformationRequest: EmailConfirmationRequest): Observable<any> {
+    return this.httpClient.post<EmailConfirmationRequest>(
+      this.baseUrl + '/confirm-email',
+      emailConformationRequest,
+      this.httpOptions,
+    );
   }
 
   public setUser(user: User) {
