@@ -16,6 +16,10 @@ const reducerFactory = createReducer(
     ...state,
     errorCode: action.payload.errorCode == 0 ? 503 : action.payload.errorCode,
   })),
+  on(mealCalendarActions.updatePortionRequestSuccess, (state, action) => ({
+    ...state,
+    dailyMealsOverview: state.dailyMealsOverview
+  })),
 );
 
 export function MealCalendarReducer(

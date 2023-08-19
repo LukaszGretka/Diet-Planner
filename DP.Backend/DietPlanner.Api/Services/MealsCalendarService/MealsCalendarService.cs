@@ -2,6 +2,7 @@
 using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
+using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -36,8 +37,9 @@ namespace DietPlanner.Api.Services.MealsCalendar
                     {
                         mealDate = meal.Date,
                         productId = mealProduct.Product.Id,
+                        productPortionMultiplier = mealProduct.PortionMultiplier,
                         mealTypeId = meal.MealTypeId,
-                        userId = meal.UserId
+                        userId = meal.UserId,
                     })
                 .Join(
                     _databaseContext.Products,
@@ -48,14 +50,27 @@ namespace DietPlanner.Api.Services.MealsCalendar
                         joinResult.mealDate,
                         joinResult.mealTypeId,
                         product,
+                        joinResult.productPortionMultiplier,
                         joinResult.userId
                     })
-                .Where(finalJoinResult => finalJoinResult.mealDate.Equals(formattedDate) 
+                .Where(finalJoinResult => finalJoinResult.mealDate.Equals(formattedDate)
                         && finalJoinResult.userId.Equals(userId)
                 )
                 .GroupBy(x => x.mealTypeId, (mealTypeId, product) => new MealDto
                 {
-                    Products = product.Select(x => x.product).ToList(),
+                    PortionProducts = product.Select(p => new ProductPortion
+                    {
+                        Id = p.product.Id,
+                        Name = p.product.Name,
+                        Description = p.product.Description,
+                        BarCode = p.product.BarCode,
+                        ImagePath = p.product.ImagePath,
+                        Calories = p.product.Calories * (float) p.productPortionMultiplier,
+                        Carbohydrates = p.product.Carbohydrates * (float)p.productPortionMultiplier,
+                        Proteins = p.product.Proteins * (float)p.productPortionMultiplier,
+                        Fats = p.product.Fats * (float)p.productPortionMultiplier,
+                        PortionMultiplier = p.productPortionMultiplier
+                    }).ToList(),
                     MealTypeId = (MealTypeEnum)mealTypeId
                 })
                 .ToListAsync();
@@ -134,15 +149,16 @@ namespace DietPlanner.Api.Services.MealsCalendar
         private async Task<List<MealProduct>> AddProductsToMeal(UserMeal meal, MealByDay mealByDay)
         {
             var mealProducts = new List<MealProduct>();
-            var products = mealByDay.Products;
+            var portionProducts = mealByDay.PortionProducts;
 
-            foreach (var product in products)
+            foreach (var product in portionProducts)
             {
                 var existingProduct = await _databaseContext.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
                 mealProducts.Add(new MealProduct
                 {
                     Product = existingProduct,
-                    Meal = meal
+                    Meal = meal,
+                    PortionMultiplier = product.PortionMultiplier
                 });
             }
 

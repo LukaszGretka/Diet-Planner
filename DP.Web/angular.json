@@ -105,5 +105,7 @@
       }
     }
   },
-  "defaultProject": "DietPlanner.Web"
+  "cli": {
+    "analytics": false
+  }
 }

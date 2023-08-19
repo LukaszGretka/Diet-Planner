@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.Account
+namespace DietPlanner.Api.Services.AccountService
 {
     public interface IAccountService
     {

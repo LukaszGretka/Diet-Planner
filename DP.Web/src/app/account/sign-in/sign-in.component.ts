@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { SignInRequest } from '../models/sign-in-request';
 import * as AccountActions from '../stores/account.actions';
 import { AccountState } from '../stores/account.state';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sign-in',
@@ -11,8 +11,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./sign-in.component.css'],
 })
 export class SignInComponent implements OnInit {
-  constructor(private accountStore: Store<AccountState>, private formBuilder: FormBuilder) {}
-  public signInForm: FormGroup;
+  constructor(private accountStore: Store<AccountState>, private formBuilder: UntypedFormBuilder) {}
+  public signInForm: UntypedFormGroup;
 
   ngOnInit(): void {
     this.signInForm = this.formBuilder.group({

@@ -1,6 +1,5 @@
 ﻿using DietPlanner.Api.Models.Account;
-using DietPlanner.Api.Services.Account;
-using DietPlanner.Api.Validators;
+using DietPlanner.Api.Services.AccountService;
 using DietPlanner.Shared.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;

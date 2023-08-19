@@ -13,6 +13,7 @@ export interface ToastInfo {
 export class NotificationService {
   private toasts: ToastInfo[] = [];
   private toastSuccessClassName = 'bg-success text-light';
+  private toastWarningClassName = 'bg-warning text-dark';
   private toastErrorClassName = 'bg-danger text-light';
   private defaultDelayTime = 3000;
 
@@ -30,6 +31,10 @@ export class NotificationService {
 
   public showErrorToast(title: string, message: string, delay = this.defaultDelayTime): void {
     this.toasts.push({ title, message, delay, classname: this.toastErrorClassName });
+  }
+
+  public showWarningToast(title: string, message: string, delay = this.defaultDelayTime): void {
+    this.toasts.push({ title, message, delay, classname: this.toastWarningClassName });
   }
 
   public showGenericErrorToast(statusCode: number, delay = this.defaultDelayTime) {

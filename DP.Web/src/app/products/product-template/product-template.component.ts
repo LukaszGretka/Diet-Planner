@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Product } from 'src/app/products/models/product';
 import * as ProductsSelector from './../stores/products.selectors';
 import { ProductsState } from '../stores/products.state';
@@ -21,7 +21,7 @@ export class ProductTemplateComponent implements OnInit {
   private returnUrl: string;
   private callbackMealProduct$ = this.store.select(ProductsSelector.getCallbackMealProduct);
 
-  constructor(private formBuilder: FormBuilder, private store: Store<ProductsState>, private route: ActivatedRoute) {
+  constructor(private formBuilder: UntypedFormBuilder, private store: Store<ProductsState>, private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
       if (params.hasOwnProperty('redirectUrl')) {
         this.callbackMealProduct$?.subscribe(item => {

@@ -29,7 +29,7 @@ export class MealsCalendarComponent implements OnInit {
   //TODO move to effect
   //may require refactor if list of products will be long (need to test it)
   public productsNames$: Observable<string[]> = this.productService
-    .getProducts()
+    .getProductsWithPortion()
     .pipe(map(products => products.map(product => product.name)));
 
   public currentProducts: string[];
@@ -48,6 +48,10 @@ export class MealsCalendarComponent implements OnInit {
   public lunchSearchModel: string;
   public dinnerSearchModel: string;
 
+  public isBreakfastVisible = true;
+  public isLunchVisible = true;
+  public isDinnerVisible = true;
+  public isSupperVisible = true;
   public selectedDate: Date;
 
   public doughnutChartLabels: string[] = ['Carbohydrates', 'Proteins', 'Fats'];
@@ -88,10 +92,10 @@ export class MealsCalendarComponent implements OnInit {
     this.store.dispatch(MealCalendarActions.getMealsRequest({ date: this.selectedDate }));
 
     this.dailyMealsOverview$.pipe(untilDestroyed(this)).subscribe(meals => {
-      this.breakfastProducts$.next(meals.filter(m => m.mealTypeId === MealType.breakfast)[0]?.products ?? []);
-      this.lunchProducts$.next(meals.filter(m => m.mealTypeId === MealType.lunch)[0]?.products ?? []);
-      this.dinnerProducts$.next(meals.filter(m => m.mealTypeId === MealType.dinner)[0]?.products ?? []);
-      this.supperProducts$.next(meals.filter(m => m.mealTypeId === MealType.supper)[0]?.products ?? []);
+      this.breakfastProducts$.next(meals.filter(m => m.mealTypeId === MealType.breakfast)[0]?.portionProducts ?? []);
+      this.lunchProducts$.next(meals.filter(m => m.mealTypeId === MealType.lunch)[0]?.portionProducts ?? []);
+      this.dinnerProducts$.next(meals.filter(m => m.mealTypeId === MealType.dinner)[0]?.portionProducts ?? []);
+      this.supperProducts$.next(meals.filter(m => m.mealTypeId === MealType.supper)[0]?.portionProducts ?? []);
       this.totalCalories = this.calculateTotalCalories();
       this.doughnutChartData = {
         labels: this.doughnutChartLabels,
@@ -116,19 +120,19 @@ export class MealsCalendarComponent implements OnInit {
       const targetedMealSb = new BehaviorSubject<Meal>(null);
       targetedMeal.subscribe(targetedMealSb);
 
-      let currentProducts = [...targetedMealSb.getValue().products];
+      let currentProducts = [...targetedMealSb.getValue().portionProducts];
 
       this.productService
         .getProductByName(callback.productName)
         .pipe(take(1))
         .subscribe(product => {
           currentProducts.push(product);
-          targetedMealSb.next({ mealTypeId: callback.mealType, products: currentProducts });
+          targetedMealSb.next({ mealTypeId: callback.mealType, portionProducts: currentProducts });
           this.store.dispatch(
             MealCalendarActions.addMealRequest({
               mealByDay: {
                 date: this.selectedDate,
-                products: targetedMealSb.getValue().products,
+                portionProducts: targetedMealSb.getValue().portionProducts,
                 mealTypeId: callback.mealType,
               },
             }),

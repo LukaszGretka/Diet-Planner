@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Product } from 'src/app/products/models/product';
+import { PortionProduct, Product } from 'src/app/products/models/product';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -17,18 +17,18 @@ export class ProductService {
   };
   constructor(private httpClient: HttpClient) {}
 
-  getProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.productsUrl + '/all', { withCredentials: true });
+  getProductsWithPortion(): Observable<PortionProduct[]> {
+    return this.httpClient.get<PortionProduct[]>(this.productsUrl + '/all', { withCredentials: true });
   }
 
-  getProductById(id: number): Observable<Product> {
-    return this.httpClient.get<Product>(this.productsUrl + '/' + id, { withCredentials: true });
+  getProductById(id: number): Observable<PortionProduct> {
+    return this.httpClient.get<PortionProduct>(this.productsUrl + '/' + id, { withCredentials: true });
   }
 
-  getProductByName(name: string): Observable<Product> {
+  getProductByName(name: string): Observable<PortionProduct> {
     let params = new HttpParams();
     params = params.append('productName', name);
-    return this.httpClient.get<Product>(this.productsUrl, { params: params, withCredentials: true });
+    return this.httpClient.get<PortionProduct>(this.productsUrl, { params: params, withCredentials: true });
   }
 
   addProduct(product: Product): Observable<Product> {

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace DietPlanner.Api.Services.Account
+namespace DietPlanner.Api.Services.AccountService
 {
     public class AccountService : IAccountService
     {
