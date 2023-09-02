@@ -63,7 +63,7 @@ namespace DietPlanner.Api
             services.Configure<IdentityOptions>(options =>
             {
                 ConfigurePasswordPolicy(options);
-                options.SignIn.RequireConfirmedAccount = true; // confirmation by email required
+                options.SignIn.RequireConfirmedAccount = false; // confirmation by email required
             });
 
 

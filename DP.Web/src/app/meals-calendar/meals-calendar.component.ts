@@ -155,11 +155,12 @@ export class MealsCalendarComponent implements OnInit {
     const breakfastMacros = this.calculateTotalMacronutrientsForMealType(this.breakfastProducts$);
     const lunchMacros = this.calculateTotalMacronutrientsForMealType(this.lunchProducts$);
     const dinnerMacros = this.calculateTotalMacronutrientsForMealType(this.dinnerProducts$);
+    const supperProducts = this.calculateTotalMacronutrientsForMealType(this.supperProducts$);
 
     return [
-      breakfastMacros.carbs + lunchMacros.carbs + dinnerMacros.carbs,
-      breakfastMacros.proteins + lunchMacros.proteins + dinnerMacros.proteins,
-      breakfastMacros.fats + lunchMacros.fats + dinnerMacros.fats,
+      breakfastMacros.carbs + lunchMacros.carbs + dinnerMacros.carbs + supperProducts.carbs,
+      breakfastMacros.proteins + lunchMacros.proteins + dinnerMacros.proteins + supperProducts.proteins,
+      breakfastMacros.fats + lunchMacros.fats + dinnerMacros.fats + supperProducts.fats,
     ];
   }
 
@@ -172,6 +173,9 @@ export class MealsCalendarComponent implements OnInit {
       totalSum += product.calories;
     });
     this.dinnerProducts$.getValue().forEach((product: Product) => {
+      totalSum += product.calories;
+    });
+    this.supperProducts$.getValue().forEach((product: Product) => {
       totalSum += product.calories;
     });
 
