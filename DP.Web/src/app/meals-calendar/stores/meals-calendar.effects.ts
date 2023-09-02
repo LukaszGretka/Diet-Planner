@@ -52,7 +52,12 @@ export class MealCalendarEffects {
         return this.mealsCalendarService
           .updatePortionMultiplier(payload.date, payload.mealType, payload.productId, payload.portionMultiplier)
           .pipe(
-            switchMap(() => of(MealCalendarActions.updatePortionRequestSuccess())),
+            switchMap(() =>
+              of(
+                MealCalendarActions.updatePortionRequestSuccess(),
+                MealCalendarActions.getMealsRequest({ date: payload.date }),
+              ),
+            ),
             catchError(() => of(MealCalendarActions.updatePortionRequestFailed())),
           );
       }),
@@ -64,7 +69,6 @@ export class MealCalendarEffects {
       this.actions$.pipe(
         ofType(MealCalendarActions.updatePortionRequestSuccess),
         tap(() => {
-          window.location.reload(); //not the best solution but for current needs it's ok
           return this.notificationService.showSuccessToast('Changes saved', 'Portion have been successfully updated.');
         }),
       ),
@@ -88,5 +92,5 @@ export class MealCalendarEffects {
     private actions$: Actions,
     private mealsCalendarService: MealsCalendarService,
     private notificationService: NotificationService,
-  ) { }
+  ) {}
 }
