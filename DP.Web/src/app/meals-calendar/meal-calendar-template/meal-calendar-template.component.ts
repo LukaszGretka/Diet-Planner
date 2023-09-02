@@ -22,7 +22,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 })
 export class MealCalendarTemplateComponent implements OnInit {
   @Input()
-  public mealProducts$: BehaviorSubject<Meal[]>;
+  public portionProducts$: BehaviorSubject<PortionProduct[]>;
 
   @Input()
   public selectedDate: Date;
@@ -32,7 +32,7 @@ export class MealCalendarTemplateComponent implements OnInit {
 
   //TODO move to effect
   //may require refactor if list of products will be long (need to test it)
-  public portionProducts$: Observable<PortionProduct[]> = this.productService
+  public allProducts$: Observable<PortionProduct[]> = this.productService
     .getProductsWithPortion()
     .pipe(map(products => products.map(product => product)));
 
@@ -41,18 +41,40 @@ export class MealCalendarTemplateComponent implements OnInit {
   public defaultPortionSize = 100; //in grams
   public portionValue = this.defaultPortionSize;
 
+  public mealMacroSummary$: Observable<any>;
+
   constructor(
     private productService: ProductService,
     private store: Store<MealCalendarState>,
     private router: Router,
     private modalService: NgbModal,
     private notificationService: NotificationService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.portionProducts$.pipe(untilDestroyed(this)).subscribe(products => {
+    this.allProducts$.pipe(untilDestroyed(this)).subscribe(products => {
       this.currentProducts = products;
     });
+
+    this.mealMacroSummary$ = this.portionProducts$.pipe(
+      map(product =>
+        product.reduce(
+          (total, product) => {
+            (total.calories += product.calories),
+              (total.carbohydrates += product.carbohydrates),
+              (total.proteins += product.proteins),
+              (total.fats += product.fats);
+            return total;
+          },
+          {
+            calories: 0,
+            carbohydrates: 0,
+            proteins: 0,
+            fats: 0,
+          },
+        ),
+      ),
+    );
   }
 
   // Update local products list for particular collection given in parameter.
@@ -106,9 +128,9 @@ export class MealCalendarTemplateComponent implements OnInit {
         searchText.length < 1
           ? []
           : this.currentProducts
-            .filter(product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
-            .slice(0, 10)
-            .map(p => p.name),
+              .filter(product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+              .slice(0, 10)
+              .map(p => p.name),
       ),
     );
 
@@ -130,7 +152,7 @@ export class MealCalendarTemplateComponent implements OnInit {
           date: this.selectedDate,
           portionProducts: productsBehaviorSubject.getValue(),
           mealTypeId: this.mealType,
-        },  
+        },
       }),
     );
   }
@@ -144,5 +166,9 @@ export class MealCalendarTemplateComponent implements OnInit {
         portionMultiplier: poritonSize / this.defaultPortionSize,
       }),
     );
+  }
+
+  public getTotalMealCalories(): Observable<number> {
+    return new BehaviorSubject(1);
   }
 }

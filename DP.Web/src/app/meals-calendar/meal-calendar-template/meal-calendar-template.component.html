@@ -1,5 +1,5 @@
 <div class="mb-4">
-  <table *ngIf="this.mealProducts$.getValue().length > 0" class="table table-striped">
+  <table *ngIf="this.portionProducts$.getValue().length > 0" class="table table">
     <thead>
       <tr>
         <th scope="col">Image</th>
@@ -12,33 +12,57 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let mealProduct of mealProducts$ | async; let productIndex = index">
-        <td><img src="{{ mealProduct.imagePath }}" /></td>
-        <td>{{ mealProduct.name }}</td>
-        <td>{{ mealProduct.carbohydrates | number : '1.0-2' }}g</td>
-        <td>{{ mealProduct.proteins | number : '1.0-2' }}g</td>
-        <td>{{ mealProduct.fats | number : '1.0-2' }}g</td>
-        <td>{{ mealProduct.calories | number : '1.0-2' }}kcal</td>
+      <tr *ngFor="let product of portionProducts$ | async; let productIndex = index">
+        <td><img src="{{ product.imagePath }}" /></td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.carbohydrates | number : '1.0-2' }}g</td>
+        <td>{{ product.proteins | number : '1.0-2' }}g</td>
+        <td>{{ product.fats | number : '1.0-2' }}g</td>
+        <td>{{ product.calories | number : '1.0-2' }}kcal</td>
         <td class="d-flex" style="align-items: center">
-          <input type="number" id="portion" class="form-control form-control-sm d-flex" style="max-width: 65px"
-            [ngModel]="portionValue * mealProduct.portionMultiplier" [ngModelOptions]="{ updateOn: 'blur' }"
-            (ngModelChange)="onPortionValueChange($event, mealProducts$, productIndex)" />g
+          <input
+            type="number"
+            id="portion"
+            class="form-control form-control-sm d-flex"
+            style="max-width: 65px"
+            [ngModel]="portionValue * product.portionMultiplier"
+            [ngModelOptions]="{ updateOn: 'blur' }"
+            (ngModelChange)="onPortionValueChange($event, portionProducts$, productIndex)" />g
         </td>
         <td>
-          <button type="button" class="btn delete-button-icon text-danger"
-            (click)="onRemoveProductButtonClick(mealProducts$, productIndex)">
+          <button
+            type="button"
+            class="btn delete-button-icon text-danger"
+            (click)="onRemoveProductButtonClick(portionProducts$, productIndex)">
             <i class="bi bi-x-lg"></i>
           </button>
         </td>
+      </tr>
+      <tr>
+        <td class="table-light"></td>
+        <td class="table-light text-secondary">Total:</td>
+        <td class="table-light text-secondary">{{ (mealMacroSummary$ | async).carbohydrates }} g</td>
+        <td class="table-light text-secondary">{{ (mealMacroSummary$ | async).proteins }} g</td>
+        <td class="table-light text-secondary">{{ (mealMacroSummary$ | async).fats }} g</td>
+        <td class="table-light text-secondary">{{ (mealMacroSummary$ | async).calories }} kcal</td>
+        <td class="table-light text-secondary"></td>
+        <td class="table-light text-secondary"></td>
       </tr>
     </tbody>
   </table>
 
   <div class="d-flex bd-highlight my-3">
-    <input id="typeahead-basic" type="text" class="p-2 bd-highlight form-control" [(ngModel)]="searchItem"
-      [ngbTypeahead]="searchProducts" placeholder="Start typing to search for a products..." />
-    <button type="button" class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
-      (click)="onAddProductButtonClick(mealProducts$, searchItem, content)">
+    <input
+      id="typeahead-basic"
+      type="text"
+      class="p-2 bd-highlight form-control"
+      [(ngModel)]="searchItem"
+      [ngbTypeahead]="searchProducts"
+      placeholder="Start typing to search for a products..." />
+    <button
+      type="button"
+      class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
+      (click)="onAddProductButtonClick(portionProducts$, searchItem, content)">
       Add
     </button>
   </div>
@@ -46,7 +70,11 @@
   <ng-template #content let-modal>
     <div class="modal-header">
       <h5 class="modal-title" id="ProductNoFoundModalLabel">Product not found</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
         (click)="onCancelModalClick()"></button>
     </div>
     <div class="modal-body">Product no found. Continue by adding it?</div>

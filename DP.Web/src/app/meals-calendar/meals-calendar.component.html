@@ -5,8 +5,14 @@
     <div class="d-flex flex-row bd-highlight">
       <div class="p-2 bd-highlight">
         <div class="input-group">
-          <input class="form-control" placeholder="Date" name="dp" [(ngModel)]="dateModel" ngbDatepicker
-            #d="ngbDatepicker" (dateSelect)="onDateSelection($event)" />
+          <input
+            class="form-control"
+            placeholder="Date"
+            name="dp"
+            [(ngModel)]="dateModel"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            (dateSelect)="onDateSelection($event)" />
           <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
             <i class="bi bi-calendar-date"></i>
           </button>
@@ -15,22 +21,42 @@
       <div class="p-2 bd-highlight">
         <div class="form-check-inline">Show meals:</div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" checked
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="inlineCheckbox1"
+            value="option1"
+            checked
             [(ngModel)]="isBreakfastVisible" />
           <label class="form-check-label" for="inlineCheckbox1">Breakfast</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" checked
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="inlineCheckbox2"
+            value="option2"
+            checked
             [(ngModel)]="isLunchVisible" />
           <label class="form-check-label" for="inlineCheckbox2">Lunch</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" checked
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="inlineCheckbox3"
+            value="option3"
+            checked
             [(ngModel)]="isDinnerVisible" />
           <label class="form-check-label" for="inlineCheckbox3">Dinner</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="option4" checked
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="inlineCheckbox4"
+            value="option4"
+            checked
             [(ngModel)]="isSupperVisible" />
           <label class="form-check-label" for="inlineCheckbox3">Supper</label>
         </div>
@@ -39,28 +65,31 @@
 
     <div class="row">
       <div class="container-lg p-4 col-4 text-center">
-        <p class="fs-4">Total calories: {{ totalCalories | number : '1.0-2'}} kcal</p>
+        <p class="fs-4">Total calories: {{ totalCalories | number : '1.0-2' }} kcal</p>
         <canvas baseChart class="chart" [data]="doughnutChartData" [type]="doughnutChartType"> </canvas>
       </div>
       <div class="container-lg m-4 col">
         <div *ngIf="isBreakfastVisible">
           <div class="meal-type-header">Breakfast</div>
-          <app-meal-calendar-template [mealProducts$]="breakfastProducts$" [selectedDate]="selectedDate" [mealType]="1">
+          <app-meal-calendar-template
+            [portionProducts$]="breakfastProducts$"
+            [selectedDate]="selectedDate"
+            [mealType]="1">
           </app-meal-calendar-template>
         </div>
         <div *ngIf="isLunchVisible">
           <div class="meal-type-header">Lunch</div>
-          <app-meal-calendar-template [mealProducts$]="lunchProducts$" [selectedDate]="selectedDate" [mealType]="2">
+          <app-meal-calendar-template [portionProducts$]="lunchProducts$" [selectedDate]="selectedDate" [mealType]="2">
           </app-meal-calendar-template>
         </div>
         <div *ngIf="isDinnerVisible">
           <div class="meal-type-header">Dinner</div>
-          <app-meal-calendar-template [mealProducts$]="dinnerProducts$" [selectedDate]="selectedDate" [mealType]="3">
+          <app-meal-calendar-template [portionProducts$]="dinnerProducts$" [selectedDate]="selectedDate" [mealType]="3">
           </app-meal-calendar-template>
         </div>
         <div *ngIf="isSupperVisible">
           <div class="meal-type-header">Supper</div>
-          <app-meal-calendar-template [mealProducts$]="supperProducts$" [selectedDate]="selectedDate" [mealType]="4">
+          <app-meal-calendar-template [portionProducts$]="supperProducts$" [selectedDate]="selectedDate" [mealType]="4">
           </app-meal-calendar-template>
         </div>
       </div>

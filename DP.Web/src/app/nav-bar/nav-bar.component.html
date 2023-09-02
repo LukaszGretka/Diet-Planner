@@ -13,25 +13,30 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" name="dashboard-link" aria-current="page" routerLink="/dashboard">
+          <a
+            class="nav-link"
+            [routerLinkActive]="['active']"
+            name="dashboard-link"
+            aria-current="page"
+            routerLink="/dashboard">
             <i class="bi bi-house"></i>
             Dashboard
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" name="meals-calendar-link" routerLink="/meals-calendar">
+          <a class="nav-link" [routerLinkActive]="['active']" name="meals-calendar-link" routerLink="/meals-calendar">
             <i class="bi bi-calendar-event"></i>
             Meals calendar
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" name="products-link" routerLink="/products">
+          <a class="nav-link" [routerLinkActive]="['active']" name="products-link" routerLink="/products">
             <i class="bi bi-database"></i>
             Products
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" name="body-profile-link" routerLink="/body-profile">
+          <a class="nav-link" [routerLinkActive]="['active']" name="body-profile-link" routerLink="/body-profile">
             <i class="bi bi-person-vcard"></i>
             Body profile
           </a>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, exhaustMap, map, Observable, of, take } from 'rxjs';
-import { Product } from '../products/models/product';
+import { PortionProduct, Product } from '../products/models/product';
 import { ProductService } from '../products/services/product.service';
 import { DatePickerSelection } from './models/date-picker-selection';
 import { MealType } from './models/meal-type';
@@ -38,7 +38,7 @@ export class MealsCalendarComponent implements OnInit {
   public dailyMealsOverview$ = this.store.select(MealCalendarSelectors.getDailyMealsOverview);
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
 
-  public breakfastProducts$ = new BehaviorSubject([]);
+  public breakfastProducts$ = new BehaviorSubject<PortionProduct[]>([]);
   public lunchProducts$ = new BehaviorSubject([]);
   public dinnerProducts$ = new BehaviorSubject([]);
   public supperProducts$ = new BehaviorSubject([]);
