@@ -39,6 +39,8 @@ import { ProductsReducer } from './products/stores/products.reducer';
 import { ProductsEffects } from './products/stores/products.effects';
 import { ConfirmEmailComponent } from './account/confirm-email/confirm-email.component';
 import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/confirm-email-required.component';
+import { DishManagementComponent } from './dishes/dish-management/dish-management.component';
+import { DishesComponent } from './dishes/dishes.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/
     MealCalendarTemplateComponent,
     ConfirmEmailComponent,
     ConfirmEmailRequiredComponent,
+    DishesComponent,
+    DishManagementComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,4 +88,4 @@ import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/
   providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

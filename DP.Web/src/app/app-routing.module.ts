@@ -17,6 +17,8 @@ import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { ConfirmEmailComponent } from './account/confirm-email/confirm-email.component';
 import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/confirm-email-required.component';
+import { DishManagementComponent } from './dishes/dish-management/dish-management.component';
+import { DishesComponent } from './dishes/dishes.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
@@ -35,6 +37,8 @@ const routes: Routes = [
   { path: 'body-profile/add', component: AddMeasurementComponent, canActivate: [AuthGuard] },
   { path: 'body-profile/edit/:id', component: EditMeasurementComponent, canActivate: [AuthGuard] },
   { path: 'meals-calendar', component: MealsCalendarComponent, canActivate: [AuthGuard] },
+  { path: 'dishes', component: DishesComponent, canActivate: [AuthGuard] },
+  { path: 'dishes/dish-management', component: DishManagementComponent, canActivate: [AuthGuard] },
   { path: 'toast', component: ToastComponent },
 ];
 
@@ -42,4 +46,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

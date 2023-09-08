@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DietPlanner.Api.Migrations
 {
-    [DbContext(typeof(DatabaseContext))]
+    [DbContext(typeof(DietPlannerDbContext))]
     [Migration("20230503104655_Init-Stable-2")]
     partial class InitStable2
     {

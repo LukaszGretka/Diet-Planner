@@ -1,6 +1,6 @@
 ﻿using DietPlanner.Api.Database;
+using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.BodyProfile.DbModel;
 using DietPlanner.Api.Models.BodyProfile.DTO;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +14,9 @@ namespace DietPlanner.Api.Services
     public class MeasurementService : IMeasurementService
     {
         private readonly ILogger<MeasurementService> _logger;
-        private readonly DatabaseContext _databaseContext;
+        private readonly DietPlannerDbContext _databaseContext;
 
-        public MeasurementService(ILogger<MeasurementService> logger, DatabaseContext databaseContext)
+        public MeasurementService(ILogger<MeasurementService> logger, DietPlannerDbContext databaseContext)
         {
             _logger = logger;
             _databaseContext = databaseContext;
@@ -24,7 +24,7 @@ namespace DietPlanner.Api.Services
         public async Task<List<MeasurementDto>> GetAll(string userId)
         {
             var measurements = await _databaseContext
-                .UserMeasurements
+                .Measurements
                 .AsNoTracking()
                 .Where(m => m.UserId.Equals(userId))
                 .ToListAsync();
@@ -58,7 +58,7 @@ namespace DietPlanner.Api.Services
         public async Task<MeasurementDto> GetById(int id, string userId)
         {
             var measurement = await _databaseContext
-                .UserMeasurements
+                .Measurements
                 .SingleAsync(measurement => measurement.UserId.Equals(userId) && measurement.Id == id);
 
             return new MeasurementDto
@@ -84,7 +84,7 @@ namespace DietPlanner.Api.Services
         {
             try
             {
-                await _databaseContext.AddAsync(new UserMeasurement
+                await _databaseContext.AddAsync(new Measurement
                 {
                     UserId = userId,
                     Belly = measurement.Belly,
@@ -114,7 +114,7 @@ namespace DietPlanner.Api.Services
 
         public async Task<DatabaseActionResult<MeasurementDto>> DeleteById(int measurementId, string userId)
         {
-            UserMeasurement foundMeasurement = await _databaseContext.UserMeasurements
+            Measurement foundMeasurement = await _databaseContext.Measurements
                 .SingleAsync(measurement => measurement.UserId.Equals(userId) && measurement.Id == measurementId);
 
             if (foundMeasurement is null)
@@ -124,7 +124,7 @@ namespace DietPlanner.Api.Services
 
             try
             {
-                _databaseContext.UserMeasurements.Remove(foundMeasurement);
+                _databaseContext.Measurements.Remove(foundMeasurement);
                 await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
@@ -138,7 +138,7 @@ namespace DietPlanner.Api.Services
 
         public async Task<DatabaseActionResult<MeasurementDto>> Update(int measurementId, MeasurementDto measurement, string userId)
         {
-            UserMeasurement existingMeasurment = await _databaseContext.UserMeasurements
+            Measurement existingMeasurment = await _databaseContext.Measurements
                 .SingleAsync(measurement => measurement.UserId.Equals(userId) && measurement.Id == measurementId);
 
             if (existingMeasurment is null)

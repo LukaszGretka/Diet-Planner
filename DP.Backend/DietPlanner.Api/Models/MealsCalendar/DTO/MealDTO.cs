@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
 
 namespace DietPlanner.Api.Models.MealsCalendar.DTO
@@ -8,7 +9,7 @@ namespace DietPlanner.Api.Models.MealsCalendar.DTO
     {
         public MealTypeEnum MealTypeId { get; set; }
 
-        public List<ProductPortion> PortionProducts { get; set; }
+        public List<DishProducts> DishProducts { get; set; }
     }
 
     public class MealByDay : MealDto

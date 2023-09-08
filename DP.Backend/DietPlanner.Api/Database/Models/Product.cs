@@ -1,21 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DietPlanner.Api.Database.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
 
 namespace DietPlanner.Api.Models.MealsCalendar.DbModel
 {
-    public class UserPortionProduct : UserProduct
-    {
-        public decimal PortionMultiplier { get; set; }
-    }
-
-    public class UserProduct : Product
-    {
-        // User ID from Identity database (AspNetUser table) 
-        public string UserId { get; set; }
-
-        // Determines if other users can use this product for their meals
-        public bool ExposedForOtherUsers { get; set; }
-    }
-
     public class Product
     {
         [Key]

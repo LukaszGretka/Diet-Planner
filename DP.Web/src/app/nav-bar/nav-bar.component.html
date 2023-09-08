@@ -1,23 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a
-            class="nav-link"
-            [routerLinkActive]="['active']"
-            name="dashboard-link"
-            aria-current="page"
+          <a class="nav-link" [routerLinkActive]="['active']" name="dashboard-link" aria-current="page"
             routerLink="/dashboard">
             <i class="bi bi-house"></i>
             Dashboard
@@ -33,6 +23,12 @@
           <a class="nav-link" [routerLinkActive]="['active']" name="products-link" routerLink="/products">
             <i class="bi bi-database"></i>
             Products
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLinkActive]="['active']" name="dishes-link" routerLink="/dishes">
+            <i class="bi bi-stack"></i>
+            Dishes
           </a>
         </li>
         <li class="nav-item">

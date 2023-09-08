@@ -14,9 +14,9 @@ namespace DietPlanner.Api.Controllers
     [Authorize]
     public class MealsCalendarController : ControllerBase
     {
-        private readonly IMealsCalendarService _mealsCalendarService;
+        private readonly IMealService _mealsCalendarService;
 
-        public MealsCalendarController(IMealsCalendarService mealsCalendarService)
+        public MealsCalendarController(IMealService mealsCalendarService)
         {
             this._mealsCalendarService = mealsCalendarService;
         }

@@ -1,14 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Api.Models.BodyProfile.DbModel
+namespace DietPlanner.Api.Database.Models
 {
-    public class UserMeasurement : Measurement
-    {
-        public string UserId { get; set; }
-    }
-
     public class Measurement
     {
         [Key]
@@ -39,5 +32,7 @@ namespace DietPlanner.Api.Models.BodyProfile.DbModel
         public decimal CalfRight { get; set; }
 
         public decimal CalfLeft { get; set; }
+
+        public string UserId { get; set; }
     }
 }

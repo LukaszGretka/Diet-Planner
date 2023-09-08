@@ -1,0 +1,6 @@
+<app-error-page *ngIf="errorCode$ | async; else dishesTemplate" [httpsStatusError]="errorCode$ | async">
+</app-error-page>
+<ng-template #dishesTemplate>
+  <div class="container-lg mt-4">
+    <a class="btn btn-primary" role="button" routerLink="./dish-management">Create new dish</a>
+  </div>

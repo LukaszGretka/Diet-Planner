@@ -3,6 +3,7 @@ using DietPlanner.Api.Database;
 using DietPlanner.Api.Models.Account;
 using DietPlanner.Api.Services;
 using DietPlanner.Api.Services.AccountService;
+using DietPlanner.Api.Services.DishService;
 using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Api.Services.MealsCalendar;
 using DietPlanner.Api.Services.MessageBroker;
@@ -45,7 +46,7 @@ namespace DietPlanner.Api
                     .AllowAnyMethod();
                 });
             });
-            services.AddDbContext<DatabaseContext>(options =>
+            services.AddDbContext<DietPlannerDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("ProductsDatabase")));
 
             services.AddDbContext<IdentityDatabaseContext>(options =>
@@ -71,9 +72,10 @@ namespace DietPlanner.Api
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
+            services.AddTransient<IDishService, DishService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
-            services.AddTransient<IMealsCalendarService, MealsCalendarService>();
+            //services.AddTransient<IMealService, MealService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IMealProductService, MealProductService>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();

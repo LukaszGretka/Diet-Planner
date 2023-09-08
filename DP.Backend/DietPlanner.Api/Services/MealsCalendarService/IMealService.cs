@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
+﻿using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Shared.Models;
 using System;
@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services.MealProductService
 {
-    public interface IMealsCalendarService
+    public interface IMealService
     {
         Task<List<MealDto>> GetMeals(DateTime date, string userId);
 
-        Task<DatabaseActionResult<UserMeal>> AddOrUpdateMeal(MealByDay mealByDay, string userId);
+        Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(MealByDay mealByDay, string userId);
     }
 }

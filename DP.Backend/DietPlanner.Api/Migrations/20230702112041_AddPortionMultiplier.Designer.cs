@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DietPlanner.Api.Migrations
 {
-    [DbContext(typeof(DatabaseContext))]
+    [DbContext(typeof(DietPlannerDbContext))]
     [Migration("20230702112041_AddPortionMultiplier")]
     partial class AddPortionMultiplier
     {
