@@ -17,8 +17,10 @@ import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { ConfirmEmailComponent } from './account/confirm-email/confirm-email.component';
 import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/confirm-email-required.component';
-import { DishManagementComponent } from './dishes/dish-management/dish-management.component';
+import { DishTemplateComponent } from './dishes/dish-template/dish-template.component';
 import { DishesComponent } from './dishes/dishes.component';
+import { DishAddComponent } from './dishes/dish-add/dish-add.component';
+import { DishEditComponent } from './dishes/dish-edit/dish-edit.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
@@ -38,7 +40,8 @@ const routes: Routes = [
   { path: 'body-profile/edit/:id', component: EditMeasurementComponent, canActivate: [AuthGuard] },
   { path: 'meals-calendar', component: MealsCalendarComponent, canActivate: [AuthGuard] },
   { path: 'dishes', component: DishesComponent, canActivate: [AuthGuard] },
-  { path: 'dishes/dish-management', component: DishManagementComponent, canActivate: [AuthGuard] },
+  { path: 'dishes/dish-add', component: DishAddComponent, canActivate: [AuthGuard] },
+  { path: 'dishes/dish/edit/:id', component: DishEditComponent, canActivate: [AuthGuard] },
   { path: 'toast', component: ToastComponent },
 ];
 
@@ -46,4 +49,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -13,6 +13,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as MealCalendarSelectors from './../stores/meals-calendar.selectors';
 import * as ProductsActions from '../../products/stores/products.actions';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import * as ProductSelectors from './../../products/stores/products.selectors';
 
 @UntilDestroy()
 @Component({
@@ -30,11 +31,8 @@ export class MealCalendarTemplateComponent implements OnInit {
   @Input()
   public mealType: MealType;
 
-  //TODO move to effect
-  //may require refactor if list of products will be long (need to test it)
-  public allProducts$: Observable<PortionProduct[]> = this.productService
-    .getProductsWithPortion()
-    .pipe(map(products => products.map(product => product)));
+  //TODO: taking list of products might be long (need to find better solution)
+  public allProducts$ = this.store.select(ProductSelectors.getCallbackMealProduct);
 
   public searchItem: string;
   public currentProducts: PortionProduct[];
@@ -52,10 +50,7 @@ export class MealCalendarTemplateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.allProducts$.pipe(untilDestroyed(this)).subscribe(products => {
-      this.currentProducts = products;
-    });
-
+    this.store.dispatch(ProductsActions.getAllProductsRequest());
     this.mealMacroSummary$ = this.portionProducts$.pipe(
       map(product =>
         product.reduce(

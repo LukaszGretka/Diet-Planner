@@ -5,11 +5,11 @@ import { PortionProduct, Product } from 'src/app/products/models/product';
 export const setErrorCode = createAction('Set error code', prop<{ errorCode: number | null; errorMessage?: string }>());
 export const clearErrors = createAction('Clear errors');
 
-export const getProductsRequest = createAction('Get products request');
-export const getProductsRequestCompleted = createAction(
-  'Get product request completed',
-  prop<{ products: PortionProduct[] }>(),
-);
+// export const getProductsRequest = createAction('Get products request');
+// export const getProductsRequestCompleted = createAction(
+//   'Get product request completed',
+//   prop<{ products: PortionProduct[] }>(),
+// );
 
 export const addProductRequest = createAction('Add product request', prop<{ productData: Product; returnUrl?: string }>());
 export const addProductRequestCompleted = createAction('Add product request completed');
@@ -45,7 +45,7 @@ export const getDailyMealsRequest = createAction('Get daily meals request');
 
 const actions = union({
   setErrorCode,
-  getProductsRequest,
+  // getProductsRequest,
   addProductRequest,
   addProductRequestCompleted,
   editProductRequest,

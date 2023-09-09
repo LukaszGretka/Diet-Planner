@@ -37,37 +37,38 @@ namespace DietPlanner.Api.Services
             return new DatabaseActionResult<Product>(true, obj: product);
         }
 
-        //public async Task<DatabaseActionResult<Product>> DeleteById(int id)
-        //{
-        //    Product foundProduct = await _databaseContext.Products.FindAsync(id);
+        public async Task<DatabaseActionResult<Product>> DeleteById(int id)
+        {
+            Product foundProduct = await _databaseContext.Products.FindAsync(id);
 
-        //    if (foundProduct is null)
-        //    {
-        //        return new DatabaseActionResult<Product>(false, "Product no found");
-        //    }
+            if (foundProduct is null)
+            {
+                return new DatabaseActionResult<Product>(false, "Product no found");
+            }
 
-        //    try
-        //    {
-        //        var mealProduct = await _databaseContext.Meals
-        //            .FirstOrDefaultAsync(mealProduct => mealProduct.Product.Id == id);
+            try
+            {
+                var isProductAssignedToDish = _databaseContext.Dishes
+                    .FirstAsync(dish => dish.DishProducts.Any(product => product.Id == id)).Result.DishProducts.Any();
 
-        //        if(mealProduct is not null)
-        //        {
-        //            return new DatabaseActionResult<Product>
-        //                (false, $"Product '{foundProduct.Name}' can't be deleted because it's used in one of the meals.");
-        //        }
 
-        //        _databaseContext.Products.Remove(foundProduct);
-        //        await _databaseContext.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException ex)
-        //    {
-        //        _logger.LogError(ex.Message);
-        //        return new DatabaseActionResult<Product>(false, exception: ex);
-        //    }
+                if (isProductAssignedToDish)
+                {
+                    return new DatabaseActionResult<Product>
+                        (false, $"Product '{foundProduct.Name}' can't be deleted because it's used in one of the dishes.");
+                }
 
-        //    return new DatabaseActionResult<Product>(true);
-        //}
+                _databaseContext.Products.Remove(foundProduct);
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Product>(false, exception: ex);
+            }
+
+            return new DatabaseActionResult<Product>(true);
+        }
 
         public async Task<List<Product>> GetAll()
         {
@@ -84,35 +85,35 @@ namespace DietPlanner.Api.Services
             return await _databaseContext.Products.Where(product => product.Name.Equals(name)).FirstOrDefaultAsync();
         }
 
-        //public async Task<DatabaseActionResult<Product>> Update(int id, Product product)
-        //{
-        //    Product existingProduct = await _databaseContext.Products.FindAsync(product.Id);
+        public async Task<DatabaseActionResult<Product>> Update(int id, Product product)
+        {
+            Product existingProduct = await _databaseContext.Products.FindAsync(product.Id);
 
-        //    if (existingProduct is null)
-        //    {
-        //        return new DatabaseActionResult<Product>(false, "Product no found");
-        //    }
+            if (existingProduct is null)
+            {
+                return new DatabaseActionResult<Product>(false, "Product no found");
+            }
 
-        //    existingProduct.Name = string.IsNullOrWhiteSpace(product.Name) ? existingProduct.Name : product.Name;
-        //    existingProduct.Description = string.IsNullOrWhiteSpace(product.Description) ? existingProduct.Description : product.Description;
-        //    existingProduct.BarCode = product.BarCode ?? existingProduct.BarCode;
-        //    existingProduct.ImagePath = string.IsNullOrWhiteSpace(product.ImagePath) ? existingProduct.ImagePath : product.ImagePath;
-        //    existingProduct.Calories = product.Calories ?? existingProduct.Calories;
-        //    existingProduct.Carbohydrates = product.Carbohydrates ?? product.Carbohydrates;
-        //    existingProduct.Fats = product.Fats ?? product.Fats;
-        //    existingProduct.Proteins = product.Proteins ?? product.Proteins;
+            existingProduct.Name = string.IsNullOrWhiteSpace(product.Name) ? existingProduct.Name : product.Name;
+            existingProduct.Description = string.IsNullOrWhiteSpace(product.Description) ? existingProduct.Description : product.Description;
+            existingProduct.BarCode = product.BarCode ?? existingProduct.BarCode;
+            existingProduct.ImagePath = string.IsNullOrWhiteSpace(product.ImagePath) ? existingProduct.ImagePath : product.ImagePath;
+            existingProduct.Calories = product.Calories ?? existingProduct.Calories;
+            existingProduct.Carbohydrates = product.Carbohydrates ?? product.Carbohydrates;
+            existingProduct.Fats = product.Fats ?? product.Fats;
+            existingProduct.Proteins = product.Proteins ?? product.Proteins;
 
-        //    try
-        //    {
-        //        await _databaseContext.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException ex)
-        //    {
-        //        _logger.LogError(ex.Message);
-        //        return new DatabaseActionResult<Product>(false, exception: ex);
-        //    }
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Product>(false, exception: ex);
+            }
 
-        //    return new DatabaseActionResult<Product>(true);
-        //}
+            return new DatabaseActionResult<Product>(true);
+        }
     }
 }

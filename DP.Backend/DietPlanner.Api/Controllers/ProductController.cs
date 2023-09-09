@@ -62,59 +62,55 @@ namespace DietPlanner.Api.Controllers
         [ActionName(nameof(PostAsync))]
         public async Task<IActionResult> PostAsync([FromBody] Product product)
         {
-            //DatabaseActionResult<Product> result = await _productService.Create(product);
+            DatabaseActionResult<Product> result = await _productService.Create(product);
 
-            //if (result.Exception != null)
-            //{
-            //    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            //}
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
 
-            //return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
-            return Ok();
+            return CreatedAtAction(nameof(PostAsync), new { id = result.Obj.Id }, result.Obj);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Product product)
         {
-            //if (id != product.Id)
-            //{
-            //    return BadRequest();
-            //}
+            if (id != product.Id)
+            {
+                return BadRequest();
+            }
 
-            //DatabaseActionResult<Product> result = await _productService.Update(id, product);
+            DatabaseActionResult<Product> result = await _productService.Update(id, product);
 
-            //if (result.Exception != null)
-            //{
-            //    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            //}
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
 
-            //if (!result.Success)
-            //{
-            //    return NotFound(new { Message = "Product no found" });
-            //}
+            if (!result.Success)
+            {
+                return NotFound(new { Message = "Product no found" });
+            }
 
-            //return NoContent();
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            //    DatabaseActionResult<Product> result = await _productService.DeleteById(id);
+            DatabaseActionResult<Product> result = await _productService.DeleteById(id);
 
-            //    if (result?.Exception != null)
-            //    {
-            //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            //    }
+            if (result?.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
 
-            //    if (!result.Success)
-            //    {
-            //        return BadRequest(new { message = result.Message });
-            //    }
+            if (!result.Success)
+            {
+                return BadRequest(new { message = result.Message });
+            }
 
-            //    return NoContent();
-            //}
-            return Ok();
+            return NoContent();
         }
     }
 }

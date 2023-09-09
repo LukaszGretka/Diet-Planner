@@ -18,10 +18,6 @@ const reducerFactory = createReducer(
     ...state,
     errorCode: null,
   })),
-  on(generalActions.getProductsRequestCompleted, (state, action) => ({
-    ...state,
-    products: action.payload.products,
-  })),
   on(generalActions.getMeasurementsCompleted, (state, action) => ({
     ...state,
     measurements: action.payload.measurements,

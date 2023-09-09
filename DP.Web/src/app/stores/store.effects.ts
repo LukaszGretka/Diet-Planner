@@ -79,19 +79,19 @@ export class GeneralEffects {
     ),
   );
 
-  getProductsEffect$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(GeneralActions.getProductsRequest),
-      switchMap(() => {
-        return this.productService.getProductsWithPortion().pipe(
-          switchMap(products => of(GeneralActions.getProductsRequestCompleted({ products }))),
-          catchError((error: any) =>
-            of(GeneralActions.setErrorCode({ errorCode: error.status, errorMessage: error.error.message })),
-          ),
-        );
-      }),
-    ),
-  );
+  // getProductsEffect$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(GeneralActions.getProductsRequest),
+  //     switchMap(() => {
+  //       return this.productService.getProductsWithPortion().pipe(
+  //         switchMap(products => of(GeneralActions.getProductsRequestCompleted({ products }))),
+  //         catchError((error: any) =>
+  //           of(GeneralActions.setErrorCode({ errorCode: error.status, errorMessage: error.error.message })),
+  //         ),
+  //       );
+  //     }),
+  //   ),
+  // );
 
   addProductEffect$ = createEffect(() =>
     this.actions$.pipe(
