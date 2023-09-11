@@ -5,6 +5,7 @@ import { map, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { DishState } from '../stores/dish.state';
 import { Store } from '@ngrx/store';
+import * as DishActions from '../stores/dish.actions';
 
 @Component({
   selector: 'app-dish-edit',
@@ -36,6 +37,6 @@ export class DishEditComponent implements OnInit {
   }
 
   private submitForm(dish: Dish) {
-    // this.store.dispatch(GeneralActions.editProductRequest({ productId: product.id, productData: product }));
+    this.dishStore.dispatch(DishActions.saveDishRequest({ dish, returnUrl: '' }));
   }
 }

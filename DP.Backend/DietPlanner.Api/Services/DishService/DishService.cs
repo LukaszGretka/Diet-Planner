@@ -4,6 +4,7 @@ using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,17 +33,31 @@ namespace DietPlanner.Api.Services.DishService
 
         public async Task<DatabaseActionResult<Dish>> Create(CreateDishRequest request)
         {
+            var dishProducts = new List<DishProducts>();
+
+            request.Products.ToList().ForEach(dishProduct =>
+            {
+                dishProducts.Add(new DishProducts
+                {
+                    Product = dishProduct.Product,
+                    PortionMultiplier = dishProduct.PortionMultiplier
+                });
+            });
+
             try
             {
-                var result = await _databaseContext.Dishes.AddAsync(new Dish
+                var dishToAdd = new Dish
                 {
                     Name = request.Name,
-                    DishProducts = request.Products,
                     ImagePath = request.Image,
-                });
+                };
+
+                await _databaseContext.Dishes.AddAsync(dishToAdd);
+                await _databaseContext.DishProducts.AddRangeAsync(dishProducts);
+
                 await _databaseContext.SaveChangesAsync();
 
-                return new DatabaseActionResult<Dish>(true, obj: result.Entity);
+                return new DatabaseActionResult<Dish>(true);
             }
             catch (DbUpdateException ex)
             {

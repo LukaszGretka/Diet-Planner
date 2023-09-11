@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DishState } from '../stores/dish.state';
 import { Store } from '@ngrx/store';
 import { Dish } from '../models/dish';
+import * as DishActions from '../stores/dish.actions';
 
 @Component({
   selector: 'app-dish-add',
@@ -20,6 +21,6 @@ export class DishAddComponent {
   }
 
   public submitForm(dish: Dish, returnUrl: string = ''): void {
-    //this.dishStore.dispatch(GeneralActions.addProductRequest({ dishData: dish, returnUrl }));
+    this.dishStore.dispatch(DishActions.saveDishRequest({ dish, returnUrl }));
   }
 }

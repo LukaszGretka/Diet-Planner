@@ -15,11 +15,11 @@ import * as ProductSelectors from './../../products/stores/products.selectors';
 import { Store } from '@ngrx/store';
 import { ProductsState } from 'src/app/products/stores/products.state';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { PortionProduct, Product } from 'src/app/products/models/product';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { DishState } from '../stores/dish.state';
 import * as DishActions from '../stores/dish.actions';
 import * as ProductActions from './../../products/stores/products.actions';
+import { DishProduct } from '../models/dish-product';
 
 @UntilDestroy()
 @Component({
@@ -34,9 +34,9 @@ export class DishTemplateComponent implements OnInit {
   @Input()
   public submitFunction: Function;
 
-  public dishProducts$ = new BehaviorSubject<PortionProduct[]>([]);
-  public portionValue = 100;
-  public searchItem: string;
+  public dishProducts$ = new BehaviorSubject<DishProduct[]>([]);
+  public portionValue: number = 100;
+  public searchItem: string = '';
   //TODO: taking list of products might be long (need to find better solution)
   public allProducts$ = this.productStore.select(ProductSelectors.getAllProducts);
 
@@ -61,12 +61,21 @@ export class DishTemplateComponent implements OnInit {
       this.dishForm.markAllAsTouched();
       return;
     }
-    this.submitFunction(); //TODO add object to pass dish
+
+    this.submitFunction({
+      name: this.dishForm.get('name').value,
+      description: this.dishForm.get('description').value,
+      imagePath: this.dishForm.get('imagePath')?.value ?? '',
+      products: this.dishProducts$.getValue(),
+    } as Dish); //TODO add object to pass dish
   }
 
-  public onPortionValueChange(poritonSize: number, behaviorSubject: BehaviorSubject<any>, index: number) {}
+  public onPortionValueChange(poritonSize: number, index: number) {}
 
-  public onRemoveProductButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): void {}
+  public onRemoveProductButtonClick(index: number): void {
+    const products = this.dishProducts$.getValue();
+    this.dishProducts$.next([...products].splice(index, 1));
+  }
 
   public onAddProductButtonClick(productName: string): void {
     if (productName) {
@@ -75,15 +84,20 @@ export class DishTemplateComponent implements OnInit {
         .pipe(untilDestroyed(this))
         .subscribe(foundProduct => {
           if (foundProduct) {
-            if (this.dishProducts$.getValue().filter(p => p.id == foundProduct.id).length > 0) {
+            if (
+              this.dishProducts$.getValue().filter(dishProduct => dishProduct.product.id == foundProduct.id).length > 0
+            ) {
               this.notificationService.showWarningToast(
-                'Product already exist in this meal.',
+                'Product already exist in this dish.',
                 'Please edit portion box to adjust the entry.',
                 5000,
               );
               return;
             }
-            const products = (this.dishProducts$.getValue() as PortionProduct[]).concat(foundProduct as PortionProduct);
+            const products = this.dishProducts$.getValue().concat({
+              product: foundProduct,
+              portionMultiplier: 1,
+            } as DishProduct);
             this.dishProducts$.next(products);
             this.searchItem = '';
           } else {

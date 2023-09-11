@@ -21,7 +21,11 @@ export class DishService {
     return this.httpClient.get<Dish>(this.dishesUrl, { withCredentials: true });
   }
 
-  public createDish(dish: Dish): Observable<Dish> {
+  public saveDish(dish: Dish): Observable<Dish> {
     return this.httpClient.post<Dish>(this.dishesUrl, dish, this.httpOptions);
+  }
+
+  public updatePortionMultiplier(dishId: number, productId: number, portionMultiplier: number) {
+    return this.httpClient.patch(this.dishesUrl, { dishId, productId, portionMultiplier }, this.httpOptions);
   }
 }

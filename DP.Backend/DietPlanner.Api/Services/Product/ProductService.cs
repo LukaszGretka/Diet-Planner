@@ -48,9 +48,8 @@ namespace DietPlanner.Api.Services
 
             try
             {
-                var isProductAssignedToDish = _databaseContext.Dishes
-                    .FirstAsync(dish => dish.DishProducts.Any(product => product.Id == id)).Result.DishProducts.Any();
-
+                var isProductAssignedToDish = _databaseContext.DishProducts
+                    .Any(dishProduct => dishProduct.Id == id);
 
                 if (isProductAssignedToDish)
                 {

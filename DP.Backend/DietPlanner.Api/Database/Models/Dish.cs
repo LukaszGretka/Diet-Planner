@@ -12,11 +12,7 @@ namespace DietPlanner.Api.Database.Models
 
         public string ImagePath { get; set; }
 
-        public ICollection<DishProducts> DishProducts { get; set; }
-
-        public int MealId { get; set; }
-
-        public Meal Meal { get; set; } = null!;
+        public string Description { get; set; }
 
         public string UserId { get; set; }
 

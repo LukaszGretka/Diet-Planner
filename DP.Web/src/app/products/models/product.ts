@@ -10,6 +10,6 @@ export class Product {
   barCode: number;
 }
 
-export interface PortionProduct extends Product {
-  portionMultiplier: number;
-}
+// export interface PortionProduct extends Product {
+//   portionMultiplier: number;
+// }

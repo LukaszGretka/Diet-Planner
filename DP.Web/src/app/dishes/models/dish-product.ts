@@ -2,5 +2,5 @@ import { Product } from 'src/app/products/models/product';
 
 export class DishProduct {
   product: Product;
-  portionMultiplier: number;
+  portionMultiplier: number = 1;
 }

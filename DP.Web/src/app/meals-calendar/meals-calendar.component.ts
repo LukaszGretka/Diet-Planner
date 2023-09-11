@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, exhaustMap, map, Observable, of, take } from 'rxjs';
-import { PortionProduct, Product } from '../products/models/product';
 import { ProductService } from '../products/services/product.service';
 import { DatePickerSelection } from './models/date-picker-selection';
 import { MealType } from './models/meal-type';
@@ -18,6 +17,7 @@ import { Meal } from './models/meal';
 import { ProductsState } from '../products/stores/products.state';
 import * as ProductActions from '../products/stores/products.actions';
 import * as GeneralActions from '../stores/store.actions';
+import { DishProduct } from '../dishes/models/dish-product';
 
 @UntilDestroy()
 @Component({
@@ -38,7 +38,7 @@ export class MealsCalendarComponent implements OnInit {
   public dailyMealsOverview$ = this.store.select(MealCalendarSelectors.getDailyMealsOverview);
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
 
-  public breakfastProducts$ = new BehaviorSubject<PortionProduct[]>([]);
+  public breakfastProducts$ = new BehaviorSubject<DishProduct[]>([]);
   public lunchProducts$ = new BehaviorSubject([]);
   public dinnerProducts$ = new BehaviorSubject([]);
   public supperProducts$ = new BehaviorSubject([]);
@@ -126,7 +126,7 @@ export class MealsCalendarComponent implements OnInit {
         .getProductByName(callback.productName)
         .pipe(take(1))
         .subscribe(product => {
-          currentProducts.push(product);
+          currentProducts.push({ product, portionMultiplier: 1 });
           targetedMealSb.next({ mealTypeId: callback.mealType, portionProducts: currentProducts });
           this.store.dispatch(
             MealCalendarActions.addMealRequest({
@@ -166,17 +166,17 @@ export class MealsCalendarComponent implements OnInit {
 
   private calculateTotalCalories(): number {
     let totalSum = 0;
-    this.breakfastProducts$.getValue().forEach((product: Product) => {
-      totalSum += product.calories;
+    this.breakfastProducts$.getValue().forEach((dishProduct: DishProduct) => {
+      totalSum += dishProduct.product.calories;
     });
-    this.lunchProducts$.getValue().forEach((product: Product) => {
-      totalSum += product.calories;
+    this.lunchProducts$.getValue().forEach((dishProduct: DishProduct) => {
+      totalSum += dishProduct.product.calories;
     });
-    this.dinnerProducts$.getValue().forEach((product: Product) => {
-      totalSum += product.calories;
+    this.dinnerProducts$.getValue().forEach((dishProduct: DishProduct) => {
+      totalSum += dishProduct.product.calories;
     });
-    this.supperProducts$.getValue().forEach((product: Product) => {
-      totalSum += product.calories;
+    this.supperProducts$.getValue().forEach((dishProduct: DishProduct) => {
+      totalSum += dishProduct.product.calories;
     });
 
     return totalSum;
@@ -185,10 +185,10 @@ export class MealsCalendarComponent implements OnInit {
   private calculateTotalMacronutrientsForMealType(mealTypeProducts$: any) {
     let macronutrients = { carbs: 0, proteins: 0, fats: 0 };
 
-    mealTypeProducts$.getValue().forEach((product: Product) => {
-      (macronutrients.carbs += product.carbohydrates),
-        (macronutrients.proteins += product.proteins),
-        (macronutrients.fats += product.fats);
+    mealTypeProducts$.getValue().forEach((dishProduct: DishProduct) => {
+      (macronutrients.carbs += dishProduct.product.carbohydrates),
+        (macronutrients.proteins += dishProduct.product.proteins),
+        (macronutrients.fats += dishProduct.product.fats);
     });
 
     return macronutrients;

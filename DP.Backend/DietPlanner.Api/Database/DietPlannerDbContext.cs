@@ -13,23 +13,21 @@ namespace DietPlanner.Api.Database
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Meal>()
-            .HasMany(e => e.Dishes)
-            .WithOne(e => e.Meal)
-            .HasForeignKey(e => e.MealId)
+            .HasMany(meal => meal.MealDishes)
+            .WithOne(mealDish => mealDish.Meal)
+            .HasForeignKey(mealDish => mealDish.MealId)
             .IsRequired();
 
             builder.Entity<Dish>()
-                .HasMany(e => e.DishProducts)
-                .WithOne(e => e.Dish)
-                .HasForeignKey(e => e.DishId)
-                .IsRequired();
+                   .HasIndex(u => u.Id)
+                   .IsUnique();
 
 
             builder.Entity<Product>()
                    .HasIndex(u => u.Id)
                    .IsUnique();
 
-            builder.Entity<MealDishes>()
+            builder.Entity<MealDish>()
                    .HasIndex(u => u.Id)
                    .IsUnique();
 
@@ -53,9 +51,9 @@ namespace DietPlanner.Api.Database
 
         public DbSet<Product> Products { get; set; }
 
-        //public DbSet<MealDishes> MealDishes { get; set; }
+        public DbSet<MealDish> MealDishes { get; set; }
 
-        //public DbSet<DishProducts> DishProducts { get; set; }
+        public DbSet<DishProducts> DishProducts { get; set; }
 
         public DbSet<Measurement> Measurements { get; set; }
     }

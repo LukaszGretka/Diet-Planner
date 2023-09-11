@@ -1,9 +1,9 @@
-import { PortionProduct } from 'src/app/products/models/product';
+import { DishProduct } from 'src/app/dishes/models/dish-product';
 import { MealType } from './meal-type';
 
 export interface Meal {
   mealTypeId: MealType;
-  portionProducts: PortionProduct[];
+  portionProducts: DishProduct[];
 }
 
 export interface MealByDay extends Meal {

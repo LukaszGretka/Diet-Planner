@@ -27,7 +27,7 @@
             style="max-width: 65px"
             [ngModel]="portionValue * product.portionMultiplier"
             [ngModelOptions]="{ updateOn: 'blur' }"
-            (ngModelChange)="onPortionValueChange($event, portionProducts$, productIndex)" />g
+            (ngModelChange)="onPortionValueChange(1, $event, portionProducts$, productIndex)" />g
         </td>
         <td>
           <button

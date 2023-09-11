@@ -1,1 +1,3 @@
-export interface DishState {}
+export interface DishState {
+  isLoading: boolean;
+}

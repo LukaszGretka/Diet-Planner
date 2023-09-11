@@ -1,6 +1,7 @@
 import { createAction, union } from '@ngrx/store';
 import { Measurement } from 'src/app/body-profile/models/measurement';
-import { PortionProduct, Product } from 'src/app/products/models/product';
+import { Product } from 'src/app/products/models/product';
+import { DishProduct } from '../dishes/models/dish-product';
 
 export const setErrorCode = createAction('Set error code', prop<{ errorCode: number | null; errorMessage?: string }>());
 export const clearErrors = createAction('Clear errors');
@@ -11,12 +12,15 @@ export const clearErrors = createAction('Clear errors');
 //   prop<{ products: PortionProduct[] }>(),
 // );
 
-export const addProductRequest = createAction('Add product request', prop<{ productData: Product; returnUrl?: string }>());
+export const addProductRequest = createAction(
+  'Add product request',
+  prop<{ productData: Product; returnUrl?: string }>(),
+);
 export const addProductRequestCompleted = createAction('Add product request completed');
 
 export const editProductRequest = createAction(
   'Edit product request',
-  prop<{ productId: number; productData: PortionProduct }>(),
+  prop<{ productId: number; productData: Product }>(),
 );
 export const editProductRequestCompleted = createAction('Edit product request completed');
 

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BehaviorSubject, Observable, OperatorFunction, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import * as MealCalendarActions from './../stores/meals-calendar.actions';
-import { PortionProduct, Product } from 'src/app/products/models/product';
+import * as DishActions from './../../dishes/stores/dish.actions';
 import { ProductService } from 'src/app/products/services/product.service';
 import { MealCalendarState } from '../stores/meals-calendar.state';
 import { Store } from '@ngrx/store';
@@ -14,6 +14,7 @@ import * as MealCalendarSelectors from './../stores/meals-calendar.selectors';
 import * as ProductsActions from '../../products/stores/products.actions';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import * as ProductSelectors from './../../products/stores/products.selectors';
+import { DishProduct } from 'src/app/dishes/models/dish-product';
 
 @UntilDestroy()
 @Component({
@@ -23,7 +24,7 @@ import * as ProductSelectors from './../../products/stores/products.selectors';
 })
 export class MealCalendarTemplateComponent implements OnInit {
   @Input()
-  public portionProducts$: BehaviorSubject<PortionProduct[]>;
+  public portionProducts$: BehaviorSubject<DishProduct[]>;
 
   @Input()
   public selectedDate: Date;
@@ -35,14 +36,13 @@ export class MealCalendarTemplateComponent implements OnInit {
   public allProducts$ = this.store.select(ProductSelectors.getCallbackMealProduct);
 
   public searchItem: string;
-  public currentProducts: PortionProduct[];
+  public currentProducts: DishProduct[];
   public defaultPortionSize = 100; //in grams
   public portionValue = this.defaultPortionSize;
 
   public mealMacroSummary$: Observable<any>;
 
   constructor(
-    private productService: ProductService,
     private store: Store<MealCalendarState>,
     private router: Router,
     private modalService: NgbModal,
@@ -54,11 +54,11 @@ export class MealCalendarTemplateComponent implements OnInit {
     this.mealMacroSummary$ = this.portionProducts$.pipe(
       map(product =>
         product.reduce(
-          (total, product) => {
-            (total.calories += product.calories),
-              (total.carbohydrates += product.carbohydrates),
-              (total.proteins += product.proteins),
-              (total.fats += product.fats);
+          (total, dishProduct) => {
+            (total.calories += dishProduct.product.calories),
+              (total.carbohydrates += dishProduct.product.carbohydrates),
+              (total.proteins += dishProduct.product.proteins),
+              (total.fats += dishProduct.product.fats);
             return total;
           },
           {
@@ -75,7 +75,7 @@ export class MealCalendarTemplateComponent implements OnInit {
   // Update local products list for particular collection given in parameter.
   public onAddProductButtonClick(behaviorSubject: BehaviorSubject<any>, productName: string, content: any): void {
     if (productName) {
-      const foundProduct = this.currentProducts.find(p => p.name === productName);
+      const foundProduct = this.currentProducts.find(dishProduct => dishProduct.product.name === productName);
       if (foundProduct) {
         this.addFoundProduct(behaviorSubject, foundProduct);
         this.searchItem = '';
@@ -91,7 +91,7 @@ export class MealCalendarTemplateComponent implements OnInit {
 
   // Remove product from local list by given index
   public onRemoveProductButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): void {
-    const productsBehaviorSubject = behaviorSubject as BehaviorSubject<PortionProduct[]>;
+    const productsBehaviorSubject = behaviorSubject as BehaviorSubject<DishProduct[]>;
     const products = productsBehaviorSubject.getValue();
     let productsLocal = [...products];
     productsLocal.splice(index, 1);
@@ -123,15 +123,15 @@ export class MealCalendarTemplateComponent implements OnInit {
         searchText.length < 1
           ? []
           : this.currentProducts
-              .filter(product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+              .filter(dishProduct => dishProduct.product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
               .slice(0, 10)
-              .map(p => p.name),
+              .map(dishProduct => dishProduct.product.name),
       ),
     );
 
-  private addFoundProduct(behaviorSubject: BehaviorSubject<any>, foundProduct: PortionProduct): boolean {
-    const productsBehaviorSubject = behaviorSubject as BehaviorSubject<PortionProduct[]>;
-    if (productsBehaviorSubject.getValue().filter(p => p.id == foundProduct.id).length > 0) {
+  private addFoundProduct(behaviorSubject: BehaviorSubject<any>, foundProduct: DishProduct): boolean {
+    const productsBehaviorSubject = behaviorSubject as BehaviorSubject<DishProduct[]>;
+    if (productsBehaviorSubject.getValue().filter(dishProduct => dishProduct.product.id == foundProduct.product.id).length > 0) {
       this.notificationService.showWarningToast(
         'Product already exist in this meal.',
         'Please edit portion box to adjust the entry.',
@@ -139,7 +139,7 @@ export class MealCalendarTemplateComponent implements OnInit {
       );
       return;
     }
-    const products = (productsBehaviorSubject.getValue() as PortionProduct[]).concat(foundProduct);
+    const products = (productsBehaviorSubject.getValue() as DishProduct[]).concat(foundProduct);
     productsBehaviorSubject.next(products);
     this.store.dispatch(
       MealCalendarActions.addMealRequest({
@@ -152,11 +152,15 @@ export class MealCalendarTemplateComponent implements OnInit {
     );
   }
 
-  public onPortionValueChange(poritonSize: number, behaviorSubject: BehaviorSubject<any>, index: number) {
+  public onPortionValueChange(
+    dishId: number,
+    poritonSize: number,
+    behaviorSubject: BehaviorSubject<any>,
+    index: number,
+  ) {
     this.store.dispatch(
-      MealCalendarActions.updatePortionRequest({
-        date: this.selectedDate,
-        mealType: this.mealType,
+      DishActions.updatePortionRequest({
+        dishId: dishId,
         productId: behaviorSubject.getValue()[index].id,
         portionMultiplier: poritonSize / this.defaultPortionSize,
       }),

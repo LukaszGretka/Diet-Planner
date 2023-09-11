@@ -4,7 +4,6 @@ import { GeneralState } from './store.state';
 
 export const initialState: GeneralState = {
   errorCode: null,
-  products: null,
   measurements: null,
 };
 

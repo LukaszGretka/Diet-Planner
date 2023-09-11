@@ -44,36 +44,37 @@
                 <th scope="col">Fats</th>
                 <th scope="col">Calories</th>
                 <th scope="col">Portion</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let product of dishProducts$ | async; let productIndex = index">
+              <tr *ngFor="let dishProduct of dishProducts$ | async; let productIndex = index">
                 <td style="max-width: fit-content; max-height: fit-content">
                   <img
                     src="./../../../assets/images/product-placeholder.svg"
                     class="img-fluid"
                     style="width: 25px; height: 25px" />
                 </td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.carbohydrates | number : '1.0-2' }}g</td>
-                <td>{{ product.proteins | number : '1.0-2' }}g</td>
-                <td>{{ product.fats | number : '1.0-2' }}g</td>
-                <td>{{ product.calories | number : '1.0-2' }}kcal</td>
+                <td>{{ dishProduct.product.name }}</td>
+                <td>{{ dishProduct.product.carbohydrates | number : '1.0-2' }}g</td>
+                <td>{{ dishProduct.product.proteins | number : '1.0-2' }}g</td>
+                <td>{{ dishProduct.product.fats | number : '1.0-2' }}g</td>
+                <td>{{ dishProduct.product.calories | number : '1.0-2' }}kcal</td>
                 <td class="d-flex" style="align-items: center">
                   <input
                     type="number"
                     id="portion"
                     class="form-control form-control-sm d-flex"
                     style="max-width: 65px"
-                    [ngModel]="portionValue * product.portionMultiplier"
+                    [ngModel]="portionValue * dishProduct.portionMultiplier"
                     [ngModelOptions]="{ updateOn: 'blur' }"
-                    (ngModelChange)="onPortionValueChange($event, dishProducts$, productIndex)" />g
+                    (ngModelChange)="onPortionValueChange($event, productIndex)" />g
                 </td>
                 <td>
                   <button
                     type="button"
                     class="btn delete-button-icon text-danger"
-                    (click)="onRemoveProductButtonClick(dishProducts$, productIndex)">
+                    (click)="onRemoveProductButtonClick(productIndex)">
                     <i class="bi bi-x-lg"></i>
                   </button>
                 </td>
@@ -99,7 +100,7 @@
       </div>
     </div>
   </div>
-  <div class="p-2 border-top" style="display: flex; align-items: flex-end; justify-content: flex-end">
+  <div class="py-2 border-top" style="display: flex; align-items: flex-end; justify-content: flex-end">
     <a class="btn btn-secondary mx-2" role="button" routerLink="/dishes">Back</a>
     <button type="submit" class="btn btn-primary" (click)="onSubmit()">Save</button>
   </div>

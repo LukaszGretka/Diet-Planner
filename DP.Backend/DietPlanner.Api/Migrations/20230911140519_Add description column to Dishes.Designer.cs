@@ -3,6 +3,7 @@ using System;
 using DietPlanner.Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietPlanner.Api.Migrations
 {
     [DbContext(typeof(DietPlannerDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230911140519_Add description column to Dishes")]
+    partial class AdddescriptioncolumntoDishes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
@@ -213,7 +215,7 @@ namespace DietPlanner.Api.Migrations
             modelBuilder.Entity("DietPlanner.Api.Database.Models.DishProducts", b =>
                 {
                     b.HasOne("DietPlanner.Api.Database.Models.Dish", "Dish")
-                        .WithMany()
+                        .WithMany("DishProducts")
                         .HasForeignKey("DishId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -244,6 +246,11 @@ namespace DietPlanner.Api.Migrations
                     b.Navigation("Dishes");
 
                     b.Navigation("Meal");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.Dish", b =>
+                {
+                    b.Navigation("DishProducts");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Database.Models.Meal", b =>
