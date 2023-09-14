@@ -1,6 +1,5 @@
 ﻿using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.DTO.Dishes;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Shared.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,9 +10,11 @@ namespace DietPlanner.Api.Services.DishService
     {
         Task<Dish> GetById(int id);
 
-        Task<Dish> GetByName(string name);
+        Task<List<Dish>> GetAllUserDishes(string userId);
 
-        Task<DatabaseActionResult<Dish>> Create(CreateDishRequest dish);
+        Task<List<DishProducts>> GetDishProducts(int dishId);
+
+        Task<DatabaseActionResult<Dish>> Create(CreateDishRequest dish, string userId);
 
         Task<DatabaseActionResult<Dish>> Update(int id, Dish dish);
 

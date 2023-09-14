@@ -4,6 +4,7 @@ import * as dishActions from './dish.actions';
 
 export const initialState: DishState = {
   isLoading: false,
+  dishes: [],
 };
 
 const reducerFactory = createReducer(
@@ -17,6 +18,19 @@ const reducerFactory = createReducer(
     isLoading: false,
   })),
   on(dishActions.saveDishRequestFailed, state => ({
+    ...state,
+    isLoading: false,
+  })),
+  on(dishActions.loadDishesRequest, state => ({
+    ...state,
+    isLoading: true,
+  })),
+  on(dishActions.loadDishesRequestSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    dishes: action.payload.dishes,
+  })),
+  on(dishActions.loadDishesRequestFailed, state => ({
     ...state,
     isLoading: false,
   })),

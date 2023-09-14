@@ -3,6 +3,7 @@ using System;
 using DietPlanner.Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietPlanner.Api.Migrations
 {
     [DbContext(typeof(DietPlannerDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230914085221_Add description column to Dishes3")]
+    partial class AdddescriptioncolumntoDishes3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
@@ -26,7 +28,7 @@ namespace DietPlanner.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("ExposeToOtherUsers")
+                    b.Property<bool>("ExposedForOtherUsers")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ImagePath")

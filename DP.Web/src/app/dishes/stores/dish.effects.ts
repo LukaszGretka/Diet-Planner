@@ -4,6 +4,7 @@ import { DishService } from '../services/dish.service';
 import { catchError, exhaustMap, of, switchMap, tap } from 'rxjs';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import * as DishActions from './dish.actions';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class DishEffects {
@@ -11,9 +12,31 @@ export class DishEffects {
     private actions$: Actions,
     private dishService: DishService,
     private notificationService: NotificationService,
-  ) {
-    //...
-  }
+    private router: Router,
+  ) {}
+
+  loadDishesEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DishActions.loadDishesRequest),
+      exhaustMap(() => {
+        return this.dishService.getUserDishes().pipe(
+          switchMap(dishes => of(DishActions.loadDishesRequestSuccess({ dishes }))),
+          catchError(error => of(DishActions.loadDishesRequestFailed(error))),
+        );
+      }),
+    ),
+  );
+
+  loadDishesFailedEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.loadDishesRequestFailed),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during loading dishes.')),
+      ),
+    {
+      dispatch: false,
+    },
+  );
 
   saveDishEffect$ = createEffect(() =>
     this.actions$.pipe(
@@ -21,7 +44,44 @@ export class DishEffects {
       exhaustMap(({ payload }) => {
         return this.dishService.saveDish(payload.dish).pipe(
           switchMap(() => of(DishActions.saveDishRequestSuccess())),
-          catchError(() => of(DishActions.saveDishRequestFailed())),
+          catchError(error => of(DishActions.saveDishRequestFailed(error))),
+        );
+      }),
+    ),
+  );
+
+  saveDishSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.saveDishRequestSuccess),
+        tap(() => {
+          this.router.navigate(['dishes']);
+          return this.notificationService.showSuccessToast('Changes saved', 'Dish have been successfully saved.');
+        }),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  saveDishFailedEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.saveDishRequestFailed),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during saving a dish.')),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  getDishProductsEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DishActions.getDishProductsRequest),
+      exhaustMap(({ payload }) => {
+        return this.dishService.getDishProducts(payload.dishId).pipe(
+          switchMap(dishProducts => of(DishActions.getDishProductsRequestSuccess({ dishProducts }))),
+          catchError(error => of(DishActions.getDishProductsRequestFailed(error))),
         );
       }),
     ),
@@ -35,7 +95,7 @@ export class DishEffects {
           .updatePortionMultiplier(payload.dishId, payload.productId, payload.portionMultiplier)
           .pipe(
             switchMap(() => of(DishActions.updatePortionRequestSuccess())),
-            catchError(() => of(DishActions.updatePortionRequestFailed())),
+            catchError(error => of(DishActions.updatePortionRequestFailed(error))),
           );
       }),
     ),

@@ -29,7 +29,7 @@ import { DishProduct } from '../models/dish-product';
 })
 export class DishTemplateComponent implements OnInit {
   @Input()
-  public dish: Dish;
+  public dishToEdit: Dish;
 
   @Input()
   public submitFunction: Function;
@@ -47,14 +47,23 @@ export class DishTemplateComponent implements OnInit {
     private notificationService: NotificationService,
   ) {}
 
-  ngOnInit(): void {
-    this.productStore.dispatch(ProductActions.getAllProductsRequest());
-  }
-
   public dishForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(64)]],
     description: ['', [Validators.maxLength(128)]],
+    exposeToOtherUsers: [''],
   });
+
+  ngOnInit(): void {
+    this.productStore.dispatch(ProductActions.getAllProductsRequest());
+
+    if (this.dishToEdit != null) {
+      this.dishForm.get('name').setValue(this.dishToEdit.name);
+      this.dishForm.get('description').setValue(this.dishToEdit.description);
+      this.dishForm.get('exposeToOtherUsers').setValue(this.dishToEdit.exposeToOtherUsers);
+
+      this.dishStore.dispatch(DishActions.getDishProductsRequest({ dishId: this.dishToEdit.id }));
+    }
+  }
 
   public onSubmit(): void {
     if (!this.dishForm.valid) {
@@ -67,14 +76,17 @@ export class DishTemplateComponent implements OnInit {
       description: this.dishForm.get('description').value,
       imagePath: this.dishForm.get('imagePath')?.value ?? '',
       products: this.dishProducts$.getValue(),
-    } as Dish); //TODO add object to pass dish
+      exposeToOtherUsers: this.dishForm.get('exposeToOtherUsers').value,
+    } as Dish);
   }
 
   public onPortionValueChange(poritonSize: number, index: number) {}
 
   public onRemoveProductButtonClick(index: number): void {
     const products = this.dishProducts$.getValue();
-    this.dishProducts$.next([...products].splice(index, 1));
+    let productsLocal = [...products];
+    productsLocal.splice(index, 1);
+    this.dishProducts$.next(productsLocal);
   }
 
   public onAddProductButtonClick(productName: string): void {

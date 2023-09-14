@@ -14,6 +14,6 @@ namespace DietPlanner.Api.Database.Models
 
         public int DishId { get; set; }
 
-        public Dish Dish { get; set; } = null!;
+        public Dish Dish { get; set; }
     }
 }

@@ -21,49 +21,67 @@ namespace DietPlanner.Api.Services.DishService
             _databaseContext = databaseContext;
         }
 
+        public async Task<List<Dish>> GetAllUserDishes(string userId)
+        {
+            return await _databaseContext.Dishes.Where(dish => dish.UserId.Equals(userId)).ToListAsync();
+        }
+
         public async Task<Dish> GetById(int id)
         {
              return await _databaseContext.Dishes.FirstOrDefaultAsync(dish => dish.Id == id);
         }
 
-        public async Task<Dish> GetByName(string name)
+        public async Task<DatabaseActionResult<Dish>> Create(CreateDishRequest request, string userId)
         {
-            return await _databaseContext.Dishes.FirstOrDefaultAsync(dish => dish.Name.Equals(name));
-        }
-
-        public async Task<DatabaseActionResult<Dish>> Create(CreateDishRequest request)
-        {
-            var dishProducts = new List<DishProducts>();
-
-            request.Products.ToList().ForEach(dishProduct =>
+            if(!request.Products.Any())
             {
-                dishProducts.Add(new DishProducts
-                {
-                    Product = dishProduct.Product,
-                    PortionMultiplier = dishProduct.PortionMultiplier
-                });
-            });
+                return new DatabaseActionResult<Dish>(false, message: "No product were added to the dish");
+            }
+
+            var dishProducts = new List<DishProducts>();
 
             try
             {
-                var dishToAdd = new Dish
+                var dishResult = await _databaseContext.Dishes.AddAsync(new Dish
                 {
                     Name = request.Name,
                     ImagePath = request.Image,
-                };
+                    Description = request.Description,
+                    UserId = userId,
+                    ExposeToOtherUsers = request.ExposeToOtherUsers
+                });
 
-                await _databaseContext.Dishes.AddAsync(dishToAdd);
-                await _databaseContext.DishProducts.AddRangeAsync(dishProducts);
+                request.Products.ToList().ForEach(dishProduct =>
+                {
+                    dishProducts.Add(new DishProducts
+                    {
+                        Product = dishProduct.Product,
+                        PortionMultiplier = dishProduct.PortionMultiplier,
+                        Dish = dishResult.Entity,
+                    });
+                });
+
+                _databaseContext.DishProducts.AttachRange(dishProducts);
 
                 await _databaseContext.SaveChangesAsync();
 
-                return new DatabaseActionResult<Dish>(true);
+                return new DatabaseActionResult<Dish>(true, obj: dishResult.Entity);
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
                 return new DatabaseActionResult<Dish>(false, exception: ex);
             }
+        }
+
+        public async Task<List<DishProducts>> GetDishProducts(int dishId)
+        {
+            return await _databaseContext.DishProducts
+                .Where(dish => dish.DishId == dishId)
+                .Select(x => new DishProducts() { 
+                    Product = x.Product,
+                    PortionMultiplier= x.PortionMultiplier,
+            }).ToListAsync();
         }
 
         public async Task<DatabaseActionResult<Dish>> DeleteById(int id)

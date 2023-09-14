@@ -19,6 +19,7 @@ export class DishEditComponent implements OnInit {
   constructor(private dishStore: Store<DishState>, private dishService: DishService, private router: ActivatedRoute) {
     this.submitFunction = this.getSubmitFunction();
   }
+
   ngOnInit(): void {
     this.router.params.pipe(take(1)).subscribe(params => {
       this.dishService

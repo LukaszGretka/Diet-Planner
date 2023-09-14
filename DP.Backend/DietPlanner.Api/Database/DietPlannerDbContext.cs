@@ -36,6 +36,10 @@ namespace DietPlanner.Api.Database
                    .IsUnique();
 
             builder.Entity<DishProducts>()
+                   .HasIndex(u => u.Id)
+                   .IsUnique();
+
+            builder.Entity<DishProducts>()
                    .Property(mp => mp.PortionMultiplier)
                    .HasDefaultValue(1.0);
 

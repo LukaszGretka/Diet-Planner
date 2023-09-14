@@ -12,5 +12,7 @@ namespace DietPlanner.Api.DTO.Dishes
         public string Description { get; set; }
 
         public ICollection<DishProductsDTO> Products { get; set;  }
+
+        public bool ExposeToOtherUsers { get; set; }
     }
 }

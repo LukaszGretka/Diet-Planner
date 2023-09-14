@@ -1,7 +1,75 @@
+<div
+  *ngIf="(isLoading$ | async) === true"
+  class="d-flex flex-column justify-content-center align-items-center"
+  style="min-height: 90vh">
+  <div class="spinner-grow text-primary" role="status">
+    <span class="sr-only"></span>
+  </div>
+</div>
+
 <app-error-page *ngIf="errorCode$ | async; else dishesTemplate" [httpsStatusError]="errorCode$ | async">
 </app-error-page>
 <ng-template #dishesTemplate>
-  <div class="container-lg mt-4">
+  <div *ngIf="(isLoading$ | async) === false" class="container-lg mt-4">
     <a class="btn btn-primary" role="button" routerLink="./dish-add">Add dish</a>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Image</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Shared</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dish of dishes$ | async">
+          <th scope="row">
+            <div>{{ dish.id }}</div>
+          </th>
+          <td>
+            <div>
+              <img
+                *ngIf="!dish.imagePath"
+                src="./../../../assets/images/dish-placeholder.svg"
+                class="img-fluid"
+                style="width: 30px; height: 30px" />
+            </div>
+          </td>
+          <td>
+            <div>{{ dish.name }}</div>
+          </td>
+          <td>
+            <div>{{ dish.description }}</div>
+          </td>
+          <td>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="expose-to-other-users-checkbox"
+                disabled="true"
+                [(ngModel)]="dish.exposeToOtherUsers" />
+            </div>
+          </td>
+          <td>
+            <div class="button-group">
+              <button type="button" class="btn edit-button-icon" [value]="dish.id" (click)="onEditButtonClick($event)">
+                <i class="bi bi-pen"></i>
+              </button>
+              <button
+                type="button"
+                class="btn delete-button-icon text-danger"
+                [value]="dish.id"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteDishConfirmationModal">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </ng-template>

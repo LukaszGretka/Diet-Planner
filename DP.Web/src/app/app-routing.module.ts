@@ -41,7 +41,7 @@ const routes: Routes = [
   { path: 'meals-calendar', component: MealsCalendarComponent, canActivate: [AuthGuard] },
   { path: 'dishes', component: DishesComponent, canActivate: [AuthGuard] },
   { path: 'dishes/dish-add', component: DishAddComponent, canActivate: [AuthGuard] },
-  { path: 'dishes/dish/edit/:id', component: DishEditComponent, canActivate: [AuthGuard] },
+  { path: 'dishes/edit/:id', component: DishEditComponent, canActivate: [AuthGuard] },
   { path: 'toast', component: ToastComponent },
 ];
 

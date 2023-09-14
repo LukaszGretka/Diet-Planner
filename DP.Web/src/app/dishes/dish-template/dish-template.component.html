@@ -27,6 +27,19 @@
                 rows="2"
                 style="max-height: 150px"></textarea>
               <app-form-error [control]="dishForm.get('description')"></app-form-error>
+              <div class="form-check mt-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  formControlName="exposeToOtherUsers"
+                  id="share-with-others-checkbox" />
+                <label class="form-check-label" for="share-with-others-checkbox"
+                  >Share with others.
+                  <i
+                    class="bi bi-info-circle-fill px-1"
+                    title="By checking this option, you expose the dish to the other users."></i>
+                </label>
+              </div>
             </div>
           </div>
         </div>
