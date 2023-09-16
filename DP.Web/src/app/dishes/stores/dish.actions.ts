@@ -11,6 +11,10 @@ export const saveDishRequest = createAction('Save dish request', prop<{ dish: Di
 export const saveDishRequestSuccess = createAction('Save dish request success');
 export const saveDishRequestFailed = createAction('Save dish request failed', prop<{ error: number }>());
 
+export const editDishRequest = createAction('Edit dish request', prop<{ dish: Dish }>());
+export const editDishRequestSuccess = createAction('Edit dish request success', prop<{ dishName: string }>());
+export const editDishRequestFailed = createAction('Edit dish request failed', prop<{ error: number }>());
+
 export const updatePortionRequest = createAction(
   'Update portion request trigger',
   prop<{ dishId: number; productId: number; portionMultiplier: number }>(),
@@ -33,6 +37,9 @@ const actions = union({
   saveDishRequest,
   saveDishRequestSuccess,
   saveDishRequestFailed,
+  editDishRequest,
+  editDishRequestSuccess,
+  editDishRequestFailed,
   getDishProductsRequest,
   getDishProductsRequestSuccess,
   getDishProductsRequestFailed,

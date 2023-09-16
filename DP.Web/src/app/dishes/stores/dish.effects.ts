@@ -75,6 +75,46 @@ export class DishEffects {
     },
   );
 
+  editDishEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DishActions.editDishRequest),
+      exhaustMap(({ payload }) => {
+        return this.dishService.editDish(payload.dish).pipe(
+          switchMap(() => of(DishActions.editDishRequestSuccess({ dishName: payload.dish.name }))),
+          catchError(error => of(DishActions.editDishRequestFailed(error))),
+        );
+      }),
+    ),
+  );
+
+  editDishSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.editDishRequestSuccess),
+        tap(action => {
+          this.router.navigate(['dishes']);
+          return this.notificationService.showSuccessToast(
+            'Changes saved',
+            `Dish "${action.payload.dishName}" have been successfully updated.`,
+          );
+        }),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  editDishFailedEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.editDishRequestFailed),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during saving a dish.')),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
   getDishProductsEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DishActions.getDishProductsRequest),

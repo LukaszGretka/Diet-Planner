@@ -31,6 +31,10 @@ export class DishService {
     return this.httpClient.post<Dish>(this.dishesUrl, dish, this.httpOptions);
   }
 
+  public editDish(dish: Dish): Observable<Dish> {
+    return this.httpClient.patch<Dish>(this.dishesUrl, dish, this.httpOptions);
+  }
+
   public getDishProducts(dishId: number): Observable<DishProduct[]> {
     return this.httpClient.get<DishProduct[]>(this.dishesUrl + '/' + dishId + '/products', this.httpOptions);
   }

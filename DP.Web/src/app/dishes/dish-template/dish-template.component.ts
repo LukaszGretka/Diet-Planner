@@ -50,7 +50,7 @@ export class DishTemplateComponent implements OnInit {
   public dishForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(64)]],
     description: ['', [Validators.maxLength(128)]],
-    exposeToOtherUsers: [''],
+    exposeToOtherUsers: [false],
   });
 
   ngOnInit(): void {
@@ -61,7 +61,7 @@ export class DishTemplateComponent implements OnInit {
       this.dishForm.get('description').setValue(this.dishToEdit.description);
       this.dishForm.get('exposeToOtherUsers').setValue(this.dishToEdit.exposeToOtherUsers);
 
-      this.dishStore.dispatch(DishActions.getDishProductsRequest({ dishId: this.dishToEdit.id }));
+      this.dishProducts$.next(this.dishToEdit.products);
     }
   }
 
@@ -70,13 +70,13 @@ export class DishTemplateComponent implements OnInit {
       this.dishForm.markAllAsTouched();
       return;
     }
-
     this.submitFunction({
       name: this.dishForm.get('name').value,
       description: this.dishForm.get('description').value,
       imagePath: this.dishForm.get('imagePath')?.value ?? '',
       products: this.dishProducts$.getValue(),
       exposeToOtherUsers: this.dishForm.get('exposeToOtherUsers').value,
+      id: this.dishToEdit != null ? this.dishToEdit.id : undefined,
     } as Dish);
   }
 

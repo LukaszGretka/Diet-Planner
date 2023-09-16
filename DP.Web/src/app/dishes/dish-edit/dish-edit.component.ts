@@ -12,15 +12,12 @@ import * as DishActions from '../stores/dish.actions';
   templateUrl: './dish-edit.component.html',
   styleUrls: ['./dish-edit.component.css'],
 })
-export class DishEditComponent implements OnInit {
+export class DishEditComponent {
   public dish: Dish;
   public submitFunction: (store: any) => void;
 
   constructor(private dishStore: Store<DishState>, private dishService: DishService, private router: ActivatedRoute) {
     this.submitFunction = this.getSubmitFunction();
-  }
-
-  ngOnInit(): void {
     this.router.params.pipe(take(1)).subscribe(params => {
       this.dishService
         .getDishById(params['id'])
@@ -38,6 +35,6 @@ export class DishEditComponent implements OnInit {
   }
 
   private submitForm(dish: Dish) {
-    this.dishStore.dispatch(DishActions.saveDishRequest({ dish, returnUrl: '' }));
+    this.dishStore.dispatch(DishActions.editDishRequest({ dish }));
   }
 }
