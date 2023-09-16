@@ -17,7 +17,6 @@ import { ProductsState } from 'src/app/products/stores/products.state';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { DishState } from '../stores/dish.state';
-import * as DishActions from '../stores/dish.actions';
 import * as ProductActions from './../../products/stores/products.actions';
 import { DishProduct } from '../models/dish-product';
 
@@ -70,6 +69,7 @@ export class DishTemplateComponent implements OnInit {
       this.dishForm.markAllAsTouched();
       return;
     }
+
     this.submitFunction({
       name: this.dishForm.get('name').value,
       description: this.dishForm.get('description').value,

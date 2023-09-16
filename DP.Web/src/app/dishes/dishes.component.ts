@@ -19,6 +19,8 @@ export class DishesComponent implements OnInit {
 
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
 
+  private dishIdToRemove: number;
+
   constructor(private store: Store<GeneralState>, private dishStore: Store<DishState>, private router: Router) {}
 
   public ngOnInit(): void {
@@ -26,7 +28,15 @@ export class DishesComponent implements OnInit {
     this.dishStore.dispatch(DishActions.loadDishesRequest());
   }
 
-  public onEditButtonClick($event: any): void {
-    this.router.navigate(['dishes/edit/' + ($event.target.parentElement as HTMLInputElement).value]);
+  public onEditButtonClick(dishId: number): void {
+    this.router.navigate([('dishes/edit/' + dishId) as string]);
+  }
+
+  public onDeleteButtonClick(dishId: number): void {
+    this.dishIdToRemove = dishId;
+  }
+
+  public removeConfirmationButtonClick(): void {
+    this.dishStore.dispatch(DishActions.deleteDishRequest({ id: this.dishIdToRemove }));
   }
 }

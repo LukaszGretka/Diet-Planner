@@ -5,7 +5,6 @@ using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,11 +32,11 @@ namespace DietPlanner.Api.Services.DishService
             return await _databaseContext.Dishes.AnyAsync(dish => dish.Id == id);
         }
 
-        public async Task<DatabaseActionResult<Dish>> Create(PutDishRequest request, string userId)
+        public async Task<DatabaseActionResult<DishDTO>> Create(PutDishRequest request, string userId)
         {
             if (!request.Products.Any())
             {
-                return new DatabaseActionResult<Dish>(false, message: "No product were added to the dish");
+                return new DatabaseActionResult<DishDTO>(false, message: "No product were added to the dish");
             }
 
             var dishProducts = new List<DishProducts>();
@@ -67,12 +66,22 @@ namespace DietPlanner.Api.Services.DishService
 
                 await _databaseContext.SaveChangesAsync();
 
-                return new DatabaseActionResult<Dish>(true, obj: dishResult.Entity);
+                return new DatabaseActionResult<DishDTO>(true, obj: new DishDTO { 
+                    Id = dishResult.Entity.Id,
+                    Name =dishResult.Entity.Name,
+                    Description = dishResult.Entity.Description,
+                    ExposeToOtherUsers = dishResult.Entity.ExposeToOtherUsers,
+                    ImagePath= dishResult.Entity.ImagePath,
+                    Products = dishProducts.Select(dp => new DishProductsDTO { 
+                        Product = dp.Product, 
+                        PortionMultiplier = dp.PortionMultiplier
+                    }),
+                } );
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
-                return new DatabaseActionResult<Dish>(false, exception: ex);
+                return new DatabaseActionResult<DishDTO>(false, exception: ex);
             }
         }
 
@@ -124,14 +133,14 @@ namespace DietPlanner.Api.Services.DishService
                 _databaseContext.DishProducts.RemoveRange(productsToRemove);
 
                 await _databaseContext.SaveChangesAsync();
-
-                return new DatabaseActionResult(true);
             }
             catch (Exception ex)
             {
                 _logger.LogError(message: ex.Message);
                 return new DatabaseActionResult(false, exception: ex);
             }
+
+            return new DatabaseActionResult(true);
         }
 
         public async Task<List<Dish>> GetAllUserDishes(string userId)
@@ -150,9 +159,35 @@ namespace DietPlanner.Api.Services.DishService
                 }).ToListAsync();
         }
 
-        public async Task<DatabaseActionResult<Dish>> DeleteById(int id)
+        public async Task<DatabaseActionResult> DeleteById(int id, string userId)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                Dish existingDish = await _databaseContext.Dishes
+                        .SingleOrDefaultAsync(d => d.Id == id && d.UserId.Equals(userId));
+
+                if (existingDish is null)
+                {
+                    return new DatabaseActionResult(false, message: $"Dish with id: {id} not found.");
+                }
+
+                List<DishProducts> dishProducts = await _databaseContext.DishProducts
+                     .Where(dishProduct => dishProduct.DishId == id)
+                     .ToListAsync();
+ 
+               _databaseContext.DishProducts.RemoveRange(dishProducts);
+               _databaseContext.Dishes.Remove(existingDish);
+
+                await _databaseContext.SaveChangesAsync();
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(message: ex.Message);
+                return new DatabaseActionResult(false, exception: ex);
+            }
+
+            return new DatabaseActionResult(true);
         }
     }
 }

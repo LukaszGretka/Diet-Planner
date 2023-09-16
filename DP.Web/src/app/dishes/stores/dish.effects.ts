@@ -75,7 +75,7 @@ export class DishEffects {
     },
   );
 
-  editDishEffect$ = createEffect(() =>
+  editDishRequestEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DishActions.editDishRequest),
       exhaustMap(({ payload }) => {
@@ -109,6 +109,42 @@ export class DishEffects {
       this.actions$.pipe(
         ofType(DishActions.editDishRequestFailed),
         tap(() => this.notificationService.showErrorToast('Error', 'An error occured during saving a dish.')),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  deleteDishRequestEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DishActions.deleteDishRequest),
+      exhaustMap(({ payload }) => {
+        return this.dishService.deleteDish(payload.id).pipe(
+          switchMap(() => of(DishActions.deleteDishRequestSuccess(), DishActions.loadDishesRequest())),
+          catchError(error => of(DishActions.deleteDishRequestFailed(error))),
+        );
+      }),
+    ),
+  );
+
+  deleteDishRequestSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.deleteDishRequestSuccess),
+        tap(() => {
+          return this.notificationService.showSuccessToast('Changes saved', `Dish has been successfully removed.`);
+        }),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  deleteDishRequestFailedEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.deleteDishRequestFailed),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during removing the dish.')),
       ),
     {
       dispatch: false,

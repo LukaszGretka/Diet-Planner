@@ -77,7 +77,7 @@ namespace DietPlanner.Api.Controllers
         public async Task<IActionResult> CreateDish([FromBody] PutDishRequest dishRequest)
         {
             string userId = HttpContext.GetUserId();
-            DatabaseActionResult<Dish> createDishResult = await _dishService.Create(dishRequest, userId);
+            DatabaseActionResult<DishDTO> createDishResult = await _dishService.Create(dishRequest, userId);
 
             if (createDishResult.Exception != null)
             {
@@ -89,17 +89,7 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest(createDishResult.Message);
             }
 
-            Dish createdDish = createDishResult.Obj;
-
-            return CreatedAtAction(nameof(CreateDish), new { id = createdDish.Id },
-                new DishDTO
-                {
-                    Id = createdDish.Id,
-                    Name = createdDish.Name,
-                    Description = createdDish.Description,
-                    ExposeToOtherUsers = createdDish.ExposeToOtherUsers,
-                    ImagePath = createdDish.ImagePath
-                });
+            return CreatedAtAction(nameof(CreateDish), new { id = createDishResult.Obj.Id }, createDishResult.Obj);
         }
 
         [HttpPatch]
@@ -107,14 +97,39 @@ namespace DietPlanner.Api.Controllers
         public async Task<IActionResult> UpdateDish([FromBody] PutDishRequest dishRequest)
         {
             string userId = HttpContext.GetUserId();
-            DatabaseActionResult createDishResult = await _dishService.Update(dishRequest, userId);
+            DatabaseActionResult updateDishResult = await _dishService.Update(dishRequest, userId);
 
-            if (createDishResult.Exception != null)
+            if (updateDishResult.Exception != null)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
+            if (!updateDishResult.Success)
+            {
+                return BadRequest(updateDishResult.Message);
+            }
+
             return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ActionName(nameof(DeleteDish))]
+        public async Task<IActionResult> DeleteDish(int id)
+        {
+            string userId = HttpContext.GetUserId();
+            DatabaseActionResult deleteDishResult = await _dishService.DeleteById(id, userId);
+
+            if (deleteDishResult.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            if (!deleteDishResult.Success)
+            {
+                return BadRequest(deleteDishResult.Message);
+            }
+
+            return Ok();
         }
 
         [HttpGet("{dishId}/products")]

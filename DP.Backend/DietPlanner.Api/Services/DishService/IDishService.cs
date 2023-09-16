@@ -16,10 +16,10 @@ namespace DietPlanner.Api.Services.DishService
 
         Task<IEnumerable<DishProducts>> GetDishProducts(int dishId);
 
-        Task<DatabaseActionResult<Dish>> Create(PutDishRequest dish, string userId);
+        Task<DatabaseActionResult<DishDTO>> Create(PutDishRequest dish, string userId);
 
         Task<DatabaseActionResult> Update(PutDishRequest dish, string userId);
 
-        Task<DatabaseActionResult<Dish>> DeleteById(int id);
+        Task<DatabaseActionResult> DeleteById(int id, string userId);
     }
 }

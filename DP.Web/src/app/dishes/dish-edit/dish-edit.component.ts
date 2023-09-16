@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DishState } from '../stores/dish.state';
 import { Store } from '@ngrx/store';
 import * as DishActions from '../stores/dish.actions';
+import * as DishSelectors from '../stores/dish.selectors';
 
 @Component({
   selector: 'app-dish-edit',
@@ -15,6 +16,7 @@ import * as DishActions from '../stores/dish.actions';
 export class DishEditComponent {
   public dish: Dish;
   public submitFunction: (store: any) => void;
+  public currentDishes$ = this.dishStore.select(DishSelectors.getDishes);
 
   constructor(private dishStore: Store<DishState>, private dishService: DishService, private router: ActivatedRoute) {
     this.submitFunction = this.getSubmitFunction();

@@ -115,6 +115,12 @@
   </div>
   <div class="py-2 border-top" style="display: flex; align-items: flex-end; justify-content: flex-end">
     <a class="btn btn-secondary mx-2" role="button" routerLink="/dishes">Back</a>
-    <button type="submit" class="btn btn-primary" (click)="onSubmit()">Save</button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="!this.dishForm.get('name').value || dishProducts$.getValue().length <= 0"
+      (click)="onSubmit()">
+      Save
+    </button>
   </div>
 </div>
