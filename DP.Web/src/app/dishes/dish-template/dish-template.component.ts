@@ -10,15 +10,16 @@ import {
   map,
   of,
   switchMap,
+  take,
 } from 'rxjs';
 import * as ProductSelectors from './../../products/stores/products.selectors';
 import { Store } from '@ngrx/store';
 import { ProductsState } from 'src/app/products/stores/products.state';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { NotificationService } from 'src/app/shared/services/notification.service';
-import { DishState } from '../stores/dish.state';
 import * as ProductActions from './../../products/stores/products.actions';
 import { DishProduct } from '../models/dish-product';
+import { Product } from 'src/app/products/models/product';
 
 @UntilDestroy()
 @Component({
@@ -34,6 +35,7 @@ export class DishTemplateComponent implements OnInit {
   public submitFunction: Function;
 
   public dishProducts$ = new BehaviorSubject<DishProduct[]>([]);
+  public dishMacroSummary$: Observable<any>;
   public portionValue: number = 100;
   public searchItem: string = '';
   //TODO: taking list of products might be long (need to find better solution)
@@ -41,7 +43,6 @@ export class DishTemplateComponent implements OnInit {
 
   constructor(
     private formBuilder: UntypedFormBuilder,
-    private dishStore: Store<DishState>,
     private productStore: Store<ProductsState>,
     private notificationService: NotificationService,
   ) {}
@@ -59,9 +60,27 @@ export class DishTemplateComponent implements OnInit {
       this.dishForm.get('name').setValue(this.dishToEdit.name);
       this.dishForm.get('description').setValue(this.dishToEdit.description);
       this.dishForm.get('exposeToOtherUsers').setValue(this.dishToEdit.exposeToOtherUsers);
-
       this.dishProducts$.next(this.dishToEdit.products);
     }
+    this.dishMacroSummary$ = this.dishProducts$.pipe(
+      map(product =>
+        product.reduce(
+          (total, dishProduct) => {
+            (total.calories += dishProduct.product.calories),
+              (total.carbohydrates += dishProduct.product.carbohydrates),
+              (total.proteins += dishProduct.product.proteins),
+              (total.fats += dishProduct.product.fats);
+            return total;
+          },
+          {
+            calories: 0,
+            carbohydrates: 0,
+            proteins: 0,
+            fats: 0,
+          },
+        ),
+      ),
+    );
   }
 
   public onSubmit(): void {
@@ -80,7 +99,38 @@ export class DishTemplateComponent implements OnInit {
     } as Dish);
   }
 
-  public onPortionValueChange(poritonSize: number, index: number) {}
+  public onPortionValueChange(poritonSize: number, productId: number) {
+    if (poritonSize <= 0) {
+      //TODO add validation error or auto replacing 0 or negative with value "1"
+      return;
+    }
+
+    let dishProducts = this.dishProducts$.getValue();
+
+    let dishProduct = dishProducts.find(dp => dp.product.id == productId);
+    if (!dishProduct) {
+      return;
+    }
+
+    let productToChange = { ...dishProduct.product } as Product;
+
+    this.allProducts$
+      .pipe(take(1))
+      .pipe(map(products => products.find(p => p.id === productId)))
+      .subscribe(originalProduct => {
+        if (originalProduct) {
+          dishProduct.portionMultiplier = poritonSize / 100;
+          productToChange.calories = originalProduct.calories * dishProduct.portionMultiplier;
+          productToChange.carbohydrates = originalProduct.carbohydrates * dishProduct.portionMultiplier;
+          productToChange.proteins = originalProduct.proteins * dishProduct.portionMultiplier;
+          productToChange.fats = originalProduct.fats * dishProduct.portionMultiplier;
+        }
+      });
+
+    dishProduct.product = productToChange;
+
+    this.dishProducts$.next(dishProducts);
+  }
 
   public onRemoveProductButtonClick(index: number): void {
     const products = this.dishProducts$.getValue();
@@ -108,7 +158,7 @@ export class DishTemplateComponent implements OnInit {
             }
             const products = this.dishProducts$.getValue().concat({
               product: foundProduct,
-              portionMultiplier: 1,
+              portionMultiplier: 1, // Default is x1 which basically means 100g
             } as DishProduct);
             this.dishProducts$.next(products);
             this.searchItem = '';

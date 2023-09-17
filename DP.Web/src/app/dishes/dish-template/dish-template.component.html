@@ -75,13 +75,14 @@
                 <td>{{ dishProduct.product.calories | number : '1.0-2' }}kcal</td>
                 <td class="d-flex" style="align-items: center">
                   <input
+                    min="1"
                     type="number"
                     id="portion"
                     class="form-control form-control-sm d-flex"
                     style="max-width: 65px"
-                    [ngModel]="portionValue * dishProduct.portionMultiplier"
-                    [ngModelOptions]="{ updateOn: 'blur' }"
-                    (ngModelChange)="onPortionValueChange($event, productIndex)" />g
+                    [ngModel]="portionValue * dishProduct.portionMultiplier | number : '1.0-2'"
+                    [ngModelOptions]="{ updateOn: 'change' }"
+                    (ngModelChange)="onPortionValueChange($event, dishProduct.product.id)" />g
                 </td>
                 <td>
                   <button
@@ -91,6 +92,22 @@
                     <i class="bi bi-x-lg"></i>
                   </button>
                 </td>
+              </tr>
+              <tr>
+                <td class="table-info"></td>
+                <td class="table-info text-secondary">Total:</td>
+                <td class="table-info text-secondary">
+                  {{ (dishMacroSummary$ | async).carbohydrates | number : '1.0-2' }} g
+                </td>
+                <td class="table-info text-secondary">
+                  {{ (dishMacroSummary$ | async).proteins | number : '1.0-2' }} g
+                </td>
+                <td class="table-info text-secondary">{{ (dishMacroSummary$ | async).fats | number : '1.0-2' }} g</td>
+                <td class="table-info text-secondary">
+                  {{ (dishMacroSummary$ | async).calories | number : '1.0-2' }} kcal
+                </td>
+                <td class="table-info text-secondary"></td>
+                <td class="table-info text-secondary"></td>
               </tr>
             </tbody>
           </table>

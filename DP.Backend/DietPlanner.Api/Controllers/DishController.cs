@@ -55,7 +55,7 @@ namespace DietPlanner.Api.Controllers
             }
 
             //TODO: Having it in the same query with "join" should give better performance.
-            var products = await _dishService.GetDishProducts(foundDish.Id);
+            var dishProducts = await _dishService.GetDishProducts(foundDish.Id);
 
             return Ok(new DishDTO
             {
@@ -64,10 +64,21 @@ namespace DietPlanner.Api.Controllers
                 Description = foundDish.Description,
                 ExposeToOtherUsers = foundDish.ExposeToOtherUsers,
                 ImagePath = foundDish.ImagePath,
-                Products = products.Select(p => new DishProductsDTO
+                Products = dishProducts.Select(dishProduct => new DishProductsDTO
                 {
-                    Product = p.Product,
-                    PortionMultiplier = p.PortionMultiplier
+                    Product = new Models.MealsCalendar.DbModel.Product
+                    {
+                        Id = dishProduct.Product.Id,
+                        Name = dishProduct.Product.Name,
+                        Description = dishProduct.Product.Description,
+                        BarCode = dishProduct.Product.BarCode,
+                        ImagePath = dishProduct.Product.ImagePath,
+                        Calories = dishProduct.Product.Calories * (float)dishProduct.PortionMultiplier,
+                        Carbohydrates = dishProduct.Product.Carbohydrates * (float)dishProduct.PortionMultiplier,
+                        Proteins = dishProduct.Product.Proteins * (float)dishProduct.PortionMultiplier,
+                        Fats = dishProduct.Product.Fats * (float)dishProduct.PortionMultiplier,
+                    },
+                    PortionMultiplier = dishProduct.PortionMultiplier
                 })
             });
         }
@@ -130,18 +141,6 @@ namespace DietPlanner.Api.Controllers
             }
 
             return Ok();
-        }
-
-        [HttpGet("{dishId}/products")]
-        public async Task<ActionResult<List<DishProductsDTO>>> GetDishProducts(int dishId)
-        {
-            IEnumerable<DishProducts> dishProducts = await _dishService.GetDishProducts(dishId);
-
-            return Ok(dishProducts.Select(dishProduct => new DishProductsDTO
-            {
-                Product = dishProduct.Product,
-                PortionMultiplier = dishProduct.PortionMultiplier
-            }));
         }
     }
 }
