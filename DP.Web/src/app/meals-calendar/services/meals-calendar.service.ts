@@ -27,7 +27,7 @@ export class MealsCalendarService {
   }
 
   addDialyMeal(mealByDay: MealByDay): Observable<MealByDay> {
-    return this.httpClient.post<MealByDay>(this.mealsCalendarUrl, mealByDay, this.httpOptions);
+    return this.httpClient.put<MealByDay>(this.mealsCalendarUrl, mealByDay, this.httpOptions);
   }
 
   removeDailyMeal(selectedDate: Date, meal: Meal) {

@@ -19,8 +19,10 @@ namespace DietPlanner.Api.Database
         {
             if (!builder.IsConfigured)
             {
-                builder.UseSqlite(_configuration.GetConnectionString("IdentityDatabase"));
+                builder.UseSqlServer(_configuration.GetConnectionString("IdentityDatabase"));
             }
+
+
 
             builder.EnableSensitiveDataLogging();
             base.OnConfiguring(builder);

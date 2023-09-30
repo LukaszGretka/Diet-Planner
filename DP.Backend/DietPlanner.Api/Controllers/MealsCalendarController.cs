@@ -31,12 +31,12 @@ namespace DietPlanner.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] MealByDay mealByDate)
+        [HttpPut]
+        public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] PutMealRequest putMealRequest)
         {
             string userId = HttpContext.GetUserId();
 
-            var result = await _mealsCalendarService.AddOrUpdateMeal(mealByDate, userId);
+            var result = await _mealsCalendarService.AddOrUpdateMeal(putMealRequest, userId);
 
             if (result.Exception != null)
             {

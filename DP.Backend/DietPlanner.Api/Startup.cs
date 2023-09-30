@@ -47,10 +47,10 @@ namespace DietPlanner.Api
                 });
             });
             services.AddDbContext<DietPlannerDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("ProductsDatabase")));
+                options.UseSqlServer(Configuration.GetConnectionString("ProductsDatabase")));
 
             services.AddDbContext<IdentityDatabaseContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("IdentityDatabase")));
+                options.UseSqlServer(Configuration.GetConnectionString("IdentityDatabase")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDatabaseContext>()
@@ -75,7 +75,7 @@ namespace DietPlanner.Api
             services.AddTransient<IDishService, DishService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
-            //services.AddTransient<IMealService, MealService>();
+            services.AddTransient<IMealService, MealService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IMealProductService, MealProductService>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();

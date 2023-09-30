@@ -1,53 +1,100 @@
 <div class="mb-4">
-  <table *ngIf="this.portionProducts$.getValue().length > 0" class="table">
-    <thead>
+  <table *ngIf="this.dishes$.getValue().length > 0" class="table">
+    <thead class="table-light">
       <tr>
         <th scope="col">Image</th>
         <th scope="col">Name</th>
+        <th scope="col">Description</th>
         <th scope="col">Carbohydrates</th>
         <th scope="col">Proteins</th>
         <th scope="col">Fats</th>
         <th scope="col">Calories</th>
-        <th scope="col">Portion</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let product of portionProducts$ | async; let productIndex = index">
-        <td><img src="{{ product.imagePath }}" /></td>
-        <td>{{ product.name }}</td>
-        <td>{{ product.carbohydrates | number : '1.0-2' }}g</td>
-        <td>{{ product.proteins | number : '1.0-2' }}g</td>
-        <td>{{ product.fats | number : '1.0-2' }}g</td>
-        <td>{{ product.calories | number : '1.0-2' }}kcal</td>
-        <td class="d-flex" style="align-items: center">
-          <input
-            type="number"
-            id="portion"
-            class="form-control form-control-sm d-flex"
-            style="max-width: 65px"
-            [ngModel]="portionValue * product.portionMultiplier"
-            [ngModelOptions]="{ updateOn: 'blur' }"
-            (ngModelChange)="onPortionValueChange(1, $event, portionProducts$, productIndex)" />g
-        </td>
-        <td>
-          <button
-            type="button"
-            class="btn delete-button-icon text-danger"
-            (click)="onRemoveProductButtonClick(portionProducts$, productIndex)">
-            <i class="bi bi-x-lg"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td class="table-light"></td>
-        <td class="table-light text-secondary">Total:</td>
-        <td class="table-light text-secondary">{{ (mealMacroSummary$ | async).carbohydrates | number : '1.0-2' }} g</td>
-        <td class="table-light text-secondary">{{ (mealMacroSummary$ | async).proteins | number : '1.0-2' }} g</td>
-        <td class="table-light text-secondary">{{ (mealMacroSummary$ | async).fats | number : '1.0-2' }} g</td>
-        <td class="table-light text-secondary">{{ (mealMacroSummary$ | async).calories | number : '1.0-2' }} kcal</td>
-        <td class="table-light text-secondary"></td>
-        <td class="table-light text-secondary"></td>
-      </tr>
+      <ng-container *ngFor="let dish of dishes$ | async; let dishIndex = index">
+        <tr class="table-group-divider">
+          <td>
+            <img
+              src="./../../../assets/images/product-placeholder.svg"
+              class="img-fluid"
+              style="width: 25px; height: 25px" />
+          </td>
+          <td>{{ dish.name }}</td>
+          <td>{{ dish.description }}</td>
+          <!-- TODO: This is very wrong way of calculating dish's macro. Need to refactor! -->
+          <td>{{ this.calculateDishMacros(dish).carbs }} g</td>
+          <td>{{ this.calculateDishMacros(dish).proteins }} g</td>
+          <td>{{ this.calculateDishMacros(dish).fats }} g</td>
+          <td>{{ this.calculateDishMacros(dish).calories }} kcal</td>
+          <!-- TODO: This is very wrong way of calculating dish's macro. Need to refactor! -->
+          <td style="min-width: 90px">
+            <button
+              type="button"
+              id="collapse-show-button-{{ dish.id }}-{{ mealType }}"
+              class="btn delete-button-icon text-secondary"
+              title="Show products"
+              data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#collapse-' + mealType + dishIndex"
+              aria-controls="collapseExample"
+              (click)="onShowProductButtonClick($event)">
+              <i class="bi bi-chevron-down"></i>
+            </button>
+            <button
+              type="button"
+              id="collapse-hide-button-{{ dish.id }}-{{ mealType }}"
+              class="btn delete-button-icon text-secondary"
+              title="Hide products"
+              data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#collapse-' + mealType + dishIndex"
+              aria-controls="collapseExample"
+              style="display: none"
+              (click)="onHideProductButtonClick($event)">
+              <i class="bi bi-chevron-up"></i>
+            </button>
+            <button
+              type="button"
+              class="btn delete-button-icon text-danger"
+              title="Remove dish from the meal"
+              (click)="onRemoveProductButtonClick(dishes$, dishIndex)">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </td>
+        </tr>
+        <tr class="collapse" [attr.id]="'collapse-' + mealType + dishIndex">
+          <td scope="col" colspan="8" class="table-light">Products detail</td>
+        </tr>
+        <tr
+          class="collapse"
+          [attr.id]="'collapse-' + mealType + dishIndex"
+          *ngFor="let dishProduct of dish.products; let productIndex = index">
+          <td></td>
+          <td colspan="2">{{ dishProduct.product.name }}</td>
+          <td>{{ dishProduct.product.carbohydrates | number : '1.0-2' }}g</td>
+          <td>{{ dishProduct.product.proteins | number : '1.0-2' }}g</td>
+          <td>{{ dishProduct.product.fats | number : '1.0-2' }}g</td>
+          <td>{{ dishProduct.product.calories | number : '1.0-2' }}kcal</td>
+          <td class="d-flex" style="align-items: center">
+            <input
+              type="number"
+              id="portion"
+              class="form-control form-control-sm d-flex"
+              style="max-width: 65px"
+              [ngModel]="portionValue * dishProduct.portionMultiplier"
+              [ngModelOptions]="{ updateOn: 'blur' }" />g
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+    <tbody class="table-group-divider">
+      <td class="table-light text-secondary p-2" colspan="3">Meals summary:</td>
+      <td class="table-light text-secondary p-2">
+        {{ (mealMacroSummary$ | async).carbohydrates | number : '1.0-2' }}g
+      </td>
+      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).proteins | number : '1.0-2' }}g</td>
+      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).fats | number : '1.0-2' }}g</td>
+      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).calories | number : '1.0-2' }}kcal</td>
     </tbody>
   </table>
 
@@ -58,11 +105,11 @@
       class="p-2 bd-highlight form-control"
       [(ngModel)]="searchItem"
       [ngbTypeahead]="searchProducts"
-      placeholder="Start typing to search for a products..." />
+      placeholder="Start typing to search for a dish or product..." />
     <button
       type="button"
       class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
-      (click)="onAddProductButtonClick(portionProducts$, searchItem, content)">
+      (click)="onAddProductButtonClick(dishes$, searchItem, content)">
       Add
     </button>
   </div>
