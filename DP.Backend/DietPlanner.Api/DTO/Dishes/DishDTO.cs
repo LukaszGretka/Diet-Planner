@@ -6,6 +6,8 @@ namespace DietPlanner.Api.DTO.Dishes
     {
         public int Id { get; set; }
 
+        public int MealDishId { get; set; }
+
         public string Name { get; set; }
 
         public string ImagePath { get; set; }

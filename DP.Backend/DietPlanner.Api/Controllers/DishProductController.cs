@@ -10,11 +10,11 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class MealProductController : ControllerBase
+    public class DishProductController : ControllerBase
     {
         private readonly IMealProductService _mealProductService;
 
-        public MealProductController(IMealProductService mealProductService)
+        public DishProductController(IMealProductService mealProductService)
         {
             this._mealProductService = mealProductService;
         }
@@ -22,7 +22,7 @@ namespace DietPlanner.Api.Controllers
         [HttpPatch]
         public async Task<IActionResult> PatchMultiplier(UpdateMultiplierRequest request)
         {
-            await _mealProductService.UpdatePortionMultiplier(request.Date, request.MealType, request.ProductId, request.PortionMultiplier);
+            await _mealProductService.UpdatePortionMultiplier(request.DishId, request.ProductId, request.PortionMultiplier);
 
             return Ok();
         }

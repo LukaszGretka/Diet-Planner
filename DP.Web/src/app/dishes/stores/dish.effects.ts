@@ -4,6 +4,7 @@ import { DishService } from '../services/dish.service';
 import { catchError, exhaustMap, of, switchMap, tap } from 'rxjs';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import * as DishActions from './dish.actions';
+import * as MealCalendarActions from './../../meals-calendar/stores/meals-calendar.actions';
 import { Router } from '@angular/router';
 
 @Injectable()
@@ -145,6 +146,48 @@ export class DishEffects {
       this.actions$.pipe(
         ofType(DishActions.deleteDishRequestFailed),
         tap(() => this.notificationService.showErrorToast('Error', 'An error occured during removing the dish.')),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  updatePortionRequestEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DishActions.updatePortionRequest),
+      exhaustMap(({ payload }) => {
+        return this.dishService
+          .updatePortionMultiplier(payload.dishId, payload.productId, payload.portionMultiplier)
+          .pipe(
+            switchMap(() =>
+              of(
+                DishActions.updatePortionRequestSuccess(),
+                MealCalendarActions.getMealsRequest({ date: payload.date }),
+              ),
+            ),
+            catchError(error => of(DishActions.updatePortionRequestFailed(error))),
+          );
+      }),
+    ),
+  );
+  updatePortionEffectSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.updatePortionRequestSuccess),
+        tap(() => {
+          return this.notificationService.showSuccessToast('Changes saved', 'Portion have been successfully updated.');
+        }),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  updatePortionEffectFailed$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(DishActions.updatePortionRequestFailed),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during saving portion.')),
       ),
     {
       dispatch: false,

@@ -1,6 +1,7 @@
 ﻿using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Services.DishService;
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -28,20 +29,43 @@ namespace DietPlanner.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<DishDTO>>> GetUserDishes()
         {
+            List<DishDTO> dishesDTO = new List<DishDTO>();
             string userId = HttpContext.GetUserId();
 
             List<Dish> dishes = await _dishService.GetAllUserDishes(userId);
 
-            return Ok(dishes.Select(dish =>
-                new DishDTO
+            foreach (Dish dish in dishes)
+            {
+                var dishProducts = await _dishService.GetDishProducts(dish.Id);
+
+                dishesDTO.Add(new DishDTO
                 {
                     Id = dish.Id,
                     Name = dish.Name,
                     Description = dish.Description,
                     ImagePath = dish.ImagePath,
-                    ExposeToOtherUsers = dish.ExposeToOtherUsers
-                }
-            ));
+                    ExposeToOtherUsers = dish.ExposeToOtherUsers,
+                    Products = dishProducts.Select(dishProduct => new DishProductsDTO
+                    {
+                        Product = new Product
+                        {
+                            Id = dishProduct.Product.Id,
+                            Name = dishProduct.Product.Name,
+                            Description = dishProduct.Product.Description,
+                            BarCode = dishProduct.Product.BarCode,
+                            ImagePath = dishProduct.Product.ImagePath,
+                            Calories = dishProduct.Product.Calories * (float)dishProduct.PortionMultiplier,
+                            Carbohydrates = dishProduct.Product.Carbohydrates * (float)dishProduct.PortionMultiplier,
+                            Proteins = dishProduct.Product.Proteins * (float)dishProduct.PortionMultiplier,
+                            Fats = dishProduct.Product.Fats * (float)dishProduct.PortionMultiplier,
+                        },
+                        PortionMultiplier = dishProduct.PortionMultiplier
+                    })
+                });
+            }
+
+
+            return Ok(dishesDTO);
         }
 
         [HttpGet("{id}")]

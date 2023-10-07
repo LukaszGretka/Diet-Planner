@@ -1,6 +1,5 @@
 import { createAction, union } from '@ngrx/store';
 import { Dish } from '../models/dish';
-import { Product } from 'src/app/products/models/product';
 import { DishProduct } from '../models/dish-product';
 
 export const loadDishesRequest = createAction('Load dishes request');
@@ -21,7 +20,7 @@ export const deleteDishRequestFailed = createAction('Delete dish request failed'
 
 export const updatePortionRequest = createAction(
   'Update portion request trigger',
-  prop<{ dishId: number; productId: number; portionMultiplier: number }>(),
+  prop<{ dishId: number; productId: number; portionMultiplier: number; date: Date }>(),
 );
 
 export const getDishProductsRequest = createAction('Get dish products request', prop<{ dishId: number }>());

@@ -197,10 +197,12 @@ export class MealsCalendarComponent implements OnInit {
   private calculateTotalMacronutrientsForMealType(mealTypeProducts$: any) {
     let macronutrients = { carbs: 0, proteins: 0, fats: 0 };
 
-    mealTypeProducts$.getValue().forEach((dishProduct: DishProduct) => {
-      (macronutrients.carbs += dishProduct.product?.carbohydrates),
-        (macronutrients.proteins += dishProduct.product?.proteins),
-        (macronutrients.fats += dishProduct.product?.fats);
+    mealTypeProducts$.getValue().forEach((dish: Dish) => {
+      dish.products.forEach(dishProduct => {
+        (macronutrients.carbs += dishProduct.product.carbohydrates),
+          (macronutrients.proteins += dishProduct.product.proteins),
+          (macronutrients.fats += dishProduct.product.fats);
+      });
     });
 
     return macronutrients;

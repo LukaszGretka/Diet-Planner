@@ -20,29 +20,17 @@ namespace DietPlanner.Api.Services.MealProductService
             _logger = logger;
         }
 
-        public async Task<DatabaseActionResult> UpdatePortionMultiplier(DateTime date, Enums.MealType mealType, int productId, decimal multiplier)
+        public async Task<DatabaseActionResult> UpdatePortionMultiplier(int dishId, int productId, decimal multiplier)
         {
-            //string formattedDate = date.ToDatabaseDateFormat();
 
-            //var mealId = await _databaseContext.UserMeals
-            //    .Where(meal => meal.Date.Equals(formattedDate) && meal.MealTypeId == (int)mealType)
-            //    .Select(meal => meal.Id)
-            //    .FirstOrDefaultAsync();
+            var dishProduct = await _databaseContext.DishProducts
+                .Where(dp => dp.DishId == dishId && dp.ProductId == productId)
+                .SingleAsync();
 
-            //var mealDish = await _databaseContext.MealDishes
-            //    .Where(mealDish => mealDish.Dish.Product.Id == productId && mealDish.Meal.Id == mealId)
-            //    .SingleOrDefaultAsync();
+            dishProduct.PortionMultiplier = multiplier;
 
-            //if (mealDish is null)
-            //{
-            //    _logger.LogError($"Dish id: {mealId}, product id: {productId} no found");
-            //    return new DatabaseActionResult(false, "Meal Product no found");
-            //}
-
-            //mealDish.PortionMultiplier = multiplier;
-
-            //_databaseContext.MealProducts.Update(mealProduct);
-            //await _databaseContext.SaveChangesAsync();
+            _databaseContext.DishProducts.Update(dishProduct);
+            await _databaseContext.SaveChangesAsync();
 
             return new DatabaseActionResult(true);
         }

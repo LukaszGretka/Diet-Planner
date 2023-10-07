@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { BehaviorSubject, Observable, OperatorFunction, debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { BehaviorSubject, Observable, OperatorFunction, debounceTime, distinctUntilChanged, map, take } from 'rxjs';
 import * as MealCalendarActions from './../stores/meals-calendar.actions';
 import * as DishActions from './../../dishes/stores/dish.actions';
 import { ProductService } from 'src/app/products/services/product.service';
@@ -40,7 +40,6 @@ export class MealCalendarTemplateComponent implements OnInit {
   public allDishes$ = this.dishStore.select(DishSelectors.getDishes);
 
   public searchItem: string;
-  public currentProducts: DishProduct[];
   public defaultPortionSize = 100; //in grams
   public portionValue = this.defaultPortionSize;
 
@@ -55,6 +54,7 @@ export class MealCalendarTemplateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.dishStore.dispatch(DishActions.loadDishesRequest());
     this.store.dispatch(ProductsActions.getAllProductsRequest());
     this.mealMacroSummary$ = this.dishes$.pipe(
       map(dishes =>
@@ -68,23 +68,18 @@ export class MealCalendarTemplateComponent implements OnInit {
             });
             return total;
           },
-          {
-            calories: 0,
-            carbohydrates: 0,
-            proteins: 0,
-            fats: 0,
-          },
+          { calories: 0, carbohydrates: 0, proteins: 0, fats: 0 },
         ),
       ),
     );
   }
 
   // Update local products list for particular collection given in parameter.
-  public onAddProductButtonClick(behaviorSubject: BehaviorSubject<any>, productName: string, content: any): void {
-    if (productName) {
-      const foundProduct = this.currentProducts.find(dishProduct => dishProduct.product.name === productName);
-      if (foundProduct) {
-        this.addFoundProduct(behaviorSubject, foundProduct);
+  public onAddProductButtonClick(behaviorSubject: BehaviorSubject<any>, dishName: string, content: any): void {
+    if (dishName) {
+      const foundDishes: Dish[] = this.searchForDishByName(dishName);
+      if (foundDishes) {
+        this.addFoundDish(behaviorSubject, foundDishes);
         this.searchItem = '';
       } else {
         this.modalService.open(content);
@@ -96,36 +91,22 @@ export class MealCalendarTemplateComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  // Remove product from local list by given index
-  public onRemoveProductButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): void {
-    const productsBehaviorSubject = behaviorSubject as BehaviorSubject<DishProduct[]>;
-    const products = productsBehaviorSubject.getValue();
-    let productsLocal = [...products];
-    productsLocal.splice(index, 1);
-    productsBehaviorSubject.next(productsLocal);
-    // this.store.dispatch(
-    //   MealCalendarActions.addMealRequest({
-    //     mealByDay: {
-    //       date: this.selectedDate,
-    //       portionProducts: productsBehaviorSubject.getValue(),
-    //       mealTypeId: this.mealType,
-    //     },
-    //   }),
-    // );
-  }
-
-  public onShowProductButtonClick($event: any) {
-    let buttonId = $event.delegateTarget.id as string;
-    var hideButtonId = buttonId.replace('show', 'hide');
-    document.getElementById(buttonId).style.display = 'none';
-    document.getElementById(hideButtonId).style.display = 'inline-block';
-  }
-
-  public onHideProductButtonClick($event: any) {
-    let buttonId = $event.delegateTarget.id as string;
-    var showButtonId = buttonId.replace('hide', 'show');
-    document.getElementById(buttonId).style.display = 'none';
-    document.getElementById(showButtonId).style.display = 'inline-block';
+  // Remove dish from local list by given index
+  public onRemoveDishButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): void {
+    const dishesBehaviorSubject = behaviorSubject as BehaviorSubject<Dish[]>;
+    const dishes = dishesBehaviorSubject.getValue();
+    let localDishes = [...dishes];
+    localDishes.splice(index, 1);
+    dishesBehaviorSubject.next(localDishes);
+    this.store.dispatch(
+      MealCalendarActions.addMealRequest({
+        mealByDay: {
+          date: this.selectedDate,
+          dishes: dishesBehaviorSubject.getValue(),
+          mealTypeId: this.mealType,
+        },
+      }),
+    );
   }
 
   public addNewProductModalButtonClick(): void {
@@ -136,57 +117,54 @@ export class MealCalendarTemplateComponent implements OnInit {
     this.router.navigateByUrl(`products/add?redirectUrl=${this.router.url}`);
   }
 
-  public searchProducts: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  public onEditDishButtonClick(index: number): void {
+    // to be implemented
+  }
+
+  public searchDishOrProducts: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       map(searchText =>
         searchText.length < 1
           ? []
-          : this.currentProducts
-              .filter(dishProduct => dishProduct.product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+          : this.searchForDishByName(searchText)
               .slice(0, 10)
-              .map(dishProduct => dishProduct.product.name),
+              .map(dish => dish.name),
       ),
     );
 
-  private addFoundProduct(behaviorSubject: BehaviorSubject<any>, foundProduct: DishProduct): boolean {
-    const productsBehaviorSubject = behaviorSubject as BehaviorSubject<DishProduct[]>;
-    if (
-      productsBehaviorSubject.getValue().filter(dishProduct => dishProduct.product.id == foundProduct.product.id)
-        .length > 0
-    ) {
-      this.notificationService.showWarningToast(
-        'Product already exist in this meal.',
-        'Please edit portion box to adjust the entry.',
-        5000,
-      );
-      return;
-    }
-    const products = (productsBehaviorSubject.getValue() as DishProduct[]).concat(foundProduct);
-    productsBehaviorSubject.next(products);
-    // this.store.dispatch(
-    //   MealCalendarActions.addMealRequest({
-    //     mealByDay: {
-    //       date: this.selectedDate,
-    //       portionProducts: productsBehaviorSubject.getValue(),
-    //       mealTypeId: this.mealType,
-    //     },
-    //   }),
-    // );
+  private searchForDishByName(searchText: string): Dish[] {
+    let foundDishes: Dish[];
+    this.allDishes$.pipe(take(1)).subscribe(dishes => {
+      foundDishes = dishes.filter(dish => dish.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
+    });
+
+    return foundDishes;
   }
 
-  public onPortionValueChange(
-    dishId: number,
-    poritonSize: number,
-    behaviorSubject: BehaviorSubject<any>,
-    index: number,
-  ) {
+  private addFoundDish(behaviorSubject: BehaviorSubject<any>, foundDishes: Dish[]): void {
+    const dishBehaviorSubject = behaviorSubject as BehaviorSubject<Dish[]>;
+    const dishes = (dishBehaviorSubject.getValue() as Dish[]).concat(foundDishes);
+    dishBehaviorSubject.next(dishes);
+    this.store.dispatch(
+      MealCalendarActions.addMealRequest({
+        mealByDay: {
+          date: this.selectedDate,
+          dishes: dishBehaviorSubject.getValue(),
+          mealTypeId: this.mealType,
+        },
+      }),
+    );
+  }
+
+  public onPortionValueChange(poritonSize: number, dishId: number, productId: number) {
     this.store.dispatch(
       DishActions.updatePortionRequest({
         dishId: dishId,
-        productId: behaviorSubject.getValue()[index].id,
+        productId: productId,
         portionMultiplier: poritonSize / this.defaultPortionSize,
+        date: this.selectedDate,
       }),
     );
   }
@@ -200,7 +178,6 @@ export class MealCalendarTemplateComponent implements OnInit {
       dishMacro.calories += p.product.calories;
     });
 
-    console.log(dishMacro);
     return dishMacro;
   }
 }

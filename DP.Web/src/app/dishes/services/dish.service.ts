@@ -10,6 +10,7 @@ import { DishProduct } from '../models/dish-product';
 })
 export class DishService {
   private dishesUrl = 'http://localhost:5000/api/dish';
+  private dishProductUrl = 'http://localhost:5000/api/dishproduct';
 
   httpOptions = {
     withCredentials: true,
@@ -44,6 +45,6 @@ export class DishService {
   }
 
   public updatePortionMultiplier(dishId: number, productId: number, portionMultiplier: number) {
-    return this.httpClient.patch(this.dishesUrl, { dishId, productId, portionMultiplier }, this.httpOptions);
+    return this.httpClient.patch(this.dishProductUrl, { dishId, productId, portionMultiplier }, this.httpOptions);
   }
 }

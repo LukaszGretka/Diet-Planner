@@ -1,11 +1,11 @@
 <div class="mb-4">
   <table *ngIf="this.dishes$.getValue().length > 0" class="table">
-    <thead class="table-light">
+    <thead>
       <tr>
         <th scope="col">Image</th>
         <th scope="col">Name</th>
         <th scope="col">Description</th>
-        <th scope="col">Carbohydrates</th>
+        <th scope="col">Carbs</th>
         <th scope="col">Proteins</th>
         <th scope="col">Fats</th>
         <th scope="col">Calories</th>
@@ -14,56 +14,51 @@
     </thead>
     <tbody>
       <ng-container *ngFor="let dish of dishes$ | async; let dishIndex = index">
-        <tr class="table-group-divider">
-          <td>
+        <tr class="table-group-divider" style="border: 1px; border-color: inherit">
+          <td class="table-light">
             <img
               src="./../../../assets/images/product-placeholder.svg"
               class="img-fluid"
               style="width: 25px; height: 25px" />
           </td>
-          <td>{{ dish.name }}</td>
-          <td>{{ dish.description }}</td>
+          <td class="table-light">{{ dish.name }}</td>
+          <td class="table-light">{{ dish.description }}</td>
           <!-- TODO: This is very wrong way of calculating dish's macro. Need to refactor! -->
-          <td>{{ this.calculateDishMacros(dish).carbs }} g</td>
-          <td>{{ this.calculateDishMacros(dish).proteins }} g</td>
-          <td>{{ this.calculateDishMacros(dish).fats }} g</td>
-          <td>{{ this.calculateDishMacros(dish).calories }} kcal</td>
+          <td class="table-light">{{ this.calculateDishMacros(dish).carbs | number : '1.0-1' }}g</td>
+          <td class="table-light">{{ this.calculateDishMacros(dish).proteins | number : '1.0-1' }}g</td>
+          <td class="table-light">{{ this.calculateDishMacros(dish).fats | number : '1.0-1' }}g</td>
+          <td class="table-light">{{ this.calculateDishMacros(dish).calories | number : '1.0-1' }}kcal</td>
           <!-- TODO: This is very wrong way of calculating dish's macro. Need to refactor! -->
-          <td style="min-width: 90px">
+          <td style="min-width: 90px" class="table-light">
             <button
               type="button"
               id="collapse-show-button-{{ dish.id }}-{{ mealType }}"
-              class="btn delete-button-icon text-secondary"
-              title="Show products"
+              class="btn delete-button-icon text-secondary mx-0"
+              title="Show/Hide products"
               data-bs-toggle="collapse"
               [attr.data-bs-target]="'#collapse-' + mealType + dishIndex"
-              aria-controls="collapseExample"
-              (click)="onShowProductButtonClick($event)">
-              <i class="bi bi-chevron-down"></i>
+              aria-controls="collapseExample">
+              <i class="bi bi-chevron-expand"></i>
             </button>
             <button
               type="button"
-              id="collapse-hide-button-{{ dish.id }}-{{ mealType }}"
-              class="btn delete-button-icon text-secondary"
-              title="Hide products"
-              data-bs-toggle="collapse"
-              [attr.data-bs-target]="'#collapse-' + mealType + dishIndex"
-              aria-controls="collapseExample"
-              style="display: none"
-              (click)="onHideProductButtonClick($event)">
-              <i class="bi bi-chevron-up"></i>
-            </button>
-            <button
-              type="button"
-              class="btn delete-button-icon text-danger"
+              class="btn delete-button-icon text-secondary mx-0"
               title="Remove dish from the meal"
-              (click)="onRemoveProductButtonClick(dishes$, dishIndex)">
+              (click)="onEditDishButtonClick(dishIndex)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button
+              type="button"
+              class="btn delete-button-icon text-danger mx-0"
+              title="Remove dish from the meal"
+              (click)="onRemoveDishButtonClick(dishes$, dishIndex)">
               <i class="bi bi-x-lg"></i>
             </button>
           </td>
         </tr>
         <tr class="collapse" [attr.id]="'collapse-' + mealType + dishIndex">
-          <td scope="col" colspan="8" class="table-light">Products detail</td>
+          <td scope="col" colspan="7">Products details</td>
+          <td scope="col" colspan="1">Portion</td>
         </tr>
         <tr
           class="collapse"
@@ -71,30 +66,22 @@
           *ngFor="let dishProduct of dish.products; let productIndex = index">
           <td></td>
           <td colspan="2">{{ dishProduct.product.name }}</td>
-          <td>{{ dishProduct.product.carbohydrates | number : '1.0-2' }}g</td>
-          <td>{{ dishProduct.product.proteins | number : '1.0-2' }}g</td>
-          <td>{{ dishProduct.product.fats | number : '1.0-2' }}g</td>
-          <td>{{ dishProduct.product.calories | number : '1.0-2' }}kcal</td>
-          <td class="d-flex" style="align-items: center">
-            <input
-              type="number"
-              id="portion"
-              class="form-control form-control-sm d-flex"
-              style="max-width: 65px"
-              [ngModel]="portionValue * dishProduct.portionMultiplier"
-              [ngModelOptions]="{ updateOn: 'blur' }" />g
-          </td>
+          <td>{{ dishProduct.product.carbohydrates | number : '1.0-1' }}g</td>
+          <td>{{ dishProduct.product.proteins | number : '1.0-1' }}g</td>
+          <td>{{ dishProduct.product.fats | number : '1.0-1' }}g</td>
+          <td>{{ dishProduct.product.calories | number : '1.0-1' }}kcal</td>
+          <td>{{ portionValue * dishProduct.portionMultiplier }}g</td>
         </tr>
       </ng-container>
     </tbody>
-    <tbody class="table-group-divider">
+    <tbody class="table-group-divider" style="border-color: inherit">
       <td class="table-light text-secondary p-2" colspan="3">Meals summary:</td>
       <td class="table-light text-secondary p-2">
-        {{ (mealMacroSummary$ | async).carbohydrates | number : '1.0-2' }}g
+        {{ (mealMacroSummary$ | async).carbohydrates | number : '1.0-1' }}g
       </td>
-      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).proteins | number : '1.0-2' }}g</td>
-      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).fats | number : '1.0-2' }}g</td>
-      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).calories | number : '1.0-2' }}kcal</td>
+      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).proteins | number : '1.0-1' }}g</td>
+      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).fats | number : '1.0-1' }}g</td>
+      <td class="table-light text-secondary p-2">{{ (mealMacroSummary$ | async).calories | number : '1.0-1' }}kcal</td>
     </tbody>
   </table>
 
@@ -104,7 +91,7 @@
       type="text"
       class="p-2 bd-highlight form-control"
       [(ngModel)]="searchItem"
-      [ngbTypeahead]="searchProducts"
+      [ngbTypeahead]="searchDishOrProducts"
       placeholder="Start typing to search for a dish or product..." />
     <button
       type="button"

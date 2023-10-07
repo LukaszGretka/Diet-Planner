@@ -7,9 +7,7 @@ namespace DietPlanner.Api.Models.MealProductModel
     {
         public int ProductId { get; set; }
 
-        public MealType MealType { get; set; }
-
-        public DateTime Date { get; set; }
+        public int DishId { get; set; }
 
         public decimal PortionMultiplier { get; set; }
     }
