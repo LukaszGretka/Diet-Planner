@@ -12,7 +12,15 @@ namespace DietPlanner.Api.Database.Models
 
         public Product Product { get; set; }
 
+        /// <summary>
+        /// Default portion multiplayer which is set on dish create.
+        /// </summary>
         public decimal PortionMultiplier { get; set; }
+
+        /// <summary>
+        /// Multiplier which is set from meal calendar as adjustment to default portion multiplier.
+        /// </summary>
+        public decimal CustomizedPortionMultiplier { get; set; }
 
         public int DishId { get; set; }
 

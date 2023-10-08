@@ -7,5 +7,7 @@ namespace DietPlanner.Api.DTO.Dishes
         public Product Product { get; set; }
 
         public decimal PortionMultiplier { get; set; }
+
+        public decimal CustomizedPortionMultiplier { get; set; }
     }
 }

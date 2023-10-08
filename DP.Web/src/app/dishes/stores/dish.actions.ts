@@ -20,7 +20,7 @@ export const deleteDishRequestFailed = createAction('Delete dish request failed'
 
 export const updatePortionRequest = createAction(
   'Update portion request trigger',
-  prop<{ dishId: number; productId: number; portionMultiplier: number; date: Date }>(),
+  prop<{ dishId: number; productId: number; customizedPortionMultiplier: number; date: Date }>(),
 );
 
 export const getDishProductsRequest = createAction('Get dish products request', prop<{ dishId: number }>());

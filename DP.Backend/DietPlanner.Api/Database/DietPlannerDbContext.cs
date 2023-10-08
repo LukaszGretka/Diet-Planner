@@ -13,10 +13,7 @@ namespace DietPlanner.Api.Database
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Meal>()
-            //.HasMany(meal => meal.MealDishes)
-            //.WithOne(mealDish => mealDish.Meal)
-            //.HasForeignKey(mealDish => mealDish.MealId)
-                               .HasIndex(u => u.Id)
+            .HasIndex(u => u.Id)
             .IsUnique();
 
             builder.Entity<Dish>()
@@ -42,6 +39,10 @@ namespace DietPlanner.Api.Database
 
             builder.Entity<DishProducts>()
                    .Property(mp => mp.PortionMultiplier)
+                   .HasDefaultValue(1.0);
+
+            builder.Entity<DishProducts>()
+                   .Property(mp => mp.CustomizedPortionMultiplier)
                    .HasDefaultValue(1.0);
 
             builder.Entity<Measurement>()

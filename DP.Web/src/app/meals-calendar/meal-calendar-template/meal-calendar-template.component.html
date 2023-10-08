@@ -66,11 +66,21 @@
           *ngFor="let dishProduct of dish.products; let productIndex = index">
           <td></td>
           <td colspan="2">{{ dishProduct.product.name }}</td>
-          <td>{{ dishProduct.product.carbohydrates | number : '1.0-1' }}g</td>
-          <td>{{ dishProduct.product.proteins | number : '1.0-1' }}g</td>
-          <td>{{ dishProduct.product.fats | number : '1.0-1' }}g</td>
-          <td>{{ dishProduct.product.calories | number : '1.0-1' }}kcal</td>
-          <td>{{ portionValue * dishProduct.portionMultiplier }}g</td>
+          <td>{{ dishProduct.product.carbohydrates * dishProduct.customizedPortionMultiplier | number : '1.0-1' }}g</td>
+          <td>{{ dishProduct.product.proteins * dishProduct.customizedPortionMultiplier | number : '1.0-1' }}g</td>
+          <td>{{ dishProduct.product.fats * dishProduct.customizedPortionMultiplier | number : '1.0-1' }}g</td>
+          <td>{{ dishProduct.product.calories * dishProduct.customizedPortionMultiplier | number : '1.0-1' }}kcal</td>
+
+          <td class="d-flex" style="align-items: center">
+            <input
+              type="number"
+              id="portion"
+              class="form-control form-control-sm d-flex"
+              style="max-width: 65px"
+              [ngModel]="portionValue * dishProduct.customizedPortionMultiplier"
+              [ngModelOptions]="{ updateOn: 'blur' }"
+              (ngModelChange)="onPortionValueChange($event, dish.id, dishProduct.product.id)" />g
+          </td>
         </tr>
       </ng-container>
     </tbody>

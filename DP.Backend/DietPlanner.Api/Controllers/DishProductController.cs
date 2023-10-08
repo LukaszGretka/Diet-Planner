@@ -20,9 +20,9 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> PatchMultiplier(UpdateMultiplierRequest request)
+        public async Task<IActionResult> PatchCutomizedMultiplier(UpdateCustomizedMultiplierRequest request)
         {
-            await _mealProductService.UpdatePortionMultiplier(request.DishId, request.ProductId, request.PortionMultiplier);
+            await _mealProductService.UpdateCustomizedPortionMultiplier(request.DishId, request.ProductId, request.CustomizedPortionMultiplier);
 
             return Ok();
         }

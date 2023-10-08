@@ -44,7 +44,11 @@ export class DishService {
     return this.httpClient.get<DishProduct[]>(this.dishesUrl + '/' + dishId + '/products', this.httpOptions);
   }
 
-  public updatePortionMultiplier(dishId: number, productId: number, portionMultiplier: number) {
-    return this.httpClient.patch(this.dishProductUrl, { dishId, productId, portionMultiplier }, this.httpOptions);
+  public updatePortionMultiplier(dishId: number, productId: number, customizedPortionMultiplier: number) {
+    return this.httpClient.patch(
+      this.dishProductUrl,
+      { dishId, productId, customizedPortionMultiplier },
+      this.httpOptions,
+    );
   }
 }

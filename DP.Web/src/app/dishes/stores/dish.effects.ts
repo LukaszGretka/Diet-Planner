@@ -152,12 +152,12 @@ export class DishEffects {
     },
   );
 
-  updatePortionRequestEffect$ = createEffect(() =>
+  updateCustomizedPortionRequestEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DishActions.updatePortionRequest),
       exhaustMap(({ payload }) => {
         return this.dishService
-          .updatePortionMultiplier(payload.dishId, payload.productId, payload.portionMultiplier)
+          .updatePortionMultiplier(payload.dishId, payload.productId, payload.customizedPortionMultiplier)
           .pipe(
             switchMap(() =>
               of(

@@ -61,10 +61,10 @@ export class MealCalendarTemplateComponent implements OnInit {
         dishes.reduce(
           (total, dish: Dish) => {
             dish.products.forEach((dishProduct: DishProduct) => {
-              (total.calories += dishProduct.product.calories),
-                (total.carbohydrates += dishProduct.product.carbohydrates),
-                (total.proteins += dishProduct.product.proteins),
-                (total.fats += dishProduct.product.fats);
+              (total.calories += dishProduct.product.calories * dishProduct.customizedPortionMultiplier),
+                (total.carbohydrates += dishProduct.product.carbohydrates * dishProduct.customizedPortionMultiplier),
+                (total.proteins += dishProduct.product.proteins * dishProduct.customizedPortionMultiplier),
+                (total.fats += dishProduct.product.fats * dishProduct.customizedPortionMultiplier);
             });
             return total;
           },
@@ -158,12 +158,12 @@ export class MealCalendarTemplateComponent implements OnInit {
     );
   }
 
-  public onPortionValueChange(poritonSize: number, dishId: number, productId: number) {
+  public onPortionValueChange(customizedPoritonSize: number, dishId: number, productId: number) {
     this.store.dispatch(
       DishActions.updatePortionRequest({
         dishId: dishId,
         productId: productId,
-        portionMultiplier: poritonSize / this.defaultPortionSize,
+        customizedPortionMultiplier: customizedPoritonSize / this.defaultPortionSize,
         date: this.selectedDate,
       }),
     );
@@ -171,11 +171,11 @@ export class MealCalendarTemplateComponent implements OnInit {
 
   public calculateDishMacros(dish: Dish): { carbs: number; proteins: number; fats: number; calories: number } {
     let dishMacro = { carbs: 0, proteins: 0, fats: 0, calories: 0 };
-    dish.products.forEach(p => {
-      dishMacro.carbs += p.product.carbohydrates;
-      dishMacro.proteins += p.product.proteins;
-      dishMacro.fats += p.product.fats;
-      dishMacro.calories += p.product.calories;
+    dish.products.forEach(dishProduct => {
+      dishMacro.carbs += dishProduct.product.carbohydrates * dishProduct.customizedPortionMultiplier;
+      dishMacro.proteins += dishProduct.product.proteins * dishProduct.customizedPortionMultiplier;
+      dishMacro.fats += dishProduct.product.fats * dishProduct.customizedPortionMultiplier;
+      dishMacro.calories += dishProduct.product.calories * dishProduct.customizedPortionMultiplier;
     });
 
     return dishMacro;

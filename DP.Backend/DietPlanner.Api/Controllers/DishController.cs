@@ -90,7 +90,7 @@ namespace DietPlanner.Api.Controllers
                 ImagePath = foundDish.ImagePath,
                 Products = dishProducts.Select(dishProduct => new DishProductsDTO
                 {
-                    Product = new Models.MealsCalendar.DbModel.Product
+                    Product = new Product
                     {
                         Id = dishProduct.Product.Id,
                         Name = dishProduct.Product.Name,
@@ -102,7 +102,8 @@ namespace DietPlanner.Api.Controllers
                         Proteins = dishProduct.Product.Proteins * (float)dishProduct.PortionMultiplier,
                         Fats = dishProduct.Product.Fats * (float)dishProduct.PortionMultiplier,
                     },
-                    PortionMultiplier = dishProduct.PortionMultiplier
+                    PortionMultiplier = dishProduct.PortionMultiplier,
+                    CustomizedPortionMultiplier = dishProduct.CustomizedPortionMultiplier             
                 })
             });
         }

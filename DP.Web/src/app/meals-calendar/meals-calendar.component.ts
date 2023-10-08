@@ -169,25 +169,25 @@ export class MealsCalendarComponent implements OnInit {
     let totalSum = 0;
     this.breakfastDishes$.getValue().forEach((dish: Dish) => {
       dish.products.forEach(dishProduct => {
-        totalSum += dishProduct.product.calories;
+        totalSum += dishProduct.product.calories * dishProduct.customizedPortionMultiplier;
       });
     });
 
     this.lunchDishes$.getValue().forEach((dish: Dish) => {
       dish.products.forEach(dishProduct => {
-        totalSum += dishProduct.product.calories;
+        totalSum += dishProduct.product.calories * dishProduct.customizedPortionMultiplier;
       });
     });
 
     this.dinnerDishes$.getValue().forEach((dish: Dish) => {
       dish.products.forEach(dishProduct => {
-        totalSum += dishProduct.product.calories;
+        totalSum += dishProduct.product.calories * dishProduct.customizedPortionMultiplier;
       });
     });
 
     this.supperDishes$.getValue().forEach((dish: Dish) => {
       dish.products.forEach(dishProduct => {
-        totalSum += dishProduct.product.calories;
+        totalSum += dishProduct.product.calories * dishProduct.customizedPortionMultiplier;
       });
     });
 

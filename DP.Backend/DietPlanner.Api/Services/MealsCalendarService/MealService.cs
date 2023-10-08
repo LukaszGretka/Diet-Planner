@@ -50,7 +50,8 @@ namespace DietPlanner.Api.Services.MealsCalendar
                                                .Join(_databaseContext.Products, x => x.dp.ProductId, p => p.Id, (x, p) => new DishProductsDTO
                                                {
                                                    Product = p,
-                                                   PortionMultiplier = x.dp.PortionMultiplier
+                                                   PortionMultiplier = x.dp.PortionMultiplier,
+                                                   CustomizedPortionMultiplier = x.dp.CustomizedPortionMultiplier
                                                })
                               }) as List<DishDTO>
                 });
