@@ -1,5 +1,17 @@
 version: '3.8'
 services:
+  diet-planner-backend:
+    build:
+      context: ./DP.Backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+  diet-planner-web:
+    build:
+      context: ./DP.Web
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
   diet-planner-db:
     container_name: diet-planner-db
     image: mcr.microsoft.com/mssql/server
