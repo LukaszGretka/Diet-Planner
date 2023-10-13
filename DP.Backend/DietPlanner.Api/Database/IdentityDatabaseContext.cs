@@ -22,8 +22,6 @@ namespace DietPlanner.Api.Database
                 builder.UseSqlServer(_configuration.GetConnectionString("IdentityDatabase"));
             }
 
-
-
             builder.EnableSensitiveDataLogging();
             base.OnConfiguring(builder);
         }
