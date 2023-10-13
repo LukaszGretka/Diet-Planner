@@ -6,8 +6,10 @@ import { filter, map, Observable, startWith } from 'rxjs';
 import { Product } from 'src/app/products/models/product';
 import { GeneralState } from '../stores/store.state';
 import * as GeneralActions from '../stores/store.actions';
+import * as ProductActions from '../products/stores/products.actions';
 import { Router } from '@angular/router';
 import * as StoreSelector from '../stores/store.selectors';
+import * as ProductSelectors from './../products/stores/products.selectors';
 import { AccountService } from '../account/services/account.service';
 
 @Component({
@@ -20,7 +22,7 @@ export class ProductsComponent implements OnInit {
   public filter = new UntypedFormControl('');
   public filteredProducts$: Observable<Product[]>;
 
-  public products$ = this.store.select(StoreSelector.getProducts);
+  public products$ = this.store.select(ProductSelectors.getAllProducts);
   public errorCode$ = this.store.select(StoreSelector.getErrorCode);
   public authenticatedUser$ = this.accountService.getUser();
   private productId: number;
@@ -38,7 +40,8 @@ export class ProductsComponent implements OnInit {
     );
   }
   ngOnInit(): void {
-    this.store.dispatch(GeneralActions.getProductsRequest());
+    this.store.dispatch(GeneralActions.clearErrors());
+    this.store.dispatch(ProductActions.getAllProductsRequest());
   }
 
   onEditButtonClick($event: any): void {

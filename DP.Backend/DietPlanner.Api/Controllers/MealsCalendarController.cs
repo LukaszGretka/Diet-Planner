@@ -14,9 +14,9 @@ namespace DietPlanner.Api.Controllers
     [Authorize]
     public class MealsCalendarController : ControllerBase
     {
-        private readonly IMealsCalendarService _mealsCalendarService;
+        private readonly IMealService _mealsCalendarService;
 
-        public MealsCalendarController(IMealsCalendarService mealsCalendarService)
+        public MealsCalendarController(IMealService mealsCalendarService)
         {
             this._mealsCalendarService = mealsCalendarService;
         }
@@ -31,12 +31,12 @@ namespace DietPlanner.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] MealByDay mealByDate)
+        [HttpPut]
+        public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] PutMealRequest putMealRequest)
         {
             string userId = HttpContext.GetUserId();
 
-            var result = await _mealsCalendarService.AddOrUpdateMeal(mealByDate, userId);
+            var result = await _mealsCalendarService.AddOrUpdateMeal(putMealRequest, userId);
 
             if (result.Exception != null)
             {

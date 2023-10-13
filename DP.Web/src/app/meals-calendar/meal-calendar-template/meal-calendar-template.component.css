@@ -2,3 +2,18 @@
   min-width: 100px;
   margin-left: 1rem;
 }
+body{
+	padding-top:50px;
+	background-color:#34495e;
+}
+
+.hiddenRow {
+    padding: 0 !important;
+}
+
+.horizontal-divider {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}

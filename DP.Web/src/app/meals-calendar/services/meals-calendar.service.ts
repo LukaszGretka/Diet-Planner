@@ -9,7 +9,6 @@ import { MealType } from '../models/meal-type';
 })
 export class MealsCalendarService {
   private mealsCalendarUrl = 'http://localhost:5000/api/mealsCalendar';
-  private mealProductUrl = 'http://localhost:5000/api/mealProduct';
 
   httpOptions = {
     withCredentials: true,
@@ -28,7 +27,7 @@ export class MealsCalendarService {
   }
 
   addDialyMeal(mealByDay: MealByDay): Observable<MealByDay> {
-    return this.httpClient.post<MealByDay>(this.mealsCalendarUrl, mealByDay, this.httpOptions);
+    return this.httpClient.put<MealByDay>(this.mealsCalendarUrl, mealByDay, this.httpOptions);
   }
 
   removeDailyMeal(selectedDate: Date, meal: Meal) {
@@ -36,11 +35,4 @@ export class MealsCalendarService {
     return this.httpClient.delete<Meal>(this.mealsCalendarUrl + '/' + dateUTC, this.httpOptions);
   }
 
-  updatePortionMultiplier(date: Date, mealType: MealType, productId: number, portionMultiplier: number) {
-    return this.httpClient.patch(
-      this.mealProductUrl,
-      { date, mealType, productId, portionMultiplier },
-      this.httpOptions,
-    );
-  }
 }

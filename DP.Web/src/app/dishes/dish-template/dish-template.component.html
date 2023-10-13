@@ -1,0 +1,143 @@
+<div class="container bg-light border">
+  <div class="row my-4">
+    <div class="col-3">
+      <div class="text-center m-2" style="width: auto; height: auto">
+        <img
+          src="./../../../assets/images/dish-placeholder.svg"
+          class="img-fluid"
+          style="width: 150px; height: 150px" />
+      </div>
+    </div>
+    <div class="col-9">
+      <form [formGroup]="dishForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col">
+            <h5 class="border-bottom pb-1 mb-3">Dish details</h5>
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input class="form-control" formControlName="name" name="dish-name" type="text" />
+              <app-form-error [control]="dishForm.get('name')"></app-form-error>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                formControlName="description"
+                id="dish-description"
+                rows="2"
+                style="max-height: 150px"></textarea>
+              <app-form-error [control]="dishForm.get('description')"></app-form-error>
+              <div class="form-check mt-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  formControlName="exposeToOtherUsers"
+                  id="share-with-others-checkbox" />
+                <label class="form-check-label" for="share-with-others-checkbox"
+                  >Share with others.
+                  <i
+                    class="bi bi-info-circle-fill px-1"
+                    title="By checking this option, you expose the dish to the other users."></i>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="row">
+        <div class="col">
+          <h5 class="border-bottom pb-1 mb-3">Products</h5>
+          <table class="table" *ngIf="dishProducts$.getValue().length > 0">
+            <thead>
+              <tr>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Carbohydrates</th>
+                <th scope="col">Proteins</th>
+                <th scope="col">Fats</th>
+                <th scope="col">Calories</th>
+                <th scope="col">Portion</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dishProduct of dishProducts$ | async; let productIndex = index">
+                <td style="max-width: fit-content; max-height: fit-content">
+                  <img
+                    src="./../../../assets/images/product-placeholder.svg"
+                    class="img-fluid"
+                    style="width: 25px; height: 25px" />
+                </td>
+                <td>{{ dishProduct.product.name }}</td>
+                <td>{{ dishProduct.product.carbohydrates | number : '1.0-2' }}g</td>
+                <td>{{ dishProduct.product.proteins | number : '1.0-2' }}g</td>
+                <td>{{ dishProduct.product.fats | number : '1.0-2' }}g</td>
+                <td>{{ dishProduct.product.calories | number : '1.0-2' }}kcal</td>
+                <td class="d-flex" style="align-items: center">
+                  <input
+                    min="1"
+                    type="number"
+                    id="portion"
+                    class="form-control form-control-sm d-flex"
+                    style="max-width: 65px"
+                    [ngModel]="portionValue * dishProduct.portionMultiplier | number : '1.0-2'"
+                    [ngModelOptions]="{ updateOn: 'change' }"
+                    (ngModelChange)="onPortionValueChange($event, dishProduct.product.id)" />g
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn delete-button-icon text-danger"
+                    (click)="onRemoveProductButtonClick(productIndex)">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="table-info"></td>
+                <td class="table-info text-secondary">Total:</td>
+                <td class="table-info text-secondary">
+                  {{ (dishMacroSummary$ | async).carbohydrates | number : '1.0-2' }} g
+                </td>
+                <td class="table-info text-secondary">
+                  {{ (dishMacroSummary$ | async).proteins | number : '1.0-2' }} g
+                </td>
+                <td class="table-info text-secondary">{{ (dishMacroSummary$ | async).fats | number : '1.0-2' }} g</td>
+                <td class="table-info text-secondary">
+                  {{ (dishMacroSummary$ | async).calories | number : '1.0-2' }} kcal
+                </td>
+                <td class="table-info text-secondary"></td>
+                <td class="table-info text-secondary"></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="d-flex bd-highlight my-3">
+            <input
+              id="typeahead-basic"
+              type="text"
+              class="p-2 bd-highlight form-control"
+              [(ngModel)]="searchItem"
+              [ngbTypeahead]="searchProducts"
+              placeholder="Start typing to search for a products..." />
+            <button
+              type="button"
+              class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
+              (click)="onAddProductButtonClick(searchItem)">
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-2 border-top" style="display: flex; align-items: flex-end; justify-content: flex-end">
+    <a class="btn btn-secondary mx-2" role="button" routerLink="/dishes">Back</a>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="!this.dishForm.get('name').value || dishProducts$.getValue().length <= 0"
+      (click)="onSubmit()">
+      Save
+    </button>
+  </div>
+</div>

@@ -71,25 +71,22 @@
       <div class="container-lg m-4 col">
         <div *ngIf="isBreakfastVisible">
           <div class="meal-type-header">Breakfast</div>
-          <app-meal-calendar-template
-            [portionProducts$]="breakfastProducts$"
-            [selectedDate]="selectedDate"
-            [mealType]="1">
+          <app-meal-calendar-template [dishes$]="breakfastDishes$" [selectedDate]="selectedDate" [mealType]="1">
           </app-meal-calendar-template>
         </div>
         <div *ngIf="isLunchVisible">
           <div class="meal-type-header">Lunch</div>
-          <app-meal-calendar-template [portionProducts$]="lunchProducts$" [selectedDate]="selectedDate" [mealType]="2">
+          <app-meal-calendar-template [dishes$]="lunchDishes$" [selectedDate]="selectedDate" [mealType]="2">
           </app-meal-calendar-template>
         </div>
         <div *ngIf="isDinnerVisible">
           <div class="meal-type-header">Dinner</div>
-          <app-meal-calendar-template [portionProducts$]="dinnerProducts$" [selectedDate]="selectedDate" [mealType]="3">
+          <app-meal-calendar-template [dishes$]="dinnerDishes$" [selectedDate]="selectedDate" [mealType]="3">
           </app-meal-calendar-template>
         </div>
         <div *ngIf="isSupperVisible">
           <div class="meal-type-header">Supper</div>
-          <app-meal-calendar-template [portionProducts$]="supperProducts$" [selectedDate]="selectedDate" [mealType]="4">
+          <app-meal-calendar-template [dishes$]="supperDishes$" [selectedDate]="selectedDate" [mealType]="4">
           </app-meal-calendar-template>
         </div>
       </div>

@@ -7,6 +7,6 @@ namespace DietPlanner.Api.Services.MealProductService
 {
     public interface IMealProductService
     {
-        public Task<DatabaseActionResult> UpdatePortionMultiplier(DateTime date, MealType mealType, int productId, decimal multiplier);
+        public Task<DatabaseActionResult> UpdateCustomizedPortionMultiplier(int dishId,  int productId, decimal multiplier);
     }
 }

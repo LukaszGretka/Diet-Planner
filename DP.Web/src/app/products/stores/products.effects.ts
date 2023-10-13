@@ -20,4 +20,16 @@ export class ProductsEffects {
       }),
     ),
   );
+
+  getAllProductsEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ProductsActions.getAllProductsRequest),
+      exhaustMap(() => {
+        return this.productService.getProductsWithPortion().pipe(
+          switchMap((result: Product[]) => of(ProductsActions.getAllProductsRequestSuccess({ result }))),
+          catchError((error: any) => of(ProductsActions.getAllProductsRequestFailed({ errorCode: error.status }))),
+        );
+      }),
+    ),
+  );
 }

@@ -39,6 +39,12 @@ import { ProductsReducer } from './products/stores/products.reducer';
 import { ProductsEffects } from './products/stores/products.effects';
 import { ConfirmEmailComponent } from './account/confirm-email/confirm-email.component';
 import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/confirm-email-required.component';
+import { DishesComponent } from './dishes/dishes.component';
+import { DishAddComponent } from './dishes/dish-add/dish-add.component';
+import { DishTemplateComponent } from './dishes/dish-template/dish-template.component';
+import { DishEditComponent } from './dishes/dish-edit/dish-edit.component';
+import { DishEffects } from './dishes/stores/dish.effects';
+import { DishReducer } from './dishes/stores/dish.reducer';
 
 @NgModule({
   declarations: [
@@ -63,6 +69,10 @@ import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/
     MealCalendarTemplateComponent,
     ConfirmEmailComponent,
     ConfirmEmailRequiredComponent,
+    DishesComponent,
+    DishTemplateComponent,
+    DishAddComponent,
+    DishEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,8 +87,9 @@ import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/
       productsState: ProductsReducer,
       mealCalendarState: MealCalendarReducer,
       accountState: AccountReducer,
+      dishState: DishReducer
     }),
-    EffectsModule.forRoot([GeneralEffects, ProductsEffects, MealCalendarEffects, AccountEffects]),
+    EffectsModule.forRoot([GeneralEffects, ProductsEffects, MealCalendarEffects, AccountEffects, DishEffects]),
     StoreDevtoolsModule.instrument(),
   ],
   providers: [AccountService, AuthGuardService],

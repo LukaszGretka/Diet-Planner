@@ -1,0 +1,4 @@
+<div class="dish-edit-container container-sm m-4">
+  <div class="alert alert-info" role="alert">Edit dish</div>
+  <app-dish-template *ngIf="dish" [submitFunction]="submitFunction" [dishToEdit]="dish"></app-dish-template>
+</div>

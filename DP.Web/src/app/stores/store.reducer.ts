@@ -4,7 +4,6 @@ import { GeneralState } from './store.state';
 
 export const initialState: GeneralState = {
   errorCode: null,
-  products: null,
   measurements: null,
 };
 
@@ -17,10 +16,6 @@ const reducerFactory = createReducer(
   on(generalActions.clearErrors, state => ({
     ...state,
     errorCode: null,
-  })),
-  on(generalActions.getProductsRequestCompleted, (state, action) => ({
-    ...state,
-    products: action.payload.products,
   })),
   on(generalActions.getMeasurementsCompleted, (state, action) => ({
     ...state,

@@ -92,7 +92,6 @@ export class AccountEffects {
       this.actions$.pipe(
         ofType(AccountActions.signUpSuccess),
         tap(action => {
-          console.log(action.payload.signUpResult.requireEmailConfirmation);
           if (action.payload.signUpResult.requireEmailConfirmation === true) {
             this.router.navigate(['/confirm-email-required']);
           } else {

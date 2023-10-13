@@ -1,15 +1,28 @@
 version: '3.8'
 services:
-  backend:
+  diet-planner-backend:
     build:
       context: ./DP.Backend
       dockerfile: Dockerfile
     ports:
       - "5000:80"
-
-  frontend:
+  diet-planner-web:
     build:
       context: ./DP.Web
       dockerfile: Dockerfile
     ports:
       - "4200:80"
+  diet-planner-db:
+    container_name: diet-planner-db
+    image: mcr.microsoft.com/mssql/server
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: DietPlannerAdmin123
+    ports:
+      - "1433:1433"
+      
+volumes:
+  ms-sql-data:

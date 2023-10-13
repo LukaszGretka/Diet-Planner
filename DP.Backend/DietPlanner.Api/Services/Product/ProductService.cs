@@ -1,4 +1,5 @@
 ﻿using DietPlanner.Api.Database;
+using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services
 {
-    public class ProductService : IProductService
+    public class ProductService: IProductService
     {
         private readonly ILogger<ProductService> _logger;
-        private readonly DatabaseContext _databaseContext;
+        private readonly DietPlannerDbContext _databaseContext;
 
-        public ProductService(ILogger<ProductService> logger, DatabaseContext databaseContext)
+        public ProductService(ILogger<ProductService> logger, DietPlannerDbContext databaseContext)
         {
             _logger = logger;
             _databaseContext = databaseContext;
@@ -47,13 +48,13 @@ namespace DietPlanner.Api.Services
 
             try
             {
-                var mealProduct = await _databaseContext.MealProducts
-                    .FirstOrDefaultAsync(mealProduct => mealProduct.Product.Id == id);
+                var isProductAssignedToDish = _databaseContext.DishProducts
+                    .Any(dishProduct => dishProduct.Id == id);
 
-                if(mealProduct is not null)
+                if (isProductAssignedToDish)
                 {
                     return new DatabaseActionResult<Product>
-                        (false, $"Product '{foundProduct.Name}' can't be deleted because it's used in one of the meals.");
+                        (false, $"Product '{foundProduct.Name}' can't be deleted because it's used in one of the dishes.");
                 }
 
                 _databaseContext.Products.Remove(foundProduct);
