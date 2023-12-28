@@ -40,7 +40,7 @@ namespace DietPlanner.Api
             {
                 options.AddPolicy(name: CorsPolicyName, policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
+                    policy.WithOrigins("http://localhost:4200", "https://diet-planner.azurewebsites.net")
                     .AllowCredentials()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
@@ -60,7 +60,9 @@ namespace DietPlanner.Api
             // Override cookie options to work with SPA
             ConfigureCookieRedirection(services);
 
+#if DEBUG
             services.Configure<MessageBrokerOptions>(Configuration.GetSection("MessageBroker"));
+#endif
             services.Configure<IdentityOptions>(options =>
             {
                 ConfigurePasswordPolicy(options);
@@ -111,10 +113,14 @@ namespace DietPlanner.Api
             options.Password.RequireLowercase = false;
             options.Password.RequireUppercase = false;
         }
+
         private static void ConfigureCookieRedirection(IServiceCollection services)
         {
             services.ConfigureApplicationCookie(o =>
             {
+                o.Cookie.SameSite = SameSiteMode.None; // Because of hosting frontend in the other site.
+                o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
                 o.Events = new CookieAuthenticationEvents() 
                 {
                     OnRedirectToLogin = (ctx) =>

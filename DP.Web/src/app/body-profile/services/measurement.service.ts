@@ -2,12 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { Measurement } from 'src/app/body-profile/models/measurement';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MeasurementService {
-  private measurementUrl = 'http://localhost:5000/api/measurement';
+  private measurementUrl = `${environment.dietPlannerApiUri}/api/measurement`;
 
   httpOptions = {
     withCredentials: true,

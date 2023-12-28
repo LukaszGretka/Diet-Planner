@@ -2,15 +2,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Dish } from '../models/dish';
-import { Product } from 'src/app/products/models/product';
+import { environment } from 'src/environments/environment';
 import { DishProduct } from '../models/dish-product';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DishService {
-  private dishesUrl = 'http://localhost:5000/api/dish';
-  private dishProductUrl = 'http://localhost:5000/api/dishproduct';
+  private dishesUrl = `${environment.dietPlannerApiUri}/api/dish`;
+  private dishProductUrl = `${environment.dietPlannerApiUri}/api/dishproduct`;
 
   httpOptions = {
     withCredentials: true,
