@@ -7,6 +7,7 @@ import { SignUpRequest } from '../models/sign-up-request';
 import { User } from '../models/user';
 import { EmailConfirmationRequest } from '../models/email-confirmation-request';
 import { SignUpResult } from '../models/sign-up-result';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ import { SignUpResult } from '../models/sign-up-result';
 export class AccountService {
   public authenticatedUser$ = new BehaviorSubject<User>(null);
 
-  private baseUrl = 'http://localhost:5000/api/account';
+  private baseUrl = `${environment.dietPlannerApiUri}/api/account`;
 
   httpOptions = {
     withCredentials: true,

@@ -2,13 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Meal, MealByDay } from '../models/meal';
-import { MealType } from '../models/meal-type';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MealsCalendarService {
-  private mealsCalendarUrl = 'http://localhost:5000/api/mealsCalendar';
+  private mealsCalendarUrl = `${environment.dietPlannerApiUri}/api/mealsCalendar`;
 
   httpOptions = {
     withCredentials: true,
@@ -34,5 +34,4 @@ export class MealsCalendarService {
     const dateUTC = selectedDate.toUTCString();
     return this.httpClient.delete<Meal>(this.mealsCalendarUrl + '/' + dateUTC, this.httpOptions);
   }
-
 }

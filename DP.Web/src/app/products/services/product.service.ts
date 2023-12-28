@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Product } from 'src/app/products/models/product';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  private productsUrl = 'http://localhost:5000/api/product';
+  private productsUrl = `${environment.dietPlannerApiUri}/api/product`;
 
   httpOptions = {
     withCredentials: true,
