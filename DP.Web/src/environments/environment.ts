@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  dietPlannerApiUri: 'https://localhost:5000',
+  dietPlannerApiUri: 'http://localhost:5000',
 };
 
 /*

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GeneralState } from 'src/app/stores/store.state';
-import * as GeneralActions from '../../stores/store.actions';
+import * as ProductActions from '../stores/products.actions';
 import { Product } from 'src/app/products/models/product';
 
 @Component({
@@ -21,6 +21,6 @@ export class AddProductComponent {
   }
 
   submitForm(product: Product, returnUrl: string = '') {
-    this.store.dispatch(GeneralActions.addProductRequest({ productData: product, returnUrl }));
+    this.store.dispatch(ProductActions.addProductRequest({ productData: product, returnUrl }));
   }
 }

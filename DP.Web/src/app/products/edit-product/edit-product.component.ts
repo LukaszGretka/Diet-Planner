@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GeneralState } from 'src/app/stores/store.state';
 import {Product } from 'src/app/products/models/product';
-import * as GeneralActions from '../../stores/store.actions';
+import * as ProductsActions from './../stores/products.actions';
 import { ProductService } from 'src/app/products/services/product.service';
 import { ActivatedRoute } from '@angular/router';
 import { map, take } from 'rxjs';
@@ -42,6 +42,6 @@ export class EditProductComponent implements OnInit {
   }
 
   private submitForm(product: Product) {
-    this.store.dispatch(GeneralActions.editProductRequest({ productId: product.id, productData: product }));
+    this.store.dispatch(ProductsActions.editProductRequest({ productId: product.id, productData: product }));
   }
 }

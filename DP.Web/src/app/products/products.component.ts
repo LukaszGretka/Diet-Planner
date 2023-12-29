@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { filter, map, Observable, startWith } from 'rxjs';
 import { Product } from 'src/app/products/models/product';
 import { GeneralState } from '../stores/store.state';
+import * as ProductsActions from '../products/stores/products.actions';
 import * as GeneralActions from '../stores/store.actions';
 import * as ProductActions from '../products/stores/products.actions';
 import { Router } from '@angular/router';
@@ -53,11 +54,11 @@ export class ProductsComponent implements OnInit {
   }
 
   removeConfirmationButtonClick(): void {
-    this.store.dispatch(GeneralActions.removeProductRequest({ productId: this.productId }));
+    this.store.dispatch(ProductsActions.removeProductRequest({ productId: this.productId }));
   }
 }
 
-//TODO: not working has to do something with that
+//TODO: Not working. Need to do something with that.
 function search(text: string, pipe: PipeTransform): Product[] {
   return this.products$.filter(product => {
     const term = text.toLowerCase();

@@ -2,6 +2,21 @@ import { createAction, union } from '@ngrx/store';
 import { Product } from '../models/product';
 import { MealType } from 'src/app/meals-calendar/models/meal-type';
 
+export const addProductRequest = createAction(
+  'Add product request',
+  prop<{ productData: Product; returnUrl?: string }>(),
+);
+export const addProductRequestCompleted = createAction('Add product request completed');
+
+export const editProductRequest = createAction(
+  'Edit product request',
+  prop<{ productId: number; productData: Product }>(),
+);
+export const editProductRequestCompleted = createAction('Edit product request completed');
+
+export const removeProductRequest = createAction('Remove product request', prop<{ productId: number }>());
+export const removeProductRequestCompleted = createAction('Remove product request completed');
+
 export const getAllProductsRequest = createAction('Get all products request');
 
 export const getAllProductsRequestSuccess = createAction(
@@ -33,6 +48,12 @@ export const getCallbackMealProduct = createAction('Get callback meal product');
 export const clearCallbackMealProduct = createAction('Clear callback meal product');
 
 const actions = union({
+  addProductRequest,
+  addProductRequestCompleted,
+  editProductRequest,
+  editProductRequestCompleted,
+  removeProductRequest,
+  removeProductRequestCompleted,
   getAllProductsRequest,
   getAllProductsRequestSuccess,
   getAllProductsRequestFailed,
