@@ -4,7 +4,61 @@
 
 <ng-template #bodyProfileTemplate>
   <div class="container-lg mt-4">
-    <a class="btn btn-primary" role="button" routerLink="./add">Add new measurement</a>
+    <h5 class="border-bottom pb-1 mb-3 d-flex">User profile</h5>
+    <div class="container">
+      <div class="row my-4">
+        <div class="col-3">
+          <div class="text-center m-2" style="width: auto; height: auto">
+            <img
+              src="./../../../assets/images/avatar-placeholder.svg"
+              class="img-fluid"
+              style="width: 150px; height: 150px" />
+          </div>
+          <div class="d-flex" style="justify-content: center">
+            <button type="submit" class="btn btn-secondary">Edit</button>
+          </div>
+        </div>
+        <div class="col-9">
+          <form [formGroup]="userProfileForm" (ngSubmit)="onSubmitUserProfile()">
+            <div class="row">
+              <div class="col">
+                <div class="mb-3">
+                  <label class="form-label">Name</label>
+                  <input class="form-control" formControlName="name" name="user-name" type="text" />
+                  <app-form-error [control]="userProfileForm.get('name')"></app-form-error>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Gender</label>
+
+                  <select class="form-select" formControlName="gender" name="user-gender">
+                    <option selected>-</option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Other</option>
+                  </select>
+                  <app-form-error [control]="userProfileForm.get('gender')"></app-form-error>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Birth date</label>
+                  <input type="date" class="form-control" formControlName="birthDate" name="user-birth-date" />
+                  <app-form-error [control]="userProfileForm.get('birthDate')"></app-form-error>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Height</label>
+                  <input type="number" class="form-control" formControlName="height" name="user-height" />
+                  <app-form-error [control]="userProfileForm.get('height')"></app-form-error>
+                </div>
+              </div>
+            </div>
+            <div class="col d-flex" style="justify-content: end">
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <h5 class="border-bottom pb-1 mb-3 d-flex">Measurements</h5>
     <table class="table table-sm mt-4">
       <thead>
         <tr>
@@ -21,6 +75,7 @@
           <th scope="col">Thigh (R) [cm]</th>
           <th scope="col">Calf (L) [cm]</th>
           <th scope="col">Calf (R) [cm]</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -61,7 +116,9 @@
         </tr>
       </tbody>
     </table>
-
+    <div class="add-measurement-button-container">
+      <a class="btn btn-primary" role="button" routerLink="./add">Add</a>
+    </div>
     <div
       class="modal fade"
       id="deleteMeasurementConfirmationModal"
