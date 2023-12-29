@@ -13,6 +13,9 @@
 </div>
 <ng-template #productsTemplate>
   <div *ngIf="authenticatedUser$ | async" class="container-lg mt-4">
+    <div class="d-flex flex-end justify-content-end">
+      <button type="button" class="btn btn-primary" routerLink="./add">Add new product</button>
+    </div>
     <form>
       <div class="mb-3 row">
         <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
@@ -21,9 +24,6 @@
         </div>
       </div>
     </form>
-
-    <button type="button" class="btn btn-primary" routerLink="./add">Add new</button>
-
     <table class="table table-striped">
       <thead>
         <tr>
