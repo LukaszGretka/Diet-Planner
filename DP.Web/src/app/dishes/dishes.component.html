@@ -7,8 +7,15 @@
   </div>
 </div>
 
-<app-error-page *ngIf="errorCode$ | async; else dishesTemplate" [httpsStatusError]="errorCode$ | async">
-</app-error-page>
+<div #noDishesTemplate *ngIf="!(dishes$ | async) || (dishes$ | async)?.length === 0; else dishesTemplate">
+  <div class="m-4 d-flex align-items-center justify-content-center">
+    <div class="text-center">
+      <h2 class="mb-4">No dishes were added</h2>
+      <p>It seems that there are no dishes added yet. Try to add new by clicking "Add dish" button.</p>
+      <a class="btn btn-primary" role="button" routerLink="./dish-add">Add dish</a>
+    </div>
+  </div>
+</div>
 <ng-template #dishesTemplate>
   <div *ngIf="(isLoading$ | async) === false" class="container-lg mt-4">
     <a class="btn btn-primary" role="button" routerLink="./dish-add">Add dish</a>

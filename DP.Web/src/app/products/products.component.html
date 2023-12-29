@@ -1,6 +1,16 @@
-<app-error-page
+<!-- <app-error-page
   *ngIf="(errorCode$ | async) >= 500; else productsTemplate"
-  [httpsStatusError]="errorCode$ | async"></app-error-page>
+  [httpsStatusError]="errorCode$ | async"></app-error-page> -->
+
+<div #noProductsTemplate *ngIf="!(products$ | async) || (products$ | async)?.length === 0; else productsTemplate">
+  <div class="m-4 d-flex align-items-center justify-content-center">
+    <div class="text-center">
+      <h2 class="mb-4">No products were added</h2>
+      <p>It seems that there are no products added yet. Try to add new by clicking "Add product" button.</p>
+      <a class="btn btn-primary" role="button" routerLink="./add">Add product</a>
+    </div>
+  </div>
+</div>
 <ng-template #productsTemplate>
   <div *ngIf="authenticatedUser$ | async" class="container-lg mt-4">
     <form>
@@ -30,28 +40,28 @@
       <tbody>
         <tr *ngFor="let product of products$ | async">
           <th scope="row">
-            <div>{{product.id}}</div>
+            <div>{{ product.id }}</div>
           </th>
           <td>
-            <div>{{product.name}}</div>
+            <div>{{ product.name }}</div>
           </td>
           <td>
-            <div>{{product.description}}</div>
+            <div>{{ product.description }}</div>
           </td>
           <td>
-            <div>{{product.carbohydrates}} g</div>
+            <div>{{ product.carbohydrates }} g</div>
           </td>
           <td>
-            <div>{{product.proteins}} g</div>
+            <div>{{ product.proteins }} g</div>
           </td>
           <td>
-            <div>{{product.fats}} g</div>
+            <div>{{ product.fats }} g</div>
           </td>
           <td>
-            <div>{{product.calories}} kcal</div>
+            <div>{{ product.calories }} kcal</div>
           </td>
           <td>
-            <div class="button-group">
+            <div class="button-group d-flex">
               <button
                 type="button"
                 class="btn edit-button-icon"

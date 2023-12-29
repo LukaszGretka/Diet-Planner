@@ -6,6 +6,7 @@ import * as BodyProfileActions from './stores/body-profile.actions';
 import * as GeneralSelector from '../stores/store.selectors';
 import * as BodyProfileSelector from './stores/body-profile.selectors';
 import { Router } from '@angular/router';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-body-profile',
@@ -18,7 +19,14 @@ export class BodyProfileComponent implements OnInit {
 
   private processingMeasurementId: number;
 
-  constructor(private store: Store<GeneralState>, private router: Router) {}
+  constructor(private store: Store<GeneralState>, private router: Router, private formBuilder: UntypedFormBuilder) {}
+
+  public userProfileForm = this.formBuilder.group({
+    name: ['', [Validators.required, Validators.maxLength(64)]],
+    gender: ['', [Validators.maxLength(128)]],
+    birthDate: [''],
+    height: ['', [Validators.maxLength(3)]],
+  });
 
   ngOnInit(): void {
     this.store.dispatch(GeneralActions.clearErrors());
@@ -39,4 +47,6 @@ export class BodyProfileComponent implements OnInit {
     }
     this.store.dispatch(BodyProfileActions.removeMeasurementRequest({ measurementId: this.processingMeasurementId }));
   }
+
+  public onSubmitUserProfile(): void {}
 }

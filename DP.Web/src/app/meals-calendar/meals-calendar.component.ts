@@ -17,7 +17,6 @@ import { Meal } from './models/meal';
 import { ProductsState } from '../products/stores/products.state';
 import * as ProductActions from '../products/stores/products.actions';
 import * as GeneralActions from '../stores/store.actions';
-import { DishProduct } from '../dishes/models/dish-product';
 import { Dish } from '../dishes/models/dish';
 
 @UntilDestroy()
