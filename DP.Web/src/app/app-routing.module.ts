@@ -17,7 +17,6 @@ import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { ConfirmEmailComponent } from './account/confirm-email/confirm-email.component';
 import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/confirm-email-required.component';
-import { DishTemplateComponent } from './dishes/dish-template/dish-template.component';
 import { DishesComponent } from './dishes/dishes.component';
 import { DishAddComponent } from './dishes/dish-add/dish-add.component';
 import { DishEditComponent } from './dishes/dish-edit/dish-edit.component';

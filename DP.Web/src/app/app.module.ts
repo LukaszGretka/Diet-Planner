@@ -45,6 +45,8 @@ import { DishTemplateComponent } from './dishes/dish-template/dish-template.comp
 import { DishEditComponent } from './dishes/dish-edit/dish-edit.component';
 import { DishEffects } from './dishes/stores/dish.effects';
 import { DishReducer } from './dishes/stores/dish.reducer';
+import { BodyProfileReducer } from './body-profile/stores/body-profile.reducer';
+import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
 
 @NgModule({
   declarations: [
@@ -84,12 +86,20 @@ import { DishReducer } from './dishes/stores/dish.reducer';
     NgChartsModule,
     StoreModule.forRoot({
       generalState: GeneralReducer,
+      bodyProfileState: BodyProfileReducer,
       productsState: ProductsReducer,
       mealCalendarState: MealCalendarReducer,
       accountState: AccountReducer,
-      dishState: DishReducer
+      dishState: DishReducer,
     }),
-    EffectsModule.forRoot([GeneralEffects, ProductsEffects, MealCalendarEffects, AccountEffects, DishEffects]),
+    EffectsModule.forRoot([
+      GeneralEffects,
+      BodyProfileEffects,
+      ProductsEffects,
+      MealCalendarEffects,
+      AccountEffects,
+      DishEffects,
+    ]),
     StoreDevtoolsModule.instrument(),
   ],
   providers: [AccountService, AuthGuardService],

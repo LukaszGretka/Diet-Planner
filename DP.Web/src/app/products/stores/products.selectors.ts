@@ -6,3 +6,5 @@ const getState = createFeatureSelector<ProductsState>('productsState');
 export const getCallbackMealProduct = createSelector(getState, state => state.callbackMealProduct);
 
 export const getAllProducts = createSelector(getState, state => state.products);
+
+

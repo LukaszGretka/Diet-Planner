@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GeneralState } from '../stores/store.state';
 import * as GeneralActions from '../stores/store.actions';
+import * as BodyProfileActions from './stores/body-profile.actions';
 import * as GeneralSelector from '../stores/store.selectors';
+import * as BodyProfileSelector from './stores/body-profile.selectors';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,7 +13,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./body-profile.component.css'],
 })
 export class BodyProfileComponent implements OnInit {
-  public measurements$ = this.store.select(GeneralSelector.getMeasurements);
+  public measurements$ = this.store.select(BodyProfileSelector.getMeasurements);
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
 
   private processingMeasurementId: number;
@@ -20,7 +22,7 @@ export class BodyProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(GeneralActions.clearErrors());
-    this.store.dispatch(GeneralActions.getMeasurementsRequest());
+    this.store.dispatch(BodyProfileActions.getMeasurementsRequest());
   }
 
   onEditButtonClick($event: any): void {
@@ -35,6 +37,6 @@ export class BodyProfileComponent implements OnInit {
     if (!this.processingMeasurementId) {
       return;
     }
-    this.store.dispatch(GeneralActions.removeMeasurementRequest({ measurementId: this.processingMeasurementId }));
+    this.store.dispatch(BodyProfileActions.removeMeasurementRequest({ measurementId: this.processingMeasurementId }));
   }
 }

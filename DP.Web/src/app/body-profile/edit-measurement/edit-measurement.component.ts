@@ -5,7 +5,7 @@ import { map, take } from 'rxjs';
 import { GeneralState } from 'src/app/stores/store.state';
 import { Measurement } from 'src/app/body-profile/models/measurement';
 import { MeasurementService } from 'src/app/body-profile/services/measurement.service';
-import * as GeneralActions from '../../stores/store.actions';
+import * as BodyProfileActions from './../stores/body-profile.actions';
 import * as StoreSelector from '../../stores/store.selectors';
 
 @Component({
@@ -45,7 +45,7 @@ export class EditMeasurementComponent implements OnInit {
 
   private submitForm(measurement: Measurement) {
     this.store.dispatch(
-      GeneralActions.editMeasurementRequest({
+      BodyProfileActions.editMeasurementRequest({
         measurementId: measurement.id,
         measurementData: measurement,
       }),

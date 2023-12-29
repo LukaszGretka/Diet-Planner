@@ -3,8 +3,7 @@ import * as generalActions from './store.actions';
 import { GeneralState } from './store.state';
 
 export const initialState: GeneralState = {
-  errorCode: null,
-  measurements: null,
+  errorCode: null
 };
 
 const reducerFactory = createReducer(
@@ -16,10 +15,6 @@ const reducerFactory = createReducer(
   on(generalActions.clearErrors, state => ({
     ...state,
     errorCode: null,
-  })),
-  on(generalActions.getMeasurementsCompleted, (state, action) => ({
-    ...state,
-    measurements: action.payload.measurements,
   })),
 );
 
