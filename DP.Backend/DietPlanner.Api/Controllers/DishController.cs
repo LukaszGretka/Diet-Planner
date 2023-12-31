@@ -26,7 +26,7 @@ namespace DietPlanner.Api.Controllers
             _dishService = dishService;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<List<DishDTO>>> GetUserDishes()
         {
             List<DishDTO> dishesDTO = new List<DishDTO>();
@@ -78,35 +78,23 @@ namespace DietPlanner.Api.Controllers
                 return NotFound(new { Message = $"Dish with id: {id} no found" });
             }
 
-            //TODO: Having it in the same query with "join" should give better performance.
-            var dishProducts = await _dishService.GetDishProducts(foundDish.Id);
-
-            return Ok(new DishDTO
-            {
-                Id = foundDish.Id,
-                Name = foundDish.Name,
-                Description = foundDish.Description,
-                ExposeToOtherUsers = foundDish.ExposeToOtherUsers,
-                ImagePath = foundDish.ImagePath,
-                Products = dishProducts.Select(dishProduct => new DishProductsDTO
-                {
-                    Product = new Product
-                    {
-                        Id = dishProduct.Product.Id,
-                        Name = dishProduct.Product.Name,
-                        Description = dishProduct.Product.Description,
-                        BarCode = dishProduct.Product.BarCode,
-                        ImagePath = dishProduct.Product.ImagePath,
-                        Calories = dishProduct.Product.Calories * (float)dishProduct.PortionMultiplier,
-                        Carbohydrates = dishProduct.Product.Carbohydrates * (float)dishProduct.PortionMultiplier,
-                        Proteins = dishProduct.Product.Proteins * (float)dishProduct.PortionMultiplier,
-                        Fats = dishProduct.Product.Fats * (float)dishProduct.PortionMultiplier,
-                    },
-                    PortionMultiplier = dishProduct.PortionMultiplier,
-                    CustomizedPortionMultiplier = dishProduct.CustomizedPortionMultiplier             
-                })
-            });
+            return Ok(await AddProductsToDish(foundDish));
         }
+
+        [HttpGet]
+        public async Task<ActionResult<DishDTO>> GetDishByName([FromQuery] string dishName)
+        {
+            var foundDish = await _dishService.GetByName(dishName);
+
+            if (foundDish is null)
+            {
+                return NotFound(new { Message = $"Dish with name: {dishName} no found" });
+            }
+
+            return Ok(await AddProductsToDish(foundDish));
+        }
+
+
 
         [HttpPost]
         [ActionName(nameof(CreateDish))]
@@ -166,6 +154,38 @@ namespace DietPlanner.Api.Controllers
             }
 
             return Ok();
+        }
+
+        private async Task<DishDTO> AddProductsToDish(Dish dish)
+        {
+            //TODO: Having it in the same query with "join" should give better performance.
+            var dishProducts = await _dishService.GetDishProducts(dish.Id);
+
+            return new DishDTO
+            {
+                Id = dish.Id,
+                Name = dish.Name,
+                Description = dish.Description,
+                ExposeToOtherUsers = dish.ExposeToOtherUsers,
+                ImagePath = dish.ImagePath,
+                Products = dishProducts.Select(dishProduct => new DishProductsDTO
+                {
+                    Product = new Product
+                    {
+                        Id = dishProduct.Product.Id,
+                        Name = dishProduct.Product.Name,
+                        Description = dishProduct.Product.Description,
+                        BarCode = dishProduct.Product.BarCode,
+                        ImagePath = dishProduct.Product.ImagePath,
+                        Calories = dishProduct.Product.Calories * (float)dishProduct.PortionMultiplier,
+                        Carbohydrates = dishProduct.Product.Carbohydrates * (float)dishProduct.PortionMultiplier,
+                        Proteins = dishProduct.Product.Proteins * (float)dishProduct.PortionMultiplier,
+                        Fats = dishProduct.Product.Fats * (float)dishProduct.PortionMultiplier,
+                    },
+                    PortionMultiplier = dishProduct.PortionMultiplier,
+                    CustomizedPortionMultiplier = dishProduct.CustomizedPortionMultiplier
+                })
+            };
         }
     }
 }

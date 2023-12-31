@@ -27,6 +27,11 @@ namespace DietPlanner.Api.Services.DishService
             return await _databaseContext.Dishes.FirstOrDefaultAsync(dish => dish.Id == id);
         }
 
+        public async Task<Dish> GetByName(string name)
+        {
+            return await _databaseContext.Dishes.FirstOrDefaultAsync(dish => dish.Name.Equals(name));
+        }
+
         public async Task<bool> CheckIfExists(int id)
         {
             return await _databaseContext.Dishes.AnyAsync(dish => dish.Id == id);

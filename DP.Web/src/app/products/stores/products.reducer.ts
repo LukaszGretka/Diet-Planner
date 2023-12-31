@@ -4,7 +4,6 @@ import * as productsActions from './products.actions';
 
 export const initialState: ProductsState = {
   products: [],
-  callbackMealProduct: null,
   isLoading: false,
 };
 
@@ -22,14 +21,6 @@ const reducerFactory = createReducer(
   on(productsActions.getAllProductsRequestFailed, state => ({
     ...state,
     isLoading: false,
-  })),
-  on(productsActions.setCallbackMealProduct, (state, action) => ({
-    ...state,
-    callbackMealProduct: { productName: action.payload?.productName, mealType: action.payload?.mealType },
-  })),
-  on(productsActions.clearCallbackMealProduct, state => ({
-    ...state,
-    callbackMealProduct: null,
   })),
 );
 

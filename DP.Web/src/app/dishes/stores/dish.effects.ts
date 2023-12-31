@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { DishService } from '../services/dish.service';
-import { catchError, exhaustMap, of, switchMap, tap } from 'rxjs';
+import { catchError, exhaustMap, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import * as DishActions from './dish.actions';
+import * as DishSelectors from './dish.selectors';
 import * as MealCalendarActions from './../../meals-calendar/stores/meals-calendar.actions';
 import { Router } from '@angular/router';
+import { DishState } from './dish.state';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class DishEffects {
@@ -14,6 +17,7 @@ export class DishEffects {
     private dishService: DishService,
     private notificationService: NotificationService,
     private router: Router,
+    private dishStore: Store<DishState>,
   ) {}
 
   loadDishesEffect$ = createEffect(() =>
@@ -44,7 +48,10 @@ export class DishEffects {
       ofType(DishActions.saveDishRequest),
       exhaustMap(({ payload }) => {
         return this.dishService.saveDish(payload.dish).pipe(
-          switchMap(() => of(DishActions.saveDishRequestSuccess())),
+          withLatestFrom(this.dishStore.select(DishSelectors.getCallbackMealDish)),
+          switchMap(([_, callbackMealDish]) => {
+            return of(DishActions.saveDishRequestSuccess({ callbackMealDish }));
+          }),
           catchError(error => of(DishActions.saveDishRequestFailed(error))),
         );
       }),
@@ -55,8 +62,12 @@ export class DishEffects {
     () =>
       this.actions$.pipe(
         ofType(DishActions.saveDishRequestSuccess),
-        tap(() => {
-          this.router.navigate(['dishes']);
+        tap(action => {
+          if (action.payload.callbackMealDish) {
+            this.router.navigateByUrl('meals-calendar');
+          } else {
+            this.router.navigate(['dishes']);
+          }
           return this.notificationService.showSuccessToast('Changes saved', 'Dish have been successfully saved.');
         }),
       ),
@@ -81,7 +92,9 @@ export class DishEffects {
       ofType(DishActions.editDishRequest),
       exhaustMap(({ payload }) => {
         return this.dishService.editDish(payload.dish).pipe(
-          switchMap(() => of(DishActions.editDishRequestSuccess({ dishName: payload.dish.name }))),
+          switchMap(() =>
+            of(DishActions.editDishRequestSuccess({ dishName: payload.dish.name, returnUrl: payload.returnUrl })),
+          ),
           catchError(error => of(DishActions.editDishRequestFailed(error))),
         );
       }),
@@ -93,7 +106,11 @@ export class DishEffects {
       this.actions$.pipe(
         ofType(DishActions.editDishRequestSuccess),
         tap(action => {
-          this.router.navigate(['dishes']);
+          if (action.payload.returnUrl) {
+            this.router.navigateByUrl(action.payload.returnUrl);
+          } else {
+            this.router.navigate(['dishes']);
+          }
           return this.notificationService.showSuccessToast(
             'Changes saved',
             `Dish "${action.payload.dishName}" have been successfully updated.`,

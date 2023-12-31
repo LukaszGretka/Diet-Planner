@@ -12,6 +12,8 @@ namespace DietPlanner.Api.Services.DishService
 
         Task<Dish> GetById(int id);
 
+        Task<Dish> GetByName(string name);
+
         Task<List<Dish>> GetAllUserDishes(string userId);
 
         Task<IEnumerable<DishProducts>> GetDishProducts(int dishId);

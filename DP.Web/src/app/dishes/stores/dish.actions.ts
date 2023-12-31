@@ -1,17 +1,21 @@
 import { createAction, union } from '@ngrx/store';
 import { Dish } from '../models/dish';
 import { DishProduct } from '../models/dish-product';
+import { MealType } from 'src/app/meals-calendar/models/meal-type';
 
 export const loadDishesRequest = createAction('Load dishes request');
 export const loadDishesRequestSuccess = createAction('Load dishes request success', prop<{ dishes: Dish[] }>());
 export const loadDishesRequestFailed = createAction('Load dishes request failed', prop<{ error: number }>());
 
 export const saveDishRequest = createAction('Save dish request', prop<{ dish: Dish; returnUrl: string }>());
-export const saveDishRequestSuccess = createAction('Save dish request success');
+export const saveDishRequestSuccess = createAction('Save dish request success', prop<{ callbackMealDish: any }>());
 export const saveDishRequestFailed = createAction('Save dish request failed', prop<{ error: number }>());
 
-export const editDishRequest = createAction('Edit dish request', prop<{ dish: Dish }>());
-export const editDishRequestSuccess = createAction('Edit dish request success', prop<{ dishName: string }>());
+export const editDishRequest = createAction('Edit dish request', prop<{ dish: Dish; returnUrl: string }>());
+export const editDishRequestSuccess = createAction(
+  'Edit dish request success',
+  prop<{ dishName: string; returnUrl: string }>(),
+);
 export const editDishRequestFailed = createAction('Edit dish request failed', prop<{ error: number }>());
 
 export const deleteDishRequest = createAction('Delete dish request', prop<{ id: number }>());
@@ -33,6 +37,13 @@ export const getDishProductsRequestFailed = createAction('Get dish products requ
 export const updatePortionRequestSuccess = createAction('Update portion request success');
 export const updatePortionRequestFailed = createAction('Update portion request failed', prop<{ error: number }>());
 
+export const setCallbackMealDish = createAction(
+  'Set callback meal dish',
+  prop<{ dishName: string; mealType: MealType }>(),
+);
+export const getCallbackMealDish = createAction('Get callback meal dish');
+export const clearCallbackMealDish = createAction('Clear callback meal dish');
+
 const actions = union({
   loadDishesRequest,
   loadDishesRequestSuccess,
@@ -52,6 +63,9 @@ const actions = union({
   updatePortionRequest,
   updatePortionRequestSuccess,
   updatePortionRequestFailed,
+  setCallbackMealDish,
+  getCallbackMealDish,
+  clearCallbackMealDish,
 });
 
 export type DishActions = typeof actions;

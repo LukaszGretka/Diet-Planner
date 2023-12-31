@@ -44,7 +44,7 @@
               type="button"
               class="btn delete-button-icon text-secondary mx-0"
               title="Remove dish from the meal"
-              (click)="onEditDishButtonClick(dishIndex)">
+              (click)="onEditDishButtonClick(dishes$, dishIndex)">
               <i class="bi bi-pencil-square"></i>
             </button>
             <button
@@ -101,19 +101,19 @@
       type="text"
       class="p-2 bd-highlight form-control"
       [(ngModel)]="searchItem"
-      [ngbTypeahead]="searchDishOrProducts"
-      placeholder="Start typing to search for a dish or product..." />
+      [ngbTypeahead]="searchDish"
+      placeholder="Start typing to search for a dish..." />
     <button
       type="button"
       class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
-      (click)="onAddProductButtonClick(dishes$, searchItem, content)">
+      (click)="onAddDishOrProductButtonClick(dishes$, searchItem, confirmatioModal)">
       Add
     </button>
   </div>
 
-  <ng-template #content let-modal>
+  <ng-template #confirmatioModal let-modal>
     <div class="modal-header">
-      <h5 class="modal-title" id="ProductNoFoundModalLabel">Product not found</h5>
+      <h5 class="modal-title" id="ProductNoFoundModalLabel">Dish not found</h5>
       <button
         type="button"
         class="btn-close"
@@ -121,12 +121,12 @@
         aria-label="Close"
         (click)="onCancelModalClick()"></button>
     </div>
-    <div class="modal-body">Product no found. Continue by adding it?</div>
+    <div class="modal-body">Dish '{{ this.searchItem }}' no found. Continue by adding it?</div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="onCancelModalClick()">
         Cancel
       </button>
-      <button type="button" class="btn btn-primary" (click)="addNewProductModalButtonClick()" data-bs-dismiss="modal">
+      <button type="button" class="btn btn-primary" (click)="addNewDishModalButtonClick()" data-bs-dismiss="modal">
         Continue
       </button>
     </div>
