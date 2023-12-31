@@ -1,56 +1,53 @@
-<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-  <div class="mb-3">
-    <label for="name-label" class="form-label">Name<label class="text-danger">*</label></label>
-    <input type="text" class="form-control" formControlName="name" id="name" />
-    <app-form-error [control]="productForm.get('name')"></app-form-error>
-  </div>
+<div class="container bg-light border">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="my-3">
+      <label for="name-label" class="form-label">Name<label class="text-danger">*</label></label>
+      <input type="text" class="form-control" formControlName="name" id="name" />
+      <app-form-error [control]="productForm.get('name')"></app-form-error>
+    </div>
 
-  <div class="mb-3">
-    <label for="name-label" class="form-label">Description</label>
-    <input type="text" class="form-control" formControlName="description" id="description" />
-    <app-form-error [control]="productForm.get('description')"></app-form-error>
-  </div>
+    <div class="mb-3">
+      <label for="name-label" class="form-label">Description</label>
+      <input type="text" class="form-control" formControlName="description" id="description" />
+      <app-form-error [control]="productForm.get('description')"></app-form-error>
+    </div>
 
-  <div class="mb-3">
-    <label for="name-label" class="form-label">Barcode</label>
-    <input type="text" class="form-control" formControlName="barcode" id="barcode" />
-    <app-form-error [control]="productForm.get('barcode')"></app-form-error>
-  </div>
+    <div class="mb-3">
+      <label for="name-label" class="form-label">Barcode</label>
+      <input type="text" class="form-control" formControlName="barcode" id="barcode" />
+      <app-form-error [control]="productForm.get('barcode')"></app-form-error>
+    </div>
 
-  <div class="mb-3">
-    <label for="name-label" class="form-label">Calories<label class="text-danger">*</label> (100g)</label>
-    <input type="text" class="form-control" formControlName="calories" id="calories" />
-    <app-form-error [control]="productForm.get('calories')"></app-form-error>
-  </div>
+    <div class="mb-3">
+      <label for="name-label" class="form-label">Calories<label class="text-danger">*</label> (100g)</label>
+      <input type="text" class="form-control" formControlName="calories" id="calories" />
+      <app-form-error [control]="productForm.get('calories')"></app-form-error>
+    </div>
 
-  <div class="mb-3">
-    <div class="row">
-      <div class="col">
-        <label for="name-label" class="form-label">Carbohydrates<label class="text-danger">*</label> (100g)</label>
-        <input type="text" class="form-control" formControlName="carbohydrates" id="carbohydrates" />
-        <app-form-error [control]="productForm.get('carbohydrates')"></app-form-error>
-      </div>
-      <div class="col">
-        <label for="name-label" class="form-label">Proteins<label class="text-danger">*</label> (100g)</label>
-        <input type="text" class="form-control" formControlName="proteins" id="proteins" />
-        <app-form-error [control]="productForm.get('proteins')"></app-form-error>
-      </div>
-      <div class="col">
-        <label for="name-label" class="form-label">Fats<label class="text-danger">*</label> (100g)</label>
-        <input type="text" class="form-control" formControlName="fats" id="fats" />
-        <app-form-error [control]="productForm.get('fats')"></app-form-error>
+    <div class="mb-3">
+      <div class="row">
+        <div class="col">
+          <label for="name-label" class="form-label">Carbohydrates<label class="text-danger">*</label> (100g)</label>
+          <input type="text" class="form-control" formControlName="carbohydrates" id="carbohydrates" />
+          <app-form-error [control]="productForm.get('carbohydrates')"></app-form-error>
+        </div>
+        <div class="col">
+          <label for="name-label" class="form-label">Proteins<label class="text-danger">*</label> (100g)</label>
+          <input type="text" class="form-control" formControlName="proteins" id="proteins" />
+          <app-form-error [control]="productForm.get('proteins')"></app-form-error>
+        </div>
+        <div class="col">
+          <label for="name-label" class="form-label">Fats<label class="text-danger">*</label> (100g)</label>
+          <input type="text" class="form-control" formControlName="fats" id="fats" />
+          <app-form-error [control]="productForm.get('fats')"></app-form-error>
+        </div>
       </div>
     </div>
-  </div>
-  <label class="text-danger mb-3">* - Required fields</label>
-  <div class="mb-3">
-    <div class="row">
-      <div class="col">
-        <a class="btn btn-secondary" role="button" routerLink="/products">Back</a>
-      </div>
-      <div class="col">
-        <button type="submit" class="btn btn-primary" style="float: right">Save</button>
-      </div>
+    <label class="text-danger mb-3">* - Required fields</label>
+
+    <div class="py-2 border-top d-flex flex-end justify-content-end">
+      <button class="btn btn-secondary mx-2" role="button" routerLink="/products">Back</button>
+      <button class="btn btn-primary" type="submit" (click)="onSubmit()">Save</button>
     </div>
-  </div>
-</form>
+  </form>
+</div>

@@ -13,6 +13,7 @@ import {
   take,
 } from 'rxjs';
 import * as ProductSelectors from './../../products/stores/products.selectors';
+import * as DishSelectors from './../../dishes/stores/dish.selectors';
 import { Store } from '@ngrx/store';
 import { ProductsState } from 'src/app/products/stores/products.state';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -20,6 +21,8 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import * as ProductActions from './../../products/stores/products.actions';
 import { DishProduct } from '../models/dish-product';
 import { Product } from 'src/app/products/models/product';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DishState } from '../stores/dish.state';
 
 @UntilDestroy()
 @Component({
@@ -40,12 +43,28 @@ export class DishTemplateComponent implements OnInit {
   public searchItem: string = '';
   //TODO: taking list of products might be long (need to find better solution)
   public allProducts$ = this.productStore.select(ProductSelectors.getAllProducts);
+  private returnUrl: string;
+  private callbackMealProduct$ = this.dishStore.select(DishSelectors.getCallbackMealDish);
 
   constructor(
     private formBuilder: UntypedFormBuilder,
     private productStore: Store<ProductsState>,
+    private dishStore: Store<DishState>,
     private notificationService: NotificationService,
-  ) {}
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {
+    this.route.queryParams.subscribe(params => {
+      if (params.hasOwnProperty('redirectUrl')) {
+        this.callbackMealProduct$?.subscribe(item => {
+          this.returnUrl = params['redirectUrl'];
+          if (item) {
+            this.dishForm.get('name').setValue(item.dishName);
+          }
+        });
+      }
+    });
+  }
 
   public dishForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(64)]],
@@ -96,7 +115,15 @@ export class DishTemplateComponent implements OnInit {
       products: this.dishProducts$.getValue(),
       exposeToOtherUsers: this.dishForm.get('exposeToOtherUsers').value,
       id: this.dishToEdit != null ? this.dishToEdit.id : undefined,
-    } as Dish);
+    } as Dish, this.returnUrl);
+  }
+
+  public onBackButtonClick() {
+    if (this.returnUrl) {
+      this.router.navigate([this.returnUrl]);
+    } else {
+      this.router.navigate(['dishes']);
+    }
   }
 
   public onPortionValueChange(poritonSize: number, productId: number) {

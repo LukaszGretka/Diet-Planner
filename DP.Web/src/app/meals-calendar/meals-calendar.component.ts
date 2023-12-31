@@ -12,12 +12,13 @@ import * as GeneralSelector from './../stores/store.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ChartData, ChartType } from 'chart.js';
 import { Actions, ofType } from '@ngrx/effects';
-import * as ProductsSelectors from './../products/stores/products.selectors';
+import * as DishSelectors from './../dishes/stores/dish.selectors';
 import { Meal } from './models/meal';
 import { ProductsState } from '../products/stores/products.state';
-import * as ProductActions from '../products/stores/products.actions';
+import * as DishActions from '../dishes/stores/dish.actions';
 import * as GeneralActions from '../stores/store.actions';
 import { Dish } from '../dishes/models/dish';
+import { DishService } from '../dishes/services/dish.service';
 
 @UntilDestroy()
 @Component({
@@ -61,11 +62,12 @@ export class MealsCalendarComponent implements OnInit {
   };
   public doughnutChartType: ChartType = 'doughnut';
 
-  private callbackMealProduct$ = this.store.select(ProductsSelectors.getCallbackMealProduct);
+  private callbackMealDish$ = this.store.select(DishSelectors.getCallbackMealDish);
 
   constructor(
     actions$: Actions,
     private productService: ProductService,
+    private dishService: DishService,
     private store: Store<MealCalendarState>,
     private productStore: Store<ProductsState>,
   ) {
@@ -107,7 +109,7 @@ export class MealsCalendarComponent implements OnInit {
       this.currentProducts = productNames;
     });
 
-    this.callbackMealProduct$.pipe(take(1)).subscribe(callback => {
+    this.callbackMealDish$.pipe(take(1)).subscribe(callback => {
       if (!callback) {
         return;
       }
@@ -122,24 +124,24 @@ export class MealsCalendarComponent implements OnInit {
 
       let currentDishes = [...targetedMealSb.getValue().dishes];
 
-      this.productService
-        .getProductByName(callback.productName)
+      this.dishService
+        .getDishByName(callback.dishName)
         .pipe(take(1))
-        .subscribe(product => {
-          // currentDishes.push({ product, portionMultiplier: 1 });
-          // targetedMealSb.next({ mealTypeId: callback.mealType, portionProducts: currentDishes });
-          // this.store.dispatch(
-          //   MealCalendarActions.addMealRequest({
-          //     mealByDay: {
-          //       date: this.selectedDate,
-          //       portionProducts: targetedMealSb.getValue().portionProducts,
-          //       mealTypeId: callback.mealType,
-          //     },
-          //   }),
-          // );
+        .subscribe(dish => {
+          currentDishes.push(dish);
+          targetedMealSb.next({ mealTypeId: callback.mealType, dishes: currentDishes });
+          this.store.dispatch(
+            MealCalendarActions.addMealRequest({
+              mealByDay: {
+                date: this.selectedDate,
+                dishes: targetedMealSb.getValue().dishes,
+                mealTypeId: callback.mealType,
+              },
+            }),
+          );
         });
     });
-    this.productStore.dispatch(ProductActions.clearCallbackMealProduct());
+    this.productStore.dispatch(DishActions.clearCallbackMealDish());
   }
 
   public onDateSelection(ngbDate: NgbDate): void {

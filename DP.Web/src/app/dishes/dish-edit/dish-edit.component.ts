@@ -36,7 +36,7 @@ export class DishEditComponent {
     return this.submitForm.bind(this);
   }
 
-  private submitForm(dish: Dish) {
-    this.dishStore.dispatch(DishActions.editDishRequest({ dish }));
+  private submitForm(dish: Dish, returnUrl: string = '') {
+    this.dishStore.dispatch(DishActions.editDishRequest({ dish, returnUrl }));
   }
 }

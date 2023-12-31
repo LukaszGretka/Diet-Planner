@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Dish } from '../models/dish';
@@ -21,11 +21,17 @@ export class DishService {
   constructor(private httpClient: HttpClient) {}
 
   public getUserDishes(): Observable<Dish[]> {
-    return this.httpClient.get<Dish[]>(this.dishesUrl, { withCredentials: true });
+    return this.httpClient.get<Dish[]>(this.dishesUrl + '/all', { withCredentials: true });
   }
 
   public getDishById(id: number): Observable<Dish> {
     return this.httpClient.get<Dish>(this.dishesUrl + '/' + id, { withCredentials: true });
+  }
+
+  public getDishByName(dishName: string): Observable<Dish> {
+    let params = new HttpParams();
+    params = params.append('dishName', dishName);
+    return this.httpClient.get<Dish>(this.dishesUrl, { params: params, withCredentials: true });
   }
 
   public saveDish(dish: Dish): Observable<Dish> {
