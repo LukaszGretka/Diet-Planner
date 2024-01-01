@@ -11,12 +11,19 @@
       <input class="form-control" formControlName="email" name="email" type="email" />
       <app-form-error [control]="signUpForm.get('email')"></app-form-error>
     </div>
-    <div class="mb-3">
+    <div class="mb-2">
       <label class="form-label" id="password-label">Password</label>
       <input class="form-control" formControlName="password" name="password" type="password" />
       <app-form-error [control]="signUpForm.get('password')"></app-form-error>
     </div>
-    <button class="btn btn-primary" type="submit">Sign-up</button>
+    <button class="btn btn-primary w-100 mt-4" type="submit" [ngClass]="{ disabled: (isLoading$ | async) === true }">
+      Sign up
+      <span
+        *ngIf="(isLoading$ | async) === true"
+        class="spinner-grow spinner-grow-sm"
+        role="status"
+        aria-hidden="true"></span>
+    </button>
   </form>
 
   <div class="mb-3 mt-5">

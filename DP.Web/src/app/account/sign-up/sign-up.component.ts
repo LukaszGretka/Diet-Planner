@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SignUpRequest } from '../models/sign-up-request';
 import * as AccountActions from '../stores/account.actions';
+import * as AccountSelectors from '../stores/account.selector';
 import { AccountState } from '../stores/account.state';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
@@ -12,6 +13,7 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 })
 export class SignUpComponent implements OnInit {
   public signUpForm: UntypedFormGroup;
+  public isLoading$ = this.accountStore.select(AccountSelectors.isLoading);
 
   constructor(private accountStore: Store<AccountState>, private formBuilder: UntypedFormBuilder) {}
   ngOnInit(): void {

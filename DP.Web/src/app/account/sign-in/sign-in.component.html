@@ -1,18 +1,24 @@
 <div class="container mt-4">
   <h3>Sign in into your account</h3>
   <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
-    <div class="mb-3 mt-4">
+    <div class="my-4">
       <label class="form-label" id="email-label">Email</label>
       <input class="form-control" formControlName="email" name="email" type="email" />
       <app-form-error [control]="signInForm.get('email')"></app-form-error>
     </div>
-    <div class="mb-3">
+    <div class="mb-2">
       <label class="form-label">Password</label>
       <input class="form-control" formControlName="password" name="password" type="password" />
       <app-form-error [control]="signInForm.get('password')"></app-form-error>
     </div>
-
-    <button class="btn btn-primary" type="submit">Sign in</button>
+    <button class="btn btn-primary w-100 mt-4" type="submit" [ngClass]="{ disabled: (isLoading$ | async) === true }">
+      Sign in
+      <span
+        *ngIf="(isLoading$ | async) === true"
+        class="spinner-grow spinner-grow-sm"
+        role="status"
+        aria-hidden="true"></span>
+    </button>
   </form>
   <div class="mb-3 mt-5">
     <div class="text-secondary mb-1">

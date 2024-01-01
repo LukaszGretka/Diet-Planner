@@ -1,1 +1,3 @@
-export interface AccountState {}
+export interface AccountState {
+  isLoading: boolean;
+}

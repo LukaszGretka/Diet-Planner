@@ -15,7 +15,7 @@ export const signInRequestSuccess = createAction('Sign-in request success', prop
 export const signInRequestFailed = createAction('Sign-in request failed', prop<{ error: string }>());
 
 export const signUpRequest = createAction('Sign-up request', prop<{ signUpRequest: SignUpRequest }>());
-export const signUpSuccess = createAction('Sign-up request success', prop<{ signUpResult: SignUpResult }>());
+export const signUpRequestSuccess = createAction('Sign-up request success', prop<{ signUpResult: SignUpResult }>());
 export const signUpRequestFailed = createAction('Sign-up request failed', prop<{ error: string }>());
 
 export const signOutRequest = createAction('Sign out request');
@@ -37,7 +37,7 @@ const actions = union({
   signInRequestSuccess,
   signInRequestFailed,
   signUpRequest,
-  signUpSuccess,
+  signUpRequestSuccess,
   signUpRequestFailed,
   signOutRequest,
   signOutRequestSuccess,

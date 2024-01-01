@@ -69,7 +69,7 @@ export class AccountEffects {
       ofType(AccountActions.signUpRequest),
       exhaustMap(({ payload }) => {
         return this.accountService.performSignUp(payload.signUpRequest).pipe(
-          switchMap(signUpResult => of(AccountActions.signUpSuccess({ signUpResult }))),
+          switchMap(signUpResult => of(AccountActions.signUpRequestSuccess({ signUpResult }))),
           catchError(error => of(AccountActions.signUpRequestFailed({ error }))),
         );
       }),
@@ -90,7 +90,7 @@ export class AccountEffects {
   signUpSuccessEffect$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(AccountActions.signUpSuccess),
+        ofType(AccountActions.signUpRequestSuccess),
         tap(action => {
           if (action.payload.signUpResult.requireEmailConfirmation === true) {
             this.router.navigate(['/confirm-email-required']);
