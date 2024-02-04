@@ -1,5 +1,6 @@
-import { createAction, union } from "@ngrx/store";
-import { Measurement } from "../models/measurement";
+import { createAction, union } from '@ngrx/store';
+import { Measurement } from '../models/measurement';
+import { UserProfile } from '../models/user-profile';
 
 export const getMeasurementsRequest = createAction('Get measurement request');
 export const getMeasurementsCompleted = createAction(
@@ -19,9 +20,32 @@ export const editMeasurementRequestCompleted = createAction('Edit measurement re
 export const removeMeasurementRequest = createAction('Remove measurement request', prop<{ measurementId: number }>());
 export const removeMeasurementRequestCompleted = createAction('Remove measurement request completed');
 
+export const getUserProfileRequest = createAction('Get user profile request');
+export const getUserProfileSuccess = createAction('Get user profile success', prop<{ userProfile: UserProfile }>());
+export const getUserProfileFailed = createAction('Get user profile failed', prop<{ error: string }>());
+
+export const updateUserProfileRequest = createAction(
+  'Update user profile request',
+  prop<{ userProfile: UserProfile }>(),
+);
+export const updateUserProfileSuccess = createAction('Update user profile success');
+export const updateUserProfileFailed = createAction('Update user profile failed', prop<{ error: string }>());
 
 const actions = union({
-
+  getMeasurementsRequest,
+  getMeasurementsCompleted,
+  addMeasurementRequest,
+  addMeasurementRequestCompleted,
+  editMeasurementRequest,
+  editMeasurementRequestCompleted,
+  removeMeasurementRequest,
+  removeMeasurementRequestCompleted,
+  getUserProfileRequest,
+  getUserProfileSuccess,
+  getUserProfileFailed,
+  updateUserProfileRequest,
+  updateUserProfileSuccess,
+  updateUserProfileFailed,
 });
 
 export type BodyProfileActions = typeof actions;

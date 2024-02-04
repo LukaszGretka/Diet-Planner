@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DietPlanner.Api.Database.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,5 +26,16 @@ namespace DietPlanner.Api.Database
             builder.EnableSensitiveDataLogging();
             base.OnConfiguring(builder);
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserProfile>()
+               .HasIndex(u => u.UserId)
+               .IsUnique();
+        }
+
+        public DbSet<UserProfile> UserProfile { get; set; }
     }
 }

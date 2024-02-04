@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, catchError, of, switchMap } from 'rxjs';
+import { EMPTY, catchError, exhaustMap, of, switchMap } from 'rxjs';
 import { MeasurementService } from '../services/measurement.service';
 import * as BodyProfileActions from './body-profile.actions';
 import * as GeneralActions from './../../stores/store.actions';
+import { UserProfileService } from '../services/user-profile.service';
+import { UserProfile } from '../models/user-profile';
 
 @Injectable()
 export class BodyProfileEffects {
   getMeasurementEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BodyProfileActions.getMeasurementsRequest),
-      switchMap(() => {
+      exhaustMap(() => {
         return this.measurementService.getMeasurements().pipe(
           switchMap(payload => {
             return of(BodyProfileActions.getMeasurementsCompleted({ measurements: payload }));
@@ -27,7 +29,7 @@ export class BodyProfileEffects {
   addMeasurementEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BodyProfileActions.addMeasurementRequest),
-      switchMap(({ payload }) => {
+      exhaustMap(({ payload }) => {
         return this.measurementService.addMeasurement(payload.measurementData).pipe(
           switchMap(() => {
             this.router.navigate(['body-profile']);
@@ -44,7 +46,7 @@ export class BodyProfileEffects {
   editMeasurementEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BodyProfileActions.editMeasurementRequest),
-      switchMap(({ payload }) => {
+      exhaustMap(({ payload }) => {
         return this.measurementService.editMeasurement(payload.measurementId, payload.measurementData).pipe(
           switchMap(() => {
             this.router.navigate(['body-profile']);
@@ -61,7 +63,7 @@ export class BodyProfileEffects {
   removeMeasurementEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BodyProfileActions.removeMeasurementRequest),
-      switchMap(({ payload }) => {
+      exhaustMap(({ payload }) => {
         return this.measurementService.deleteMeasurement(payload.measurementId).pipe(
           switchMap(() => {
             window.location.reload(); //TODO: find better way
@@ -75,5 +77,37 @@ export class BodyProfileEffects {
     ),
   );
 
-  constructor(private actions$: Actions, private router: Router, private measurementService: MeasurementService) {}
+  getUserProfileEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BodyProfileActions.getUserProfileRequest),
+      exhaustMap(_ => {
+        return this.userProfileService.getUserProfile().pipe(
+          switchMap((userProfile: UserProfile) => of(BodyProfileActions.getUserProfileSuccess({ userProfile }))),
+          catchError((error: any) => of(BodyProfileActions.getUserProfileFailed({ error: error.error.message }))),
+        );
+      }),
+    ),
+  );
+
+  updateUserProfileEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BodyProfileActions.updateUserProfileRequest),
+      exhaustMap(({ payload }) => {
+        return this.userProfileService.updateUserProfile(payload.userProfile).pipe(
+          switchMap(() => {
+            window.location.reload(); //TODO: find better way
+            return EMPTY;
+          }),
+          catchError((error: any) => of(BodyProfileActions.updateUserProfileFailed({ error: error.error.message }))),
+        );
+      }),
+    ),
+  );
+
+  constructor(
+    private actions$: Actions,
+    private router: Router,
+    private measurementService: MeasurementService,
+    private userProfileService: UserProfileService,
+  ) {}
 }

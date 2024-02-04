@@ -4,6 +4,7 @@ import { createReducer, on } from '@ngrx/store';
 
 export const initialState: BodyProfileState = {
   measurements: null,
+  userProfile: null
 };
 
 const reducerFactory = createReducer(
@@ -11,6 +12,10 @@ const reducerFactory = createReducer(
   on(bodyProfileActions.getMeasurementsCompleted, (state, action) => ({
     ...state,
     measurements: action.payload.measurements,
+  })),
+  on(bodyProfileActions.getUserProfileSuccess, (state, action) => ({
+    ...state,
+    userProfile: action.payload.userProfile,
   })),
 );
 

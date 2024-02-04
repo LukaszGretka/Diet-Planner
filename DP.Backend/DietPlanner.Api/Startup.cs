@@ -7,6 +7,7 @@ using DietPlanner.Api.Services.DishService;
 using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Api.Services.MealsCalendar;
 using DietPlanner.Api.Services.MessageBroker;
+using DietPlanner.Api.Services.UserProfileService;
 using DietPlanner.Api.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -69,7 +70,6 @@ namespace DietPlanner.Api
                 options.SignIn.RequireConfirmedAccount = false; // confirmation by email required
             });
 
-
             services.AddAuthorization();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -83,6 +83,7 @@ namespace DietPlanner.Api
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IMessageBrokerService, MessageBrokerService>();
+            services.AddTransient<IUserProfileService, UserProfileService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
