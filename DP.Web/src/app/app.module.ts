@@ -100,7 +100,7 @@ import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
       AccountEffects,
       DishEffects,
     ]),
-    StoreDevtoolsModule.instrument(),
+    StoreDevtoolsModule.instrument({connectInZone: true}),
   ],
   providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],

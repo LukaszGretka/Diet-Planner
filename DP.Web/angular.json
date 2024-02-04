@@ -71,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "DietPlanner.Web:build:production"
+              "buildTarget": "DietPlanner.Web:build:production"
             },
             "development": {
-              "browserTarget": "DietPlanner.Web:build:development"
+              "buildTarget": "DietPlanner.Web:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -82,7 +82,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "DietPlanner.Web:build"
+            "buildTarget": "DietPlanner.Web:build"
           }
         },
         "test": {
