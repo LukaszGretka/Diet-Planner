@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { UserProfile } from './models/user-profile';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 
 @UntilDestroy()
 @Component({
@@ -21,9 +22,15 @@ export class BodyProfileComponent implements OnInit {
   public userProfile$ = this.store.select(BodyProfileSelector.getUserProfile);
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
 
+  public imageChangedEvent: any;
+  public croppedImage: string;
+  public inAvatarEditMode: boolean = false;
+
   private processingMeasurementId: number;
 
-  constructor(private store: Store<GeneralState>, private router: Router, private formBuilder: UntypedFormBuilder) {}
+  constructor(private store: Store<GeneralState>,
+    private router: Router,
+    private formBuilder: UntypedFormBuilder) { }
 
   public userProfileForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(64)]],
@@ -39,7 +46,6 @@ export class BodyProfileComponent implements OnInit {
 
     this.userProfile$.pipe(untilDestroyed(this)).subscribe(userProfile => {
       if (userProfile) {
-        console.log(userProfile.birthDate);
         this.userProfileForm.get('name')?.setValue(userProfile.name);
         this.userProfileForm.get('gender')?.setValue(userProfile.gender);
         this.userProfileForm.get('birthDate')?.setValue(userProfile.birthDate.split('T')[0]);
@@ -79,6 +85,42 @@ export class BodyProfileComponent implements OnInit {
         } as UserProfile,
       }),
     );
+  }
+
+  public openFileSelection() {
+    const fileInput: HTMLElement = document.querySelector('input[type="file"]');
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  public onFileSelected(event) {
+    const file = event.target.files[0];
+
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => this.store.dispatch(BodyProfileActions.uploadUserAvatarRequest({ base64Avatar: reader.result.toString() }));
+    reader.onerror = function (error) {
+      console.error('Error: ', error);
+    };
+  }
+
+  public fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+
+  public imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.base64;
+  }
+
+  public imageLoaded(image: LoadedImage) {
+    this.inAvatarEditMode = true;
+  }
+
+  public saveCroppedFile() {
+    this.store.dispatch(BodyProfileActions.uploadUserAvatarRequest({ base64Avatar: this.croppedImage.toString() }));
+    this.inAvatarEditMode = false;
+    this.imageChangedEvent = null;
   }
 
   private getControlValue(controlName: string): any {

@@ -31,6 +31,13 @@ export const updateUserProfileRequest = createAction(
 export const updateUserProfileSuccess = createAction('Update user profile success');
 export const updateUserProfileFailed = createAction('Update user profile failed', prop<{ error: string }>());
 
+export const uploadUserAvatarRequest = createAction(
+  'Upload user avatar request',
+  prop<{ base64Avatar: string }>(),
+);
+export const uploadUserAvatarRequestSuccess = createAction('Upload user avatar request success', prop<{ userProfile: UserProfile }>());
+export const uploadUserAvatarRequestFailed = createAction('Upload user avatar request failed', prop<{ error: string }>());
+
 const actions = union({
   getMeasurementsRequest,
   getMeasurementsCompleted,
@@ -46,6 +53,9 @@ const actions = union({
   updateUserProfileRequest,
   updateUserProfileSuccess,
   updateUserProfileFailed,
+  uploadUserAvatarRequest,
+  uploadUserAvatarRequestSuccess,
+  uploadUserAvatarRequestFailed
 });
 
 export type BodyProfileActions = typeof actions;

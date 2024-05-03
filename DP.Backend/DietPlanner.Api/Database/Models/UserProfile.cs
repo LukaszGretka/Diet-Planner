@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace DietPlanner.Api.Database.Models
 {
@@ -16,6 +15,8 @@ namespace DietPlanner.Api.Database.Models
         public DateTime BirthDate { get; set; }
 
         public int Height { get; set; }
+
+        public byte[] Avatar { get; set; }
     }
 
     public enum GenderType 

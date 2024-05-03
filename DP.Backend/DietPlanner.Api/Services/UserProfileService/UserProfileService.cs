@@ -4,7 +4,7 @@ using DietPlanner.Api.DTO.UserProfile;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services.UserProfileService
@@ -22,11 +22,12 @@ namespace DietPlanner.Api.Services.UserProfileService
 
         public async Task<UserProfileDTO> GetUserProfile(string userId)
         {
-            var userProfile = await _databaseContext.UserProfile.FindAsync(userId);
+            UserProfile userProfile = await _databaseContext.UserProfile.FindAsync(userId);
 
             if (userProfile is null)
             {
                 _logger.LogWarning("User not found during getting user profile");
+                return null;
             }
 
             return new UserProfileDTO
@@ -34,7 +35,8 @@ namespace DietPlanner.Api.Services.UserProfileService
                 Name = userProfile.Name?.Trim(),
                 Gender = (int)userProfile.Gender,
                 BirthDate = userProfile.BirthDate,
-                Height = userProfile.Height
+                Height = userProfile.Height,
+                Base64Image = Encoding.UTF8.GetString(userProfile.Avatar)
             };
         }
 
@@ -52,7 +54,8 @@ namespace DietPlanner.Api.Services.UserProfileService
                         Name = userProfileDTO.Name,
                         BirthDate = userProfileDTO.BirthDate,
                         Gender = (GenderType)userProfileDTO.Gender,
-                        Height = userProfileDTO.Height
+                        Height = userProfileDTO.Height,
+                        Avatar = userProfile.Avatar
                     };
 
                     await _databaseContext.AddAsync(newUserProfile);
@@ -63,7 +66,8 @@ namespace DietPlanner.Api.Services.UserProfileService
                         Name = userProfile.Name,
                         Gender = (int)userProfile.Gender,
                         BirthDate = userProfile.BirthDate,
-                        Height = userProfile.Height
+                        Height = userProfile.Height,
+                        Base64Image = Encoding.UTF8.GetString(userProfile.Avatar)
                     });
                 }
 
@@ -79,7 +83,8 @@ namespace DietPlanner.Api.Services.UserProfileService
                     Name = userProfile.Name,
                     Gender = (int)userProfile.Gender,
                     BirthDate = userProfile.BirthDate,
-                    Height = userProfile.Height
+                    Height = userProfile.Height,
+                    Base64Image = Encoding.UTF8.GetString(userProfile.Avatar)
                 });
 
             }
@@ -88,6 +93,29 @@ namespace DietPlanner.Api.Services.UserProfileService
                 _logger.LogError(ex.Message);
                 return new DatabaseActionResult<UserProfileDTO>(false, exception: ex);
             }
+        }
+
+        public async Task<DatabaseActionResult<UserProfileDTO>> UploadAvatar(string userId, string base64Avatar)
+        {
+            UserProfile userProfile = await _databaseContext.UserProfile.FindAsync(userId);
+
+            if (userProfile is null)
+            {
+                _logger.LogWarning("User not found during updating user's avatar");
+                return null;
+            }
+
+            userProfile.Avatar = Encoding.UTF8.GetBytes(base64Avatar);
+            await _databaseContext.SaveChangesAsync();
+
+            return new DatabaseActionResult<UserProfileDTO>(true, obj: new UserProfileDTO
+            {
+                Name = userProfile.Name,
+                Gender = (int)userProfile.Gender,
+                BirthDate = userProfile.BirthDate,
+                Height = userProfile.Height,
+                Base64Image = Encoding.UTF8.GetString(userProfile.Avatar)
+            });
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace DietPlanner.Api.DTO.UserProfile
 {
-    public class UserProfileDTO
+    public class UserProfileDTO : UserAvatarDTO
     {
         public string Name { get; set; }
 

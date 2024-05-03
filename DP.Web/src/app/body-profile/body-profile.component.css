@@ -1,8 +1,14 @@
 .button-group {
-    display: flex;
+  display: flex;
 }
+
 .add-measurement-button-container {
-    display:flex;
-    align-items: flex-end;
-    justify-content: flex-end
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end
+}
+
+.meansurement-table {
+  font-size: smaller;
+  font-weight: lighter;
 }

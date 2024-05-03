@@ -1,24 +1,35 @@
-<app-error-page
-  *ngIf="errorCode$ | async; else bodyProfileTemplate"
-  [httpsStatusError]="errorCode$ | async"></app-error-page>
+<app-error-page *ngIf="errorCode$ | async; else bodyProfileTemplate" [httpsStatusError]="errorCode$ | async">
+</app-error-page>
 
 <ng-template #bodyProfileTemplate>
   <div class="container-lg mt-4">
     <h5 class="border-bottom pb-1 mb-3 d-flex">User profile</h5>
     <div class="container">
       <div class="row my-4">
-        <div class="col-3">
+        <div class="container-m col-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
+          <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1/1"
+            format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded($event)" output="base64"
+            resizeToWidth="150px" resizeToHeight="150px">
+          </image-cropper>
           <div class="text-center m-2" style="width: auto; height: auto">
-            <img
-              src="./../../../assets/images/avatar-placeholder.svg"
-              class="img-fluid"
-              style="width: 150px; height: 150px" />
+            <img *ngIf="!inAvatarEditMode"
+              [src]="(userProfile$ | async)?.base64Image  ?? './../../../assets/images/avatar-placeholder.svg'"
+              class="img-fluid" style="width: 150px; height: 150px" />
           </div>
           <div class="d-flex" style="justify-content: center">
-            <button type="submit" class="btn btn-secondary">Edit</button>
+            <button *ngIf="!inAvatarEditMode" type="submit" class="file-upload-button btn btn-secondary"
+              (click)="openFileSelection()">
+              Edit
+            </button>
+            <button *ngIf="inAvatarEditMode" type="submit" class="file-upload-button btn btn-secondary"
+              (click)="saveCroppedFile()">
+              Confirm
+            </button>
+            <input type="file" #fileInput style="display:none" (change)="fileChangeEvent($event)"
+              accept="image/png, image/jpeg">
           </div>
         </div>
-        <div class="col-9">
+        <div class="container-m col-12 col-sm-12 col-md-9 col-lg-9 col-xl-9">
           <form [formGroup]="userProfileForm" (ngSubmit)="onSubmitUserProfile()">
             <div class="row">
               <div class="col">
@@ -51,9 +62,7 @@
               </div>
             </div>
             <div class="col d-flex" style="justify-content: end">
-              <button
-                [disabled]="!userProfileForm.dirty || userProfileForm.invalid"
-                type="submit"
+              <button [disabled]="!userProfileForm.dirty || userProfileForm.invalid" type="submit"
                 class="btn btn-primary">
                 Save
               </button>
@@ -64,7 +73,7 @@
     </div>
 
     <h5 class="border-bottom pb-1 mb-3 d-flex">Measurements</h5>
-    <table class="table table-sm mt-4">
+    <table class="meansurement-table container-lg table table-sm mt-4">
       <thead>
         <tr>
           <th scope="col">Date</th>
@@ -100,19 +109,12 @@
           <td>{{ measurement.calfLeft }}</td>
           <td>
             <div class="button-group">
-              <button
-                type="button"
-                class="btn edit-button-icon"
-                (click)="onEditButtonClick($event)"
+              <button type="button" class="btn edit-button-icon" (click)="onEditButtonClick($event)"
                 [value]="measurement.id">
                 <i class="bi bi-pen"></i>
               </button>
-              <button
-                type="button"
-                class="btn delete-button-icon text-danger"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteMeasurementConfirmationModal"
-                [value]="measurement.id"
+              <button type="button" class="btn delete-button-icon text-danger" data-bs-toggle="modal"
+                data-bs-target="#deleteMeasurementConfirmationModal" [value]="measurement.id"
                 (click)="onRemoveButtonClick($event)">
                 <i class="bi bi-x-lg"></i>
               </button>
@@ -124,12 +126,8 @@
     <div class="add-measurement-button-container">
       <a class="btn btn-primary" role="button" routerLink="./add">Add</a>
     </div>
-    <div
-      class="modal fade"
-      id="deleteMeasurementConfirmationModal"
-      tabindex="-1"
-      aria-labelledby="deleteConfirmationModallLabel"
-      aria-hidden="true">
+    <div class="modal fade" id="deleteMeasurementConfirmationModal" tabindex="-1"
+      aria-labelledby="deleteConfirmationModallLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -139,10 +137,7 @@
           <div class="modal-body">Do you really want to remove this measurement from the list?</div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button
-              type="button"
-              class="btn btn-danger"
-              (click)="removeConfirmationButtonClick()"
+            <button type="button" class="btn btn-danger" (click)="removeConfirmationButtonClick()"
               data-bs-dismiss="modal">
               Confirm
             </button>

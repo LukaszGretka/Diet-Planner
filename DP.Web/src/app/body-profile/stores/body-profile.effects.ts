@@ -104,10 +104,22 @@ export class BodyProfileEffects {
     ),
   );
 
+  uploadUserAvatarEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BodyProfileActions.uploadUserAvatarRequest),
+      exhaustMap(({ payload }) => {
+        return this.userProfileService.updateUserAvatar(payload.base64Avatar).pipe(
+          switchMap((userProfile: UserProfile) => of(BodyProfileActions.uploadUserAvatarRequestSuccess({  userProfile }))),
+          catchError((error: any) => of(BodyProfileActions.uploadUserAvatarRequestFailed({ error: error.error.message }))),
+        );
+      }),
+    ),
+  );
+
   constructor(
     private actions$: Actions,
     private router: Router,
     private measurementService: MeasurementService,
     private userProfileService: UserProfileService,
-  ) {}
+  ) { }
 }

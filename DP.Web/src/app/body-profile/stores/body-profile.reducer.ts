@@ -17,6 +17,10 @@ const reducerFactory = createReducer(
     ...state,
     userProfile: action.payload.userProfile,
   })),
+  on(bodyProfileActions.uploadUserAvatarRequestSuccess, (state, action) => ({
+    ...state,
+    userProfile: action.payload.userProfile,
+  })),
 );
 
 export function BodyProfileReducer(

@@ -3,4 +3,5 @@ export class UserProfile {
   gender: number;
   birthDate: string;
   height: number;
+  base64Image: string;
 }

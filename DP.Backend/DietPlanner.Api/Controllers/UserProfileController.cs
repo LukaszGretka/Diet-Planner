@@ -1,5 +1,4 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.UserProfile;
+﻿using DietPlanner.Api.DTO.UserProfile;
 using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Services.UserProfileService;
 using Microsoft.AspNetCore.Authorization;
@@ -45,6 +44,15 @@ namespace DietPlanner.Api.Controllers
             }
 
             var result = await _userProfileService.UpdateUserProfile(userId, userProfile);
+
+            return result.Obj;
+        }
+
+        [HttpPatch("avatar")]
+        public async Task<UserProfileDTO> UploadAvatar(UserAvatarDTO userAvatar)
+        {
+            var userId = HttpContext.GetUserId();
+            var result = await _userProfileService.UploadAvatar(userId, userAvatar.Base64Image);
 
             return result.Obj;
         }

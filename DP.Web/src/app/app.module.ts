@@ -47,6 +47,7 @@ import { DishEffects } from './dishes/stores/dish.effects';
 import { DishReducer } from './dishes/stores/dish.reducer';
 import { BodyProfileReducer } from './body-profile/stores/body-profile.reducer';
 import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
     ReactiveFormsModule,
     FormsModule,
     NgChartsModule,
+    ImageCropperModule,
     StoreModule.forRoot({
       generalState: GeneralReducer,
       bodyProfileState: BodyProfileReducer,
@@ -100,9 +102,9 @@ import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
       AccountEffects,
       DishEffects,
     ]),
-    StoreDevtoolsModule.instrument({connectInZone: true}),
+    StoreDevtoolsModule.instrument({ connectInZone: true }),
   ],
   providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
