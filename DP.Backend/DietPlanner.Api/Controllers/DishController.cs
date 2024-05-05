@@ -59,7 +59,8 @@ namespace DietPlanner.Api.Controllers
                             Proteins = dishProduct.Product.Proteins * (float)dishProduct.PortionMultiplier,
                             Fats = dishProduct.Product.Fats * (float)dishProduct.PortionMultiplier,
                         },
-                        PortionMultiplier = dishProduct.PortionMultiplier
+                        PortionMultiplier = dishProduct.PortionMultiplier,
+                        CustomizedPortionMultiplier = null      
                     })
                 });
             }
@@ -182,8 +183,7 @@ namespace DietPlanner.Api.Controllers
                         Proteins = dishProduct.Product.Proteins * (float)dishProduct.PortionMultiplier,
                         Fats = dishProduct.Product.Fats * (float)dishProduct.PortionMultiplier,
                     },
-                    PortionMultiplier = dishProduct.PortionMultiplier,
-                    CustomizedPortionMultiplier = dishProduct.CustomizedPortionMultiplier
+                    PortionMultiplier = dishProduct.PortionMultiplier
                 })
             };
         }

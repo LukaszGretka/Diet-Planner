@@ -16,9 +16,7 @@
       <ng-container *ngFor="let dish of dishes$ | async; let dishIndex = index">
         <tr class="table-group-divider" style="border: 1px; border-color: inherit">
           <td class="table-light">
-            <img
-              src="./../../../assets/images/product-placeholder.svg"
-              class="img-fluid"
+            <img src="./../../../assets/images/product-placeholder.svg" class="img-fluid"
               style="width: 25px; height: 25px" />
           </td>
           <td class="table-light">{{ dish.name }}</td>
@@ -30,27 +28,16 @@
           <td class="table-light">{{ this.calculateDishMacros(dish).calories | number : '1.0-1' }}kcal</td>
           <!-- TODO: This is very wrong way of calculating dish's macro. Need to refactor! -->
           <td style="min-width: 90px" class="table-light">
-            <button
-              type="button"
-              id="collapse-show-button-{{ dish.id }}-{{ mealType }}"
-              class="btn delete-button-icon text-secondary mx-0"
-              title="Show/Hide products"
-              data-bs-toggle="collapse"
-              [attr.data-bs-target]="'#collapse-' + mealType + dishIndex"
-              aria-controls="collapseExample">
+            <button type="button" id="collapse-show-button-{{ dish.id }}-{{ mealType }}"
+              class="btn delete-button-icon text-secondary mx-0" title="Show/Hide products" data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#collapse-' + mealType + dishIndex" aria-controls="collapseExample">
               <i class="bi bi-chevron-expand"></i>
             </button>
-            <button
-              type="button"
-              class="btn delete-button-icon text-secondary mx-0"
-              title="Remove dish from the meal"
+            <button type="button" class="btn edit-button-icon text-secondary mx-0" title="Edit the dish"
               (click)="onEditDishButtonClick(dishes$, dishIndex)">
               <i class="bi bi-pencil-square"></i>
             </button>
-            <button
-              type="button"
-              class="btn delete-button-icon text-danger mx-0"
-              title="Remove dish from the meal"
+            <button type="button" class="btn delete-button-icon text-danger mx-0" title="Remove dish from the meal"
               (click)="onRemoveDishButtonClick(dishes$, dishIndex)">
               <i class="bi bi-x-lg"></i>
             </button>
@@ -60,26 +47,28 @@
           <td scope="col" colspan="7">Products details</td>
           <td scope="col" colspan="1">Portion</td>
         </tr>
-        <tr
-          class="collapse"
-          [attr.id]="'collapse-' + mealType + dishIndex"
+        <tr class="collapse" [attr.id]="'collapse-' + mealType + dishIndex"
           *ngFor="let dishProduct of dish.products; let productIndex = index">
           <td></td>
           <td colspan="2">{{ dishProduct.product.name }}</td>
-          <td>{{ dishProduct.product.carbohydrates * dishProduct.customizedPortionMultiplier | number : '1.0-1' }}g</td>
-          <td>{{ dishProduct.product.proteins * dishProduct.customizedPortionMultiplier | number : '1.0-1' }}g</td>
-          <td>{{ dishProduct.product.fats * dishProduct.customizedPortionMultiplier | number : '1.0-1' }}g</td>
-          <td>{{ dishProduct.product.calories * dishProduct.customizedPortionMultiplier | number : '1.0-1' }}kcal</td>
+          <td>
+            {{ dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier) | number : '1.0-1' }}g
+          </td>
+          <td>
+            {{ dishProduct.product.proteins * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier) | number : '1.0-1' }}g
+          </td>
+          <td>
+            {{ dishProduct.product.fats * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier) | number : '1.0-1' }}g
+          </td>
+          <td>
+            {{ dishProduct.product.calories * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier) | number : '1.0-1' }}kcal
+          </td>
 
           <td class="d-flex" style="align-items: center">
-            <input
-              type="number"
-              id="portion"
-              class="form-control form-control-sm d-flex"
-              style="max-width: 65px"
-              [ngModel]="portionValue * dishProduct.customizedPortionMultiplier"
+            <input type="number" id="portion" class="form-control form-control-sm d-flex" style="max-width: 65px"
+              [ngModel]="portionValue * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)"
               [ngModelOptions]="{ updateOn: 'blur' }"
-              (ngModelChange)="onPortionValueChange($event, dish.id, dishProduct.product.id)" />g
+              (ngModelChange)="onPortionValueChange($event, dish.id, dish.mealDishId, dishProduct.product.id)" />g
           </td>
         </tr>
       </ng-container>
@@ -96,16 +85,9 @@
   </table>
 
   <div class="d-flex bd-highlight my-3">
-    <input
-      id="typeahead-basic"
-      type="text"
-      class="p-2 bd-highlight form-control"
-      [(ngModel)]="searchItem"
-      [ngbTypeahead]="searchDish"
-      placeholder="Start typing to search for a dish..." />
-    <button
-      type="button"
-      class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
+    <input id="typeahead-basic" type="text" class="p-2 bd-highlight form-control" [(ngModel)]="searchItem"
+      [ngbTypeahead]="searchDish" placeholder="Start typing to search for a dish..." />
+    <button type="button" class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
       (click)="onAddDishOrProductButtonClick(dishes$, searchItem, confirmatioModal)">
       Add
     </button>
@@ -114,11 +96,7 @@
   <ng-template #confirmatioModal let-modal>
     <div class="modal-header">
       <h5 class="modal-title" id="ProductNoFoundModalLabel">Dish not found</h5>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="modal"
-        aria-label="Close"
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
         (click)="onCancelModalClick()"></button>
     </div>
     <div class="modal-body">Dish '{{ this.searchItem }}' no found. Continue by adding it?</div>

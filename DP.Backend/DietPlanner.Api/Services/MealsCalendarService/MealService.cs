@@ -46,12 +46,13 @@ namespace DietPlanner.Api.Services.MealsCalendar
                                   Description = gd.Key.Description,
                                   ImagePath = gd.Key.ImagePath,
                                   ExposeToOtherUsers = gd.Key.ExposeToOtherUsers,
-                                  Products = gd.Join(_databaseContext.DishProducts, x => x.md.DishId, dp => dp.DishId, (x, dp) => new { x.m, x.md, dp })
+                                  Products = gd.Join(_databaseContext.DishProducts, x => x.md.DishId, dp => dp.DishId, (x, dp) => new { x.md, dp })
                                                .Join(_databaseContext.Products, x => x.dp.ProductId, p => p.Id, (x, p) => new DishProductsDTO
                                                {
                                                    Product = p,
                                                    PortionMultiplier = x.dp.PortionMultiplier,
-                                                   CustomizedPortionMultiplier = x.dp.CustomizedPortionMultiplier
+                                                   CustomizedPortionMultiplier = _databaseContext.CustomizedDishProducts
+                                                    .Where(e => e.MealDishId == x.md.Id && e.DishProductId == x.dp.Id).SingleOrDefault().CustomizedPortionMultiplier
                                                })
                               }) as List<DishDTO>
                 });

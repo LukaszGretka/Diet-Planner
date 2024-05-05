@@ -18,7 +18,7 @@ export class DishService {
       'Content-Type': 'application/json',
     }),
   };
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   public getUserDishes(): Observable<Dish[]> {
     return this.httpClient.get<Dish[]>(this.dishesUrl + '/all', { withCredentials: true });
@@ -50,10 +50,10 @@ export class DishService {
     return this.httpClient.get<DishProduct[]>(this.dishesUrl + '/' + dishId + '/products', this.httpOptions);
   }
 
-  public updatePortionMultiplier(dishId: number, productId: number, customizedPortionMultiplier: number) {
+  public updatePortionMultiplier(dishId: number, productId: number, mealDishId: number, customizedPortionMultiplier: number) {
     return this.httpClient.patch(
       this.dishProductUrl,
-      { dishId, productId, customizedPortionMultiplier },
+      { dishId, productId, mealDishId, customizedPortionMultiplier },
       this.httpOptions,
     );
   }
