@@ -1,4 +1,5 @@
 ﻿
+using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Models.MealProductModel;
 using DietPlanner.Api.Services.MealProductService;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ namespace DietPlanner.Api.Controllers
         [HttpPatch]
         public async Task<IActionResult> PatchCutomizedMultiplier(UpdateCustomizedMultiplierRequest request)
         {
-            await _mealProductService.UpdateCustomizedPortionMultiplier(request.DishId, request.ProductId, request.CustomizedPortionMultiplier);
+            await _mealProductService.AddOrUpdateCustomizedPortionMultiplier(request.DishId, request.ProductId, request.MealDishId, request.CustomizedPortionMultiplier);
 
             return Ok();
         }

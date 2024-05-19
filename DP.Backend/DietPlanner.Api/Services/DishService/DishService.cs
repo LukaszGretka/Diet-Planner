@@ -63,8 +63,7 @@ namespace DietPlanner.Api.Services.DishService
                     {
                         Product = dishProduct.Product,
                         PortionMultiplier = dishProduct.PortionMultiplier,
-                        Dish = dishResult.Entity,
-                        CustomizedPortionMultiplier = dishProduct.PortionMultiplier
+                        Dish = dishResult.Entity
                     });
                 });
 

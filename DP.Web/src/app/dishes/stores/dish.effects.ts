@@ -174,7 +174,7 @@ export class DishEffects {
       ofType(DishActions.updatePortionRequest),
       exhaustMap(({ payload }) => {
         return this.dishService
-          .updatePortionMultiplier(payload.dishId, payload.productId, payload.customizedPortionMultiplier)
+          .updatePortionMultiplier(payload.dishId, payload.productId, payload.mealDishId, payload.customizedPortionMultiplier)
           .pipe(
             switchMap(() =>
               of(

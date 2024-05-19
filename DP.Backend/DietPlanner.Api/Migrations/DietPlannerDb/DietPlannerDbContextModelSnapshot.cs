@@ -22,6 +22,35 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.CustomizedDishProducts", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("CustomizedPortionMultiplier")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(6, 2)
+                        .HasColumnType("decimal(6,2)")
+                        .HasDefaultValue(1m);
+
+                    b.Property<int>("DishProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MealDishId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DishProductId");
+
+                    b.HasIndex("MealDishId");
+
+                    b.ToTable("CustomizedDishProducts");
+                });
+
             modelBuilder.Entity("DietPlanner.Api.Database.Models.Dish", b =>
                 {
                     b.Property<int>("Id")
@@ -61,17 +90,13 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<decimal>("CustomizedPortionMultiplier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(1m);
-
                     b.Property<int>("DishId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("PortionMultiplier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)")
                         .HasDefaultValue(1m);
 
                     b.Property<int>("ProductId")
@@ -149,46 +174,60 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Belly")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("BicepsLeft")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("BicepsRight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("CalfLeft")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("CalfRight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("Chest")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("Date")
+                        .HasPrecision(5, 2)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("ForearmLeft")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("ForearmRight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("ThighLeft")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("ThighRight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("UserId")
+                        .HasPrecision(5, 2)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Waist")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("Weight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 
@@ -236,6 +275,25 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
                         .IsUnique();
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.CustomizedDishProducts", b =>
+                {
+                    b.HasOne("DietPlanner.Api.Database.Models.DishProducts", "DishProduct")
+                        .WithMany()
+                        .HasForeignKey("DishProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DietPlanner.Api.Database.Models.MealDish", "MealDish")
+                        .WithMany()
+                        .HasForeignKey("MealDishId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("DishProduct");
+
+                    b.Navigation("MealDish");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Database.Models.DishProducts", b =>

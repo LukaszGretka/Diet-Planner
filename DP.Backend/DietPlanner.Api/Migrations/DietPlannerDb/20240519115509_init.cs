@@ -4,7 +4,7 @@
 
 namespace DietPlanner.Api.Migrations.DietPlannerDb
 {
-    public partial class Initialize : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -46,20 +46,20 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Weight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Chest = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Belly = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Waist = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BicepsRight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BicepsLeft = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ForearmRight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ForearmLeft = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ThighRight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ThighLeft = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CalfRight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CalfLeft = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Date = table.Column<string>(type: "nvarchar(max)", precision: 5, scale: 2, nullable: true),
+                    Weight = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    Chest = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    Belly = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    Waist = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    BicepsRight = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    BicepsLeft = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    ForearmRight = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    ForearmLeft = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    ThighRight = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    ThighLeft = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    CalfRight = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    CalfLeft = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", precision: 5, scale: 2, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -119,7 +119,7 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    PortionMultiplier = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 1m),
+                    PortionMultiplier = table.Column<decimal>(type: "decimal(3,2)", precision: 3, scale: 2, nullable: false, defaultValue: 1m),
                     DishId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -138,6 +138,42 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "CustomizedDishProducts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DishProductId = table.Column<int>(type: "int", nullable: false),
+                    MealDishId = table.Column<int>(type: "int", nullable: false),
+                    CustomizedPortionMultiplier = table.Column<decimal>(type: "decimal(6,2)", precision: 6, scale: 2, nullable: false, defaultValue: 1m)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomizedDishProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomizedDishProducts_DishProducts_DishProductId",
+                        column: x => x.DishProductId,
+                        principalTable: "DishProducts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomizedDishProducts_MealDishes_MealDishId",
+                        column: x => x.MealDishId,
+                        principalTable: "MealDishes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomizedDishProducts_DishProductId",
+                table: "CustomizedDishProducts",
+                column: "DishProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomizedDishProducts_MealDishId",
+                table: "CustomizedDishProducts",
+                column: "MealDishId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Dishes_Id",
@@ -199,13 +235,16 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CustomizedDishProducts");
+
+            migrationBuilder.DropTable(
+                name: "Measurements");
+
+            migrationBuilder.DropTable(
                 name: "DishProducts");
 
             migrationBuilder.DropTable(
                 name: "MealDishes");
-
-            migrationBuilder.DropTable(
-                name: "Measurements");
 
             migrationBuilder.DropTable(
                 name: "Products");

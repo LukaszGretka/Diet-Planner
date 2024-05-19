@@ -1,4 +1,6 @@
 ﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DietPlanner.Api.Database.Models
@@ -15,12 +17,8 @@ namespace DietPlanner.Api.Database.Models
         /// <summary>
         /// Default portion multiplayer which is set on dish create.
         /// </summary>
+        [Precision(3, 2)]
         public decimal PortionMultiplier { get; set; }
-
-        /// <summary>
-        /// Multiplier which is set from meal calendar as adjustment to default portion multiplier.
-        /// </summary>
-        public decimal CustomizedPortionMultiplier { get; set; }
 
         public int DishId { get; set; }
 

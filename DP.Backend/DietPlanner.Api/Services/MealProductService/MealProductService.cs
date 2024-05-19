@@ -16,16 +16,37 @@ namespace DietPlanner.Api.Services.MealProductService
             _databaseContext = databaseContext;
         }
 
-        public async Task<DatabaseActionResult> UpdateCustomizedPortionMultiplier(int dishId, int productId, decimal customizedMultiplier)
+        public async Task<DatabaseActionResult> AddOrUpdateCustomizedPortionMultiplier(int dishId, int productId, int mealDishId, decimal customizedMultiplier)
         {
+                var dishProduct = await _databaseContext.DishProducts
+              .Where(dp => dp.DishId == dishId && dp.ProductId == productId)
+              .SingleOrDefaultAsync();
 
-            var dishProduct = await _databaseContext.DishProducts
-                .Where(dp => dp.DishId == dishId && dp.ProductId == productId)
-                .SingleAsync();
+            if(dishProduct is null)
+            {
+                return new DatabaseActionResult(false, "dish product not found");
+            }
 
-            dishProduct.CustomizedPortionMultiplier = customizedMultiplier;
+            var customizedDishProduct = await _databaseContext.CustomizedDishProducts
+                .Where(cdp => cdp.DishProductId == dishProduct.Id && cdp.MealDishId == mealDishId)
+                .SingleOrDefaultAsync();
 
-            _databaseContext.DishProducts.Update(dishProduct);
+            if(customizedDishProduct is null)
+            {
+                var newCustomizedDishProduct = new Database.Models.CustomizedDishProducts
+                {
+                    DishProductId = dishProduct.Id,
+                    CustomizedPortionMultiplier = customizedMultiplier,
+                    MealDishId = mealDishId
+                };
+
+                await _databaseContext.CustomizedDishProducts.AddAsync(newCustomizedDishProduct);
+            }
+            else
+            {
+                customizedDishProduct.CustomizedPortionMultiplier = customizedMultiplier;
+            }
+
             await _databaseContext.SaveChangesAsync();
 
             return new DatabaseActionResult(true);

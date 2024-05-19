@@ -44,7 +44,7 @@ export class MealCalendarTemplateComponent implements OnInit {
     private dishStore: Store<DishState>,
     private router: Router,
     private modalService: NgbModal,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.dishStore.dispatch(DishActions.loadDishesRequest());
@@ -54,10 +54,10 @@ export class MealCalendarTemplateComponent implements OnInit {
         dishes.reduce(
           (total, dish: Dish) => {
             dish.products.forEach((dishProduct: DishProduct) => {
-              (total.calories += dishProduct.product.calories * dishProduct.customizedPortionMultiplier),
-                (total.carbohydrates += dishProduct.product.carbohydrates * dishProduct.customizedPortionMultiplier),
-                (total.proteins += dishProduct.product.proteins * dishProduct.customizedPortionMultiplier),
-                (total.fats += dishProduct.product.fats * dishProduct.customizedPortionMultiplier);
+              (total.calories += dishProduct.product.calories * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)),
+                (total.carbohydrates += dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)),
+                (total.proteins += dishProduct.product.proteins * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)),
+                (total.fats += dishProduct.product.fats * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier));
             });
             return total;
           },
@@ -123,8 +123,8 @@ export class MealCalendarTemplateComponent implements OnInit {
         searchText.length < 1
           ? []
           : this.searchForDishByName(searchText)
-              .slice(0, 10)
-              .map(dish => dish.name),
+            .slice(0, 10)
+            .map(dish => dish.name),
       ),
     );
 
@@ -152,11 +152,12 @@ export class MealCalendarTemplateComponent implements OnInit {
     );
   }
 
-  public onPortionValueChange(customizedPoritonSize: number, dishId: number, productId: number) {
+  public onPortionValueChange(customizedPoritonSize: number, dishId: number, mealDishId: number, productId: number) {
     this.store.dispatch(
       DishActions.updatePortionRequest({
         dishId: dishId,
         productId: productId,
+        mealDishId: mealDishId,
         customizedPortionMultiplier: customizedPoritonSize / this.defaultPortionSize,
         date: this.selectedDate,
       }),
@@ -166,10 +167,10 @@ export class MealCalendarTemplateComponent implements OnInit {
   public calculateDishMacros(dish: Dish): { carbs: number; proteins: number; fats: number; calories: number } {
     let dishMacro = { carbs: 0, proteins: 0, fats: 0, calories: 0 };
     dish.products.forEach(dishProduct => {
-      dishMacro.carbs += dishProduct.product.carbohydrates * dishProduct.customizedPortionMultiplier;
-      dishMacro.proteins += dishProduct.product.proteins * dishProduct.customizedPortionMultiplier;
-      dishMacro.fats += dishProduct.product.fats * dishProduct.customizedPortionMultiplier;
-      dishMacro.calories += dishProduct.product.calories * dishProduct.customizedPortionMultiplier;
+      dishMacro.carbs += dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
+      dishMacro.proteins += dishProduct.product.proteins * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
+      dishMacro.fats += dishProduct.product.fats * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
+      dishMacro.calories += dishProduct.product.calories * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
     });
 
     return dishMacro;
