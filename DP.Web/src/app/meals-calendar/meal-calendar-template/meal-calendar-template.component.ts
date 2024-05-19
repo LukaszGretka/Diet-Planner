@@ -152,7 +152,7 @@ export class MealCalendarTemplateComponent implements OnInit {
     );
   }
 
-  public onPortionValueChange(customizedPoritonSize: number, dishId: number, mealDishId:number, productId: number) {
+  public onPortionValueChange(customizedPoritonSize: number, dishId: number, mealDishId: number, productId: number) {
     this.store.dispatch(
       DishActions.updatePortionRequest({
         dishId: dishId,
@@ -168,7 +168,7 @@ export class MealCalendarTemplateComponent implements OnInit {
     let dishMacro = { carbs: 0, proteins: 0, fats: 0, calories: 0 };
     dish.products.forEach(dishProduct => {
       dishMacro.carbs += dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
-      dishMacro.proteins += dishProduct.product.proteins ** (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
+      dishMacro.proteins += dishProduct.product.proteins * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
       dishMacro.fats += dishProduct.product.fats * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
       dishMacro.calories += dishProduct.product.calories * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
     });

@@ -9,12 +9,12 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class ProductsEffects {
-  constructor(private actions$: Actions, private productService: ProductService, private router: Router) {}
+  constructor(private actions$: Actions, private productService: ProductService, private router: Router) { }
 
   addProductEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.addProductRequest),
-      switchMap(({ payload }) => {
+      exhaustMap(({ payload }) => {
         return this.productService.addProduct(payload.productData).pipe(
           switchMap(() => {
             this.router.navigate(['products']);
@@ -31,7 +31,7 @@ export class ProductsEffects {
   removeProductEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.removeProductRequest),
-      switchMap(({ payload }) => {
+      exhaustMap(({ payload }) => {
         return this.productService.removeProduct(payload.productId).pipe(
           switchMap(() => {
             window.location.reload();
@@ -48,7 +48,7 @@ export class ProductsEffects {
   editProductEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.editProductRequest),
-      switchMap(({ payload }) => {
+      exhaustMap(({ payload }) => {
         return this.productService.editProduct(payload.productId, payload.productData).pipe(
           switchMap(() => {
             this.router.navigate(['products']);

@@ -196,9 +196,12 @@ namespace DietPlanner.Api.Services.MealsCalendar
                  });
 
             var mealDishNonExistsInRequest = rightJoinResult.Where(x => x.MealDish is null).SingleOrDefault();
-            var dishToRemove = _databaseContext.MealDishes.Where(d => d.Id.Equals(mealDishNonExistsInRequest.DishId)).FirstOrDefault();
+            var mealDishToRemove = _databaseContext.MealDishes.Where(d => d.Id.Equals(mealDishNonExistsInRequest.DishId)).FirstOrDefault();
 
-            _databaseContext.MealDishes.Remove(dishToRemove);
+            var customizedPortionToRemove = _databaseContext.CustomizedDishProducts.Where(c => c.MealDishId == mealDishToRemove.Id);
+
+            _databaseContext.MealDishes.Remove(mealDishToRemove);
+            _databaseContext.CustomizedDishProducts.RemoveRange(customizedPortionToRemove);
 
             await _databaseContext.SaveChangesAsync();
             return new DatabaseActionResult<Meal>(true, obj: existingMeal);
@@ -206,11 +209,17 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         private async Task<DatabaseActionResult<Meal>> RemoveMealEntry(PutMealRequest mealRequest, string formattedDate)
         {
-            var existingMeals = await _databaseContext.Meals
+            var existingMeal = await _databaseContext.Meals
                 .Where(meal => meal.Date.Equals(formattedDate) && meal.MealType == (int)mealRequest.MealTypeId)
                 .FirstOrDefaultAsync();
 
-            _databaseContext.Meals.Remove(existingMeals);
+            var mealDishToRemove = await _databaseContext.MealDishes.Where(md => md.MealId == existingMeal.Id).SingleOrDefaultAsync();
+            var customizedDPToRemove = await _databaseContext.CustomizedDishProducts.Where(c => c.MealDishId == mealDishToRemove.Id).SingleOrDefaultAsync();
+            if (customizedDPToRemove != null)
+            {
+                _databaseContext.CustomizedDishProducts.Remove(customizedDPToRemove);
+            }
+            _databaseContext.Meals.Remove(existingMeal);
 
             await _databaseContext.SaveChangesAsync();
 

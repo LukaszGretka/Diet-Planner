@@ -21,7 +21,6 @@ namespace DietPlanner.Api.Database
                    .HasIndex(u => u.Id)
                    .IsUnique();
 
-
             builder.Entity<Product>()
                    .HasIndex(u => u.Id)
                    .IsUnique();
@@ -43,10 +42,10 @@ namespace DietPlanner.Api.Database
                    .HasDefaultValue(1.0);
 
             builder.Entity<CustomizedDishProducts>()
-            .HasOne(c => c.MealDish)
-            .WithMany()
-            .HasForeignKey(c => c.MealDishId)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(c => c.MealDish)
+                .WithMany()
+                .HasForeignKey(c => c.MealDishId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<CustomizedDishProducts>()
                .Property(mp => mp.CustomizedPortionMultiplier)

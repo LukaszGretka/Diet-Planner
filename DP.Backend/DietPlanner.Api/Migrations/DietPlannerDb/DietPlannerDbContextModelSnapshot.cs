@@ -32,7 +32,8 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
 
                     b.Property<decimal>("CustomizedPortionMultiplier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasPrecision(6, 2)
+                        .HasColumnType("decimal(6,2)")
                         .HasDefaultValue(1m);
 
                     b.Property<int>("DishProductId")
@@ -94,7 +95,8 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
 
                     b.Property<decimal>("PortionMultiplier")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)")
                         .HasDefaultValue(1m);
 
                     b.Property<int>("ProductId")
@@ -172,46 +174,60 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Belly")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("BicepsLeft")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("BicepsRight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("CalfLeft")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("CalfRight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("Chest")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("Date")
+                        .HasPrecision(5, 2)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("ForearmLeft")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("ForearmRight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("ThighLeft")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("ThighRight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("UserId")
+                        .HasPrecision(5, 2)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Waist")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("Weight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 
@@ -272,7 +288,7 @@ namespace DietPlanner.Api.Migrations.DietPlannerDb
                     b.HasOne("DietPlanner.Api.Database.Models.MealDish", "MealDish")
                         .WithMany()
                         .HasForeignKey("MealDishId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("DishProduct");

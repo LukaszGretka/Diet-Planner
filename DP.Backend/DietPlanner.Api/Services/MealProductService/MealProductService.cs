@@ -18,7 +18,7 @@ namespace DietPlanner.Api.Services.MealProductService
 
         public async Task<DatabaseActionResult> AddOrUpdateCustomizedPortionMultiplier(int dishId, int productId, int mealDishId, decimal customizedMultiplier)
         {
-            var dishProduct = await _databaseContext.DishProducts
+                var dishProduct = await _databaseContext.DishProducts
               .Where(dp => dp.DishId == dishId && dp.ProductId == productId)
               .SingleOrDefaultAsync();
 
