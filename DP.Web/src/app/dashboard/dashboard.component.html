@@ -2,5 +2,40 @@
 </app-error-page>
 
 <ng-template #dashboardTemplate>
-  <div class="container-lg mt-4 lead text-secondary">Hello {{ (authenticatedUser$ | async)?.username }}</div>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="card container-lg mx-2 my-2 col-md-3">
+        <div class="my-3 pb-2 lead text border-bottom">
+          Hello {{ (authenticatedUser$ | async)?.username }}
+        </div>
+        <div class="text-primary">Summary</div>
+        <div class="mb-2 text-secondary">
+          <div class="m-2">Current weight: 80 kg</div>
+          <div class="m-2">Total calories (today): 2100/2500 kcal</div>
+        </div>
+        <div class="border-bottom"></div>
+        <div class="mt-3 text-primary">Last 3 days</div>
+        <div class="mb-2 text-secondary">
+          <div class="m-2"><b>26.05</b> | total calories: 2300 kcal</div>
+          <div class="m-2"><b>25.05</b> | total calories: 2600 kcal</div>
+          <div class="m-2"><b>24.05</b> | total calories: 1800 kcal</div>
+        </div>
+      </div>
+      <div class="card container-lg mx-2 my-2 col-md-8">
+        <div class="my-3 pb-2 lead text border-bottom d-flex" style="justify-content: space-between;">
+          Meal Calendar Summary
+          <select class="form-select" [(ngModel)]="selectedChartValue" (ngModelChange)="selectedChartValueChanged()"
+            name="stat" style="max-width: 35%;">
+            <option value="0">Calories</option>
+            <option value="1">Carbs</option>
+            <option value="2">Proteins</option>
+            <option value="3">Fats</option>
+          </select>
+        </div>
+        <canvas style="max-height: 300px;" baseChart class="chart" [data]="mealCalendarSummaryChartData"
+          [type]="'line'">
+        </canvas>
+      </div>
+    </div>
+  </div>
 </ng-template>
