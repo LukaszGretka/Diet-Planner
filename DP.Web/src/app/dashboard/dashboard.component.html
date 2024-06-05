@@ -22,19 +22,7 @@
         </div>
       </div>
       <div class="card container-lg mx-2 my-2 col-md-8">
-        <div class="my-3 pb-2 lead text border-bottom d-flex" style="justify-content: space-between;">
-          Meal Calendar Summary
-          <select class="form-select" [(ngModel)]="selectedChartValue" (ngModelChange)="selectedChartValueChanged()"
-            name="stat" style="max-width: 35%;">
-            <option value="0">Calories</option>
-            <option value="1">Carbs</option>
-            <option value="2">Proteins</option>
-            <option value="3">Fats</option>
-          </select>
-        </div>
-        <canvas style="max-height: 300px;" baseChart class="chart" [data]="mealCalendarSummaryChartData"
-          [type]="'line'">
-        </canvas>
+        <app-stats-canvas [dashboardChartData$]="dashboardChartData"></app-stats-canvas>
       </div>
     </div>
   </div>

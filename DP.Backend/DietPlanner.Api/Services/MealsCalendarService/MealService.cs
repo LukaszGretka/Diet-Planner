@@ -30,7 +30,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
             string formattedDate = date.ToDatabaseDateFormat();
 
             var mealDtos = _databaseContext.Meals
-                .Where(m => m.UserId == userId && m.Date == formattedDate)
+                .Where(m => m.UserId == userId && m.Date.Date == date.Date)
                 .GroupBy(m => new { m.MealType })
                 .Select(g => new MealDto
                 {
@@ -68,11 +68,11 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             if (!dishIds.Any())
             {
-                return await RemoveMealEntry(mealRequest, formattedDate);
+                return await RemoveMealEntry(mealRequest, mealRequest.Date);
             }
 
             var existingMeal = await _databaseContext.Meals
-                .Where(meal => meal.Date.Equals(formattedDate)
+                .Where(meal => meal.Date.Date == mealRequest.Date.Date
                     && meal.MealType == (int)mealRequest.MealTypeId)
                 .SingleOrDefaultAsync();
 
@@ -84,7 +84,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             Meal newMeal = new()
             {
-                Date = formattedDate,
+                Date = mealRequest.Date.Date,
                 MealType = (int)mealRequest.MealTypeId,
                 UserId = userId
             };
@@ -207,10 +207,10 @@ namespace DietPlanner.Api.Services.MealsCalendar
             return new DatabaseActionResult<Meal>(true, obj: existingMeal);
         }
 
-        private async Task<DatabaseActionResult<Meal>> RemoveMealEntry(PutMealRequest mealRequest, string formattedDate)
+        private async Task<DatabaseActionResult<Meal>> RemoveMealEntry(PutMealRequest mealRequest, DateTime date)
         {
             var existingMeal = await _databaseContext.Meals
-                .Where(meal => meal.Date.Equals(formattedDate) && meal.MealType == (int)mealRequest.MealTypeId)
+                .Where(meal => meal.Date.Date == date.Date && meal.MealType == (int)mealRequest.MealTypeId)
                 .FirstOrDefaultAsync();
 
             var mealDishToRemove = await _databaseContext.MealDishes.Where(md => md.MealId == existingMeal.Id).SingleOrDefaultAsync();

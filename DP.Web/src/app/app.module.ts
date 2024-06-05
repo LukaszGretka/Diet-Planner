@@ -48,6 +48,9 @@ import { DishReducer } from './dishes/stores/dish.reducer';
 import { BodyProfileReducer } from './body-profile/stores/body-profile.reducer';
 import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import annotationPlugin from 'chartjs-plugin-annotation';
+import { Chart } from 'chart.js';
+import { StatsCanvasComponent } from './dashboard/stats-canvas/stats-canvas.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +79,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     DishTemplateComponent,
     DishAddComponent,
     DishEditComponent,
+    StatsCanvasComponent
   ],
   imports: [
     BrowserModule,
@@ -107,4 +111,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
   providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    Chart.register(annotationPlugin);
+  }
+}
