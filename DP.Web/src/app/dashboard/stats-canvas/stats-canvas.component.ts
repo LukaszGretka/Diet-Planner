@@ -1,12 +1,15 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ChartConfiguration } from "chart.js";
 import { UtilityService } from "src/app/shared/services/utility.service";
 import * as GeneralActions from '../../stores/store.actions';
 import { Store } from '@ngrx/store';
-import { GeneralState } from '../../stores/store.state';
 import { DashboardStatsChartData } from "../models/dashboard-stats-chart-data";
 import { Observable } from "rxjs";
+import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
+import { DashboardState } from "../stores/dashboard.state";
+import * as DashboardSelectors from "../stores/dashboard.selectors";
 
+@UntilDestroy()
 @Component({
   selector: 'app-stats-canvas',
   templateUrl: './stats-canvas.component.html',
@@ -14,32 +17,44 @@ import { Observable } from "rxjs";
 })
 export class StatsCanvasComponent implements OnInit {
 
-  @Input()
-  public dashboardChartData$: Observable<DashboardStatsChartData>;
+  public dashboardChartData$: Observable<DashboardStatsChartData>
+    = this.store.select(DashboardSelectors.getDashboardData)
 
+  public chartData: DashboardStatsChartData;
   public selectedChartValue: number = 0;
-  public mealCalendarSummaryChartData: ChartConfiguration['data'] = this.loadChartData(this.selectedChartValue);
+  public mealCalendarSummaryChartData: ChartConfiguration['data'];
 
-  constructor(private store: Store<GeneralState>, private utilityService: UtilityService) {
+  constructor(private store: Store<DashboardState>, private utilityService: UtilityService) {
     this.store.dispatch(GeneralActions.clearErrors());
   }
 
   public ngOnInit(): void {
-
+    this.dashboardChartData$?.pipe(untilDestroyed(this)).subscribe(data => {
+      if (!data) {
+        return;
+      }
+      this.chartData = {
+        caloriesLastSevenDays: data.caloriesLastSevenDays,
+        carbsLastSevenDays: data.carbsLastSevenDays,
+        proteinsLastSevenDays: data.proteinsLastSevenDays,
+        fatsLastSevenDays: data.fatsLastSevenDays
+      };
+      this.mealCalendarSummaryChartData = this.loadStatSeparatedChartData(+this.selectedChartValue);
+    })
   }
 
   public selectedChartValueChanged() {
-    this.mealCalendarSummaryChartData = this.loadChartData(+this.selectedChartValue);
+    this.mealCalendarSummaryChartData = this.loadStatSeparatedChartData(+this.selectedChartValue);
   }
 
-  private loadChartData(statNumber: number): ChartConfiguration<'line'>['data'] {
+  private loadStatSeparatedChartData(statNumber: number): ChartConfiguration<'line'>['data'] {
     let data = [];
     const statToDisplay = +statNumber;
     switch (statToDisplay) {
       case 0:
         data = [{
           label: 'Calories',
-          data: [2100, 2300, 2250, 1800, 3200, 2850, 1999],
+          data: this.chartData.caloriesLastSevenDays,
           borderColor: 'rgba(112,218,157,0.7)',
           pointBackgroundColor: 'rgba(112,218,157,1)',
           backgroundColor: 'rgba(112,218,157,1)',
@@ -48,7 +63,7 @@ export class StatsCanvasComponent implements OnInit {
       case 1:
         data = [{
           label: 'Carbs',
-          data: [100, 102, 150, 100, 76, 99, 57],
+          data: this.chartData.carbsLastSevenDays,
           borderColor: 'rgba(255,161,181,0.7)',
           pointBackgroundColor: 'rgba(255,161,181,1)',
           backgroundColor: 'rgba(255,161,181,1)',
@@ -57,7 +72,7 @@ export class StatsCanvasComponent implements OnInit {
       case 2:
         data = [{
           label: 'Proteins',
-          data: [100, 102, 150, 100, 76, 99, 57],
+          data: this.chartData.proteinsLastSevenDays,
           borderColor: 'rgba(134,199,243,0.7)',
           pointBackgroundColor: 'rgba(134,199,243,1)',
           backgroundColor: 'rgba(134,199,243,1)',
@@ -66,7 +81,7 @@ export class StatsCanvasComponent implements OnInit {
       case 3:
         data = [{
           label: 'Fats',
-          data: [100, 102, 150, 100, 76, 99, 57],
+          data: this.chartData.fatsLastSevenDays,
           borderColor: 'rgba(255,226,154,0.7)',
           pointBackgroundColor: 'rgba(255,226,154,1)',
           backgroundColor: 'rgba(255,226,154,1)',

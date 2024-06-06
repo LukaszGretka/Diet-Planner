@@ -1,6 +1,5 @@
 <div class="my-3 pb-2 lead text border-bottom d-flex" style="justify-content: space-between;">
   Meal Calendar Summary
-  {{dashboardChartData$ | async}}
   <select class="form-select" [(ngModel)]="selectedChartValue" (ngModelChange)="selectedChartValueChanged()" name="stat"
     style="max-width: 35%;">
     <option value="0">Calories</option>

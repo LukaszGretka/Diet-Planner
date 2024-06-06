@@ -51,6 +51,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Chart } from 'chart.js';
 import { StatsCanvasComponent } from './dashboard/stats-canvas/stats-canvas.component';
+import { DashboardEffects } from './dashboard/stores/dashboard.effects';
+import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
 
 @NgModule({
   declarations: [
@@ -97,6 +99,7 @@ import { StatsCanvasComponent } from './dashboard/stats-canvas/stats-canvas.comp
       mealCalendarState: MealCalendarReducer,
       accountState: AccountReducer,
       dishState: DishReducer,
+      dashboardState: DashboardReducer
     }),
     EffectsModule.forRoot([
       GeneralEffects,
@@ -105,6 +108,7 @@ import { StatsCanvasComponent } from './dashboard/stats-canvas/stats-canvas.comp
       MealCalendarEffects,
       AccountEffects,
       DishEffects,
+      DashboardEffects
     ]),
     StoreDevtoolsModule.instrument({ connectInZone: true }),
   ],

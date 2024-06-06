@@ -30,19 +30,19 @@ namespace DietPlanner.Api.Services.Dashboard
             var dataTimeNow = DateTime.Now.Date;
 
             List<DatedDishProductsDto> datedDishProducts = _databaseContext.Meals
-                .Join(_databaseContext.MealDishes, m => m.Id, md => md.MealId, (m, md) => new {m.Date, m.UserId, md.DishId})
+                .Join(_databaseContext.MealDishes, m => m.Id, md => md.MealId, (m, md) => new {m.Date, m.UserId, md.DishId, mealDishId = md.Id})
                     .Where(m => m.UserId == userId && (m.Date >= dataTimeNow.AddDays(-7) && m.Date <= dataTimeNow))
                     .GroupBy(m => new { m.Date })
                     .Select(gd => new DatedDishProductsDto
                     {
                         Date = gd.Key.Date,
-                        DishProducts = gd.Join(_databaseContext.DishProducts, x => x.DishId, dp => dp.DishId, (x, dp) => new { x.DishId, dp })
+                        DishProducts = gd.Join(_databaseContext.DishProducts, x => x.DishId, dp => dp.DishId, (x, dp) => new { x.DishId, x.mealDishId, dp})
                         .Join(_databaseContext.Products, x => x.dp.ProductId, p => p.Id, (x, p) => new DishProductsDTO
                         {
                             Product = p,
                             PortionMultiplier = x.dp.PortionMultiplier,
                             CustomizedPortionMultiplier = _databaseContext.CustomizedDishProducts
-                                .Where(e => e.MealDishId == x.DishId && e.DishProductId == x.dp.Id)
+                                .Where(e => e.MealDishId == x.mealDishId && e.DishProductId == x.dp.Id)
                                 .SingleOrDefault().CustomizedPortionMultiplier
                         })
                     }).ToList();
@@ -74,6 +74,11 @@ namespace DietPlanner.Api.Services.Dashboard
                 }
             }
 
+            caloriesLastSevenDays.Reverse();
+            carbsLastSevenDays.Reverse();
+            proteinsLastSevenDays.Reverse();
+            fatsLastSevenDays.Reverse();
+
             return new DashboardData
             {
                 CurrentWeight = (float?)currentWeight,
@@ -86,7 +91,8 @@ namespace DietPlanner.Api.Services.Dashboard
 
         private static float CalculateMultiplierValue(float? stat, DishProductsDTO dishProductDTO)
         {
-           return stat * (float)(dishProductDTO.CustomizedPortionMultiplier ?? dishProductDTO.PortionMultiplier) ?? 0f;
+           var result = (stat * (float)(dishProductDTO.CustomizedPortionMultiplier ?? dishProductDTO.PortionMultiplier)) ?? 0f;
+            return result;
         }
     }
 }
