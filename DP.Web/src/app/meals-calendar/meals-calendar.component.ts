@@ -200,9 +200,9 @@ export class MealsCalendarComponent implements OnInit {
 
     mealTypeProducts$.getValue().forEach((dish: Dish) => {
       dish.products.forEach(dishProduct => {
-        (macronutrients.carbs += dishProduct.product.carbohydrates),
-          (macronutrients.proteins += dishProduct.product.proteins),
-          (macronutrients.fats += dishProduct.product.fats);
+        (macronutrients.carbs += dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)),
+          (macronutrients.proteins += dishProduct.product.proteins * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)),
+          (macronutrients.fats += dishProduct.product.fats * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier));
       });
     });
 

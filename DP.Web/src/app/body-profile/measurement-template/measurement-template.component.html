@@ -1,24 +1,24 @@
 <form [formGroup]="measurementForm" (ngSubmit)="onSubmit()">
   <div class="mb-3">
     <label for="weight-label" class="form-label">Weight <label class="text-secondary">[kg]</label></label>
-    <input type="number" class="form-control" formControlName="weight" id="weight" />
+    <input type="text" class="form-control" formControlName="weight" id="weight" />
     <app-form-error [control]="measurementForm.get('weight')"></app-form-error>
   </div>
   <div class="mb-3">
     <label for="chest-label" class="form-label">Chest <label class="text-secondary">[cm]</label></label>
-    <input type="number" class="form-control" formControlName="chest" id="chest" />
+    <input type="text" class="form-control" formControlName="chest" id="chest" />
     <app-form-error [control]="measurementForm.get('chest')"></app-form-error>
   </div>
 
   <div class="mb-3">
     <label for="belly-label" class="form-label">Belly <label class="text-secondary">[cm]</label></label>
-    <input type="number" class="form-control" formControlName="belly" id="belly" />
+    <input type="text" class="form-control" formControlName="belly" id="belly" />
     <app-form-error [control]="measurementForm.get('belly')"></app-form-error>
   </div>
 
   <div class="mb-3">
     <label for="waist-label" class="form-label">Waist <label class="text-secondary">[cm]</label></label>
-    <input type="number" class="form-control" formControlName="waist" id="waist" />
+    <input type="text" class="form-control" formControlName="waist" id="waist" />
     <app-form-error [control]="measurementForm.get('waist')"></app-form-error>
   </div>
 
@@ -26,12 +26,12 @@
     <div class="row">
       <div class="col">
         <label for="biceps-left-label" class="form-label">Biceps (L) <label class="text-secondary">[cm]</label></label>
-        <input type="number" class="form-control" formControlName="biceps-left" id="biceps-left" />
+        <input type="text" class="form-control" formControlName="biceps-left" id="biceps-left" />
         <app-form-error [control]="measurementForm.get('biceps-left')"></app-form-error>
       </div>
       <div class="col">
         <label for="biceps-right-label" class="form-label">Biceps (R) <label class="text-secondary">[cm]</label></label>
-        <input type="number" class="form-control" formControlName="biceps-right" id="biceps-right" />
+        <input type="text" class="form-control" formControlName="biceps-right" id="biceps-right" />
         <app-form-error [control]="measurementForm.get('biceps-right')"></app-form-error>
       </div>
     </div>
@@ -40,17 +40,15 @@
   <div class="mb-3">
     <div class="row">
       <div class="col">
-        <label for="forearm-left-label" class="form-label"
-          >Forearm (L) <label class="text-secondary">[cm]</label></label
-        >
-        <input type="number" class="form-control" formControlName="forearm-left" id="forearm-left" />
+        <label for="forearm-left-label" class="form-label">Forearm (L) <label
+            class="text-secondary">[cm]</label></label>
+        <input type="text" class="form-control" formControlName="forearm-left" id="forearm-left" />
         <app-form-error [control]="measurementForm.get('forearm-left')"></app-form-error>
       </div>
       <div class="col">
-        <label for="forearm-right-label" class="form-label"
-          >Forearm (R) <label class="text-secondary">[cm]</label></label
-        >
-        <input type="number" class="form-control" formControlName="forearm-right" id="forearm-right" />
+        <label for="forearm-right-label" class="form-label">Forearm (R) <label
+            class="text-secondary">[cm]</label></label>
+        <input type="text" class="form-control" formControlName="forearm-right" id="forearm-right" />
         <app-form-error [control]="measurementForm.get('forearm-right')"></app-form-error>
       </div>
     </div>
@@ -60,12 +58,12 @@
     <div class="row">
       <div class="col">
         <label for="thigh-left-label" class="form-label">Thigh (L) <label class="text-secondary">[cm]</label></label>
-        <input type="number" class="form-control" formControlName="thigh-left" id="thigh-left" />
+        <input type="text" class="form-control" formControlName="thigh-left" id="thigh-left" />
         <app-form-error [control]="measurementForm.get('thigh-left')"></app-form-error>
       </div>
       <div class="col">
         <label for="thigh-right-label" class="form-label">Thigh (R) <label class="text-secondary">[cm]</label></label>
-        <input type="number" class="form-control" formControlName="thigh-right" id="thigh-right" />
+        <input type="text" class="form-control" formControlName="thigh-right" id="thigh-right" />
         <app-form-error [control]="measurementForm.get('thigh-right')"></app-form-error>
       </div>
     </div>
@@ -75,12 +73,12 @@
     <div class="row">
       <div class="col">
         <label for="calf-left-label" class="form-label">Calf (L) <label class="text-secondary">[cm]</label></label>
-        <input type="number" class="form-control" formControlName="calf-left" id="calf-left" />
+        <input type="text" class="form-control" formControlName="calf-left" id="calf-left" />
         <app-form-error [control]="measurementForm.get('calf-left')"></app-form-error>
       </div>
       <div class="col">
         <label for="calf-right-label" class="form-label">Calf (R) <label class="text-secondary">[cm]</label></label>
-        <input type="number" class="form-control" formControlName="calf-right" id="calf-right" />
+        <input type="text" class="form-control" formControlName="calf-right" id="calf-right" />
         <app-form-error [control]="measurementForm.get('calf-right')"></app-form-error>
       </div>
     </div>
@@ -91,7 +89,7 @@
         <a class="btn btn-secondary" role="button" routerLink="/body-profile">Back</a>
       </div>
       <div class="col">
-        <button type="submit" class="btn btn-primary" style="float: right">Add</button>
+        <button type="submit" class="btn btn-primary" style="float: right">Save</button>
       </div>
     </div>
   </div>

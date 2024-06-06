@@ -48,6 +48,11 @@ import { DishReducer } from './dishes/stores/dish.reducer';
 import { BodyProfileReducer } from './body-profile/stores/body-profile.reducer';
 import { BodyProfileEffects } from './body-profile/stores/body-profile.effects';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import annotationPlugin from 'chartjs-plugin-annotation';
+import { Chart } from 'chart.js';
+import { StatsCanvasComponent } from './dashboard/stats-canvas/stats-canvas.component';
+import { DashboardEffects } from './dashboard/stores/dashboard.effects';
+import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
 
 @NgModule({
   declarations: [
@@ -76,6 +81,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     DishTemplateComponent,
     DishAddComponent,
     DishEditComponent,
+    StatsCanvasComponent
   ],
   imports: [
     BrowserModule,
@@ -93,6 +99,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
       mealCalendarState: MealCalendarReducer,
       accountState: AccountReducer,
       dishState: DishReducer,
+      dashboardState: DashboardReducer
     }),
     EffectsModule.forRoot([
       GeneralEffects,
@@ -101,10 +108,15 @@ import { ImageCropperModule } from 'ngx-image-cropper';
       MealCalendarEffects,
       AccountEffects,
       DishEffects,
+      DashboardEffects
     ]),
     StoreDevtoolsModule.instrument({ connectInZone: true }),
   ],
   providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    Chart.register(annotationPlugin);
+  }
+}

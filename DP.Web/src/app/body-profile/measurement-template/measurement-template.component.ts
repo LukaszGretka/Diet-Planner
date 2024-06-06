@@ -14,9 +14,9 @@ export class MeasurementTemplateComponent implements OnInit {
   @Input()
   public submitFunction: Function;
 
-  private defaultMeasurementValidator = [Validators.required, Validators.maxLength(3), Validators.min(1)];
+  private defaultMeasurementValidator = [Validators.required, Validators.maxLength(3)];
 
-  constructor(private formBuilder: UntypedFormBuilder) {}
+  constructor(private formBuilder: UntypedFormBuilder) { }
 
   ngOnInit(): void {
     if (this.measurement) {
