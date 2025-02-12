@@ -49,10 +49,10 @@ namespace DietPlanner.Api
                 });
             });
             services.AddDbContext<DietPlannerDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ProductsDatabase")));
+                options.UseSqlite(Configuration.GetConnectionString("ProductsDatabase")));
 
             services.AddDbContext<IdentityDatabaseContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("IdentityDatabase")));
+                 options.UseSqlite(Configuration.GetConnectionString("IdentityDatabase")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDatabaseContext>()
