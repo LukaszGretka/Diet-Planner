@@ -1,12 +1,13 @@
 ﻿using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Reflection.Emit;
 
 namespace DietPlanner.Api.Database
 {
-    public class DietPlannerDbContext : DbContext
+    public class DietPlannerDbContext : IdentityDbContext<IdentityUser>
     {
         private readonly IConfiguration _configuration;
 
@@ -18,7 +19,7 @@ namespace DietPlanner.Api.Database
         {
             if (!builder.IsConfigured)
             {
-                builder.UseSqlite(_configuration.GetConnectionString("ProductsDatabase"));
+                builder.UseSqlite(_configuration.GetConnectionString("DietPlannerDb"));
             }
 
             builder.EnableSensitiveDataLogging();
@@ -27,9 +28,15 @@ namespace DietPlanner.Api.Database
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserProfile>()
+               .HasIndex(u => u.UserId)
+               .IsUnique();
+
             builder.Entity<Meal>()
-            .HasIndex(u => u.Id)
-            .IsUnique();
+                .HasIndex(u => u.Id)
+                .IsUnique();
 
             builder.Entity<Product>()
                    .HasIndex(u => u.Id)
@@ -64,8 +71,9 @@ namespace DietPlanner.Api.Database
             builder.Entity<Measurement>()
             .HasIndex(u => u.Id)
             .IsUnique();
-
         }
+
+        public DbSet<UserProfile> UserProfile { get; set; }
 
         public DbSet<Meal> Meals { get; set; }
 

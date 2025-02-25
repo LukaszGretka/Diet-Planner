@@ -11,10 +11,10 @@ namespace DietPlanner.Api.Services.UserProfileService
 {
     public class UserProfileService : IUserProfileService
     {
-        private readonly IdentityDatabaseContext _databaseContext;
+        private readonly DietPlannerDbContext _databaseContext;
         private readonly ILogger<UserProfileService> _logger;
 
-        public UserProfileService(IdentityDatabaseContext databaseContext, ILogger<UserProfileService> logger)
+        public UserProfileService(DietPlannerDbContext databaseContext, ILogger<UserProfileService> logger)
         {
             _databaseContext = databaseContext;
             _logger = logger;
