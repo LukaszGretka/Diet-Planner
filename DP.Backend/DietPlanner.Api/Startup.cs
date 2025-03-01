@@ -20,6 +20,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api
@@ -42,20 +43,21 @@ namespace DietPlanner.Api
             {
                 options.AddPolicy(name: CorsPolicyName, policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200", "https://diet-planner.azurewebsites.net")
+                    policy.WithOrigins("http://localhost:4200",
+                        "http://192.168.0.51",
+                        "http://192.168.0.51:4200",
+                        "http://192.168.0.51:5000",
+                        "https://diet-planner.azurewebsites.net")
                     .AllowCredentials()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
             });
             services.AddDbContext<DietPlannerDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ProductsDatabase")));
-
-            services.AddDbContext<IdentityDatabaseContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("IdentityDatabase")));
+                options.UseSqlite(Configuration.GetConnectionString("DietPlannerDb")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityDatabaseContext>()
+                .AddEntityFrameworkStores<DietPlannerDbContext>()
                 .AddSignInManager<SignInManager<IdentityUser>>()
                 .AddDefaultTokenProviders();
 
@@ -121,8 +123,9 @@ namespace DietPlanner.Api
         {
             services.ConfigureApplicationCookie(o =>
             {
-                o.Cookie.SameSite = SameSiteMode.None; // Because of hosting frontend in the other site.
-                o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                o.Cookie.HttpOnly = true;
+                o.Cookie.SameSite = SameSiteMode.Lax; // Use Lax instead of None for HTTP
+                o.Cookie.SecurePolicy = CookieSecurePolicy.None; // Change to Always if using HTTPS
 
                 o.Events = new CookieAuthenticationEvents() 
                 {

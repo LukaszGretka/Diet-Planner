@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  dietPlannerApiUri: 'https://diet-planner-api.azurewebsites.net',
+  dietPlannerApiUri: 'http://192.168.0.51:5000',
 };

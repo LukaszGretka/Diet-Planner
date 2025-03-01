@@ -29,35 +29,58 @@ namespace DietPlanner.Api.Services.MealsCalendar
         {
             string formattedDate = date.ToDatabaseDateFormat();
 
-            var mealDtos = _databaseContext.Meals
+            var meals = await _databaseContext.Meals
                 .Where(m => m.UserId == userId && m.Date.Date == date.Date)
+                .ToListAsync();
+
+            var mealDishes = await _databaseContext.MealDishes
+                .Where(md => meals.Select(m => m.Id).Contains(md.MealId))
+                .ToListAsync();
+
+            var dishes = await _databaseContext.Dishes
+                .Where(d => mealDishes.Select(md => md.DishId).Contains(d.Id))
+                .ToListAsync();
+
+            var dishProducts = await _databaseContext.DishProducts
+                .Where(dp => dishes.Select(d => d.Id).Contains(dp.DishId))
+                .ToListAsync();
+
+            var products = await _databaseContext.Products
+                .Where(p => dishProducts.Select(dp => dp.ProductId).Contains(p.Id))
+                .ToListAsync();
+
+            var customizedDishProducts = await _databaseContext.CustomizedDishProducts
+                .Where(cdp => mealDishes.Select(md => md.Id).Contains(cdp.MealDishId))
+                .ToListAsync();
+
+            var mealDtos = meals
                 .GroupBy(m => new { m.MealType })
                 .Select(g => new MealDto
                 {
                     MealTypeId = (MealTypeEnum)g.Key.MealType,
-                    Dishes = g.Join(_databaseContext.MealDishes, m => m.Id, md => md.MealId, (m, md) => new { m, md })
-                              .Join(_databaseContext.Dishes, x => x.md.DishId, d => d.Id, (x, d) => new { x.m, x.md, d })
-                              .GroupBy(x => new { x.md.DishId, x.d.Name, x.d.Description, x.d.ImagePath, x.d.ExposeToOtherUsers, x.m.Id, mealDishId = x.md.Id })
-                              .Select(gd => new DishDTO
-                              {
-                                  Id = gd.Key.DishId,
-                                  MealDishId = gd.Key.mealDishId,
-                                  Name = gd.Key.Name,
-                                  Description = gd.Key.Description,
-                                  ImagePath = gd.Key.ImagePath,
-                                  ExposeToOtherUsers = gd.Key.ExposeToOtherUsers,
-                                  Products = gd.Join(_databaseContext.DishProducts, x => x.md.DishId, dp => dp.DishId, (x, dp) => new { x.md, dp })
-                                               .Join(_databaseContext.Products, x => x.dp.ProductId, p => p.Id, (x, p) => new DishProductsDTO
-                                               {
-                                                   Product = p,
-                                                   PortionMultiplier = x.dp.PortionMultiplier,
-                                                   CustomizedPortionMultiplier = _databaseContext.CustomizedDishProducts
-                                                    .Where(e => e.MealDishId == x.md.Id && e.DishProductId == x.dp.Id).SingleOrDefault().CustomizedPortionMultiplier
-                                               })
-                              }) as List<DishDTO>
-                });
+                    Dishes = g.SelectMany(m => mealDishes.Where(md => md.MealId == m.Id)
+                        .Select(md => new DishDTO
+                        {
+                            Id = md.DishId,
+                            MealDishId = md.Id,
+                            Name = dishes.First(d => d.Id == md.DishId).Name,
+                            Description = dishes.First(d => d.Id == md.DishId).Description,
+                            ImagePath = dishes.First(d => d.Id == md.DishId).ImagePath,
+                            ExposeToOtherUsers = dishes.First(d => d.Id == md.DishId).ExposeToOtherUsers,
+                            Products = dishProducts.Where(dp => dp.DishId == md.DishId)
+                                .Select(dp => new DishProductsDTO
+                                {
+                                    Product = products.First(p => p.Id == dp.ProductId),
+                                    PortionMultiplier = dp.PortionMultiplier,
+                                    CustomizedPortionMultiplier = customizedDishProducts
+                                        .Where(cdp => cdp.MealDishId == md.Id && cdp.DishProductId == dp.Id)
+                                        .Select(cdp => (decimal?)cdp.CustomizedPortionMultiplier)
+                                        .FirstOrDefault()
+                                }).ToList()
+                        })).ToList()
+                }).ToList();
 
-            return await mealDtos.ToListAsync();
+            return mealDtos;
         }
 
         public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(PutMealRequest mealRequest, string userId)

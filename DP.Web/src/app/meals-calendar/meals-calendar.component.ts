@@ -115,7 +115,7 @@ export class MealsCalendarComponent implements OnInit {
       }
       const targetedMeal = this.dailyMealsOverview$.pipe(untilDestroyed(this)).pipe(
         exhaustMap(meals => {
-          var targetedMeal = meals.filter(meal => meal.mealTypeId == callback.mealType);
+          const targetedMeal = meals.filter(meal => meal.mealTypeId == callback.mealType);
           return of(targetedMeal[0]);
         }),
       );

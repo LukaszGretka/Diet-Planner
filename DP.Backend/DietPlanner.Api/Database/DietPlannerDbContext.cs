@@ -1,25 +1,42 @@
 ﻿using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
+using Microsoft.Extensions.Configuration;
 
 namespace DietPlanner.Api.Database
 {
-    public class DietPlannerDbContext : DbContext
+    public class DietPlannerDbContext : IdentityDbContext<IdentityUser>
     {
-        public DietPlannerDbContext(DbContextOptions<DietPlannerDbContext> options) : base(options)
+        private readonly IConfiguration _configuration;
+
+        public DietPlannerDbContext(DbContextOptions<DietPlannerDbContext> options, IConfiguration configuration) : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        {
+            if (!builder.IsConfigured)
+            {
+                builder.UseSqlite(_configuration.GetConnectionString("DietPlannerDb"));
+            }
+
+            builder.EnableSensitiveDataLogging();
+            base.OnConfiguring(builder);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Meal>()
-            .HasIndex(u => u.Id)
-            .IsUnique();
+            base.OnModelCreating(builder);
 
-            builder.Entity<Dish>()
-                   .HasIndex(u => u.Id)
-                   .IsUnique();
+            builder.Entity<UserProfile>()
+               .HasIndex(u => u.UserId)
+               .IsUnique();
+
+            builder.Entity<Meal>()
+                .HasIndex(u => u.Id)
+                .IsUnique();
 
             builder.Entity<Product>()
                    .HasIndex(u => u.Id)
@@ -54,8 +71,9 @@ namespace DietPlanner.Api.Database
             builder.Entity<Measurement>()
             .HasIndex(u => u.Id)
             .IsUnique();
-
         }
+
+        public DbSet<UserProfile> UserProfile { get; set; }
 
         public DbSet<Meal> Meals { get; set; }
 
