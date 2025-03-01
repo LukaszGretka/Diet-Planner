@@ -32,6 +32,10 @@ export class DishesComponent implements OnInit {
     this.router.navigate([('dishes/edit/' + dishId) as string]);
   }
 
+  public onPreviewButtonClick(dishId: number): void {
+    this.router.navigate([('dishes/preview/' + dishId) as string]);
+  }
+
   public onDeleteButtonClick(dishId: number): void {
     this.dishIdToRemove = dishId;
   }

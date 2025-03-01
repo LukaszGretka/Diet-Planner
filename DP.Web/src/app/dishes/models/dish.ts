@@ -8,5 +8,5 @@ export class Dish {
   imagePath: string;
   products: DishProduct[];
   exposeToOtherUsers: boolean;
-  totalMacro: any;
+  isOwner: boolean;
 }

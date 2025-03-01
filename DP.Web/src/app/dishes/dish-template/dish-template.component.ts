@@ -32,7 +32,7 @@ import { DishState } from '../stores/dish.state';
 })
 export class DishTemplateComponent implements OnInit {
   @Input()
-  public dishToEdit: Dish;
+  public dish: Dish;
 
   @Input()
   public submitFunction: Function;
@@ -75,11 +75,15 @@ export class DishTemplateComponent implements OnInit {
   ngOnInit(): void {
     this.productStore.dispatch(ProductActions.getAllProductsRequest());
 
-    if (this.dishToEdit != null) {
-      this.dishForm.get('name').setValue(this.dishToEdit.name);
-      this.dishForm.get('description').setValue(this.dishToEdit.description);
-      this.dishForm.get('exposeToOtherUsers').setValue(this.dishToEdit.exposeToOtherUsers);
-      this.dishProducts$.next(this.dishToEdit.products);
+    if (this.dish != null) {
+      this.dishForm.get('name').setValue(this.dish.name);
+      this.dishForm.get('description').setValue(this.dish.description);
+      this.dishForm.get('exposeToOtherUsers').setValue(this.dish.exposeToOtherUsers);
+      this.dishProducts$.next(this.dish.products);
+
+      if(!this.dish.isOwner){
+        this.dishForm.disable();
+      }
     }
     this.dishMacroSummary$ = this.dishProducts$.pipe(
       map(product =>
@@ -114,7 +118,7 @@ export class DishTemplateComponent implements OnInit {
       imagePath: this.dishForm.get('imagePath')?.value ?? '',
       products: this.dishProducts$.getValue(),
       exposeToOtherUsers: this.dishForm.get('exposeToOtherUsers').value,
-      id: this.dishToEdit != null ? this.dishToEdit.id : undefined,
+      id: this.dish != null ? this.dish.id : undefined,
     } as Dish, this.returnUrl);
   }
 

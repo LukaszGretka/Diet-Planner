@@ -21,7 +21,6 @@ namespace DietPlanner.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://192.168.0.51:5000");
                 });
     }
 }

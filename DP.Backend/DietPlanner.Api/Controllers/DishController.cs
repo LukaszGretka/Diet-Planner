@@ -32,7 +32,7 @@ namespace DietPlanner.Api.Controllers
             List<DishDTO> dishesDTO = new List<DishDTO>();
             string userId = HttpContext.GetUserId();
 
-            List<Dish> dishes = await _dishService.GetAllUserDishes(userId);
+            List<Dish> dishes = await _dishService.GetAllAvailableDishes(userId);
 
             foreach (Dish dish in dishes)
             {
@@ -45,6 +45,7 @@ namespace DietPlanner.Api.Controllers
                     Description = dish.Description,
                     ImagePath = dish.ImagePath,
                     ExposeToOtherUsers = dish.ExposeToOtherUsers,
+                    IsOwner = userId.Equals(dish.UserId),
                     Products = dishProducts.Select(dishProduct => new DishProductsDTO
                     {
                         Product = new Product
@@ -168,6 +169,7 @@ namespace DietPlanner.Api.Controllers
                 Name = dish.Name,
                 Description = dish.Description,
                 ExposeToOtherUsers = dish.ExposeToOtherUsers,
+                IsOwner = HttpContext.GetUserId().Equals(dish.UserId),
                 ImagePath = dish.ImagePath,
                 Products = dishProducts.Select(dishProduct => new DishProductsDTO
                 {

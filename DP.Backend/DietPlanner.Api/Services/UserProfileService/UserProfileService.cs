@@ -4,6 +4,7 @@ using DietPlanner.Api.DTO.UserProfile;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,7 +37,7 @@ namespace DietPlanner.Api.Services.UserProfileService
                 Gender = (int)userProfile.Gender,
                 BirthDate = userProfile.BirthDate,
                 Height = userProfile.Height,
-                Base64Image = Encoding.UTF8.GetString(userProfile.Avatar)
+                Base64Image = Encoding.UTF8.GetString(userProfile.Avatar ?? Array.Empty<byte>())
             };
         }
 
@@ -54,8 +55,7 @@ namespace DietPlanner.Api.Services.UserProfileService
                         Name = userProfileDTO.Name,
                         BirthDate = userProfileDTO.BirthDate,
                         Gender = (GenderType)userProfileDTO.Gender,
-                        Height = userProfileDTO.Height,
-                        Avatar = userProfile.Avatar
+                        Height = userProfileDTO.Height
                     };
 
                     await _databaseContext.AddAsync(newUserProfile);
@@ -67,7 +67,7 @@ namespace DietPlanner.Api.Services.UserProfileService
                         Gender = (int)userProfile.Gender,
                         BirthDate = userProfile.BirthDate,
                         Height = userProfile.Height,
-                        Base64Image = Encoding.UTF8.GetString(userProfile.Avatar)
+                        Base64Image = Encoding.UTF8.GetString(userProfile?.Avatar ?? Array.Empty<byte>())
                     });
                 }
 
@@ -84,7 +84,7 @@ namespace DietPlanner.Api.Services.UserProfileService
                     Gender = (int)userProfile.Gender,
                     BirthDate = userProfile.BirthDate,
                     Height = userProfile.Height,
-                    Base64Image = Encoding.UTF8.GetString(userProfile.Avatar)
+                    Base64Image = Encoding.UTF8.GetString(userProfile?.Avatar ?? Array.Empty<byte>())
                 });
 
             }

@@ -153,6 +153,11 @@ namespace DietPlanner.Api.Services.DishService
             return await _databaseContext.Dishes.Where(dish => dish.UserId.Equals(userId)).ToListAsync();
         }
 
+        public async Task<List<Dish>> GetAllAvailableDishes(string userId)
+        {
+            return await _databaseContext.Dishes.Where(dish => dish.UserId.Equals(userId) || dish.ExposeToOtherUsers).ToListAsync();
+        }
+
         public async Task<IEnumerable<DishProducts>> GetDishProducts(int dishId)
         {
             return await _databaseContext.DishProducts

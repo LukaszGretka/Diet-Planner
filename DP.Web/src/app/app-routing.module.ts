@@ -20,6 +20,7 @@ import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/
 import { DishesComponent } from './dishes/dishes.component';
 import { DishAddComponent } from './dishes/dish-add/dish-add.component';
 import { DishEditComponent } from './dishes/dish-edit/dish-edit.component';
+import { DishPreviewComponent } from './dishes/dish-preview/dish-preview.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
@@ -39,6 +40,7 @@ const routes: Routes = [
   { path: 'body-profile/edit/:id', component: EditMeasurementComponent, canActivate: [AuthGuard] },
   { path: 'meals-calendar', component: MealsCalendarComponent, canActivate: [AuthGuard] },
   { path: 'dishes', component: DishesComponent, canActivate: [AuthGuard] },
+  { path: 'dishes/preview/:id', component: DishPreviewComponent, canActivate: [AuthGuard] },
   { path: 'dishes/dish-add', component: DishAddComponent, canActivate: [AuthGuard] },
   { path: 'dishes/edit/:id', component: DishEditComponent, canActivate: [AuthGuard] },
   { path: 'toast', component: ToastComponent },
