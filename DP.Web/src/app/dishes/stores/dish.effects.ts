@@ -36,7 +36,7 @@ export class DishEffects {
     () =>
       this.actions$.pipe(
         ofType(DishActions.loadDishesRequestFailed),
-        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during loading dishes.')),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occurred during loading dishes.')),
       ),
     {
       dispatch: false,
@@ -80,7 +80,7 @@ export class DishEffects {
     () =>
       this.actions$.pipe(
         ofType(DishActions.saveDishRequestFailed),
-        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during saving a dish.')),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occurred during saving a dish.')),
       ),
     {
       dispatch: false,
@@ -126,7 +126,7 @@ export class DishEffects {
     () =>
       this.actions$.pipe(
         ofType(DishActions.editDishRequestFailed),
-        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during saving a dish.')),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occurred during saving a dish.')),
       ),
     {
       dispatch: false,
@@ -162,7 +162,7 @@ export class DishEffects {
     () =>
       this.actions$.pipe(
         ofType(DishActions.deleteDishRequestFailed),
-        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during removing the dish.')),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occurred during removing the dish.')),
       ),
     {
       dispatch: false,
@@ -204,7 +204,7 @@ export class DishEffects {
     () =>
       this.actions$.pipe(
         ofType(DishActions.updatePortionRequestFailed),
-        tap(() => this.notificationService.showErrorToast('Error', 'An error occured during saving portion.')),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occurred during saving portion.')),
       ),
     {
       dispatch: false,

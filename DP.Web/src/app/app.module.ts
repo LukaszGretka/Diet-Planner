@@ -53,6 +53,7 @@ import { Chart } from 'chart.js';
 import { StatsCanvasComponent } from './dashboard/stats-canvas/stats-canvas.component';
 import { DashboardEffects } from './dashboard/stores/dashboard.effects';
 import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
+import { DishPreviewComponent } from './dishes/dish-preview/dish-preview.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
     DishTemplateComponent,
     DishAddComponent,
     DishEditComponent,
+    DishPreviewComponent,
     StatsCanvasComponent
   ],
   imports: [
@@ -99,7 +101,7 @@ import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
       mealCalendarState: MealCalendarReducer,
       accountState: AccountReducer,
       dishState: DishReducer,
-      dashboardState: DashboardReducer
+      dashboardState: DashboardReducer,
     }),
     EffectsModule.forRoot([
       GeneralEffects,
@@ -108,12 +110,15 @@ import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
       MealCalendarEffects,
       AccountEffects,
       DishEffects,
-      DashboardEffects
+      DashboardEffects,
     ]),
     StoreDevtoolsModule.instrument({ connectInZone: true }),
   ],
   providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],
+  exports: [
+    DishTemplateComponent,
+  ],
 })
 export class AppModule {
   constructor() {

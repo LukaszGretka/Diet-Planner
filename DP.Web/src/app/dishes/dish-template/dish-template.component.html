@@ -80,6 +80,7 @@
                     id="portion"
                     class="form-control form-control-sm d-flex"
                     style="max-width: 65px"
+                    [disabled]="dish !== null && !dish?.isOwner"
                     [ngModel]="portionValue * dishProduct.portionMultiplier | number : '1.0-2'"
                     [ngModelOptions]="{ updateOn: 'change' }"
                     (ngModelChange)="onPortionValueChange($event, dishProduct.product.id)" />g
@@ -88,6 +89,7 @@
                   <button
                     type="button"
                     class="btn delete-button-icon text-danger"
+                    [hidden]="dish !== null && !dish?.isOwner"
                     (click)="onRemoveProductButtonClick(productIndex)">
                     <i class="bi bi-x-lg"></i>
                   </button>
@@ -118,9 +120,11 @@
               class="p-2 bd-highlight form-control"
               [(ngModel)]="searchItem"
               [ngbTypeahead]="searchProducts"
+              [hidden]="dish !== null && !dish?.isOwner"
               placeholder="Start typing to search for a products..." />
             <button
               type="button"
+              [hidden]="dish !== null && !dish?.isOwner"
               class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
               (click)="onAddProductButtonClick(searchItem)">
               Add
@@ -135,6 +139,7 @@
     <button
       type="submit"
       class="btn btn-primary"
+      [hidden]="dish !== null && !dish?.isOwner"
       [disabled]="!this.dishForm.get('name').value || dishProducts$.getValue().length <= 0"
       (click)="onSubmit()">
       Save

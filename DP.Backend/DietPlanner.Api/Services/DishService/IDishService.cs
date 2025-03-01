@@ -16,6 +16,8 @@ namespace DietPlanner.Api.Services.DishService
 
         Task<List<Dish>> GetAllUserDishes(string userId);
 
+        Task<List<Dish>> GetAllAvailableDishes(string userId);
+
         Task<IEnumerable<DishProducts>> GetDishProducts(int dishId);
 
         Task<DatabaseActionResult<DishDTO>> Create(PutDishRequest dish, string userId);

@@ -73,16 +73,24 @@
           </td>
           <td>
             <div class="button-group">
-              <button type="button" class="btn edit-button-icon" (click)="onEditButtonClick(dish.id)">
+              <button *ngIf="dish?.isOwner"
+                      [ngbTooltip]="'Edit'"
+                      type="button" class="btn edit-button-icon"
+                      (click)="onEditButtonClick(dish.id)">
                 <i class="bi bi-pen"></i>
               </button>
-              <button
+              <button *ngIf="dish?.isOwner"
+                [ngbTooltip]="'Delete'"
                 type="button"
                 class="btn delete-button-icon text-danger"
                 (click)="onDeleteButtonClick(dish.id)"
                 data-bs-toggle="modal"
                 data-bs-target="#deleteDishConfirmationModal">
                 <i class="bi bi-x-lg"></i>
+              </button>
+
+              <button type="button" [ngbTooltip]="'Show'" *ngIf="!dish.isOwner" class="btn edit-button-icon" (click)="onPreviewButtonClick(dish.id)">
+                <i class="bi bi-box-arrow-up-right"></i>
               </button>
             </div>
           </td>
