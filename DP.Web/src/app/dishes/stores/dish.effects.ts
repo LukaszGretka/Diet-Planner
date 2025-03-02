@@ -9,6 +9,7 @@ import * as MealCalendarActions from './../../meals-calendar/stores/meals-calend
 import { Router } from '@angular/router';
 import { DishState } from './dish.state';
 import { Store } from '@ngrx/store';
+import {getDishByNameRequest} from "./dish.actions";
 
 @Injectable()
 export class DishEffects {
@@ -85,6 +86,20 @@ export class DishEffects {
     {
       dispatch: false,
     },
+  );
+
+  getDishByNameRequestEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DishActions.getDishByNameRequest),
+      exhaustMap(({ payload }) => {
+        return this.dishService.getDishByName(payload.name).pipe(
+          switchMap(() =>
+            of(DishActions.getDishByNameRequestSuccess()),
+          ),
+          catchError(error => of(DishActions.getDishByNameRequestFailed(error))),
+        );
+      }),
+    ),
   );
 
   editDishRequestEffect$ = createEffect(() =>

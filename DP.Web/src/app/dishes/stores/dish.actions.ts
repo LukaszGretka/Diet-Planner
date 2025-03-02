@@ -11,6 +11,10 @@ export const saveDishRequest = createAction('Save dish request', prop<{ dish: Di
 export const saveDishRequestSuccess = createAction('Save dish request success', prop<{ callbackMealDish: any }>());
 export const saveDishRequestFailed = createAction('Save dish request failed', prop<{ error: number }>());
 
+export const getDishByNameRequest = createAction('Get dish by name request', prop<{ name: string}>());
+export const getDishByNameRequestSuccess = createAction('Get dish by name request success');
+export const getDishByNameRequestFailed = createAction('Get dish by name request failed', prop<{ error: number }>());
+
 export const editDishRequest = createAction('Edit dish request', prop<{ dish: Dish; returnUrl: string }>());
 export const editDishRequestSuccess = createAction(
   'Edit dish request success',

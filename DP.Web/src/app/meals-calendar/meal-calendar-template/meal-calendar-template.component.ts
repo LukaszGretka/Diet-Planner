@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { BehaviorSubject, Observable, OperatorFunction, debounceTime, distinctUntilChanged, map, take } from 'rxjs';
+import { BehaviorSubject, Observable, OperatorFunction, debounceTime, distinctUntilChanged, map, of, switchMap, take } from 'rxjs';
 import * as MealCalendarActions from './../stores/meals-calendar.actions';
-import * as DishActions from './../../dishes/stores/dish.actions';
 import { MealCalendarState } from '../stores/meals-calendar.state';
 import { Store } from '@ngrx/store';
 import { MealType } from '../models/meal-type';
@@ -12,6 +11,10 @@ import { DishProduct } from 'src/app/dishes/models/dish-product';
 import { DishState } from 'src/app/dishes/stores/dish.state';
 import * as DishSelectors from './../../dishes/stores/dish.selectors';
 import { Dish } from 'src/app/dishes/models/dish';
+import * as ProductsActions from './../../products/stores/products.actions';
+import * as DishActions from '../../dishes/stores/dish.actions';
+import * as ProductSelectors from "../../products/stores/products.selectors";
+import {ProductsState} from "../../products/stores/products.state";
 
 @UntilDestroy()
 @Component({
@@ -29,9 +32,9 @@ export class MealCalendarTemplateComponent implements OnInit {
   @Input()
   public mealType: MealType;
 
-  //TODO: taking list of products might be long (need to find better solution)
-  // public allProducts$ = this.store.select(ProductSelectors.getCallbackMealProduct);
+  //TODO: taking list of dishes might be long (need to find better solution)
   public allDishes$ = this.dishStore.select(DishSelectors.getDishes);
+  public allProducts$ = this.productStore.select(ProductSelectors.getAllProducts);
 
   public searchItem: string;
   public defaultPortionSize = 100; //in grams
@@ -42,13 +45,14 @@ export class MealCalendarTemplateComponent implements OnInit {
   constructor(
     private store: Store<MealCalendarState>,
     private dishStore: Store<DishState>,
+    private productStore: Store<ProductsState>,
     private router: Router,
     private modalService: NgbModal,
   ) { }
 
   ngOnInit(): void {
     this.dishStore.dispatch(DishActions.loadDishesRequest());
-    //this.store.dispatch(ProductsActions.getAllProductsRequest());
+    this.productStore.dispatch(ProductsActions.getAllProductsRequest());
     this.mealMacroSummary$ = this.dishes$.pipe(
       map(dishes =>
         dishes.reduce(
@@ -69,15 +73,15 @@ export class MealCalendarTemplateComponent implements OnInit {
 
   // Update local products list for particular collection given in parameter.
   public onAddDishOrProductButtonClick(behaviorSubject: BehaviorSubject<any>, dishName: string, content: any): void {
-    if (dishName) {
-      const foundDishes: Dish[] = this.searchForDishByName(dishName);
-      if (foundDishes.length > 0) {
-        this.addFoundDish(behaviorSubject, foundDishes);
-        this.searchItem = '';
-      } else {
-        this.modalService.open(content);
-      }
-    }
+    // if (dishName) {
+    //   const foundDishes: Dish[] = this.searchForDishByName(dishName);
+    //   if (foundDishes.length > 0) {
+    //     this.addFoundDish(behaviorSubject, foundDishes);
+    //     this.searchItem = '';
+    //   } else {
+    //     this.modalService.open(content);
+    //   }
+    // }
   }
 
   public onCancelModalClick() {
@@ -115,26 +119,27 @@ export class MealCalendarTemplateComponent implements OnInit {
     this.router.navigateByUrl(`dishes/edit/${dish.id}?redirectUrl=${this.router.url}`);
   }
 
-  public searchDish: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  public search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
     text$.pipe(
-      debounceTime(200),
+      debounceTime(300),
       distinctUntilChanged(),
-      map(searchText =>
-        searchText.length < 1
-          ? []
-          : this.searchForDishByName(searchText)
-            .slice(0, 10)
-            .map(dish => dish.name),
-      ),
+      switchMap(searchText => {
+        if(searchText.length < 2){
+          return of([]);
+        }
+
+        this.store.dispatch(DishActions.getDishByNameRequest({name: searchText}))
+        this.store.dispatch(ProductsActions.getProductByNameRequest({name: searchText}))
+
+        return this.combineResults();
+      }));
+
+  private combineResults(): Observable<any[]> {
+    return this.allProducts$.pipe(
+      switchMap(products => this.allDishes$.pipe(
+        map(dishes => [...products, ...dishes])
+      ))
     );
-
-  private searchForDishByName(searchText: string): Dish[] {
-    let foundDishes: Dish[];
-    this.allDishes$.pipe(take(1)).subscribe(dishes => {
-      foundDishes = dishes.filter(dish => dish.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
-    });
-
-    return foundDishes;
   }
 
   private addFoundDish(behaviorSubject: BehaviorSubject<any>, foundDishes: Dish[]): void {
