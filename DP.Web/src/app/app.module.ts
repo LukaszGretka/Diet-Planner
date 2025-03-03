@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { NavBarComponent } from './core/components/nav-bar/nav-bar.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProductsComponent } from './products/products.component';
 import { BodyProfileComponent } from './body-profile/body-profile.component';
@@ -33,7 +33,7 @@ import { AuthGuardService } from './auth/auth-guard.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { AccountReducer } from './account/stores/account.reducer';
 import { FormErrorComponent } from './shared/form-error/form-error.component';
-import { MealCalendarTemplateComponent } from './meals-calendar/meal-calendar-template/meal-calendar-template.component';
+import { MealCalendarTemplateComponent } from './meals-calendar/components/meal-calendar-template/meal-calendar-template.component';
 import { NgChartsModule } from 'ng2-charts';
 import { ProductsReducer } from './products/stores/products.reducer';
 import { ProductsEffects } from './products/stores/products.effects';
@@ -54,6 +54,7 @@ import { StatsCanvasComponent } from './dashboard/stats-canvas/stats-canvas.comp
 import { DashboardEffects } from './dashboard/stores/dashboard.effects';
 import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
 import { DishPreviewComponent } from './dishes/dish-preview/dish-preview.component';
+import { SearchInputComponent } from './meals-calendar/components/search-input/search-input.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { DishPreviewComponent } from './dishes/dish-preview/dish-preview.compone
     DishAddComponent,
     DishEditComponent,
     DishPreviewComponent,
-    StatsCanvasComponent
+    StatsCanvasComponent,
+    SearchInputComponent
   ],
   imports: [
     BrowserModule,

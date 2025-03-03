@@ -1,20 +1,30 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { BehaviorSubject, Observable, OperatorFunction, debounceTime, distinctUntilChanged, map, of, switchMap, take } from 'rxjs';
-import * as MealCalendarActions from './../stores/meals-calendar.actions';
-import { MealCalendarState } from '../stores/meals-calendar.state';
+import {
+  BehaviorSubject,
+  Observable,
+  OperatorFunction,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  of,
+  switchMap,
+  take,
+  combineLatest,
+} from 'rxjs';
+import * as MealCalendarActions from '../../stores/meals-calendar.actions';
+import { MealCalendarState } from '../../stores/meals-calendar.state';
 import { Store } from '@ngrx/store';
-import { MealType } from '../models/meal-type';
+import { MealType } from '../../models/meal-type';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DishProduct } from 'src/app/dishes/models/dish-product';
 import { DishState } from 'src/app/dishes/stores/dish.state';
-import * as DishSelectors from './../../dishes/stores/dish.selectors';
 import { Dish } from 'src/app/dishes/models/dish';
-import * as ProductsActions from './../../products/stores/products.actions';
-import * as DishActions from '../../dishes/stores/dish.actions';
-import * as ProductSelectors from "../../products/stores/products.selectors";
-import {ProductsState} from "../../products/stores/products.state";
+import * as ProductsActions from '../../../products/stores/products.actions';
+import * as DishActions from '../../../dishes/stores/dish.actions';
+import {ProductsState} from "../../../products/stores/products.state";
+import { BaseItem, ItemType } from 'src/app/shared/models/base-item';
 
 @UntilDestroy()
 @Component({
@@ -32,10 +42,6 @@ export class MealCalendarTemplateComponent implements OnInit {
   @Input()
   public mealType: MealType;
 
-  //TODO: taking list of dishes might be long (need to find better solution)
-  public allDishes$ = this.dishStore.select(DishSelectors.getDishes);
-  public allProducts$ = this.productStore.select(ProductSelectors.getAllProducts);
-
   public searchItem: string;
   public defaultPortionSize = 100; //in grams
   public portionValue = this.defaultPortionSize;
@@ -46,8 +52,7 @@ export class MealCalendarTemplateComponent implements OnInit {
     private store: Store<MealCalendarState>,
     private dishStore: Store<DishState>,
     private productStore: Store<ProductsState>,
-    private router: Router,
-    private modalService: NgbModal,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -71,24 +76,6 @@ export class MealCalendarTemplateComponent implements OnInit {
     );
   }
 
-  // Update local products list for particular collection given in parameter.
-  public onAddDishOrProductButtonClick(behaviorSubject: BehaviorSubject<any>, dishName: string, content: any): void {
-    // if (dishName) {
-    //   const foundDishes: Dish[] = this.searchForDishByName(dishName);
-    //   if (foundDishes.length > 0) {
-    //     this.addFoundDish(behaviorSubject, foundDishes);
-    //     this.searchItem = '';
-    //   } else {
-    //     this.modalService.open(content);
-    //   }
-    // }
-  }
-
-  public onCancelModalClick() {
-    this.searchItem = '';
-    this.modalService.dismissAll();
-  }
-
   // Remove dish from local list by given index
   public onRemoveDishButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): void {
     const dishesBehaviorSubject = behaviorSubject as BehaviorSubject<Dish[]>;
@@ -107,39 +94,10 @@ export class MealCalendarTemplateComponent implements OnInit {
     );
   }
 
-  public addNewDishModalButtonClick(): void {
-    this.modalService.dismissAll();
-    this.store.dispatch(DishActions.setCallbackMealDish({ dishName: this.searchItem, mealType: this.mealType }));
-    this.router.navigateByUrl(`dishes/dish-add?redirectUrl=${this.router.url}`);
-  }
-
-  public onEditDishButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): void {
+  public async onEditDishButtonClick(behaviorSubject: BehaviorSubject<any>, index: number): Promise<void> {
     const dishesBehaviorSubject = behaviorSubject as BehaviorSubject<Dish[]>;
     const dish: Dish = dishesBehaviorSubject.getValue()[index];
-    this.router.navigateByUrl(`dishes/edit/${dish.id}?redirectUrl=${this.router.url}`);
-  }
-
-  public search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(searchText => {
-        if(searchText.length < 2){
-          return of([]);
-        }
-
-        this.store.dispatch(DishActions.getDishByNameRequest({name: searchText}))
-        this.store.dispatch(ProductsActions.getProductByNameRequest({name: searchText}))
-
-        return this.combineResults();
-      }));
-
-  private combineResults(): Observable<any[]> {
-    return this.allProducts$.pipe(
-      switchMap(products => this.allDishes$.pipe(
-        map(dishes => [...products, ...dishes])
-      ))
-    );
+    await this.router.navigateByUrl(`dishes/edit/${dish.id}?redirectUrl=${this.router.url}`);
   }
 
   private addFoundDish(behaviorSubject: BehaviorSubject<any>, foundDishes: Dish[]): void {
@@ -157,13 +115,13 @@ export class MealCalendarTemplateComponent implements OnInit {
     );
   }
 
-  public onPortionValueChange(customizedPoritonSize: number, dishId: number, mealDishId: number, productId: number) {
+  public onPortionValueChange(customizedPortionSize: number, dishId: number, mealDishId: number, productId: number) {
     this.store.dispatch(
       DishActions.updatePortionRequest({
         dishId: dishId,
         productId: productId,
         mealDishId: mealDishId,
-        customizedPortionMultiplier: customizedPoritonSize / this.defaultPortionSize,
+        customizedPortionMultiplier: customizedPortionSize / this.defaultPortionSize,
         date: this.selectedDate,
       }),
     );
@@ -179,5 +137,30 @@ export class MealCalendarTemplateComponent implements OnInit {
     });
 
     return dishMacro;
+  }
+
+  public itemAddedToSearchBar(item: BaseItem){
+    console.log('added: ' + item.name);
+
+
+    this.store.dispatch(
+      MealCalendarActions.addMealRequest({
+        mealByDay: {
+          date: this.selectedDate,
+          dishes: dishBehaviorSubject.getValue(),
+          mealTypeId: this.mealType,
+        },
+      }),
+    );
+
+    // if(searchItem.itemType === ItemType.Product){
+    //   console.log('should add product')
+    //   //TODO: Emit product to be added in meal-calendar-component
+    // }
+    //
+    // if(searchItem.itemType === ItemType.Dish) {
+    //   console.log('should add dish')
+    //   //TODO: Emit dish to be added in meal-calendar-component
+    // }
   }
 }

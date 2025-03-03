@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../account/services/account.service';
+import { AccountService } from '../../../account/services/account.service';
 import { Observable } from 'rxjs';
-import { User } from '../account/models/user';
+import { User } from '../../../account/models/user';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()

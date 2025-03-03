@@ -1,12 +1,10 @@
 import { DishProduct } from './dish-product';
+import { BaseItem } from '../../shared/models/base-item';
 
-export class Dish {
-  id: number;
+export class Dish extends BaseItem {
   mealDishId: number;
-  name: string;
-  description: string;
-  imagePath: string;
   products: DishProduct[];
   exposeToOtherUsers: boolean;
   isOwner: boolean;
+  readonly type = "dish";
 }

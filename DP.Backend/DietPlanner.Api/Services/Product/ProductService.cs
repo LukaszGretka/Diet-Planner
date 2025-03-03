@@ -1,5 +1,6 @@
 ﻿using DietPlanner.Api.Database;
 using DietPlanner.Api.Database.Models;
+using DietPlanner.Api.DTO.Products;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -69,9 +70,29 @@ namespace DietPlanner.Api.Services
             return new DatabaseActionResult<Product>(true);
         }
 
-        public async Task<List<Product>> GetAll()
+        public async Task<List<ProductDTO>> GetAll()
         {
-            return await _databaseContext.Products.AsNoTracking().ToListAsync();
+            List<Product> products = await _databaseContext.Products.AsNoTracking().ToListAsync();
+
+            List<ProductDTO> productsDTO = new List<ProductDTO>();
+            foreach (Product product in products)
+            {
+                productsDTO.Add(new ProductDTO
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    ItemType = DTO.ItemType.Product,
+                    Description = product.Description,
+                    BarCode = product.BarCode,
+                    ImagePath = product.ImagePath,
+                    Calories = (float)product.Calories,
+                    Carbohydrates = (float)product.Carbohydrates,
+                    Proteins = (float)product.Proteins,
+                    Fats = (float)product.Fats
+                });
+            }
+
+            return productsDTO;
         }
 
         public async Task<Product> GetById(int id)

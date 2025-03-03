@@ -1,4 +1,5 @@
-﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
+﻿using DietPlanner.Api.DTO.Products;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Services;
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +24,7 @@ namespace DietPlanner.Api.Controllers
 
         [HttpGet]
         [Route("all")]
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public async Task<IEnumerable<ProductDTO>> GetAllAsync()
         {
             return await _productService.GetAll();
         }

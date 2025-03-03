@@ -1,4 +1,5 @@
-﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
+﻿using DietPlanner.Api.DTO.Products;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Shared.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace DietPlanner.Api.Services
 {
     public interface IProductService
     {
-        Task<List<Product>> GetAll();
+        Task<List<ProductDTO>> GetAll();
 
         Task<Product> GetById(int id);
 

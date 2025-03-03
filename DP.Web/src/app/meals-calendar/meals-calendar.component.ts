@@ -29,11 +29,11 @@ import { DishService } from '../dishes/services/dish.service';
 export class MealsCalendarComponent implements OnInit {
   //TODO move to effect
   //may require refactor if list of products will be long (need to test it)
-  public productsNames$: Observable<string[]> = this.productService
-    .getProductsWithPortion()
-    .pipe(map(products => products.map(product => product.name)));
+  // public productsNames$: Observable<string[]> = this.productService
+  //   .getProductsWithPortion()
+  //   .pipe(map(products => products.map(product => product.name)));
 
-  public currentProducts: string[];
+  // public currentProducts: string[];
   public totalCalories: number;
 
   public dailyMealsOverview$ = this.store.select(MealCalendarSelectors.getDailyMealsOverview);
@@ -105,9 +105,9 @@ export class MealsCalendarComponent implements OnInit {
       };
     });
 
-    this.productsNames$.pipe(untilDestroyed(this)).subscribe(productNames => {
-      this.currentProducts = productNames;
-    });
+    // this.productsNames$.pipe(untilDestroyed(this)).subscribe(productNames => {
+    //   this.currentProducts = productNames;
+    // });
 
     this.callbackMealDish$.pipe(take(1)).subscribe(callback => {
       if (!callback) {
