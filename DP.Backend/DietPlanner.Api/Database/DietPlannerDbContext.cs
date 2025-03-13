@@ -83,6 +83,8 @@ namespace DietPlanner.Api.Database
 
         public DbSet<MealDish> MealDishes { get; set; }
 
+        public DbSet<MealProduct> MealProducts { get; set; }
+
         public DbSet<DishProducts> DishProducts { get; set; }
 
         public DbSet<Measurement> Measurements { get; set; }

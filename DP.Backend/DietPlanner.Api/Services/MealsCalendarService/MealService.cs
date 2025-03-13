@@ -2,6 +2,7 @@
 using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Shared.Models;
@@ -85,8 +86,6 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(PutMealRequest mealRequest, string userId)
         {
-            string formattedDate = mealRequest.Date.ToDatabaseDateFormat();
-
             var dishIds = mealRequest.Dishes.Select(dish => dish.Id).ToList();
 
             if (!dishIds.Any())
@@ -144,6 +143,32 @@ namespace DietPlanner.Api.Services.MealsCalendar
             }
 
             return new DatabaseActionResult<Meal>(true, obj: newMeal);
+        }
+
+        public async Task<DatabaseActionResult<Meal>> UpdateMealProduct(MealProductDto mealProductRequest, string userId)
+        {
+            var existingMeal = await _databaseContext.Meals
+                .Where(meal => meal.Date.Date == mealProductRequest.Date.Date
+                    && meal.MealType == (int)mealProductRequest.MealTypeId)
+                .SingleOrDefaultAsync();
+
+
+            //Meal newMeal = new()
+            //{
+            //    Date = mealProduct.Date.Date,
+            //    MealType = (int)mealProduct.MealTypeId,
+            //    UserId = userId
+            //};
+
+
+            //_databaseContext.MealProducts.Add(new MealProduct
+            //{
+            //    Meal = newMeal,
+            //    Product 
+            //});
+
+            // TODO: Implement updating meal product
+            return new DatabaseActionResult<Meal>(true, obj: null);
         }
 
         private async Task<DatabaseActionResult<Meal>> UpdateMealDishes(Meal existingMeal, PutMealRequest mealRequest)
@@ -248,5 +273,6 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             return new DatabaseActionResult<Meal>(true, obj: null);
         }
+
     }
 }

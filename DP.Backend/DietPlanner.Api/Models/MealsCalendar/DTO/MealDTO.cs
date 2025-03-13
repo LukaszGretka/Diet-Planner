@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.DTO.Dishes;
+using DietPlanner.Api.DTO.Products;
 
 namespace DietPlanner.Api.Models.MealsCalendar.DTO
 {
@@ -16,6 +17,16 @@ namespace DietPlanner.Api.Models.MealsCalendar.DTO
     {
         public DateTime Date { get; set; }
     }
+
+    public class MealProductDto
+    {
+        public DateTime Date { get; set; }
+
+        public MealTypeEnum MealTypeId { get; set; }
+
+        public ProductDTO Product { get; set; }
+    }
+
 
     public enum MealTypeEnum
     {
