@@ -1,9 +1,13 @@
 ﻿using DietPlanner.Api.Database;
 using DietPlanner.Api.Database.Models;
+using DietPlanner.Api.DTO;
 using DietPlanner.Api.DTO.Dishes;
+using DietPlanner.Api.DTO.Products;
+using DietPlanner.Api.Enums;
 using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
+using DietPlanner.Api.Models.MealsCalendar.Requests;
 using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +42,11 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 .Where(md => meals.Select(m => m.Id).Contains(md.MealId))
                 .ToListAsync();
 
+            var mealProducts = await _databaseContext.MealProducts
+                .Where(md => meals.Select(m => m.Id).Contains(md.MealId))
+                .Select(x => _databaseContext.Products.Single(p => x.Id == p.Id))
+                .ToListAsync();
+
             var dishes = await _databaseContext.Dishes
                 .Where(d => mealDishes.Select(md => md.DishId).Contains(d.Id))
                 .ToListAsync();
@@ -54,11 +63,27 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 .Where(cdp => mealDishes.Select(md => md.Id).Contains(cdp.MealDishId))
                 .ToListAsync();
 
+
             var mealDtos = meals
                 .GroupBy(m => new { m.MealType })
                 .Select(g => new MealDto
                 {
-                    MealTypeId = (MealTypeEnum)g.Key.MealType,
+                    MealType = (MealType)g.Key.MealType,
+                    Products = g.SelectMany(m => _databaseContext.MealProducts.Where(mp => mp.MealId == m.Id))
+                        .Select(mp => mp.ProductId).SelectMany(pId => _databaseContext.Products.Where(p => p.Id == pId)).
+                            Select(product => new ProductDTO
+                            {
+                                Id = product.Id,
+                                Name = product.Name,
+                                Description = product.Description,
+                                ImagePath = product.ImagePath,
+                                ItemType = ItemType.Product,
+                                BarCode = product.BarCode,
+                                Calories = (float)product.Calories,
+                                Carbohydrates = (float)product.Carbohydrates,
+                                Proteins = (float)product.Proteins,
+                                Fats = (float)product.Fats
+                            }).ToList(),
                     Dishes = g.SelectMany(m => mealDishes.Where(md => md.MealId == m.Id)
                         .Select(md => new DishDTO
                         {
@@ -84,6 +109,90 @@ namespace DietPlanner.Api.Services.MealsCalendar
             return mealDtos;
         }
 
+        public async Task<DatabaseActionResult<Meal>> AddMealItem(AddMealItemRequest addMealItemRequest, string userId)
+        {
+            Meal foundMeal = await _databaseContext.Meals
+                .Where(meal => meal.Date.Date == addMealItemRequest.Date.Date && meal.MealType == (int)addMealItemRequest.MealType)
+                .SingleOrDefaultAsync();
+
+            foundMeal ??= CreateNewMeal(addMealItemRequest.Date, addMealItemRequest.MealType, userId);
+
+            return addMealItemRequest.ItemType switch
+            {
+                ItemType.Product => await AddProductToMeal(foundMeal, addMealItemRequest.ItemId),
+                ItemType.Dish => await AddDishToMeal(foundMeal, addMealItemRequest.ItemId),
+                _ => new DatabaseActionResult<Meal>(false, obj: null),
+            };
+        }
+
+        private async Task<DatabaseActionResult<Meal>> AddProductToMeal(Meal meal, int itemId)
+        {
+            Product product = _databaseContext.Products.Find(itemId);
+
+            if (product is null)
+            {
+                return new DatabaseActionResult<Meal>(false, obj: null, message: $"Product with id {itemId} can't be found");
+            }
+
+            _databaseContext.MealProducts.Add(new MealProduct
+            {
+                ProductId = itemId,
+                Meal = meal,
+                Product = product,
+                MealId = meal.Id
+            });
+
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Meal>(false, exception: ex);
+            }
+
+            return new DatabaseActionResult<Meal>(true, obj: meal);
+        }
+
+        private async Task<DatabaseActionResult<Meal>> AddDishToMeal(Meal meal, int itemId)
+        {
+            Dish dish = _databaseContext.Dishes.Find(itemId);
+
+            if (dish is null)
+            {
+                return new DatabaseActionResult<Meal>(false, obj: null, message: $"Dish with id {itemId} can't be found");
+            }
+
+            _databaseContext.MealDishes.Add(new MealDish
+            {
+                Meal = meal,
+                Dish = dish
+            });
+
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Meal>(false, exception: ex);
+            }
+
+            return new DatabaseActionResult<Meal>(true, obj: meal);
+        }
+
+        private static Meal CreateNewMeal(DateTime date, MealType mealType, string userId)
+        {
+            return new()
+            {
+                Date = date,
+                MealType = (int)mealType,
+                UserId = userId
+            };
+        }
+
         public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(PutMealRequest mealRequest, string userId)
         {
             var dishIds = mealRequest.Dishes.Select(dish => dish.Id).ToList();
@@ -95,7 +204,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             var existingMeal = await _databaseContext.Meals
                 .Where(meal => meal.Date.Date == mealRequest.Date.Date
-                    && meal.MealType == (int)mealRequest.MealTypeId)
+                    && meal.MealType == (int)mealRequest.MealType)
                 .SingleOrDefaultAsync();
 
 
@@ -107,7 +216,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
             Meal newMeal = new()
             {
                 Date = mealRequest.Date.Date,
-                MealType = (int)mealRequest.MealTypeId,
+                MealType = (int)mealRequest.MealType,
                 UserId = userId
             };
 
@@ -144,33 +253,6 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             return new DatabaseActionResult<Meal>(true, obj: newMeal);
         }
-
-        public async Task<DatabaseActionResult<Meal>> UpdateMealProduct(MealProductDto mealProductRequest, string userId)
-        {
-            var existingMeal = await _databaseContext.Meals
-                .Where(meal => meal.Date.Date == mealProductRequest.Date.Date
-                    && meal.MealType == (int)mealProductRequest.MealTypeId)
-                .SingleOrDefaultAsync();
-
-
-            //Meal newMeal = new()
-            //{
-            //    Date = mealProduct.Date.Date,
-            //    MealType = (int)mealProduct.MealTypeId,
-            //    UserId = userId
-            //};
-
-
-            //_databaseContext.MealProducts.Add(new MealProduct
-            //{
-            //    Meal = newMeal,
-            //    Product 
-            //});
-
-            // TODO: Implement updating meal product
-            return new DatabaseActionResult<Meal>(true, obj: null);
-        }
-
         private async Task<DatabaseActionResult<Meal>> UpdateMealDishes(Meal existingMeal, PutMealRequest mealRequest)
         {
             try
@@ -258,7 +340,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
         private async Task<DatabaseActionResult<Meal>> RemoveMealEntry(PutMealRequest mealRequest, DateTime date)
         {
             var existingMeal = await _databaseContext.Meals
-                .Where(meal => meal.Date.Date == date.Date && meal.MealType == (int)mealRequest.MealTypeId)
+                .Where(meal => meal.Date.Date == date.Date && meal.MealType == (int)mealRequest.MealType)
                 .FirstOrDefaultAsync();
 
             var mealDishToRemove = await _databaseContext.MealDishes.Where(md => md.MealId == existingMeal.Id).SingleOrDefaultAsync();

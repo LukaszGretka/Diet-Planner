@@ -194,7 +194,7 @@ export class DishEffects {
             switchMap(() =>
               of(
                 DishActions.updatePortionRequestSuccess(),
-                MealCalendarActions.getMealsRequest({ date: payload.date }),
+                MealCalendarActions.getAllMealsRequest({ date: payload.date }),
               ),
             ),
             catchError(error => of(DishActions.updatePortionRequestFailed(error))),

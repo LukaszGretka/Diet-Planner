@@ -46,7 +46,7 @@ export class ProductsComponent implements OnInit {
   }
 
   onEditButtonClick($event: any): void {
-    this.router.navigate(['products/edit/' + ($event.target.parentElement as HTMLInputElement).value]);
+    this.router.navigate(['product/edit/' + ($event.target.parentElement as HTMLInputElement).value]);
   }
 
   onOpenConfirmationModal($event: any) {

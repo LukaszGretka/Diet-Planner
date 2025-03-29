@@ -10,10 +10,10 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 export class MealCalendarEffects {
   getMealsEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(MealCalendarActions.getMealsRequest),
+      ofType(MealCalendarActions.getAllMealsRequest),
       exhaustMap(({ payload }) => {
-        return this.mealsCalendarService.getDailyMeals(payload.date).pipe(
-          switchMap(result => of(MealCalendarActions.getMealsRequestSuccess({ result }))),
+        return this.mealsCalendarService.getAllMeals(payload.date).pipe(
+          switchMap(result => of(MealCalendarActions.getAllMealsRequestSuccess({ result }))),
           catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
@@ -24,8 +24,8 @@ export class MealCalendarEffects {
     this.actions$.pipe(
       ofType(MealCalendarActions.addMealRequest),
       mergeMap(({ payload }) => {
-        return this.mealsCalendarService.addDialyMeal(payload.mealByDay).pipe(
-          switchMap(() => of(MealCalendarActions.addMealRequestSuccess({ addedDate: payload.mealByDay.date }))),
+        return this.mealsCalendarService.addItemToMeal(payload.addMealRequest).pipe(
+          switchMap(() => of(MealCalendarActions.addMealRequestSuccess({ addedDate: payload.addMealRequest.date }))),
           catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
@@ -37,8 +37,8 @@ export class MealCalendarEffects {
       ofType(MealCalendarActions.addMealRequestSuccess),
       tap(() => this.notificationService.showSuccessToast('Changes saved', 'Meals have been successfully updated.')),
       exhaustMap(({ payload }) => {
-        return this.mealsCalendarService.getDailyMeals(payload.addedDate).pipe(
-          switchMap(result => of(MealCalendarActions.getMealsRequestSuccess({ result }))),
+        return this.mealsCalendarService.getAllMeals(payload.addedDate).pipe(
+          switchMap(result => of(MealCalendarActions.getAllMealsRequestSuccess({ result }))),
           catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),

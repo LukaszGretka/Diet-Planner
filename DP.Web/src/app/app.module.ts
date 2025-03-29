@@ -33,7 +33,7 @@ import { AuthGuardService } from './auth/auth-guard.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { AccountReducer } from './account/stores/account.reducer';
 import { FormErrorComponent } from './shared/form-error/form-error.component';
-import { MealCalendarTemplateComponent } from './meals-calendar/components/meal-calendar-template/meal-calendar-template.component';
+import { MealSectionComponent } from './meals-calendar/components/meal-section/meal-section.component';
 import { NgChartsModule } from 'ng2-charts';
 import { ProductsReducer } from './products/stores/products.reducer';
 import { ProductsEffects } from './products/stores/products.effects';
@@ -55,6 +55,9 @@ import { DashboardEffects } from './dashboard/stores/dashboard.effects';
 import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
 import { DishPreviewComponent } from './dishes/dish-preview/dish-preview.component';
 import { SearchInputComponent } from './meals-calendar/components/search-input/search-input.component';
+import { DateSelectionComponent } from './meals-calendar/components/date-selection/date-selection.component';
+import { MealItemRowComponent } from './meals-calendar/components/meal-section/meal-item-row/meal-item-row.component';
+import { MealItemSearchBarComponent } from './meals-calendar/components/meal-section/meal-item-search-bar/meal-item-search-bar.component';
 
 @NgModule({
   declarations: [
@@ -72,11 +75,11 @@ import { SearchInputComponent } from './meals-calendar/components/search-input/s
     MeasurementTemplateComponent,
     EditMeasurementComponent,
     MealsCalendarComponent,
+    DateSelectionComponent,
     UnauthorizedComponent,
     ErrorPageComponent,
     ToastComponent,
     FormErrorComponent,
-    MealCalendarTemplateComponent,
     ConfirmEmailComponent,
     ConfirmEmailRequiredComponent,
     DishesComponent,
@@ -85,7 +88,7 @@ import { SearchInputComponent } from './meals-calendar/components/search-input/s
     DishEditComponent,
     DishPreviewComponent,
     StatsCanvasComponent,
-    SearchInputComponent
+    MealItemSearchBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -115,12 +118,11 @@ import { SearchInputComponent } from './meals-calendar/components/search-input/s
       DashboardEffects,
     ]),
     StoreDevtoolsModule.instrument({ connectInZone: true }),
+    MealSectionComponent,
   ],
   providers: [AccountService, AuthGuardService],
   bootstrap: [AppComponent],
-  exports: [
-    DishTemplateComponent,
-  ],
+  exports: [DishTemplateComponent],
 })
 export class AppModule {
   constructor() {

@@ -1,5 +1,6 @@
 ﻿using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
+using DietPlanner.Api.Models.MealsCalendar.Requests;
 using DietPlanner.Api.Services.MealProductService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,12 +32,14 @@ namespace DietPlanner.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] PutMealRequest putMealRequest)
+        // new endpoint
+        [HttpPost]
+        [Route("add-meal-item")]
+        public async Task<ActionResult<DailyMealsDto>> AddMealItemRequest([FromBody] AddMealItemRequest addMealItemRequest)
         {
             string userId = HttpContext.GetUserId();
 
-            var result = await _mealsCalendarService.AddOrUpdateMeal(putMealRequest, userId);
+            var result = await _mealsCalendarService.AddMealItem(addMealItemRequest, userId);
 
             if (result.Exception != null)
             {
@@ -46,19 +49,36 @@ namespace DietPlanner.Api.Controllers
             return Ok(result.Obj);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<DailyMealsDto>> UpdateMealProduct([FromBody] MealProductDto mealProduct)
-        {
-            string userId = HttpContext.GetUserId();
 
-            var result = await _mealsCalendarService.UpdateMealProduct(mealProduct, userId);
 
-            if (result.Exception != null)
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
+        //[HttpPut]
+        //public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] PutMealRequest putMealRequest)
+        //{
+        //    string userId = HttpContext.GetUserId();
 
-            return Ok(result.Obj);
-        }
+        //    var result = await _mealsCalendarService.AddOrUpdateMeal(putMealRequest, userId);
+
+        //    if (result.Exception != null)
+        //    {
+        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        //    }
+
+        //    return Ok(result.Obj);
+        //}
+
+        //[HttpPut]
+        //public async Task<ActionResult<DailyMealsDto>> UpdateMealProduct([FromBody] MealProductDto mealProduct)
+        //{
+        //    string userId = HttpContext.GetUserId();
+
+        //    var result = await _mealsCalendarService.UpdateMealProduct(mealProduct, userId);
+
+        //    if (result.Exception != null)
+        //    {
+        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        //    }
+
+        //    return Ok(result.Obj);
+        //}
     }
 }

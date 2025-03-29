@@ -4,11 +4,9 @@
   flex-direction: row;
 }
 
-
 .meal-type-header {
   font-size: 1.25rem;
   color: rgba(255, 255, 255, .55);
   background-color: #212529;
   padding: 0.25rem 0.25rem 0.25rem 0.5rem;
-
 }

@@ -15,17 +15,23 @@ import * as ProductSelectors from '../../../products/stores/products.selectors';
 import { Store } from '@ngrx/store';
 import { DishState } from '../../../dishes/stores/dish.state';
 import { ProductsState } from '../../../products/stores/products.state';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { BaseItem, ItemType } from '../../../shared/models/base-item';
 import { Dish } from '../../../dishes/models/dish';
 import { Product } from '../../../products/models/product';
 import * as MealCalendarActions from '../../stores/meals-calendar.actions';
 import { MealCalendarState } from '../../stores/meals-calendar.state';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
-  styleUrl: './search-input.component.css'
+  styleUrl: './search-input.component.css',
+  imports: [
+    NgbTypeahead,
+    FormsModule,
+  ],
+  standalone: true,
 })
 export class SearchInputComponent {
 

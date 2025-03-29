@@ -1,0 +1,37 @@
+<td class="table-light">
+  <img src="../../../../assets/images/product-placeholder.svg" class="img-fluid" style="width: 25px; height: 25px" />
+</td>
+<td class="table-light">{{ item.name }}</td>
+<td class="table-light">{{ item.description }}</td>
+<td class="table-light">{{ macrosWithCalories?.carbs | number : '1.0-1' }}g</td>
+<td class="table-light">{{ macrosWithCalories?.proteins | number : '1.0-1' }}g</td>
+<td class="table-light">{{ macrosWithCalories?.fats | number : '1.0-1' }}g</td>
+<td class="table-light">{{ macrosWithCalories?.calories | number : '1.0-1' }}kcal</td>
+<td style="min-width: 90px" class="table-light">
+  <ng-container *ngIf="item.itemType === 1">
+    <button
+      type="button"
+      id="collapse-show-button-{{ item.id }}-{{ item.itemType }}"
+      class="btn delete-button-icon text-secondary mx-0"
+      title="Show/Hide products"
+      data-bs-toggle="collapse"
+      [attr.data-bs-target]="'#collapse-' + item.itemType"
+      aria-controls="collapseExample">
+      <i class="bi bi-chevron-expand"></i>
+    </button>
+  </ng-container>
+  <button
+    type="button"
+    class="btn edit-button-icon text-secondary mx-0"
+    title="Edit meal item"
+    (click)="onEditItemButtonClick()">
+    <i class="bi bi-pencil-square"></i>
+  </button>
+  <button
+    type="button"
+    class="btn delete-button-icon text-danger mx-0"
+    title="Remove item from the meal"
+    (click)="onRemoveItemButtonClick()">
+    <i class="bi bi-x-lg"></i>
+  </button>
+</td>

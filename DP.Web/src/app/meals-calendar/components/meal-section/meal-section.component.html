@@ -1,0 +1,30 @@
+<div class="mb-4">
+  <table *ngIf="meal.dishes?.length > 0 || meal.products?.length > 0" class="table">
+    <thead>
+      <tr>
+        <th scope="col">Image</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Carbs</th>
+        <th scope="col">Proteins</th>
+        <th scope="col">Fats</th>
+        <th scope="col">Calories</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let dish of meal.dishes">
+        <tr app-meal-item-row [item]="dish"></tr>
+      </ng-container>
+      <ng-container *ngFor="let product of meal.products">
+        <tr app-meal-item-row [item]="product"></tr>
+      </ng-container>
+    </tbody>
+    <tbody>
+      <ng-container>
+        <tr app-meal-summary-row [meal]="meal"></tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <app-search-input (itemAddedEmitter)="itemAddedToSearchBar($event, meal.mealType)"></app-search-input>
+</div>

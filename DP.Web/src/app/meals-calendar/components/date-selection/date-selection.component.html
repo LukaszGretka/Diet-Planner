@@ -1,0 +1,17 @@
+<div class="d-flex flex-row bd-highlight">
+  <div class="p-2 bd-highlight">
+    <div class="input-group">
+      <input
+        class="form-control"
+        placeholder="Date"
+        name="dp"
+        [(ngModel)]="dateModel"
+        ngbDatepicker
+        #d="ngbDatepicker"
+        (dateSelect)="onDateSelection($event)" />
+      <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+        <i class="bi bi-calendar-date"></i>
+      </button>
+    </div>
+  </div>
+</div>
