@@ -2,7 +2,6 @@
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 
 namespace DietPlanner.Api.Benchmarks
 {
@@ -23,7 +22,7 @@ namespace DietPlanner.Api.Benchmarks
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             throw new NotImplementedException();
-            //var dbPath = "C:\\Users\\kamil\\source\\repos\\Diet-Planner\\DP.Backend\\DietPlannerDb.db";
+            //var dbPath = ""; // Path to the database
             //optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
     }
