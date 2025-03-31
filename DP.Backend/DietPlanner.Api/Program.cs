@@ -1,3 +1,5 @@
+using BenchmarkDotNet.Running;
+using DietPlanner.Api.Benchmarks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +15,7 @@ namespace DietPlanner.Api
     {
         public static void Main(string[] args)
         {
+            //BenchmarkRunner.Run<EfBenchmark>();
             CreateHostBuilder(args).Build().Run();
         }
 
