@@ -11,7 +11,8 @@
       <div class="container-lg m-4 col">
         <div *ngFor="let mealConfig of mealCalendarConfig">
           <div class="meal-type-header">{{ mealConfig.name }}</div>
-          <app-meal-section [meal]="(dailyMeals$ | async).meals[mealConfig.name]"> </app-meal-section>
+          <app-meal-section [meal]="(dailyMeals$ | async).meals[mealConfig.name]" [calendarDate]="selectedDate">
+          </app-meal-section>
         </div>
       </div>
     </div>

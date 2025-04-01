@@ -1,11 +1,17 @@
 <div class="d-flex bd-highlight my-3">
-  <input id="typeahead-basic" type="search" class="p-2 bd-highlight form-control"
-         [(ngModel)]="searchItem"
-         [resultFormatter]="baseItemFormatter"
-         [inputFormatter]="baseItemFormatter"
-         [ngbTypeahead]="search" placeholder="Start typing to search for a dish..." />
-  <button type="button" class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
-          (click)="onAddDishOrProductButtonClick(searchItem)">
+  <input
+    id="typeahead-basic"
+    type="search"
+    class="p-2 bd-highlight form-control"
+    [(ngModel)]="searchItem"
+    [resultFormatter]="baseItemFormatter"
+    [inputFormatter]="baseItemFormatter"
+    [ngbTypeahead]="search"
+    placeholder="Start typing to search for a dish or a product..." />
+  <button
+    type="button"
+    class="add-product-button p-2 flex-fill bd-highlight btn btn-primary"
+    (click)="onAddSearchItemAdd(searchItem); searchItem = null">
     Add
   </button>
 </div>
@@ -13,10 +19,14 @@
 <ng-template #confirmatioModal let-modal>
   <div class="modal-header">
     <h5 class="modal-title" id="ProductNoFoundModalLabel">Dish not found</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-            (click)="onCancelModalClick()"></button>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      (click)="onCancelModalClick()"></button>
   </div>
-  <div class="modal-body">Dish or product named '{{ this.searchItem }}' no found. Continue by adding it?</div>
+  <div class="modal-body">Dish or product '{{ this.searchItem }}' no found. Continue by adding it?</div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="onCancelModalClick()">
       Cancel

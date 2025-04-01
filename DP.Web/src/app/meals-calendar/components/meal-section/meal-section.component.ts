@@ -24,17 +24,11 @@ import { MacronutrientsWithCalorties } from '../../models/macronutrients';
   templateUrl: './meal-section.component.html',
   styleUrls: ['./meal-section.component.css'],
   standalone: true,
-  imports: [
-    MealItemRowComponent,
-    CommonModule,
-    FormsModule,
-    SearchInputComponent,
-    MealSummaryRowComponent,
-  ],
+  imports: [MealItemRowComponent, CommonModule, FormsModule, SearchInputComponent, MealSummaryRowComponent],
 })
 export class MealSectionComponent implements OnInit {
-  @Input()
-  public meal: Meal;
+  @Input() public meal: Meal;
+  @Input() calendarDate: Date;
 
   public searchItem: string;
   public defaultPortionSize = 100; //in grams
@@ -43,7 +37,7 @@ export class MealSectionComponent implements OnInit {
   constructor(
     private mealCalendarStore: Store<MealCalendarState>,
     private dishStore: Store<DishState>,
-    private productStore: Store<ProductsState>
+    private productStore: Store<ProductsState>,
   ) {}
 
   public ngOnInit(): void {
@@ -54,7 +48,7 @@ export class MealSectionComponent implements OnInit {
   public itemAddedToSearchBar(item: BaseItem, mealTypeId: MealType) {
     const addMealRequest: AddMealItemRequest = {
       mealType: mealTypeId,
-      date: this.meal.date,
+      date: this.calendarDate,
       itemType: item.itemType,
       itemId: item.id,
     };
@@ -69,7 +63,7 @@ export class MealSectionComponent implements OnInit {
         productId: productId,
         mealDishId: mealDishId,
         customizedPortionMultiplier: customizedPortionSize / this.defaultPortionSize,
-        date: this.meal.date,
+        date: this.calendarDate,
       }),
     );
   }

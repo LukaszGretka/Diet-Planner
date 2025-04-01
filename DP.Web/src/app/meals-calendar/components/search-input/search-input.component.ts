@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import {
-  BehaviorSubject,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
@@ -9,6 +8,7 @@ import {
   of,
   OperatorFunction,
   switchMap,
+  take,
 } from 'rxjs';
 import * as DishSelectors from '../../../dishes/stores/dish.selectors';
 import * as ProductSelectors from '../../../products/stores/products.selectors';
@@ -19,22 +19,17 @@ import { NgbModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { BaseItem, ItemType } from '../../../shared/models/base-item';
 import { Dish } from '../../../dishes/models/dish';
 import { Product } from '../../../products/models/product';
-import * as MealCalendarActions from '../../stores/meals-calendar.actions';
-import { MealCalendarState } from '../../stores/meals-calendar.state';
 import { FormsModule } from '@angular/forms';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
   styleUrl: './search-input.component.css',
-  imports: [
-    NgbTypeahead,
-    FormsModule,
-  ],
+  imports: [NgbTypeahead, FormsModule],
   standalone: true,
 })
 export class SearchInputComponent {
-
   @Output()
   public itemAddedEmitter = new EventEmitter<BaseItem>();
 
@@ -45,42 +40,56 @@ export class SearchInputComponent {
   public searchItem: BaseItem;
   baseItemFormatter = (item: BaseItem) => `${item.name} (${ItemType[item.itemType]})`;
 
-  constructor(private dishStore: Store<DishState>, private productStore: Store<ProductsState>, private modalService: NgbModal,
-              private store: Store<MealCalendarState>) {
-  }
+  constructor(
+    private dishStore: Store<DishState>,
+    private productStore: Store<ProductsState>,
+    private modalService: NgbModal,
+    private notificationService: NotificationService,
+  ) {}
 
   public search: OperatorFunction<string, readonly BaseItem[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap(searchText => {
-        if(searchText.length < 2){
+        if (searchText.length < 2) {
           return of([]);
         }
 
         return combineLatest([this.allProducts$, this.allDishes$]).pipe(
           map(([products, dishes]) => {
-            const productNames = products.filter(product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
+            const productNames = products.filter(
+              product => product.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1,
+            );
             const dishNames = dishes.filter(dish => dish.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
             return [...productNames, ...dishNames];
-          })
+          }),
         );
-      }));
+      }),
+    );
 
-  // Update local products list for particular collection given in parameter.
-  public onAddDishOrProductButtonClick(searchItem: BaseItem): void {
-    this.itemAddedEmitter.emit(searchItem);
+  public onAddSearchItemAdd(searchItem: BaseItem): void {
+    const itemsCollection = combineLatest([this.allProducts$, this.allDishes$]);
 
-      // const foundDishes: Dish[] = this.searchForDishByName(dishName);
-      // if (foundDishes.length > 0) {
-      //   this.addFoundDish(behaviorSubject, foundDishes);
-      //   this.searchItem = '';
-      // } else {
-      //   this.modalService.open(content);
-      // }
-
+    itemsCollection.pipe(take(1)).subscribe(([products, dishes]) => {
+      const foundItem = this.findItemById(searchItem, products, dishes);
+      if (foundItem) {
+        this.itemAddedEmitter.emit(foundItem);
+        this.searchItem = null;
+      } else {
+        this.notificationService.showErrorToast('Error', `Item '${searchItem}' not found.`);
+      }
+    });
   }
 
+  private findItemById(searchItem: BaseItem, products: Product[], dishes: Dish[]): BaseItem | null {
+    if (searchItem.itemType === ItemType.Product) {
+      return products.find(product => product.id === searchItem.id) || null;
+    } else if (searchItem.itemType === ItemType.Dish) {
+      return dishes.find(dish => dish.id === searchItem.id) || null;
+    }
+    return null;
+  }
 
   public async addNewDishModalButtonClick(): Promise<void> {
     this.modalService.dismissAll();
