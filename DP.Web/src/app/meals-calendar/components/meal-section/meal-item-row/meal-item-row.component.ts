@@ -8,6 +8,8 @@ import { Store } from '@ngrx/store';
 import * as MealCalendarSelectors from 'src/app/meals-calendar/stores/meals-calendar.selectors';
 import { MealCalendarState } from '../../../stores/meals-calendar.state';
 import { take } from 'rxjs';
+import * as MealCalendarActions from '../../../stores/meals-calendar.actions';
+import { MealType } from 'src/app/meals-calendar/models/meal-type';
 
 @Component({
   selector: '[app-meal-item-row]',
@@ -17,6 +19,8 @@ import { take } from 'rxjs';
 })
 export class MealItemRowComponent implements OnInit {
   @Input() public item: BaseItem;
+  @Input() public calendarDate: Date;
+  @Input() public mealType: MealType;
 
   public macrosWithCalories: MacronutrientsWithCalorties;
 
@@ -28,25 +32,21 @@ export class MealItemRowComponent implements OnInit {
 
   public async onEditItemButtonClick(): Promise<void> {
     await this.router.navigateByUrl(
-      `${ItemType[this.item.itemType].toLocaleLowerCase()}/edit/${this.item.id}?redirectUrl=${this.router.url}`,
+      `${ItemType[this.item.itemType].toLocaleLowerCase()}/edit/${this.item.id}?returnUrl=${this.router.url}`,
     );
   }
 
   public onRemoveItemButtonClick(): void {
-    // const dishesBehaviorSubject = behaviorSubject as BehaviorSubject<Dish[]>;
-    // const dishes = dishesBehaviorSubject.getValue();
-    // let localDishes = [...dishes];
-    // localDishes.splice(index, 1);
-    // dishesBehaviorSubject.next(localDishes);
-    // this.mealCalendarStore.dispatch(
-    //   MealCalendarActions.addMealRequest({
-    //     meal: {
-    //       date: this.selectedDate,
-    //       dishes: dishesBehaviorSubject.getValue(),
-    //       mealTypeId: this.mealType,
-    //     },
-    //   }),
-    // );
+    this.mealCalendarStore.dispatch(
+      MealCalendarActions.removeMealItemRequest({
+        removeMealRequest: {
+          mealType: this.mealType,
+          date: this.calendarDate,
+          itemType: this.item.itemType,
+          itemId: this.item.id,
+        },
+      }),
+    );
   }
 
   private calculateMacrosWithCalories(): MacronutrientsWithCalorties {

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AddMealItemRequest, Meal } from '../models/meal';
+import { MealItemRequest, Meal } from '../models/meal';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -26,11 +26,18 @@ export class MealsCalendarService {
   }
 
   // Adds meal item (dish or product) to a meal.
-  public addItemToMeal(request: AddMealItemRequest) {
-    return this.httpClient.post<AddMealItemRequest>(
+  public addItemToMeal(request: MealItemRequest) {
+    return this.httpClient.post<MealItemRequest>(
       `${this.mealsCalendarUrl}/add-meal-item`,
       request,
-      this.httpOptions,
+       this.httpOptions,
+    );
+  }
+
+  public removeItemFromMeal(request: MealItemRequest) {
+    return this.httpClient.delete<MealItemRequest>(
+      `${this.mealsCalendarUrl}/remove-meal-item`,
+      { ...this.httpOptions, body: request },
     );
   }
 }

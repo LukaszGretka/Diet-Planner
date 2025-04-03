@@ -12,8 +12,10 @@ namespace DietPlanner.Api.Services.MealProductService
     {
         Task<List<MealDto>> GetMeals(DateTime date, string userId);
 
-        Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(PutMealRequest mealByDay, string userId);
+        //Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(PutMealRequest mealByDay, string userId);
 
-        Task<DatabaseActionResult<Meal>> AddMealItem(AddMealItemRequest addMealItemRequest, string userId);
+        Task<DatabaseActionResult<Meal>> AddMealItem(MealItemRequest addMealItemRequest, string userId);
+
+        Task<DatabaseActionResult<Meal>> RemoveMealItem(MealItemRequest removeMealItemRequest, string userId);
     }
 }

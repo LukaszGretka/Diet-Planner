@@ -4,7 +4,7 @@ using System;
 
 namespace DietPlanner.Api.Models.MealsCalendar.Requests
 {
-    public class AddMealItemRequest
+    public class MealItemRequest
     {
         public int ItemId { get; set; }
 

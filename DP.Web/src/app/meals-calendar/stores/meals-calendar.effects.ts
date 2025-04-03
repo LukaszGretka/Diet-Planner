@@ -45,6 +45,31 @@ export class MealCalendarEffects {
     ),
   );
 
+  removeMealEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MealCalendarActions.removeMealItemRequest),
+      mergeMap(({ payload }) => {
+        return this.mealsCalendarService.removeItemFromMeal(payload.removeMealRequest).pipe(
+          switchMap(() => of(MealCalendarActions.removeMealItemSuccess({ addedDate: payload.removeMealRequest.date }))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
+        );
+      }),
+    ),
+  );
+
+  removeMealSuccessEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MealCalendarActions.removeMealItemSuccess),
+      tap(() => this.notificationService.showSuccessToast('Changes saved', 'Meal item has been successfully removed.')),
+      exhaustMap(({ payload }) => {
+        return this.mealsCalendarService.getAllMeals(payload.addedDate).pipe(
+          switchMap(result => of(MealCalendarActions.getAllMealsRequestSuccess({ result }))),
+          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
+        );
+      }),
+    ),
+  );
+
   constructor(
     private actions$: Actions,
     private mealsCalendarService: MealsCalendarService,

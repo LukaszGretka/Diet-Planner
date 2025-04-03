@@ -10,7 +10,7 @@ import * as ProductsActions from '../../../products/stores/products.actions';
 import * as DishActions from '../../../dishes/stores/dish.actions';
 import { ProductsState } from '../../../products/stores/products.state';
 import { BaseItem } from 'src/app/shared/models/base-item';
-import { AddMealItemRequest, Meal } from '../../models/meal';
+import { MealItemRequest, Meal } from '../../models/meal';
 import { MealItemRowComponent } from './meal-item-row/meal-item-row.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -46,7 +46,7 @@ export class MealSectionComponent implements OnInit {
   }
 
   public itemAddedToSearchBar(item: BaseItem, mealTypeId: MealType) {
-    const addMealRequest: AddMealItemRequest = {
+    const addMealRequest: MealItemRequest = {
       mealType: mealTypeId,
       date: this.calendarDate,
       itemType: item.itemType,

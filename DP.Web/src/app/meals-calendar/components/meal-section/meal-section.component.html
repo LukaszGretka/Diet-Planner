@@ -14,10 +14,10 @@
     </thead>
     <tbody>
       <ng-container *ngFor="let dish of meal.dishes">
-        <tr app-meal-item-row [item]="dish"></tr>
+        <tr app-meal-item-row [item]="dish" [mealType]="meal.mealType" [calendarDate]="calendarDate"></tr>
       </ng-container>
       <ng-container *ngFor="let product of meal.products">
-        <tr app-meal-item-row [item]="product"></tr>
+        <tr app-meal-item-row [item]="product" [mealType]="meal.mealType" [calendarDate]="calendarDate"></tr>
       </ng-container>
     </tbody>
     <tbody>

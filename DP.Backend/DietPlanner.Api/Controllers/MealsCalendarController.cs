@@ -32,14 +32,29 @@ namespace DietPlanner.Api.Controllers
             return Ok(result);
         }
 
-        // new endpoint
         [HttpPost]
         [Route("add-meal-item")]
-        public async Task<ActionResult<DailyMealsDto>> AddMealItemRequest([FromBody] AddMealItemRequest addMealItemRequest)
+        public async Task<ActionResult<DailyMealsDto>> AddMealItemRequest([FromBody] MealItemRequest addMealItemRequest)
         {
             string userId = HttpContext.GetUserId();
 
             var result = await _mealsCalendarService.AddMealItem(addMealItemRequest, userId);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(result.Obj);
+        }
+
+        [HttpDelete]
+        [Route("remove-meal-item")]
+        public async Task<ActionResult<DailyMealsDto>> RemoveMealItemRequest([FromBody] MealItemRequest removeMealItemRequest)
+        {
+            string userId = HttpContext.GetUserId();
+
+            var result = await _mealsCalendarService.RemoveMealItem(removeMealItemRequest, userId);
 
             if (result.Exception != null)
             {

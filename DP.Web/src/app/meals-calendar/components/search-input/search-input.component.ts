@@ -94,7 +94,7 @@ export class SearchInputComponent {
   public async addNewDishModalButtonClick(): Promise<void> {
     this.modalService.dismissAll();
     //this.store.dispatch(DishActions.setCallbackMealDish({ dishName: this.searchItem, mealType: this.mealType }));
-    //await this.router.navigateByUrl(`dishes/dish-add?redirectUrl=${this.router.url}`);
+    //await this.router.navigateByUrl(`dishes/dish-add?returnUrl=${this.router.url}`);
   }
 
   public onCancelModalClick() {

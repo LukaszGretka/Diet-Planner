@@ -11,10 +11,13 @@ export interface Meal {
   products?: Product[];
 }
 
-export interface AddMealItemRequest {
+export interface MealItemRequest {
   date: Date;
   mealType: MealType;
   itemId: number;
   itemType: ItemType;
 }
 
+// export interface AddMealItemRequest extends MealItemRequest {}
+
+// export interface RemoveMealItemRequest extends MealItemRequest {}
