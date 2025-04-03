@@ -16,7 +16,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { MealSummaryRowComponent } from './meal-summary-row/meal-summary-row.component';
-import { MacronutrientsWithCalorties } from '../../models/macronutrients';
 
 @UntilDestroy()
 @Component({

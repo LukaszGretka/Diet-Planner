@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Meal } from '../models/meal';
-import { BehaviorSubject } from 'rxjs';
-import { Macronutrients, MacronutrientsWithCalorties } from '../models/macronutrients';
+import { MacronutrientsWithCalorties } from '../models/macronutrients';
 import { Dish } from 'src/app/dishes/models/dish';
 import { Product } from 'src/app/products/models/product';
 
@@ -31,25 +30,27 @@ export class MealCalendarCalculator {
   }
 
   public static calculateMealMacronutrients(meal: Meal): MacronutrientsWithCalorties {
-    let macronutrients: MacronutrientsWithCalorties = { carbs: 0, proteins: 0, fats: 0, calories: 0 };
-
-    meal.dishes?.forEach(dish => {
-      const dishMacros = this.calculateDishProductsMacros(dish);
-      macronutrients.carbs += dishMacros.carbs;
-      macronutrients.proteins += dishMacros.proteins;
-      macronutrients.fats += dishMacros.fats;
-      macronutrients.calories += dishMacros.calories;
-    });
-
-    meal.products?.forEach(product => {
-      const productMacros = this.calculateProductMacros(product);
-      macronutrients.carbs += productMacros.carbs;
-      macronutrients.proteins += productMacros.proteins;
-      macronutrients.fats += productMacros.fats;
-      macronutrients.calories += productMacros.calories;
-    });
-
-    return macronutrients;
+    return meal.dishes?.reduce(
+      (macronutrients, dish) => {
+        const dishMacros = this.calculateDishProductsMacros(dish);
+        macronutrients.carbs += dishMacros.carbs;
+        macronutrients.proteins += dishMacros.proteins;
+        macronutrients.fats += dishMacros.fats;
+        macronutrients.calories += dishMacros.calories;
+        return macronutrients;
+      },
+      meal.products?.reduce(
+        (macronutrients, product) => {
+          const productMacros = this.calculateProductMacros(product);
+          macronutrients.carbs += productMacros.carbs;
+          macronutrients.proteins += productMacros.proteins;
+          macronutrients.fats += productMacros.fats;
+          macronutrients.calories += productMacros.calories;
+          return macronutrients;
+        },
+        { carbs: 0, proteins: 0, fats: 0, calories: 0 } as MacronutrientsWithCalorties,
+      ) || { carbs: 0, proteins: 0, fats: 0, calories: 0 },
+    );
   }
 
   public static calculateDishProductsMacros(dish: Dish): MacronutrientsWithCalorties {

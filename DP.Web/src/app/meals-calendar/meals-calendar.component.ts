@@ -1,17 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject } from 'rxjs';
-import { ProductService } from '../products/services/product.service';
 import { MealType } from './models/meal-type';
 import { MealCalendarState } from './stores/meals-calendar.state';
 import * as MealCalendarActions from './stores/meals-calendar.actions';
 import * as MealCalendarSelectors from './stores/meals-calendar.selectors';
 import * as GeneralSelector from './../stores/store.selectors';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Actions, ofType } from '@ngrx/effects';
-import { ProductsState } from '../products/stores/products.state';
 import * as GeneralActions from '../stores/store.actions';
-import { DishService } from '../dishes/services/dish.service';
 import { MealConfig } from './models/meal-calendar-config';
 import { DailyMeals } from './models/daily-meals';
 import { Meal } from './models/meal';
@@ -31,28 +27,11 @@ export class MealsCalendarComponent implements OnInit {
   ];
 
   public dailyMeals$: BehaviorSubject<DailyMeals> = new BehaviorSubject<DailyMeals>(null);
-
-  public totalCalories: number;
-
   public allDailyMeals$ = this.store.select(MealCalendarSelectors.getAllDailyMeals);
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
   public selectedDate: Date;
 
-  constructor(
-    actions$: Actions,
-    private productService: ProductService,
-    private dishService: DishService,
-    private store: Store<MealCalendarState>,
-    private productStore: Store<ProductsState>,
-  ) {
-    actions$.pipe(ofType(MealCalendarActions.addMealRequestSuccess), untilDestroyed(this)).subscribe(() => {
-      // const chartDataset = this.buildMacronutrientsChartDataset();
-      // this.doughnutChartData = {
-      //   labels: this.doughnutChartLabels,
-      //   datasets: [{ data: [chartDataset.carbs, chartDataset.proteins, chartDataset.fats] }],
-      // };
-    });
-  }
+  constructor(private store: Store<MealCalendarState>) {}
 
   public ngOnInit(): void {
     this.allDailyMeals$.pipe(untilDestroyed(this)).subscribe(meals => {

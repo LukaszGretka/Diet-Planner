@@ -58,6 +58,7 @@ import { SearchInputComponent } from './meals-calendar/components/search-input/s
 import { DateSelectionComponent } from './meals-calendar/components/date-selection/date-selection.component';
 import { MealItemRowComponent } from './meals-calendar/components/meal-section/meal-item-row/meal-item-row.component';
 import { MealItemSearchBarComponent } from './meals-calendar/components/meal-section/meal-item-search-bar/meal-item-search-bar.component';
+import { MealCalendarChartComponent } from './meals-calendar/components/meal-calendar-chart/meal-calendar-chart.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { MealItemSearchBarComponent } from './meals-calendar/components/meal-sec
     DishPreviewComponent,
     StatsCanvasComponent,
     MealItemSearchBarComponent,
+    MealCalendarChartComponent,
   ],
   imports: [
     BrowserModule,
