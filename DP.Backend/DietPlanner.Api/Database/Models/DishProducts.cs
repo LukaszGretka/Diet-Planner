@@ -1,6 +1,5 @@
 ﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DietPlanner.Api.Database.Models

@@ -16,6 +16,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { MealSummaryRowComponent } from './meal-summary-row/meal-summary-row.component';
+import { MealDishRowDetailsComponent } from './meal-dish-row-details/meal-dish-row-details.component';
+import { MealDishRowDetailsTitleComponent } from './meal-dish-row-details-title/meal-dish-row-details-title.component';
 
 @UntilDestroy()
 @Component({
@@ -23,15 +25,21 @@ import { MealSummaryRowComponent } from './meal-summary-row/meal-summary-row.com
   templateUrl: './meal-section.component.html',
   styleUrls: ['./meal-section.component.css'],
   standalone: true,
-  imports: [MealItemRowComponent, CommonModule, FormsModule, SearchInputComponent, MealSummaryRowComponent],
+  imports: [
+    MealItemRowComponent,
+    CommonModule,
+    FormsModule,
+    SearchInputComponent,
+    MealSummaryRowComponent,
+    MealDishRowDetailsComponent,
+    MealDishRowDetailsTitleComponent,
+  ],
 })
 export class MealSectionComponent implements OnInit {
   @Input() public meal: Meal;
   @Input() calendarDate: Date;
 
   public searchItem: string;
-  public defaultPortionSize = 100; //in grams
-  public portionValue = this.defaultPortionSize;
 
   constructor(
     private mealCalendarStore: Store<MealCalendarState>,
@@ -53,17 +61,5 @@ export class MealSectionComponent implements OnInit {
     };
 
     this.mealCalendarStore.dispatch(MealCalendarActions.addMealRequest({ addMealRequest }));
-  }
-
-  public onPortionValueChange(customizedPortionSize: number, dishId: number, mealDishId: number, productId: number) {
-    this.mealCalendarStore.dispatch(
-      DishActions.updatePortionRequest({
-        dishId: dishId,
-        productId: productId,
-        mealDishId: mealDishId,
-        customizedPortionMultiplier: customizedPortionSize / this.defaultPortionSize,
-        date: this.calendarDate,
-      }),
-    );
   }
 }

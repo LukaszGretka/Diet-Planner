@@ -21,6 +21,7 @@ export class MealItemRowComponent implements OnInit {
   @Input() public item: BaseItem;
   @Input() public calendarDate: Date;
   @Input() public mealType: MealType;
+  @Input() public itemIndex: number;
 
   public macrosWithCalories: MacronutrientsWithCalorties;
 

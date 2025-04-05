@@ -1,4 +1,3 @@
-import { DishProduct } from 'src/app/dishes/models/dish-product';
 import { MealType } from './meal-type';
 import { Dish } from 'src/app/dishes/models/dish';
 import { Product } from '../../products/models/product';
@@ -18,6 +17,10 @@ export interface MealItemRequest {
   itemType: ItemType;
 }
 
-// export interface AddMealItemRequest extends MealItemRequest {}
-
-// export interface RemoveMealItemRequest extends MealItemRequest {}
+export interface UpdateMealItemPortionRequest {
+  dishId: number;
+  productId: number;
+  mealDishId: number;
+  customizedPortionMultiplier: number;
+  date: Date;
+}

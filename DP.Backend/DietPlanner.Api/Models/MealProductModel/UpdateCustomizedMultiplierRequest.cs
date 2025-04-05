@@ -3,7 +3,7 @@ using System;
 
 namespace DietPlanner.Api.Models.MealProductModel
 {
-    public class UpdateCustomizedMultiplierRequest
+    public class UpdateMealItemPortionRequest
     {
         public int ProductId { get; set; }
 

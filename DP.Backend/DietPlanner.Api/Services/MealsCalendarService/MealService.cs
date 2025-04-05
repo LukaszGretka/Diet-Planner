@@ -5,6 +5,7 @@ using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.DTO.Products;
 using DietPlanner.Api.Enums;
 using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Models.MealProductModel;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Api.Models.MealsCalendar.Requests;
@@ -142,6 +143,50 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 ItemType.Dish => await RemoveDishFromMeal(foundMeal, removeMealItemRequest.ItemId),
                 _ => new DatabaseActionResult<Meal>(false, obj: null),
             };
+        }
+
+        public async Task<DatabaseActionResult> UpdateMealItemPortion(UpdateMealItemPortionRequest request)
+        {
+            DishProducts dishProduct = await _databaseContext.DishProducts
+                .Where(dp => dp.DishId == request.DishId && dp.ProductId == request.ProductId)
+                .SingleOrDefaultAsync();
+
+            if (dishProduct is null)
+            {
+                return new DatabaseActionResult(false, "dish product not found");
+            }
+
+            var customizedDishProduct = await _databaseContext.CustomizedDishProducts
+                .Where(cdp => cdp.DishProductId == dishProduct.Id && cdp.MealDishId == request.MealDishId)
+                .SingleOrDefaultAsync();
+
+            if (customizedDishProduct is null)
+            {
+                var newCustomizedDishProduct = new CustomizedDishProducts
+                {
+                    DishProductId = dishProduct.Id,
+                    CustomizedPortionMultiplier = request.CustomizedPortionMultiplier,
+                    MealDishId = request.MealDishId
+                };
+
+                await _databaseContext.CustomizedDishProducts.AddAsync(newCustomizedDishProduct);
+            }
+            else
+            {
+                customizedDishProduct.CustomizedPortionMultiplier = request.CustomizedPortionMultiplier;
+            }
+
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult(false, exception: ex);
+            }
+
+            return new DatabaseActionResult(true);
         }
 
         private async Task<DatabaseActionResult<Meal>> AddProductToMeal(Meal meal, int itemId)

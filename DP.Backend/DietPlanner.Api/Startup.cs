@@ -82,7 +82,6 @@ namespace DietPlanner.Api
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMealService, MealService>();
             services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IMealProductService, MealProductService>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IMessageBrokerService, MessageBrokerService>();

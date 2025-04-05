@@ -1,0 +1,36 @@
+<td></td>
+<td colspan="2">{{ dishProduct.product.name }}</td>
+<td>
+  {{
+    dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+      | number : '1.0-1'
+  }}g
+</td>
+<td>
+  {{
+    dishProduct.product.proteins * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+      | number : '1.0-1'
+  }}g
+</td>
+<td>
+  {{
+    dishProduct.product.fats * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+      | number : '1.0-1'
+  }}g
+</td>
+<td>
+  {{
+    dishProduct.product.calories * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+      | number : '1.0-1'
+  }}kcal
+</td>
+<td style="align-items: center">
+  <input
+    type="number"
+    id="portion"
+    class="form-control form-control-sm d-flex"
+    style="max-width: 65px"
+    [ngModel]="defaultPortionSize * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)"
+    [ngModelOptions]="{ updateOn: 'blur' }"
+    (ngModelChange)="onPortionValueChange($event, dish.id, dish.mealDishId, dishProduct.product.id)" />
+</td>

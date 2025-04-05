@@ -13,8 +13,25 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let dish of meal.dishes">
-        <tr app-meal-item-row [item]="dish" [mealType]="meal.mealType" [calendarDate]="calendarDate"></tr>
+      <ng-container *ngFor="let dish of meal.dishes; let itemIndex = index">
+        <tr
+          app-meal-item-row
+          [item]="dish"
+          [mealType]="meal.mealType"
+          [calendarDate]="calendarDate"
+          [itemIndex]="itemIndex"></tr>
+        <tr class="collapse" [attr.id]="'collapse-' + meal.mealType + itemIndex" app-meal-dish-row-details-title></tr>
+        <ng-container class="collapse" *ngFor="let dishProduct of dish.products; let productIndex = index">
+          <tr
+            app-meal-dish-row-details
+            class="collapse"
+            [attr.id]="'collapse-' + meal.mealType + itemIndex"
+            [dish]="dish"
+            [selectedDate]="calendarDate"
+            [dishProduct]="dishProduct"
+            [mealType]="meal.mealType"
+            [itemIndex]="itemIndex"></tr>
+        </ng-container>
       </ng-container>
       <ng-container *ngFor="let product of meal.products">
         <tr app-meal-item-row [item]="product" [mealType]="meal.mealType" [calendarDate]="calendarDate"></tr>

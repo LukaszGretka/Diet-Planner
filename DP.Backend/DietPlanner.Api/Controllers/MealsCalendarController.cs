@@ -1,4 +1,5 @@
 ﻿using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Models.MealProductModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Api.Models.MealsCalendar.Requests;
 using DietPlanner.Api.Services.MealProductService;
@@ -64,36 +65,18 @@ namespace DietPlanner.Api.Controllers
             return Ok(result.Obj);
         }
 
+        [HttpPatch]
+        [Route("update-meal-item-portion")]
+        public async Task<IActionResult> UpdateMealItemPortion(UpdateMealItemPortionRequest request)
+        {
+            var result = await _mealsCalendarService.UpdateMealItemPortion(request);
 
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
 
-        //[HttpPut]
-        //public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] PutMealRequest putMealRequest)
-        //{
-        //    string userId = HttpContext.GetUserId();
-
-        //    var result = await _mealsCalendarService.AddOrUpdateMeal(putMealRequest, userId);
-
-        //    if (result.Exception != null)
-        //    {
-        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-        //    }
-
-        //    return Ok(result.Obj);
-        //}
-
-        //[HttpPut]
-        //public async Task<ActionResult<DailyMealsDto>> UpdateMealProduct([FromBody] MealProductDto mealProduct)
-        //{
-        //    string userId = HttpContext.GetUserId();
-
-        //    var result = await _mealsCalendarService.UpdateMealProduct(mealProduct, userId);
-
-        //    if (result.Exception != null)
-        //    {
-        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-        //    }
-
-        //    return Ok(result.Obj);
-        //}
+            return Ok(result.Success);
+        }
     }
 }

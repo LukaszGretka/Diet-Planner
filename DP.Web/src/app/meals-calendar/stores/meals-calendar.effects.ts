@@ -70,6 +70,46 @@ export class MealCalendarEffects {
     ),
   );
 
+  updatePortionRequestEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MealCalendarActions.updateMealItemPortionRequest),
+      exhaustMap(({ payload }) => {
+        return this.mealsCalendarService.updateMealItemPortion(payload.request).pipe(
+          switchMap(() =>
+            of(
+              MealCalendarActions.updateMealItemPortionSuccess(),
+              MealCalendarActions.getAllMealsRequest({ date: payload.request.date }),
+            ),
+          ),
+          catchError(error => of(MealCalendarActions.updateMealItemPortionFailed(error))),
+        );
+      }),
+    ),
+  );
+  updatePortionEffectSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(MealCalendarActions.updateMealItemPortionSuccess),
+        tap(() => {
+          return this.notificationService.showSuccessToast('Changes saved', 'Portion have been successfully updated.');
+        }),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
+  updatePortionEffectFailed$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(MealCalendarActions.updateMealItemPortionFailed),
+        tap(() => this.notificationService.showErrorToast('Error', 'An error occurred during saving portion.')),
+      ),
+    {
+      dispatch: false,
+    },
+  );
+
   constructor(
     private actions$: Actions,
     private mealsCalendarService: MealsCalendarService,
