@@ -16,5 +16,7 @@
         public float Calories { get; set; }
 
         public long? BarCode { get; set; }
+
+        public decimal PortionMultiplier { get; set; }
     }
 }

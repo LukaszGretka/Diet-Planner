@@ -41,7 +41,7 @@ namespace DietPlanner.Api.Services.Dashboard
                         {
                             Product = p,
                             PortionMultiplier = x.dp.PortionMultiplier,
-                            CustomizedPortionMultiplier = _databaseContext.CustomizedDishProducts
+                            CustomizedPortionMultiplier = _databaseContext.CustomizedMealDishes
                                 .Where(e => e.MealDishId == x.mealDishId && e.DishProductId == x.dp.Id)
                                 .SingleOrDefault().CustomizedPortionMultiplier
                         })

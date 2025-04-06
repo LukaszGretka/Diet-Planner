@@ -45,7 +45,6 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             var mealProducts = await _databaseContext.MealProducts
                 .Where(md => meals.Select(m => m.Id).Contains(md.MealId))
-                .Select(x => _databaseContext.Products.Single(p => x.Id == p.Id))
                 .ToListAsync();
 
             var dishes = await _databaseContext.Dishes
@@ -60,10 +59,9 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 .Where(p => dishProducts.Select(dp => dp.ProductId).Contains(p.Id))
                 .ToListAsync();
 
-            var customizedDishProducts = await _databaseContext.CustomizedDishProducts
+            var customizedMealDishes = await _databaseContext.CustomizedMealDishes
                 .Where(cdp => mealDishes.Select(md => md.Id).Contains(cdp.MealDishId))
                 .ToListAsync();
-
 
             var mealDtos = meals
                 .GroupBy(m => new { m.MealType })
@@ -71,20 +69,23 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 {
                     MealType = (MealType)g.Key.MealType,
                     Products = g.SelectMany(m => _databaseContext.MealProducts.Where(mp => mp.MealId == m.Id))
-                        .Select(mp => mp.ProductId).SelectMany(pId => _databaseContext.Products.Where(p => p.Id == pId)).
-                            Select(product => new ProductDTO
-                            {
-                                Id = product.Id,
-                                Name = product.Name,
-                                Description = product.Description,
-                                ImagePath = product.ImagePath,
-                                ItemType = ItemType.Product,
-                                BarCode = product.BarCode,
-                                Calories = (float)product.Calories,
-                                Carbohydrates = (float)product.Carbohydrates,
-                                Proteins = (float)product.Proteins,
-                                Fats = (float)product.Fats
-                            }).ToList(),
+                        .Select(mp => new ProductDTO
+                        {
+                            Id = mp.Product.Id,
+                            Name = mp.Product.Name,
+                            Description = mp.Product.Description,
+                            ImagePath = mp.Product.ImagePath,
+                            ItemType = ItemType.Product,
+                            BarCode = mp.Product.BarCode,
+                            Calories = (float)mp.Product.Calories,
+                            Carbohydrates = (float)mp.Product.Carbohydrates,
+                            Proteins = (float)mp.Product.Proteins,
+                            Fats = (float)mp.Product.Fats,
+                            PortionMultiplier = _databaseContext.CustomizedMealProducts
+                                .Where(cmp => cmp.MealProductId == mp.Id)
+                                .Select(cmp => cmp.CustomizedPortionMultiplier)
+                                .FirstOrDefault()
+                        }).ToList(),
                     Dishes = g.SelectMany(m => mealDishes.Where(md => md.MealId == m.Id)
                         .Select(md => new DishDTO
                         {
@@ -99,7 +100,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
                                 {
                                     Product = products.First(p => p.Id == dp.ProductId),
                                     PortionMultiplier = dp.PortionMultiplier,
-                                    CustomizedPortionMultiplier = customizedDishProducts
+                                    CustomizedPortionMultiplier = customizedMealDishes
                                         .Where(cdp => cdp.MealDishId == md.Id && cdp.DishProductId == dp.Id)
                                         .Select(cdp => (decimal?)cdp.CustomizedPortionMultiplier)
                                         .FirstOrDefault()
@@ -156,20 +157,20 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 return new DatabaseActionResult(false, "dish product not found");
             }
 
-            var customizedDishProduct = await _databaseContext.CustomizedDishProducts
+            var customizedDishProduct = await _databaseContext.CustomizedMealDishes
                 .Where(cdp => cdp.DishProductId == dishProduct.Id && cdp.MealDishId == request.MealDishId)
                 .SingleOrDefaultAsync();
 
             if (customizedDishProduct is null)
             {
-                var newCustomizedDishProduct = new CustomizedDishProducts
+                var newCustomizedDishProduct = new CustomizedMealDishes
                 {
                     DishProductId = dishProduct.Id,
                     CustomizedPortionMultiplier = request.CustomizedPortionMultiplier,
                     MealDishId = request.MealDishId
                 };
 
-                await _databaseContext.CustomizedDishProducts.AddAsync(newCustomizedDishProduct);
+                await _databaseContext.CustomizedMealDishes.AddAsync(newCustomizedDishProduct);
             }
             else
             {
@@ -180,7 +181,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
             {
                 await _databaseContext.SaveChangesAsync();
             }
-            catch(DbUpdateException ex)
+            catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
                 return new DatabaseActionResult(false, exception: ex);
@@ -198,23 +199,27 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 return new DatabaseActionResult<Meal>(false, obj: null, message: $"Product with id {itemId} can't be found");
             }
 
-            _databaseContext.MealProducts.Add(new MealProduct
-            {
+            MealProduct mealProduct = new MealProduct {
                 ProductId = itemId,
                 Meal = meal,
                 Product = product,
                 MealId = meal.Id
-            });
+            };
+
+
+            _databaseContext.MealProducts.Add(mealProduct);
 
             try
             {
                 await _databaseContext.SaveChangesAsync();
+                await AddDefaultCustomizedMealProduct(mealProduct.Id);
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
                 return new DatabaseActionResult<Meal>(false, exception: ex);
             }
+
 
             return new DatabaseActionResult<Meal>(true, obj: meal);
         }
@@ -253,7 +258,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
             {
                 Date = date,
                 MealType = (int)mealType,
-                UserId = userId
+                UserId = userId,
             };
         }
 
@@ -308,6 +313,26 @@ namespace DietPlanner.Api.Services.MealsCalendar
             }
 
             return new DatabaseActionResult<Meal>(true, obj: meal);
+        }
+
+        private async Task<DatabaseActionResult> AddDefaultCustomizedMealProduct(int mealProductId)
+        {
+            _databaseContext.CustomizedMealProducts.Add(new CustomizedMealProducts
+            {
+                MealProductId = mealProductId,
+                CustomizedPortionMultiplier = 1
+            });
+
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult(false, exception: ex);
+            }
+            return new DatabaseActionResult(true);
         }
     }
 }

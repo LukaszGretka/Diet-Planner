@@ -6,4 +6,5 @@ export class Product extends BaseItem {
   fats: number;
   calories: number;
   barCode: number;
+  portionMultiplier: number;
 }

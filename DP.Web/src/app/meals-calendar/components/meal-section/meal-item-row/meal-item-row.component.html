@@ -2,11 +2,23 @@
   <img src="../../../../assets/images/product-placeholder.svg" class="img-fluid" style="width: 25px; height: 25px" />
 </td>
 <td class="table-light">{{ item.name }}</td>
-<td class="table-light">{{ item.description }}</td>
-<td class="table-light">{{ macrosWithCalories?.carbs | number : '1.0-1' }}g</td>
-<td class="table-light">{{ macrosWithCalories?.proteins | number : '1.0-1' }}g</td>
-<td class="table-light">{{ macrosWithCalories?.fats | number : '1.0-1' }}g</td>
-<td class="table-light">{{ macrosWithCalories?.calories | number : '1.0-1' }}kcal</td>
+<td class="table-light">{{ mealRowDetails?.carbs | number : '1.0-1' }}g</td>
+<td class="table-light">{{ mealRowDetails?.proteins | number : '1.0-1' }}g</td>
+<td class="table-light">{{ mealRowDetails?.fats | number : '1.0-1' }}g</td>
+<td class="table-light">{{ mealRowDetails?.calories | number : '1.0-1' }}kcal</td>
+<td class="table-light">
+  <ng-container *ngIf="item.itemType === 0">
+    <input
+      [ngModel]="mealRowDetails.portion"
+      type="number"
+      id="portion"
+      class="form-control form-control-sm d-flex"
+      style="max-width: 4rem" />
+  </ng-container>
+  <ng-container *ngIf="item.itemType === 1">
+    <div class="d-flex">{{ mealRowDetails?.portion | number : '1.0-1' }}g</div>
+  </ng-container>
+</td>
 <td style="min-width: 90px" class="table-light">
   <ng-container *ngIf="item.itemType === 1">
     <button

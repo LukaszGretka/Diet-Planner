@@ -79,7 +79,7 @@
                     type="number"
                     id="portion"
                     class="form-control form-control-sm d-flex"
-                    style="max-width: 65px"
+                    style="max-width: 4rem"
                     [disabled]="dish !== null && !dish?.isOwner"
                     [ngModel]="portionValue * dishProduct.portionMultiplier | number : '1.0-2'"
                     [ngModelOptions]="{ updateOn: 'change' }"

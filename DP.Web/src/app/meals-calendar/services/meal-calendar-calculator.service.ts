@@ -3,11 +3,15 @@ import { Meal } from '../models/meal';
 import { MacronutrientsWithCalorties } from '../models/macronutrients';
 import { Dish } from 'src/app/dishes/models/dish';
 import { Product } from 'src/app/products/models/product';
+import { DishProduct } from 'src/app/dishes/models/dish-product';
+import { MealRowDetails } from '../models/meal-dish-row-details';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MealCalendarCalculator {
+  public static defaultPortionSize: number = 100; // in grams
+
   // Calculates total calories for meals.
   public static calculateTotalCalories(meals: Meal[]): number {
     return meals.reduce((totalSum, meal) => {
@@ -69,8 +73,8 @@ export class MealCalendarCalculator {
     return dishMacro;
   }
 
-  public static calculateProductMacros(product: Product): MacronutrientsWithCalorties {
-    let totalMacros = { carbs: 0, proteins: 0, fats: 0, calories: 0 } as MacronutrientsWithCalorties;
+  public static calculateProductMacros(product: Product): MealRowDetails {
+    let totalMacros = { carbs: 0, proteins: 0, fats: 0, calories: 0 } as MealRowDetails;
     totalMacros.carbs += product.carbohydrates;
 
     totalMacros.proteins += product.proteins;
@@ -78,5 +82,41 @@ export class MealCalendarCalculator {
     totalMacros.calories += product.calories;
 
     return totalMacros;
+  }
+
+  public static calculatePortion(dishProduct: DishProduct): number {
+    return (
+      MealCalendarCalculator.defaultPortionSize *
+      (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+    );
+  }
+
+  public static calculateMealDishRowDetails(dish: Dish): MealRowDetails {
+    let dishRowDetails = { carbs: 0, proteins: 0, fats: 0, calories: 0, portion: 0 } as MealRowDetails;
+    dish.products.forEach(dishProduct => {
+      dishRowDetails.carbs +=
+        dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
+      dishRowDetails.proteins +=
+        dishProduct.product.proteins * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
+      dishRowDetails.fats +=
+        dishProduct.product.fats * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
+      dishRowDetails.calories +=
+        dishProduct.product.calories * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier);
+      dishRowDetails.portion += MealCalendarCalculator.calculatePortion(dishProduct);
+    });
+
+    return dishRowDetails;
+  }
+
+  public static calculateMealProductRowDetails(product: Product): MealRowDetails {
+    let dishRowDetails = { carbs: 0, proteins: 0, fats: 0, calories: 0, portion: 0 } as MealRowDetails;
+
+    dishRowDetails.carbs += product.carbohydrates;
+    dishRowDetails.proteins += product.proteins;
+    dishRowDetails.fats += product.fats;
+    dishRowDetails.calories += product.calories;
+    dishRowDetails.portion += MealCalendarCalculator.defaultPortionSize * product.portionMultiplier;
+
+    return dishRowDetails;
   }
 }

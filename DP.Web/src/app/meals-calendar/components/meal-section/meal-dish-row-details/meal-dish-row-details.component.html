@@ -1,5 +1,5 @@
 <td></td>
-<td colspan="2">{{ dishProduct.product.name }}</td>
+<td>{{ dishProduct.product.name }}</td>
 <td>
   {{
     dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
@@ -29,8 +29,9 @@
     type="number"
     id="portion"
     class="form-control form-control-sm d-flex"
-    style="max-width: 65px"
-    [ngModel]="defaultPortionSize * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)"
+    style="max-width: 4rem"
+    [ngModel]="portion"
     [ngModelOptions]="{ updateOn: 'blur' }"
-    (ngModelChange)="onPortionValueChange($event, dish.id, dish.mealDishId, dishProduct.product.id)" />
+    (ngModelChange)="onPortionValueChange($event)" />
 </td>
+<td></td>

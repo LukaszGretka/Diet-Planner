@@ -7,3 +7,7 @@ export class Macronutrients {
 export class MacronutrientsWithCalorties extends Macronutrients {
   calories: number;
 }
+
+export class MealDishRowDetails extends MacronutrientsWithCalorties {
+  portion: number;
+}
