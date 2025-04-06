@@ -13,6 +13,7 @@ namespace DietPlanner.Api.Database
 
         public DietPlannerDbContext(DbContextOptions<DietPlannerDbContext> options, IConfiguration configuration) : base(options)
         {
+            _configuration = configuration;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
