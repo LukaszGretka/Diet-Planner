@@ -1,6 +1,7 @@
 ﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DietPlanner.Api.Database.Models
 {
@@ -9,6 +10,7 @@ namespace DietPlanner.Api.Database.Models
         [Key]
         public int Id { get; set; }
 
+        [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
 
         public Product Product { get; set; }

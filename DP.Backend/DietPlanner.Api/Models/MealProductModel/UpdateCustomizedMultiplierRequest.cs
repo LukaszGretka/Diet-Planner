@@ -5,11 +5,9 @@ namespace DietPlanner.Api.Models.MealProductModel
 {
     public class UpdateMealItemPortionRequest
     {
-        public int ProductId { get; set; }
+        public int ItemProductId { get; set; }
 
-        public int DishId { get; set; }
-
-        public int MealDishId { get; set; }
+        public int? DishProductId { get; set; } // For update dish products
 
         public decimal CustomizedPortionMultiplier { get; set; }
     }

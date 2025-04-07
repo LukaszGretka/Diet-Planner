@@ -56,6 +56,7 @@ export class MealSectionComponent implements OnInit {
     const addMealRequest: MealItemRequest = {
       mealType: mealTypeId,
       date: this.calendarDate,
+      mealItemId: item.mealItemId,
       itemType: item.itemType,
       itemId: item.id,
     };

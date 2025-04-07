@@ -8,6 +8,8 @@ namespace DietPlanner.Api.Models.MealsCalendar.Requests
     {
         public int ItemId { get; set; }
 
+        public int MealItemId { get; set; }
+
         public ItemType ItemType { get; set; }
 
         public MealType MealType { get; set; }

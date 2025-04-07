@@ -43,6 +43,7 @@ export class MealItemRowComponent implements OnInit {
       MealCalendarActions.removeMealItemRequest({
         removeMealRequest: {
           mealType: this.mealType,
+          mealItemId: this.item.mealItemId,
           date: this.calendarDate,
           itemType: this.item.itemType,
           itemId: this.item.id,

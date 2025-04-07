@@ -13,14 +13,13 @@ export interface Meal {
 export interface MealItemRequest {
   date: Date;
   mealType: MealType;
+  mealItemId: number;
   itemId: number;
   itemType: ItemType;
 }
 
 export interface UpdateMealItemPortionRequest {
-  dishId: number;
-  productId: number;
-  mealDishId: number;
+  itemProductId: number;
   customizedPortionMultiplier: number;
   date: Date;
 }

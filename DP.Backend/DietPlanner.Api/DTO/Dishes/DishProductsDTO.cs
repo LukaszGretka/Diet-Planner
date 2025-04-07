@@ -8,6 +8,12 @@ namespace DietPlanner.Api.DTO.Dishes
 
         public decimal PortionMultiplier { get; set; }
 
-        public decimal? CustomizedPortionMultiplier { get; set; }
+        private decimal? _customizedPortionMultiplier;
+
+        public decimal? CustomizedPortionMultiplier
+        {
+            get => _customizedPortionMultiplier;
+            set => _customizedPortionMultiplier = value <= 0 ? null : value;
+        }
     }
 }

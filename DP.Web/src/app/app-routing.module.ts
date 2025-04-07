@@ -40,9 +40,9 @@ const routes: Routes = [
   { path: 'body-profile/edit/:id', component: EditMeasurementComponent, canActivate: [AuthGuard] },
   { path: 'meals-calendar', component: MealsCalendarComponent, canActivate: [AuthGuard] },
   { path: 'dishes', component: DishesComponent, canActivate: [AuthGuard] },
-  { path: 'dish/preview/:id', component: DishPreviewComponent, canActivate: [AuthGuard] },
-  { path: 'dish/dish-add', component: DishAddComponent, canActivate: [AuthGuard] },
-  { path: 'dish/edit/:id', component: DishEditComponent, canActivate: [AuthGuard] },
+  { path: 'dishes/preview/:id', component: DishPreviewComponent, canActivate: [AuthGuard] },
+  { path: 'dishes/dish-add', component: DishAddComponent, canActivate: [AuthGuard] },
+  { path: 'dishes/edit/:id', component: DishEditComponent, canActivate: [AuthGuard] },
   { path: 'toast', component: ToastComponent },
 ];
 

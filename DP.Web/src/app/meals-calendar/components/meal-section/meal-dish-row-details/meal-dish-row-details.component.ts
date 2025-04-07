@@ -34,9 +34,7 @@ export class MealDishRowDetailsComponent implements OnInit {
     this.mealCalendarState.dispatch(
       MealCalendarActions.updateMealItemPortionRequest({
         request: {
-          dishId: this.dish.id,
-          productId: this.dishProduct.product.id,
-          mealDishId: this.dish.mealDishId,
+          itemProductId: this.dish.mealItemId,
           customizedPortionMultiplier: customizedPoritonSize / MealCalendarCalculator.defaultPortionSize,
           date: this.selectedDate,
         },

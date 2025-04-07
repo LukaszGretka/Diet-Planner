@@ -10,8 +10,6 @@ namespace DietPlanner.Api.DTO.Dishes
             ItemType = ItemType.Dish;
         }
 
-        public int MealDishId { get; set; }
-
         public bool ExposeToOtherUsers { get; set; }
 
         // This property is used to determine if the dish was created by currenly signed in user

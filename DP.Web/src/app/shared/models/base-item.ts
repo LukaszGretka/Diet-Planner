@@ -1,5 +1,6 @@
 export class BaseItem {
   id: number;
+  mealItemId: number;
   name: string;
   description: string;
   imagePath: string;
@@ -8,5 +9,5 @@ export class BaseItem {
 
 export enum ItemType {
   Product,
-  Dish
+  Dish,
 }
