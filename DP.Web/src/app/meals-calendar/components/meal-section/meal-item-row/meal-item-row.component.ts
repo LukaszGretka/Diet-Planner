@@ -52,11 +52,25 @@ export class MealItemRowComponent implements OnInit {
     );
   }
 
+  //For product portion changes as it's editable on main item row
+  public onPortionValueChange(customizedPoritonSize: number): void {
+    this.mealCalendarStore.dispatch(
+      MealCalendarActions.updateMealItemPortionRequest({
+        request: {
+          itemType: ItemType.Product,
+          itemProductId: this.item.mealItemId,
+          customizedPortionMultiplier: customizedPoritonSize / MealCalendarCalculator.defaultPortionSize,
+          date: this.calendarDate,
+        },
+      }),
+    );
+  }
+
   private calculateMealRowDetails(): MealRowDetails {
     let result: MealRowDetails;
     if (this.item.itemType === ItemType.Dish) {
       this.mealCalendarStore
-        .select(MealCalendarSelectors.getMealDishById(this.item.id))
+        .select(MealCalendarSelectors.getMealDishById(this.item.mealItemId))
         .pipe(take(1))
         .subscribe(dish => {
           if (dish) {
@@ -65,7 +79,7 @@ export class MealItemRowComponent implements OnInit {
         });
     } else if (this.item.itemType === ItemType.Product) {
       this.mealCalendarStore
-        .select(MealCalendarSelectors.getMealProductById(this.item.id)) //TODO: it do not guarantee unique product added to meal
+        .select(MealCalendarSelectors.getMealProductById(this.item.mealItemId)) //TODO: it do not guarantee unique product added to meal
         .pipe(take(1))
         .subscribe(product => {
           if (product) {

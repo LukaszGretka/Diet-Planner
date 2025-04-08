@@ -69,7 +69,6 @@ namespace DietPlanner.Api.Controllers
         [Route("update-meal-item-portion")]
         public async Task<IActionResult> UpdateMealItemPortion(UpdateMealItemPortionRequest request)
         {
-            //TODO: split this endpoint to make possibility to update portion of product and dish separately
             var result = await _mealsCalendarService.UpdateMealItemPortion(request);
 
             if (result.Exception != null)

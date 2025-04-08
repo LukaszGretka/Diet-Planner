@@ -9,6 +9,7 @@ import { MealType } from 'src/app/meals-calendar/models/meal-type';
 import { MealCalendarState } from 'src/app/meals-calendar/stores/meals-calendar.state';
 import * as MealCalendarActions from '../../../stores/meals-calendar.actions';
 import { MealCalendarCalculator } from 'src/app/meals-calendar/services/meal-calendar-calculator.service';
+import { ItemType } from 'src/app/shared/models/base-item';
 
 @Component({
   selector: '[app-meal-dish-row-details]',
@@ -34,6 +35,8 @@ export class MealDishRowDetailsComponent implements OnInit {
     this.mealCalendarState.dispatch(
       MealCalendarActions.updateMealItemPortionRequest({
         request: {
+          itemType: ItemType.Dish,
+          dishProductId: this.dishProduct.dishProductId,
           itemProductId: this.dish.mealItemId,
           customizedPortionMultiplier: customizedPoritonSize / MealCalendarCalculator.defaultPortionSize,
           date: this.selectedDate,

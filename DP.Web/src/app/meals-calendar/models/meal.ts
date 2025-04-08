@@ -19,6 +19,8 @@ export interface MealItemRequest {
 }
 
 export interface UpdateMealItemPortionRequest {
+  itemType: ItemType;
+  dishProductId?: number;
   itemProductId: number;
   customizedPortionMultiplier: number;
   date: Date;

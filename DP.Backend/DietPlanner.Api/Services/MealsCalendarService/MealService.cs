@@ -87,29 +87,71 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         public async Task<DatabaseActionResult> UpdateMealItemPortion(UpdateMealItemPortionRequest request)
         {
+            return request.ItemType switch
+            {
+                ItemType.Dish => await UpdateDishPortion(request),
+                ItemType.Product => await UpdateProductPortion(request),
+                _ => new DatabaseActionResult(false, message: "Invalid item type provided."),
+            };
+        }
 
-
-
-
-
+        private async Task<DatabaseActionResult> UpdateDishPortion(UpdateMealItemPortionRequest request)
+        {
             var customizedDishProduct = await _databaseContext.CustomizedMealDishes
-                .Where(cdp => cdp.DishProductId == request.ItemProductId)
+                .Where(cdp => cdp.MealDishId == request.ItemProductId)
                 .SingleOrDefaultAsync();
 
             if (customizedDishProduct is null)
             {
                 var newCustomizedDishProduct = new CustomizedMealDishes
                 {
-                    DishProductId = request.ItemProductId,
+                    DishProductId = request.DishProductId ??
+                        throw new ArgumentNullException(nameof(request.DishProductId),
+                        "DishProductId cannot be null. Please provide a valid value."),
                     CustomizedPortionMultiplier = request.CustomizedPortionMultiplier,
-                    //MealDishId = request.MealDishId
-                };
+                    MealDishId = request.ItemProductId
+                }
+            ;
 
                 await _databaseContext.CustomizedMealDishes.AddAsync(newCustomizedDishProduct);
             }
             else
             {
                 customizedDishProduct.CustomizedPortionMultiplier = request.CustomizedPortionMultiplier;
+            }
+
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult(false, exception: ex);
+            }
+
+            return new DatabaseActionResult(true);
+        }
+
+        private async Task<DatabaseActionResult> UpdateProductPortion(UpdateMealItemPortionRequest request)
+        {
+            CustomizedMealProducts customizedMealProduct = await _databaseContext.CustomizedMealProducts
+             .Where(cmp => cmp.MealProductId == request.ItemProductId)
+             .SingleOrDefaultAsync();
+
+            if (customizedMealProduct is null)
+            {
+                CustomizedMealProducts newCustomizedMealProduct = new()
+                {
+                    MealProductId = request.ItemProductId,
+                    CustomizedPortionMultiplier = request.CustomizedPortionMultiplier,
+                };
+
+                await _databaseContext.CustomizedMealProducts.AddAsync(newCustomizedMealProduct);
+            }
+            else
+            {
+                customizedMealProduct.CustomizedPortionMultiplier = request.CustomizedPortionMultiplier;
             }
 
             try
@@ -147,7 +189,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
             try
             {
                 await _databaseContext.SaveChangesAsync();
-                await AddDefaultCustomizedMealProduct(mealProduct.Id);
+                //await AddDefaultCustomizedMealProduct(mealProduct.Id);
             }
             catch (DbUpdateException ex)
             {
@@ -197,7 +239,6 @@ namespace DietPlanner.Api.Services.MealsCalendar
             };
         }
 
-
         private async Task<DatabaseActionResult<Meal>> RemoveProductFromMeal(Meal meal, int itemId)
         {
             MealProduct mealProduct = await _databaseContext.MealProducts
@@ -234,6 +275,12 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 return new DatabaseActionResult<Meal>(false, obj: null, message: $"Meal item with Id {mealItemId} can't be found in meal");
             }
 
+            List<CustomizedMealDishes> customizedMealDishes = await _databaseContext.CustomizedMealDishes
+                .Where(cmd => cmd.MealDishId == mealItemId).ToListAsync();
+
+            if (customizedMealDishes.Any()) {
+                _databaseContext.CustomizedMealDishes.RemoveRange(customizedMealDishes);
+            }
             _databaseContext.MealDishes.Remove(mealDish);
 
             try

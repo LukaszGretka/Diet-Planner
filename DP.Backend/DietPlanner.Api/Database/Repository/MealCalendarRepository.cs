@@ -48,6 +48,7 @@ namespace DietPlanner.Api.Database.Repository
                     .Where(dp => dp.DishId == md.DishId)
                     .Select(dp => new DishProductsDTO
                     {
+                        DishProductId= dp.Id,
                         Product = new Product
                         {
                             Id = dp.Product.Id,

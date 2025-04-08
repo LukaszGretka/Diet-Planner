@@ -10,6 +10,9 @@
   <ng-container *ngIf="item.itemType === 0">
     <input
       [ngModel]="mealRowDetails.portion"
+      (ngModelChange)="onPortionValueChange($event)"
+      [ngModelOptions]="{ updateOn: 'blur' }"
+      [attr.id]="'portion-' + item.id + '-' + item.itemType"
       type="number"
       id="portion"
       class="form-control form-control-sm d-flex"

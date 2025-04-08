@@ -8,7 +8,7 @@ export const getAllDailyMeals = createSelector(getState, state => state?.allDail
 export const getMealDishById = (id: number) =>
   createSelector(getState, state => {
     for (const meal of state.allDailyMeals) {
-      const foundDish = meal.dishes?.find(dish => dish.id === id);
+      const foundDish = meal.dishes?.find(dish => dish.mealItemId === id);
       if (foundDish) return foundDish;
     }
     return null;
@@ -17,7 +17,7 @@ export const getMealDishById = (id: number) =>
 export const getMealProductById = (id: number) =>
   createSelector(getState, state => {
     for (const meal of state.allDailyMeals) {
-      const foundProduct = meal.products?.find(product => product.id === id);
+      const foundProduct = meal.products?.find(product => product.mealItemId === id);
       if (foundProduct) return foundProduct;
     }
     return null;
