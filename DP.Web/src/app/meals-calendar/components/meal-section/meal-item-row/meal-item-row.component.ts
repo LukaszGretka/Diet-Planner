@@ -66,6 +66,10 @@ export class MealItemRowComponent implements OnInit {
     );
   }
 
+  public calculateNutritionalValue(value: number, portion: number, itemType: number): string {
+    return itemType === 0 ? (value * portion).toFixed(1) : value.toFixed(1);
+  }
+
   private calculateMealRowDetails(): MealRowDetails {
     let result: MealRowDetails;
     if (this.item.itemType === ItemType.Dish) {
@@ -79,7 +83,7 @@ export class MealItemRowComponent implements OnInit {
         });
     } else if (this.item.itemType === ItemType.Product) {
       this.mealCalendarStore
-        .select(MealCalendarSelectors.getMealProductById(this.item.mealItemId)) //TODO: it do not guarantee unique product added to meal
+        .select(MealCalendarSelectors.getMealProductById(this.item.mealItemId))
         .pipe(take(1))
         .subscribe(product => {
           if (product) {

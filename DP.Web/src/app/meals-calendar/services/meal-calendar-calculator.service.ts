@@ -115,7 +115,8 @@ export class MealCalendarCalculator {
     dishRowDetails.proteins += product.proteins;
     dishRowDetails.fats += product.fats;
     dishRowDetails.calories += product.calories;
-    dishRowDetails.portion += MealCalendarCalculator.defaultPortionSize * product.portionMultiplier;
+    dishRowDetails.portion +=
+      MealCalendarCalculator.defaultPortionSize * product.portionMultiplier === 0 ? 1 : product.portionMultiplier;
 
     return dishRowDetails;
   }

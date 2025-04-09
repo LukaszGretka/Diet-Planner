@@ -2,14 +2,22 @@
   <img src="../../../../assets/images/product-placeholder.svg" class="img-fluid" style="width: 25px; height: 25px" />
 </td>
 <td class="table-light">{{ item.name }}</td>
-<td class="table-light">{{ mealRowDetails?.carbs | number : '1.0-1' }}g</td>
-<td class="table-light">{{ mealRowDetails?.proteins | number : '1.0-1' }}g</td>
-<td class="table-light">{{ mealRowDetails?.fats | number : '1.0-1' }}g</td>
-<td class="table-light">{{ mealRowDetails?.calories | number : '1.0-1' }}kcal</td>
+<td class="table-light">
+  {{ calculateNutritionalValue(mealRowDetails?.carbs, mealRowDetails?.portion, item.itemType) }}g
+</td>
+<td class="table-light">
+  {{ calculateNutritionalValue(mealRowDetails?.proteins, mealRowDetails?.portion, item.itemType) }}g
+</td>
+<td class="table-light">
+  {{ calculateNutritionalValue(mealRowDetails?.fats, mealRowDetails?.portion, item.itemType) }}g
+</td>
+<td class="table-light">
+  {{ calculateNutritionalValue(mealRowDetails?.calories, mealRowDetails?.portion, item.itemType) }}kcal
+</td>
 <td class="table-light">
   <ng-container *ngIf="item.itemType === 0">
     <input
-      [ngModel]="mealRowDetails.portion"
+      [ngModel]="mealRowDetails.portion * 100"
       (ngModelChange)="onPortionValueChange($event)"
       [ngModelOptions]="{ updateOn: 'blur' }"
       [attr.id]="'portion-' + item.id + '-' + item.itemType"
