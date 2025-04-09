@@ -28,6 +28,7 @@ export class MealItemRowComponent implements OnInit {
 
   public constructor(private router: Router, private mealCalendarStore: Store<MealCalendarState>) {}
 
+  //TODO fix colapse functionality because it working only for breakfast
   public ngOnInit(): void {
     this.mealRowDetails = this.calculateMealRowDetails();
   }

@@ -20,12 +20,15 @@
           [mealType]="meal.mealType"
           [calendarDate]="calendarDate"
           [itemIndex]="itemIndex"></tr>
-        <tr class="collapse" [attr.id]="'collapse-' + meal.mealType + itemIndex" app-meal-dish-row-details-title></tr>
+        <tr
+          class="collapse"
+          [attr.id]="'collapse-' + meal.mealType + '-' + dish.itemType + '-' + itemIndex"
+          app-meal-dish-row-details-title></tr>
         <ng-container class="collapse" *ngFor="let dishProduct of dish.products; let productIndex = index">
           <tr
             app-meal-dish-row-details
             class="collapse"
-            [attr.id]="'collapse-' + meal.mealType + itemIndex"
+            [attr.id]="'collapse-' + meal.mealType + '-' + dish.itemType + '-' + itemIndex"
             [dish]="dish"
             [selectedDate]="calendarDate"
             [dishProduct]="dishProduct"
