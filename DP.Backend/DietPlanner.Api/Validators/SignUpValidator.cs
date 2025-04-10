@@ -13,7 +13,7 @@ namespace DietPlanner.Api.Validators
 
 
             RuleFor(login => login.Email).NotEmpty()
-                                         .Must(x => x.Any(char.IsLetter))
+                                         .Must(email => email.Any(char.IsLetter))
                                          .Matches(@"[a-z0-9]+@[a-z]+\.[a-z]{2,3}");
         }
     }

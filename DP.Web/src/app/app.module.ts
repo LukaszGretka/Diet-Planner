@@ -54,9 +54,7 @@ import { StatsCanvasComponent } from './dashboard/stats-canvas/stats-canvas.comp
 import { DashboardEffects } from './dashboard/stores/dashboard.effects';
 import { DashboardReducer } from './dashboard/stores/dashboard.reducer';
 import { DishPreviewComponent } from './dishes/dish-preview/dish-preview.component';
-import { SearchInputComponent } from './meals-calendar/components/search-input/search-input.component';
 import { DateSelectionComponent } from './meals-calendar/components/date-selection/date-selection.component';
-import { MealItemRowComponent } from './meals-calendar/components/meal-section/meal-item-row/meal-item-row.component';
 import { MealItemSearchBarComponent } from './meals-calendar/components/meal-section/meal-item-search-bar/meal-item-search-bar.component';
 import { MealCalendarChartComponent } from './meals-calendar/components/meal-calendar-chart/meal-calendar-chart.component';
 

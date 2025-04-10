@@ -7,7 +7,6 @@ namespace DietPlanner.Api
     {
         public static void Main(string[] args)
         {
-            //BenchmarkRunner.Run<EfBenchmark>();
             CreateHostBuilder(args).Build().Run();
         }
 
