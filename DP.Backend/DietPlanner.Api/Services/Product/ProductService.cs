@@ -50,7 +50,7 @@ namespace DietPlanner.Api.Services
             try
             {
                 var isProductAssignedToDish = _databaseContext.DishProducts
-                    .Any(dishProduct => dishProduct.Id == id);
+                    .Any(dishProduct => dishProduct.Product.Id == id);
 
                 if (isProductAssignedToDish)
                 {

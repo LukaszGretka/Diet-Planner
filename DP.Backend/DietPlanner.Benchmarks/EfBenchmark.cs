@@ -13,11 +13,11 @@ namespace DietPlanner.Api.Benchmarks
     [MemoryDiagnoser]
     public class EfBenchmark
     {
-        private DietPlannerDbContext _dbContext;
+        private DietPlannerDbContext? _dbContext;
         private string userId = "77ad6a80-d92a-4a10-bf52-c834ddfef297";
 
         [GlobalSetup]
-        public async Task Setup()
+        public void Setup()
         {
             var options = new DbContextOptionsBuilder<DietPlannerDbContext>()
                 .UseInMemoryDatabase("DietPlannerDb")

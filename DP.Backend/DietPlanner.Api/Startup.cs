@@ -54,6 +54,8 @@ namespace DietPlanner.Api
                     .AllowAnyMethod();
                 });
             });
+
+            services.AddHttpLogging();
             services.AddDbContext<DietPlannerDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DietPlannerDb")));
 

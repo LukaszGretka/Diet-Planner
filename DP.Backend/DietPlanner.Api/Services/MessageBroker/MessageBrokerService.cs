@@ -3,9 +3,6 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using Newtonsoft.Json;
 using System.Text;
-using System;
-using Microsoft.Extensions.Configuration;
-
 namespace DietPlanner.Api.Services.MessageBroker
 {
     public class MessageBrokerService : IMessageBrokerService
@@ -19,12 +16,12 @@ namespace DietPlanner.Api.Services.MessageBroker
             _emailServiceQueueName = options.Value.EmailServiceQueueName;
         }
 
-        public void BroadcastSignUpEmail(string email, string emailConfirmationLink)
+        public async void BroadcastSignUpEmail(string email, string emailConfirmationLink)
         {
-            using var connection = connectionFactory.CreateConnection();
-            using var channel = connection.CreateModel();
+            using var connection = await connectionFactory.CreateConnectionAsync();
+            using var channel = await connection.CreateChannelAsync();
 
-            channel.QueueDeclare(queue: _emailServiceQueueName,
+            await channel.QueueDeclareAsync(queue: _emailServiceQueueName,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
@@ -33,9 +30,8 @@ namespace DietPlanner.Api.Services.MessageBroker
             string serializedMessage = JsonConvert.SerializeObject(new { Email = email, ConfirmationLink = emailConfirmationLink });
             byte[] body = Encoding.UTF8.GetBytes(serializedMessage);
 
-            channel.BasicPublish(exchange: string.Empty,
+            await channel.BasicPublishAsync(exchange: string.Empty,
                                  routingKey: _emailServiceQueueName,
-                                 basicProperties: null,
                                  body: body);
         }
     }

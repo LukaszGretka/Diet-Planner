@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class ProductsEffects {
-  constructor(private actions$: Actions, private productService: ProductService, private router: Router) { }
+  constructor(private actions$: Actions, private productService: ProductService, private router: Router) {}
 
   addProductEffect$ = createEffect(() =>
     this.actions$.pipe(

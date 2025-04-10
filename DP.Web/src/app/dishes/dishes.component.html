@@ -12,14 +12,14 @@
     <div class="text-center">
       <h2 class="mb-4">No dishes were added</h2>
       <p>It seems that there are no dishes added yet. Try to add new by clicking "Add dish" button.</p>
-      <a class="btn btn-primary" role="button" routerLink="dish-add">Add dish</a>
+      <a class="btn btn-primary" role="button" routerLink="add">Add dish</a>
     </div>
   </div>
 </div>
 <ng-template #dishesTemplate>
   <div *ngIf="(isLoading$ | async) === false" class="container-lg mt-4">
     <div class="d-flex flex-end justify-content-end">
-      <div class="btn btn-primary" role="button" routerLink="dish-add">Add new dish</div>
+      <div class="btn btn-primary" role="button" routerLink="add">Add new dish</div>
     </div>
     <form>
       <div class="mb-3 row">
