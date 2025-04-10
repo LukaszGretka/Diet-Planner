@@ -1,5 +1,6 @@
 using DietPlanner.Api.Configuration;
 using DietPlanner.Api.Database;
+using DietPlanner.Api.Database.Repository;
 using DietPlanner.Api.Models.Account;
 using DietPlanner.Api.Services;
 using DietPlanner.Api.Services.AccountService;
@@ -82,12 +83,12 @@ namespace DietPlanner.Api
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMealService, MealService>();
             services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IMealProductService, MealProductService>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IMessageBrokerService, MessageBrokerService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IDashboardService, DashboardService>();
+            services.AddTransient<IMealCalendarRepository, MealCalendarRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

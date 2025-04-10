@@ -55,9 +55,9 @@ export class DishTemplateComponent implements OnInit {
     private router: Router,
   ) {
     this.route.queryParams.subscribe(params => {
-      if (params.hasOwnProperty('redirectUrl')) {
+      if (params.hasOwnProperty('returnUrl')) {
         this.callbackMealProduct$?.subscribe(item => {
-          this.returnUrl = params['redirectUrl'];
+          this.returnUrl = params['returnUrl'];
           if (item) {
             this.dishForm.get('name').setValue(item.dishName);
           }

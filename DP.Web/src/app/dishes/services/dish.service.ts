@@ -10,7 +10,6 @@ import { DishProduct } from '../models/dish-product';
 })
 export class DishService {
   private dishesUrl = `${environment.dietPlannerApiUri}/api/dish`;
-  private dishProductUrl = `${environment.dietPlannerApiUri}/api/dishproduct`;
 
   httpOptions = {
     withCredentials: true,
@@ -18,7 +17,7 @@ export class DishService {
       'Content-Type': 'application/json',
     }),
   };
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   public getUserDishes(): Observable<Dish[]> {
     return this.httpClient.get<Dish[]>(this.dishesUrl + '/all', { withCredentials: true });
@@ -48,13 +47,5 @@ export class DishService {
 
   public getDishProducts(dishId: number): Observable<DishProduct[]> {
     return this.httpClient.get<DishProduct[]>(this.dishesUrl + '/' + dishId + '/products', this.httpOptions);
-  }
-
-  public updatePortionMultiplier(dishId: number, productId: number, mealDishId: number, customizedPortionMultiplier: number) {
-    return this.httpClient.patch(
-      this.dishProductUrl,
-      { dishId, productId, mealDishId, customizedPortionMultiplier },
-      this.httpOptions,
-    );
   }
 }

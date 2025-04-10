@@ -3,16 +3,17 @@ import { MealCalendarState } from './meals-calendar.state';
 import * as mealCalendarActions from './meals-calendar.actions';
 
 export const initialState: MealCalendarState = {
-  dailyMealsOverview: [],
+  allDailyMeals: [],
+  errorCode: null
 };
 
 const reducerFactory = createReducer(
   initialState,
-  on(mealCalendarActions.getMealsRequestSuccess, (state, action) => ({
+  on(mealCalendarActions.getAllMealsRequestSuccess, (state, action) => ({
     ...state,
-    dailyMealsOverview: action.payload.result,
+    allDailyMeals: action.payload.result,
   })),
-  on(mealCalendarActions.getMealsRequestFailed, (state, action) => ({
+  on(mealCalendarActions.getAllMealsRequestFailed, (state, action) => ({
     ...state,
     errorCode: action.payload.errorCode == 0 ? 503 : action.payload.errorCode,
   })),

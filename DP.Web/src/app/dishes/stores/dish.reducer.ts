@@ -22,6 +22,10 @@ const reducerFactory = createReducer(
     ...state,
     isLoading: false,
   })),
+  on(dishActions.getDishByNameRequest, state => ({
+    ...state,
+    isLoading: true,
+  })),
   on(dishActions.editDishRequest, state => ({
     ...state,
     isLoading: true,

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DietPlanner.Api.Database.Models
 {
-    public class CustomizedDishProducts
+    public class CustomizedMealDishes
     {
         [Key]
         public int Id { get; set; }

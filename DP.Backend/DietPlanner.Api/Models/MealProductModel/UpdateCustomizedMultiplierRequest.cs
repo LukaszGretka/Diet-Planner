@@ -1,15 +1,15 @@
-﻿using DietPlanner.Api.Enums;
-using System;
+﻿using DietPlanner.Api.DTO;
 
 namespace DietPlanner.Api.Models.MealProductModel
 {
-    public class UpdateCustomizedMultiplierRequest
+    public class UpdateMealItemPortionRequest
     {
-        public int ProductId { get; set; }
+        public int ItemProductId { get; set; }
 
-        public int DishId { get; set; }
+        // Optional to determine changed customized portion for product in dish 
+        public int? DishProductId { get; set; }
 
-        public int MealDishId { get; set; }
+        public ItemType ItemType { get; set; }
 
         public decimal CustomizedPortionMultiplier { get; set; }
     }

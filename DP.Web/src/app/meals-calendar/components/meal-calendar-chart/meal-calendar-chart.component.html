@@ -1,0 +1,6 @@
+<ng-container>
+  <p class="fs-4">Total calories: {{ totalCalories | number : '1.0-2' }} kcal</p>
+  <div class="chart-container">
+    <canvas baseChart class="chart" [data]="doughnutChartData" [type]="doughnutChartType"> </canvas>
+  </div>
+</ng-container>

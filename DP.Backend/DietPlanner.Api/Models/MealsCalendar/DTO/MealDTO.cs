@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.DTO.Dishes;
+using DietPlanner.Api.DTO.Products;
+using DietPlanner.Api.Enums;
 
 namespace DietPlanner.Api.Models.MealsCalendar.DTO
 {
     public class MealDto
     {
-        public MealTypeEnum MealTypeId { get; set; }
+        public MealType MealType { get; set; }
 
         public List<DishDTO> Dishes { get; set; }
+
+        public List<ProductDTO> Products { get; set; }
     }
 
     public class PutMealRequest : MealDto
@@ -17,11 +21,12 @@ namespace DietPlanner.Api.Models.MealsCalendar.DTO
         public DateTime Date { get; set; }
     }
 
-    public enum MealTypeEnum
+    public class MealProductDto
     {
-        Breakfast = 1,
-        Lunch = 2,
-        Dinner = 3,
-        Supper = 4,
+        public DateTime Date { get; set; }
+
+        public MealType MealType { get; set; }
+
+        public ProductDTO Product { get; set; }
     }
 }

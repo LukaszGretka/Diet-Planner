@@ -59,13 +59,13 @@ namespace DietPlanner.Api.Database
                    .Property(mp => mp.PortionMultiplier)
                    .HasDefaultValue(1.0);
 
-            builder.Entity<CustomizedDishProducts>()
+            builder.Entity<CustomizedMealDishes>()
                 .HasOne(c => c.MealDish)
                 .WithMany()
                 .HasForeignKey(c => c.MealDishId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<CustomizedDishProducts>()
+            builder.Entity<CustomizedMealDishes>()
                .Property(mp => mp.CustomizedPortionMultiplier)
             .HasDefaultValue(1.0);
 
@@ -84,10 +84,14 @@ namespace DietPlanner.Api.Database
 
         public DbSet<MealDish> MealDishes { get; set; }
 
+        public DbSet<MealProduct> MealProducts { get; set; }
+
         public DbSet<DishProducts> DishProducts { get; set; }
 
         public DbSet<Measurement> Measurements { get; set; }
 
-        public DbSet<CustomizedDishProducts> CustomizedDishProducts { get; set; }
+        public DbSet<CustomizedMealDishes> CustomizedMealDishes { get; set; }
+
+        public DbSet<CustomizedMealProducts> CustomizedMealProducts { get; set; }
     }
 }

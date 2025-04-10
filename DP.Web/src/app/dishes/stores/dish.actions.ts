@@ -11,6 +11,10 @@ export const saveDishRequest = createAction('Save dish request', prop<{ dish: Di
 export const saveDishRequestSuccess = createAction('Save dish request success', prop<{ callbackMealDish: any }>());
 export const saveDishRequestFailed = createAction('Save dish request failed', prop<{ error: number }>());
 
+export const getDishByNameRequest = createAction('Get dish by name request', prop<{ name: string }>());
+export const getDishByNameRequestSuccess = createAction('Get dish by name request success');
+export const getDishByNameRequestFailed = createAction('Get dish by name request failed', prop<{ error: number }>());
+
 export const editDishRequest = createAction('Edit dish request', prop<{ dish: Dish; returnUrl: string }>());
 export const editDishRequestSuccess = createAction(
   'Edit dish request success',
@@ -22,20 +26,12 @@ export const deleteDishRequest = createAction('Delete dish request', prop<{ id: 
 export const deleteDishRequestSuccess = createAction('Delete dish request success');
 export const deleteDishRequestFailed = createAction('Delete dish request failed', prop<{ error: number }>());
 
-export const updatePortionRequest = createAction(
-  'Update portion request trigger',
-  prop<{ dishId: number; productId: number; mealDishId: number; customizedPortionMultiplier: number; date: Date }>(),
-);
-
 export const getDishProductsRequest = createAction('Get dish products request', prop<{ dishId: number }>());
 export const getDishProductsRequestSuccess = createAction(
   'Get dish products request success',
   prop<{ dishProducts: DishProduct[] }>(),
 );
 export const getDishProductsRequestFailed = createAction('Get dish products request failed', prop<{ error: number }>());
-
-export const updatePortionRequestSuccess = createAction('Update portion request success');
-export const updatePortionRequestFailed = createAction('Update portion request failed', prop<{ error: number }>());
 
 export const setCallbackMealDish = createAction(
   'Set callback meal dish',
@@ -60,9 +56,6 @@ const actions = union({
   getDishProductsRequest,
   getDishProductsRequestSuccess,
   getDishProductsRequestFailed,
-  updatePortionRequest,
-  updatePortionRequestSuccess,
-  updatePortionRequestFailed,
   setCallbackMealDish,
   getCallbackMealDish,
   clearCallbackMealDish,

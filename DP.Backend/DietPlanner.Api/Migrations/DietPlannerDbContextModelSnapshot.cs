@@ -17,7 +17,7 @@ namespace DietPlanner.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.22");
 
-            modelBuilder.Entity("DietPlanner.Api.Database.Models.CustomizedDishProducts", b =>
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.CustomizedMealDishes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +41,27 @@ namespace DietPlanner.Api.Migrations
 
                     b.HasIndex("MealDishId");
 
-                    b.ToTable("CustomizedDishProducts");
+                    b.ToTable("CustomizedMealDishes");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.CustomizedMealProducts", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("CustomizedPortionMultiplier")
+                        .HasPrecision(6, 2)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MealProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MealProductId");
+
+                    b.ToTable("CustomizedMealProducts");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Database.Models.Dish", b =>
@@ -148,6 +168,27 @@ namespace DietPlanner.Api.Migrations
                     b.HasIndex("MealId");
 
                     b.ToTable("MealDishes");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.MealProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MealId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MealId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("MealProducts");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Database.Models.Measurement", b =>
@@ -478,7 +519,7 @@ namespace DietPlanner.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("DietPlanner.Api.Database.Models.CustomizedDishProducts", b =>
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.CustomizedMealDishes", b =>
                 {
                     b.HasOne("DietPlanner.Api.Database.Models.DishProducts", "DishProduct")
                         .WithMany()
@@ -495,6 +536,17 @@ namespace DietPlanner.Api.Migrations
                     b.Navigation("DishProduct");
 
                     b.Navigation("MealDish");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.CustomizedMealProducts", b =>
+                {
+                    b.HasOne("DietPlanner.Api.Database.Models.MealProduct", "MealProduct")
+                        .WithMany()
+                        .HasForeignKey("MealProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MealProduct");
                 });
 
             modelBuilder.Entity("DietPlanner.Api.Database.Models.DishProducts", b =>
@@ -533,6 +585,25 @@ namespace DietPlanner.Api.Migrations
                     b.Navigation("Dish");
 
                     b.Navigation("Meal");
+                });
+
+            modelBuilder.Entity("DietPlanner.Api.Database.Models.MealProduct", b =>
+                {
+                    b.HasOne("DietPlanner.Api.Database.Models.Meal", "Meal")
+                        .WithMany()
+                        .HasForeignKey("MealId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DietPlanner.Api.Models.MealsCalendar.DbModel.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Meal");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

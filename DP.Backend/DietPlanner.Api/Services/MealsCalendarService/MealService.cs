@@ -1,8 +1,13 @@
 ﻿using DietPlanner.Api.Database;
 using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Dishes;
-using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Database.Repository;
+using DietPlanner.Api.DTO;
+using DietPlanner.Api.DTO.Products;
+using DietPlanner.Api.Enums;
+using DietPlanner.Api.Models.MealProductModel;
+using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
+using DietPlanner.Api.Models.MealsCalendar.Requests;
 using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -18,123 +23,201 @@ namespace DietPlanner.Api.Services.MealsCalendar
     {
         private readonly ILogger<MealService> _logger;
         private readonly DietPlannerDbContext _databaseContext;
+        private readonly IMealCalendarRepository _repository;
 
-        public MealService(ILogger<MealService> logger, DietPlannerDbContext databaseContext)
+        public MealService(ILogger<MealService> logger, DietPlannerDbContext databaseContext, IMealCalendarRepository repository)
         {
             _logger = logger;
             _databaseContext = databaseContext;
+            _repository = repository;
         }
 
         public async Task<List<MealDto>> GetMeals(DateTime date, string userId)
         {
-            string formattedDate = date.ToDatabaseDateFormat();
-
-            var meals = await _databaseContext.Meals
+            List<Meal> meals = await _databaseContext.Meals
                 .Where(m => m.UserId == userId && m.Date.Date == date.Date)
-                .ToListAsync();
-
-            var mealDishes = await _databaseContext.MealDishes
-                .Where(md => meals.Select(m => m.Id).Contains(md.MealId))
-                .ToListAsync();
-
-            var dishes = await _databaseContext.Dishes
-                .Where(d => mealDishes.Select(md => md.DishId).Contains(d.Id))
-                .ToListAsync();
-
-            var dishProducts = await _databaseContext.DishProducts
-                .Where(dp => dishes.Select(d => d.Id).Contains(dp.DishId))
-                .ToListAsync();
-
-            var products = await _databaseContext.Products
-                .Where(p => dishProducts.Select(dp => dp.ProductId).Contains(p.Id))
-                .ToListAsync();
-
-            var customizedDishProducts = await _databaseContext.CustomizedDishProducts
-                .Where(cdp => mealDishes.Select(md => md.Id).Contains(cdp.MealDishId))
                 .ToListAsync();
 
             var mealDtos = meals
                 .GroupBy(m => new { m.MealType })
                 .Select(g => new MealDto
                 {
-                    MealTypeId = (MealTypeEnum)g.Key.MealType,
-                    Dishes = g.SelectMany(m => mealDishes.Where(md => md.MealId == m.Id)
-                        .Select(md => new DishDTO
-                        {
-                            Id = md.DishId,
-                            MealDishId = md.Id,
-                            Name = dishes.First(d => d.Id == md.DishId).Name,
-                            Description = dishes.First(d => d.Id == md.DishId).Description,
-                            ImagePath = dishes.First(d => d.Id == md.DishId).ImagePath,
-                            ExposeToOtherUsers = dishes.First(d => d.Id == md.DishId).ExposeToOtherUsers,
-                            Products = dishProducts.Where(dp => dp.DishId == md.DishId)
-                                .Select(dp => new DishProductsDTO
-                                {
-                                    Product = products.First(p => p.Id == dp.ProductId),
-                                    PortionMultiplier = dp.PortionMultiplier,
-                                    CustomizedPortionMultiplier = customizedDishProducts
-                                        .Where(cdp => cdp.MealDishId == md.Id && cdp.DishProductId == dp.Id)
-                                        .Select(cdp => (decimal?)cdp.CustomizedPortionMultiplier)
-                                        .FirstOrDefault()
-                                }).ToList()
-                        })).ToList()
+                    MealType = (MealType)g.Key.MealType,
+                    Products = g.SelectMany(meal => _repository.GetMealProducts(meal)).ToList(),
+                    Dishes = g.SelectMany(meal => _repository.GetMealDishes(meal)).ToList()
                 }).ToList();
 
             return mealDtos;
         }
 
-        public async Task<DatabaseActionResult<Meal>> AddOrUpdateMeal(PutMealRequest mealRequest, string userId)
+        public async Task<DatabaseActionResult<Meal>> AddMealItem(MealItemRequest addMealItemRequest, string userId)
         {
-            string formattedDate = mealRequest.Date.ToDatabaseDateFormat();
-
-            var dishIds = mealRequest.Dishes.Select(dish => dish.Id).ToList();
-
-            if (!dishIds.Any())
-            {
-                return await RemoveMealEntry(mealRequest, mealRequest.Date);
-            }
-
-            var existingMeal = await _databaseContext.Meals
-                .Where(meal => meal.Date.Date == mealRequest.Date.Date
-                    && meal.MealType == (int)mealRequest.MealTypeId)
+            Meal foundMeal = await _databaseContext.Meals
+                .Where(meal => meal.Date.Date == addMealItemRequest.Date.Date && meal.MealType == (int)addMealItemRequest.MealType)
                 .SingleOrDefaultAsync();
 
+            foundMeal ??= CreateNewMeal(addMealItemRequest.Date, addMealItemRequest.MealType, userId);
 
-            if (existingMeal is not null)
+            return addMealItemRequest.ItemType switch
             {
-                return await UpdateMealDishes(existingMeal, mealRequest);
+                ItemType.Dish => await AddDishToMeal(foundMeal, addMealItemRequest.ItemId),
+                ItemType.Product => await AddProductToMeal(foundMeal, addMealItemRequest.ItemId),
+                _ => new DatabaseActionResult<Meal>(false, obj: null),
+            };
+        }
+
+        public async Task<DatabaseActionResult<Meal>> RemoveMealItem(MealItemRequest removeMealItemRequest, string userId)
+        {
+            Meal foundMeal = await _databaseContext.Meals
+                .Where(meal => meal.Date.Date == removeMealItemRequest.Date.Date && meal.MealType == (int)removeMealItemRequest.MealType)
+                .SingleOrDefaultAsync();
+
+            if (foundMeal is null)
+            {
+                return new DatabaseActionResult<Meal>(false, "No meal found for provided parameters");
             }
 
-            Meal newMeal = new()
+            return removeMealItemRequest.ItemType switch
             {
-                Date = mealRequest.Date.Date,
-                MealType = (int)mealRequest.MealTypeId,
-                UserId = userId
+                ItemType.Dish => await RemoveDishFromMeal(foundMeal, removeMealItemRequest.MealItemId),
+                ItemType.Product => await RemoveProductFromMeal(foundMeal, removeMealItemRequest.MealItemId),
+                _ => new DatabaseActionResult<Meal>(false, obj: null),
             };
+        }
 
-            List<MealDish> newMealDishes = new();
-
-            foreach (var dishDTO in mealRequest.Dishes)
+        public async Task<DatabaseActionResult> UpdateMealItemPortion(UpdateMealItemPortionRequest request)
+        {
+            return request.ItemType switch
             {
-                newMealDishes.Add(new MealDish
+                ItemType.Dish => await UpdateDishPortion(request),
+                ItemType.Product => await UpdateProductPortion(request),
+                _ => new DatabaseActionResult(false, message: "Invalid item type provided."),
+            };
+        }
+
+        private async Task<DatabaseActionResult> UpdateDishPortion(UpdateMealItemPortionRequest request)
+        {
+            var customizedDishProduct = await _databaseContext.CustomizedMealDishes
+                .Where(cdp => cdp.MealDishId == request.ItemProductId)
+                .SingleOrDefaultAsync();
+
+            if (customizedDishProduct is null)
+            {
+                var newCustomizedDishProduct = new CustomizedMealDishes
                 {
-                    Meal = newMeal,
-                    Dish = new Dish
-                    {
-                        Id = dishDTO.Id,
-                        Name = dishDTO.Name,
-                        ImagePath = dishDTO.ImagePath,
-                        UserId = userId,
-                        Description = dishDTO.Description,
-                        ExposeToOtherUsers = dishDTO.ExposeToOtherUsers
-                    }
-                });
+                    DishProductId = request.DishProductId ??
+                        throw new ArgumentNullException(nameof(request.DishProductId),
+                        "DishProductId cannot be null. Please provide a valid value."),
+                    CustomizedPortionMultiplier = request.CustomizedPortionMultiplier,
+                    MealDishId = request.ItemProductId
+                }
+            ;
+
+                await _databaseContext.CustomizedMealDishes.AddAsync(newCustomizedDishProduct);
+            }
+            else
+            {
+                customizedDishProduct.CustomizedPortionMultiplier = request.CustomizedPortionMultiplier;
             }
 
             try
             {
-                _databaseContext.MealDishes.AttachRange(newMealDishes);
-                await _databaseContext.Meals.AddAsync(newMeal);
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult(false, exception: ex);
+            }
+
+            return new DatabaseActionResult(true);
+        }
+
+        private async Task<DatabaseActionResult> UpdateProductPortion(UpdateMealItemPortionRequest request)
+        {
+            CustomizedMealProducts customizedMealProduct = await _databaseContext.CustomizedMealProducts
+             .Where(cmp => cmp.MealProductId == request.ItemProductId)
+             .SingleOrDefaultAsync();
+
+            if (customizedMealProduct is null)
+            {
+                CustomizedMealProducts newCustomizedMealProduct = new()
+                {
+                    MealProductId = request.ItemProductId,
+                    CustomizedPortionMultiplier = request.CustomizedPortionMultiplier,
+                };
+
+                await _databaseContext.CustomizedMealProducts.AddAsync(newCustomizedMealProduct);
+            }
+            else
+            {
+                customizedMealProduct.CustomizedPortionMultiplier = request.CustomizedPortionMultiplier;
+            }
+
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult(false, exception: ex);
+            }
+
+            return new DatabaseActionResult(true);
+        }
+
+        private async Task<DatabaseActionResult<Meal>> AddProductToMeal(Meal meal, int itemId)
+        {
+            Product product = _databaseContext.Products.Find(itemId);
+
+            if (product is null)
+            {
+                return new DatabaseActionResult<Meal>(false, obj: null, message: $"Product with id {itemId} can't be found");
+            }
+
+            MealProduct mealProduct = new MealProduct {
+                ProductId = itemId,
+                Meal = meal,
+                Product = product,
+                MealId = meal.Id
+            };
+
+
+            _databaseContext.MealProducts.Add(mealProduct);
+
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+                //await AddDefaultCustomizedMealProduct(mealProduct.Id);
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult<Meal>(false, exception: ex);
+            }
+
+
+            return new DatabaseActionResult<Meal>(true, obj: meal);
+        }
+
+        private async Task<DatabaseActionResult<Meal>> AddDishToMeal(Meal meal, int itemId)
+        {
+            Dish dish = _databaseContext.Dishes.Find(itemId);
+
+            if (dish is null)
+            {
+                return new DatabaseActionResult<Meal>(false, obj: null, message: $"Dish with id {itemId} can't be found");
+            }
+
+            _databaseContext.MealDishes.Add(new MealDish
+            {
+                Meal = meal,
+                Dish = dish
+            });
+
+            try
+            {
                 await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
@@ -143,110 +226,94 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 return new DatabaseActionResult<Meal>(false, exception: ex);
             }
 
-            return new DatabaseActionResult<Meal>(true, obj: newMeal);
+            return new DatabaseActionResult<Meal>(true, obj: meal);
         }
 
-        private async Task<DatabaseActionResult<Meal>> UpdateMealDishes(Meal existingMeal, PutMealRequest mealRequest)
+        private static Meal CreateNewMeal(DateTime date, MealType mealType, string userId)
         {
+            return new()
+            {
+                Date = date,
+                MealType = (int)mealType,
+                UserId = userId,
+            };
+        }
+
+        private async Task<DatabaseActionResult<Meal>> RemoveProductFromMeal(Meal meal, int itemId)
+        {
+            MealProduct mealProduct = await _databaseContext.MealProducts
+                .Where(mp => mp.Id == itemId && mp.MealId == meal.Id)
+                .SingleOrDefaultAsync();
+
+            if (mealProduct is null)
+            {
+                return new DatabaseActionResult<Meal>(false, obj: null, message: $"Product with id {itemId} can't be found in meal");
+            }
+
+            _databaseContext.MealProducts.Remove(mealProduct);
+
             try
             {
-                List<MealDish> existingMealDishes = await _databaseContext.MealDishes
-                    .Where(md => md.MealId.Equals(existingMeal.Id)).ToListAsync();
-
-
-                if (existingMealDishes.Count < mealRequest.Dishes.Count)
-                {
-                    return await AddMealDish(mealRequest, existingMealDishes, existingMeal);
-                }
-                else
-                {
-                    return await RemoveMealDish(mealRequest, existingMealDishes, existingMeal);
-                }
+                await _databaseContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
                 return new DatabaseActionResult<Meal>(false, exception: ex);
             }
-            catch (InvalidOperationException ex)
+
+            return new DatabaseActionResult<Meal>(true, obj: meal);
+        }
+
+        private async Task<DatabaseActionResult<Meal>> RemoveDishFromMeal(Meal meal, int mealItemId)
+        {
+            MealDish mealDish = await _databaseContext.MealDishes
+                .Where(md => md.Id == mealItemId).SingleOrDefaultAsync();
+
+            if (mealDish is null)
+            {
+                return new DatabaseActionResult<Meal>(false, obj: null, message: $"Meal item with Id {mealItemId} can't be found in meal");
+            }
+
+            List<CustomizedMealDishes> customizedMealDishes = await _databaseContext.CustomizedMealDishes
+                .Where(cmd => cmd.MealDishId == mealItemId).ToListAsync();
+
+            if (customizedMealDishes.Any()) {
+                _databaseContext.CustomizedMealDishes.RemoveRange(customizedMealDishes);
+            }
+            _databaseContext.MealDishes.Remove(mealDish);
+
+            try
+            {
+                await _databaseContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
             {
                 _logger.LogError(ex.Message);
                 return new DatabaseActionResult<Meal>(false, exception: ex);
             }
+
+            return new DatabaseActionResult<Meal>(true, obj: meal);
         }
 
-        private async Task<DatabaseActionResult<Meal>> AddMealDish(PutMealRequest mealRequest, List<MealDish> existingMealDishes, Meal existingMeal)
+        private async Task<DatabaseActionResult> AddDefaultCustomizedMealProduct(int mealProductId)
         {
-            var leftJoinResult = mealRequest.Dishes.GroupJoin(
-                 existingMealDishes,
-                dishDTO => dishDTO.MealDishId,
-                mealDish => mealDish.Id,
-                (dishDto, mealDishes) => new
-                {
-                    DishId = dishDto.Id,
-                    MealDish = mealDishes.DefaultIfEmpty().Select(mealDish => mealDish).FirstOrDefault()
-                });
-
-            var notExistingMealDish = leftJoinResult.Where(x => x.MealDish is null).SingleOrDefault();
-
-            if (notExistingMealDish != null)
+            _databaseContext.CustomizedMealProducts.Add(new CustomizedMealProducts
             {
-                var dishToAdd = mealRequest.Dishes.Where(d => d.Id.Equals(notExistingMealDish.DishId)).FirstOrDefault();
-                if (dishToAdd is not null)
-                {
-                    await _databaseContext.MealDishes.AddAsync(new MealDish
-                    {
-                        DishId = dishToAdd.Id,
-                        MealId = existingMeal.Id
-                    });
-                }
-            }
+                MealProductId = mealProductId,
+                CustomizedPortionMultiplier = 1
+            });
 
-            await _databaseContext.SaveChangesAsync();
-            return new DatabaseActionResult<Meal>(true, obj: existingMeal);
-        }
-
-        private async Task<DatabaseActionResult<Meal>> RemoveMealDish(PutMealRequest mealRequest, List<MealDish> existingMealDishes, Meal existingMeal)
-        {
-            var rightJoinResult = existingMealDishes.GroupJoin(
-                 mealRequest.Dishes,
-                 dishDTO => dishDTO.Id,
-                 mealDish => mealDish.MealDishId,
-                 (dishDto, mealDishes) => new
-                 {
-                     DishId = dishDto.Id,
-                     MealDish = mealDishes.DefaultIfEmpty().Select(mealDish => mealDish).FirstOrDefault()
-                 });
-
-            var mealDishNonExistsInRequest = rightJoinResult.Where(x => x.MealDish is null).SingleOrDefault();
-            var mealDishToRemove = _databaseContext.MealDishes.Where(d => d.Id.Equals(mealDishNonExistsInRequest.DishId)).FirstOrDefault();
-
-            var customizedPortionToRemove = _databaseContext.CustomizedDishProducts.Where(c => c.MealDishId == mealDishToRemove.Id);
-
-            _databaseContext.MealDishes.Remove(mealDishToRemove);
-            _databaseContext.CustomizedDishProducts.RemoveRange(customizedPortionToRemove);
-
-            await _databaseContext.SaveChangesAsync();
-            return new DatabaseActionResult<Meal>(true, obj: existingMeal);
-        }
-
-        private async Task<DatabaseActionResult<Meal>> RemoveMealEntry(PutMealRequest mealRequest, DateTime date)
-        {
-            var existingMeal = await _databaseContext.Meals
-                .Where(meal => meal.Date.Date == date.Date && meal.MealType == (int)mealRequest.MealTypeId)
-                .FirstOrDefaultAsync();
-
-            var mealDishToRemove = await _databaseContext.MealDishes.Where(md => md.MealId == existingMeal.Id).SingleOrDefaultAsync();
-            var customizedDPToRemove = await _databaseContext.CustomizedDishProducts.Where(c => c.MealDishId == mealDishToRemove.Id).SingleOrDefaultAsync();
-            if (customizedDPToRemove != null)
+            try
             {
-                _databaseContext.CustomizedDishProducts.Remove(customizedDPToRemove);
+                await _databaseContext.SaveChangesAsync();
             }
-            _databaseContext.Meals.Remove(existingMeal);
-
-            await _databaseContext.SaveChangesAsync();
-
-            return new DatabaseActionResult<Meal>(true, obj: null);
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return new DatabaseActionResult(false, exception: ex);
+            }
+            return new DatabaseActionResult(true);
         }
     }
 }

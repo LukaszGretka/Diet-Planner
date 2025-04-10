@@ -12,14 +12,14 @@
     <div class="text-center">
       <h2 class="mb-4">No dishes were added</h2>
       <p>It seems that there are no dishes added yet. Try to add new by clicking "Add dish" button.</p>
-      <a class="btn btn-primary" role="button" routerLink="./dish-add">Add dish</a>
+      <a class="btn btn-primary" role="button" routerLink="dish-add">Add dish</a>
     </div>
   </div>
 </div>
 <ng-template #dishesTemplate>
   <div *ngIf="(isLoading$ | async) === false" class="container-lg mt-4">
     <div class="d-flex flex-end justify-content-end">
-      <div class="btn btn-primary" role="button" routerLink="./dish-add">Add new dish</div>
+      <div class="btn btn-primary" role="button" routerLink="dish-add">Add new dish</div>
     </div>
     <form>
       <div class="mb-3 row">
@@ -73,13 +73,16 @@
           </td>
           <td>
             <div class="button-group">
-              <button *ngIf="dish?.isOwner"
-                      [ngbTooltip]="'Edit'"
-                      type="button" class="btn edit-button-icon"
-                      (click)="onEditButtonClick(dish.id)">
+              <button
+                *ngIf="dish?.isOwner"
+                [ngbTooltip]="'Edit'"
+                type="button"
+                class="btn edit-button-icon"
+                (click)="onEditButtonClick(dish.id)">
                 <i class="bi bi-pen"></i>
               </button>
-              <button *ngIf="dish?.isOwner"
+              <button
+                *ngIf="dish?.isOwner"
                 [ngbTooltip]="'Delete'"
                 type="button"
                 class="btn delete-button-icon text-danger"
@@ -89,7 +92,12 @@
                 <i class="bi bi-x-lg"></i>
               </button>
 
-              <button type="button" [ngbTooltip]="'Show'" *ngIf="!dish.isOwner" class="btn edit-button-icon" (click)="onPreviewButtonClick(dish.id)">
+              <button
+                type="button"
+                [ngbTooltip]="'Show'"
+                *ngIf="!dish.isOwner"
+                class="btn edit-button-icon"
+                (click)="onPreviewButtonClick(dish.id)">
                 <i class="bi bi-box-arrow-up-right"></i>
               </button>
             </div>

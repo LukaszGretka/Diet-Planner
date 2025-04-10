@@ -29,11 +29,11 @@ export class DishesComponent implements OnInit {
   }
 
   public onEditButtonClick(dishId: number): void {
-    this.router.navigate([('dishes/edit/' + dishId) as string]);
+    this.router.navigate([('dish/edit/' + dishId) as string]);
   }
 
   public onPreviewButtonClick(dishId: number): void {
-    this.router.navigate([('dishes/preview/' + dishId) as string]);
+    this.router.navigate([('dish/preview/' + dishId) as string]);
   }
 
   public onDeleteButtonClick(dishId: number): void {

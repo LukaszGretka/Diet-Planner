@@ -1,5 +1,7 @@
 ﻿using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Models.MealProductModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
+using DietPlanner.Api.Models.MealsCalendar.Requests;
 using DietPlanner.Api.Services.MealProductService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,12 +33,13 @@ namespace DietPlanner.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<DailyMealsDto>> AddOrUpdateMeal([FromBody] PutMealRequest putMealRequest)
+        [HttpPost]
+        [Route("add-meal-item")]
+        public async Task<ActionResult<DailyMealsDto>> AddMealItemRequest([FromBody] MealItemRequest addMealItemRequest)
         {
             string userId = HttpContext.GetUserId();
 
-            var result = await _mealsCalendarService.AddOrUpdateMeal(putMealRequest, userId);
+            var result = await _mealsCalendarService.AddMealItem(addMealItemRequest, userId);
 
             if (result.Exception != null)
             {
@@ -44,6 +47,36 @@ namespace DietPlanner.Api.Controllers
             }
 
             return Ok(result.Obj);
+        }
+
+        [HttpDelete]
+        [Route("remove-meal-item")]
+        public async Task<ActionResult<DailyMealsDto>> RemoveMealItemRequest([FromBody] MealItemRequest removeMealItemRequest)
+        {
+            string userId = HttpContext.GetUserId();
+
+            var result = await _mealsCalendarService.RemoveMealItem(removeMealItemRequest, userId);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(result.Obj);
+        }
+
+        [HttpPatch]
+        [Route("update-meal-item-portion")]
+        public async Task<IActionResult> UpdateMealItemPortion(UpdateMealItemPortionRequest request)
+        {
+            var result = await _mealsCalendarService.UpdateMealItemPortion(request);
+
+            if (result.Exception != null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(result.Success);
         }
     }
 }
