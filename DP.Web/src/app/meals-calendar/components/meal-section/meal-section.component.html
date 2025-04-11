@@ -19,7 +19,7 @@
         app-meal-item-row
         [item]="dish"
         [mealType]="meal.mealType"
-        [calendarDate]="calendarDate"
+        [calendarDate]="calendarDate()"
         [itemIndex]="itemIndex"></tr>
       <tr
         class="collapse"
@@ -32,13 +32,13 @@
           class="collapse"
           [attr.id]="'collapse-' + meal.mealType + '-' + dish.itemType + '-' + itemIndex"
           [dish]="dish"
-          [selectedDate]="calendarDate"
+          [selectedDate]="calendarDate()"
           [dishProduct]="dishProduct"
           [mealType]="meal.mealType"
           [itemIndex]="itemIndex"></tr>
       </ng-container>
       } } @for (product of meal.products; track product) {
-      <tr app-meal-item-row [item]="product" [mealType]="meal.mealType" [calendarDate]="calendarDate"></tr>
+      <tr app-meal-item-row [item]="product" [mealType]="meal.mealType" [calendarDate]="calendarDate()"></tr>
       }
     </tbody>
     <tbody>

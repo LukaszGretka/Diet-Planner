@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Measurement } from 'src/app/body-profile/models/measurement';
 import { FormErrorComponent } from '../../shared/form-error/form-error.component';
@@ -13,28 +13,27 @@ import { RouterLink } from '@angular/router';
 export class MeasurementTemplateComponent implements OnInit {
   private formBuilder = inject(UntypedFormBuilder);
 
-  @Input()
-  public measurement: Measurement;
+  public readonly measurement = input<Measurement>(undefined);
 
-  @Input()
-  public submitFunction: Function;
+  public readonly submitFunction = input<Function>(undefined);
 
   private readonly defaultMeasurementValidator = [Validators.required, Validators.maxLength(3)];
 
   ngOnInit(): void {
-    if (this.measurement) {
-      this.measurementForm.get('weight')?.setValue(this.measurement.weight);
-      this.measurementForm.get('chest')?.setValue(this.measurement.chest);
-      this.measurementForm.get('belly')?.setValue(this.measurement.belly);
-      this.measurementForm.get('waist')?.setValue(this.measurement.waist);
-      this.measurementForm.get('biceps-left')?.setValue(this.measurement.bicepsLeft);
-      this.measurementForm.get('biceps-right')?.setValue(this.measurement.bicepsRight);
-      this.measurementForm.get('forearm-left')?.setValue(this.measurement.forearmLeft);
-      this.measurementForm.get('forearm-right')?.setValue(this.measurement.forearmRight);
-      this.measurementForm.get('thigh-left')?.setValue(this.measurement.thighLeft);
-      this.measurementForm.get('thigh-right')?.setValue(this.measurement.thighRight);
-      this.measurementForm.get('calf-left')?.setValue(this.measurement.calfLeft);
-      this.measurementForm.get('calf-right')?.setValue(this.measurement.calfRight);
+    const measurement = this.measurement();
+    if (measurement) {
+      this.measurementForm.get('weight')?.setValue(measurement.weight);
+      this.measurementForm.get('chest')?.setValue(measurement.chest);
+      this.measurementForm.get('belly')?.setValue(measurement.belly);
+      this.measurementForm.get('waist')?.setValue(measurement.waist);
+      this.measurementForm.get('biceps-left')?.setValue(measurement.bicepsLeft);
+      this.measurementForm.get('biceps-right')?.setValue(measurement.bicepsRight);
+      this.measurementForm.get('forearm-left')?.setValue(measurement.forearmLeft);
+      this.measurementForm.get('forearm-right')?.setValue(measurement.forearmRight);
+      this.measurementForm.get('thigh-left')?.setValue(measurement.thighLeft);
+      this.measurementForm.get('thigh-right')?.setValue(measurement.thighRight);
+      this.measurementForm.get('calf-left')?.setValue(measurement.calfLeft);
+      this.measurementForm.get('calf-right')?.setValue(measurement.calfRight);
     }
   }
 
@@ -58,8 +57,8 @@ export class MeasurementTemplateComponent implements OnInit {
       this.measurementForm.markAllAsTouched();
       return;
     }
-    this.submitFunction({
-      id: this.measurement?.id,
+    this.submitFunction()({
+      id: this.measurement()?.id,
       weight: this.getControlValue('weight'),
       chest: this.getControlValue('chest'),
       belly: this.getControlValue('belly'),

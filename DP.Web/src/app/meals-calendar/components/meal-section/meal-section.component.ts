@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, input } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { BehaviorSubject } from 'rxjs';
 import * as MealCalendarActions from '../../stores/meals-calendar.actions';
@@ -38,7 +38,7 @@ export class MealSectionComponent implements OnInit {
   private readonly productStore = inject<Store<ProductsState>>(Store);
 
   @Input() public meal: Meal;
-  @Input() calendarDate: Date;
+  readonly calendarDate = input<Date>(undefined);
 
   public searchItem: string;
 
@@ -50,7 +50,7 @@ export class MealSectionComponent implements OnInit {
   public itemAddedToSearchBar(item: BaseItem, mealTypeId: MealType) {
     const addMealRequest: MealItemRequest = {
       mealType: mealTypeId,
-      date: this.calendarDate,
+      date: this.calendarDate(),
       mealItemId: item.mealItemId,
       itemType: item.itemType,
       itemId: item.id,

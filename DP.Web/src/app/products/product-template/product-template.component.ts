@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { UntypedFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Product } from 'src/app/products/models/product';
 import { FormErrorComponent } from '../../shared/form-error/form-error.component';
@@ -13,21 +13,20 @@ import { RouterLink } from '@angular/router';
 export class ProductTemplateComponent implements OnInit {
   private readonly formBuilder = inject(UntypedFormBuilder);
 
-  @Input()
-  public product: Product;
+  public readonly product = input<Product>(undefined);
 
-  @Input()
-  public submitFunction: Function;
+  public readonly submitFunction = input<Function>(undefined);
 
   ngOnInit(): void {
-    if (this.product) {
-      this.productForm.get('name')?.setValue(this.product.name);
-      this.productForm.get('description')?.setValue(this.product.description);
-      this.productForm.get('barcode')?.setValue(this.product.barCode);
-      this.productForm.get('calories')?.setValue(this.product.calories);
-      this.productForm.get('carbohydrates')?.setValue(this.product.carbohydrates);
-      this.productForm.get('proteins')?.setValue(this.product.proteins);
-      this.productForm.get('fats')?.setValue(this.product.fats);
+    const product = this.product();
+    if (product) {
+      this.productForm.get('name')?.setValue(product.name);
+      this.productForm.get('description')?.setValue(product.description);
+      this.productForm.get('barcode')?.setValue(product.barCode);
+      this.productForm.get('calories')?.setValue(product.calories);
+      this.productForm.get('carbohydrates')?.setValue(product.carbohydrates);
+      this.productForm.get('proteins')?.setValue(product.proteins);
+      this.productForm.get('fats')?.setValue(product.fats);
     }
   }
 
@@ -47,8 +46,8 @@ export class ProductTemplateComponent implements OnInit {
       return;
     }
 
-    this.submitFunction({
-      id: this.product?.id,
+    this.submitFunction()({
+      id: this.product()?.id,
       name: this.getControlValue('name'),
       description: this.getControlValue('description'),
       barCode: this.getControlValue('barcode'),

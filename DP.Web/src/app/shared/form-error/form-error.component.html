@@ -1,4 +1,4 @@
-@if (control.invalid && control.touched) {
+@if (control().invalid && control().touched) {
 <small class="text-danger">
   @for (errorKey of getErrorKeys(); track errorKey) {
   <div>{{ getErrorMessage(errorKey) }}</div>

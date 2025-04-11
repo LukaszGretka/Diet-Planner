@@ -1,5 +1,5 @@
 @if (errorCode$ | async) {
-<app-error-page [httpsStatusError]="errorCode$ | async"> </app-error-page>
+<app-error-page [httpsStatusError]="errorCode$ | async" />
 } @else {
 <div class="container-lg mt-4">
   <app-date-selection (selectedDate)="setDate($event)"></app-date-selection>

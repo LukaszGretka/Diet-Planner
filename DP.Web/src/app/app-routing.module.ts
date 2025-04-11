@@ -1,49 +1,49 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AddMeasurementComponent } from './body-profile/add-measurement/add-measurement.component';
-import { BodyProfileComponent } from './body-profile/body-profile.component';
-import { EditMeasurementComponent } from './body-profile/edit-measurement/edit-measurement.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { MealsCalendarComponent } from './meals-calendar/meals-calendar.component';
-import { AddProductComponent } from './products/add-product/add-product.component';
-import { EditProductComponent } from './products/edit-product/edit-product.component';
-import { ProductsComponent } from './products/products.component';
-import { SignInComponent } from './account/sign-in/sign-in.component';
-import { SignUpComponent } from './account/sign-up/sign-up.component';
-import { ErrorPageComponent } from './shared/error-page/error-page.component';
-import { UnauthorizedComponent } from './account/unauthorized/unauthorized.component';
+
+
+
+
+
+
+
+
+
+
+
+
 import { SignOutComponent } from './account/sign-out/sign-out.component';
 import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
-import { ToastComponent } from './shared/toast/toast.component';
-import { ConfirmEmailComponent } from './account/confirm-email/confirm-email.component';
-import { ConfirmEmailRequiredComponent } from './account/confirm-email-required/confirm-email-required.component';
-import { DishesComponent } from './dishes/dishes.component';
-import { DishAddComponent } from './dishes/dish-add/dish-add.component';
-import { DishEditComponent } from './dishes/dish-edit/dish-edit.component';
-import { DishPreviewComponent } from './dishes/dish-preview/dish-preview.component';
+
+
+
+
+
+
+
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
-  { path: 'error', component: ErrorPageComponent },
-  { path: 'sign-in', component: SignInComponent },
-  { path: 'sign-up', component: SignUpComponent },
-  { path: 'confirm-email-required', component: ConfirmEmailRequiredComponent },
-  { path: 'confirm-email', component: ConfirmEmailComponent },
-  { path: 'unauthorized', component: UnauthorizedComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: '', loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [AuthGuard] },
+  { path: 'error', loadComponent: () => import('./shared/error-page/error-page.component').then(m => m.ErrorPageComponent) },
+  { path: 'sign-in', loadComponent: () => import('./account/sign-in/sign-in.component').then(m => m.SignInComponent) },
+  { path: 'sign-up', loadComponent: () => import('./account/sign-up/sign-up.component').then(m => m.SignUpComponent) },
+  { path: 'confirm-email-required', loadComponent: () => import('./account/confirm-email-required/confirm-email-required.component').then(m => m.ConfirmEmailRequiredComponent) },
+  { path: 'confirm-email', loadComponent: () => import('./account/confirm-email/confirm-email.component').then(m => m.ConfirmEmailComponent) },
+  { path: 'unauthorized', loadComponent: () => import('./account/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent) },
+  { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [AuthGuard] },
   { path: 'sign-out', component: SignOutComponent, canActivate: [AuthGuard] },
-  { path: 'products', component: ProductsComponent, canActivate: [AuthGuard] },
-  { path: 'product/edit/:id', component: EditProductComponent, canActivate: [AuthGuard] },
-  { path: 'products/add', component: AddProductComponent, canActivate: [AuthGuard] },
-  { path: 'body-profile', component: BodyProfileComponent, canActivate: [AuthGuard] },
-  { path: 'body-profile/add', component: AddMeasurementComponent, canActivate: [AuthGuard] },
-  { path: 'body-profile/edit/:id', component: EditMeasurementComponent, canActivate: [AuthGuard] },
-  { path: 'meals-calendar', component: MealsCalendarComponent, canActivate: [AuthGuard] },
-  { path: 'dishes', component: DishesComponent, canActivate: [AuthGuard] },
-  { path: 'dish/preview/:id', component: DishPreviewComponent, canActivate: [AuthGuard] },
-  { path: 'dishes/add', component: DishAddComponent, canActivate: [AuthGuard] },
-  { path: 'dish/edit/:id', component: DishEditComponent, canActivate: [AuthGuard] },
-  { path: 'toast', component: ToastComponent },
+  { path: 'products', loadComponent: () => import('./products/products.component').then(m => m.ProductsComponent), canActivate: [AuthGuard] },
+  { path: 'product/edit/:id', loadComponent: () => import('./products/edit-product/edit-product.component').then(m => m.EditProductComponent), canActivate: [AuthGuard] },
+  { path: 'products/add', loadComponent: () => import('./products/add-product/add-product.component').then(m => m.AddProductComponent), canActivate: [AuthGuard] },
+  { path: 'body-profile', loadComponent: () => import('./body-profile/body-profile.component').then(m => m.BodyProfileComponent), canActivate: [AuthGuard] },
+  { path: 'body-profile/add', loadComponent: () => import('./body-profile/add-measurement/add-measurement.component').then(m => m.AddMeasurementComponent), canActivate: [AuthGuard] },
+  { path: 'body-profile/edit/:id', loadComponent: () => import('./body-profile/edit-measurement/edit-measurement.component').then(m => m.EditMeasurementComponent), canActivate: [AuthGuard] },
+  { path: 'meals-calendar', loadComponent: () => import('./meals-calendar/meals-calendar.component').then(m => m.MealsCalendarComponent), canActivate: [AuthGuard] },
+  { path: 'dishes', loadComponent: () => import('./dishes/dishes.component').then(m => m.DishesComponent), canActivate: [AuthGuard] },
+  { path: 'dish/preview/:id', loadComponent: () => import('./dishes/dish-preview/dish-preview.component').then(m => m.DishPreviewComponent), canActivate: [AuthGuard] },
+  { path: 'dishes/add', loadComponent: () => import('./dishes/dish-add/dish-add.component').then(m => m.DishAddComponent), canActivate: [AuthGuard] },
+  { path: 'dish/edit/:id', loadComponent: () => import('./dishes/dish-edit/dish-edit.component').then(m => m.DishEditComponent), canActivate: [AuthGuard] },
+  { path: 'toast', loadComponent: () => import('./shared/toast/toast.component').then(m => m.ToastComponent) },
 ];
 
 @NgModule({

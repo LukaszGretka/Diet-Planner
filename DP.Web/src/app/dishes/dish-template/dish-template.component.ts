@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, input } from '@angular/core';
 import { Dish } from '../models/dish';
 import { UntypedFormBuilder, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import {
@@ -45,8 +45,7 @@ export class DishTemplateComponent implements OnInit {
   @Input()
   public dish: Dish;
 
-  @Input()
-  public submitFunction: Function;
+  public readonly submitFunction = input<Function>(undefined);
 
   public dishProducts$ = new BehaviorSubject<DishProduct[]>([]);
   public dishMacroSummary$: Observable<any>;
@@ -116,7 +115,7 @@ export class DishTemplateComponent implements OnInit {
       return;
     }
 
-    this.submitFunction(
+    this.submitFunction()(
       {
         name: this.dishForm.get('name').value,
         description: this.dishForm.get('description').value,

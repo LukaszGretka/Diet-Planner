@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { MacronutrientsWithCalorties } from '../../../models/macronutrients';
 import { Meal } from 'src/app/meals-calendar/models/meal';
@@ -11,10 +11,10 @@ import { MealCalendarCalculator } from 'src/app/meals-calendar/services/meal-cal
     styleUrl: './meal-summary-row.component.css'
 })
 export class MealSummaryRowComponent implements OnInit {
-  @Input() public meal: Meal;
+  public readonly meal = input<Meal>(undefined);
   public mealMacroSummary: MacronutrientsWithCalorties;
 
   public ngOnInit(): void {
-    this.mealMacroSummary = MealCalendarCalculator.calculateMealMacronutrients(this.meal);
+    this.mealMacroSummary = MealCalendarCalculator.calculateMealMacronutrients(this.meal());
   }
 }

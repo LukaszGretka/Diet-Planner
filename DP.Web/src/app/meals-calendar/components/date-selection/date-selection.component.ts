@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit, output } from '@angular/core';
 import { NgbDate, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerSelection } from '../../models/date-picker-selection';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -10,8 +10,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     imports: [NgbInputDatepicker, ReactiveFormsModule, FormsModule]
 })
 export class DateSelectionComponent implements OnInit {
-  @Output()
-  public selectedDate = new EventEmitter<Date>();
+  public readonly selectedDate = output<Date>();
 
   public dateModel: DatePickerSelection;
 

@@ -1,26 +1,26 @@
 <td></td>
-<td>{{ dishProduct.product.name }}</td>
+<td>{{ dishProduct().product.name }}</td>
 <td>
   {{
-    dishProduct.product.carbohydrates * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+    dishProduct().product.carbohydrates * (dishProduct().customizedPortionMultiplier ?? dishProduct().portionMultiplier)
       | number : '1.0-1'
   }}g
 </td>
 <td>
   {{
-    dishProduct.product.proteins * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+    dishProduct().product.proteins * (dishProduct().customizedPortionMultiplier ?? dishProduct().portionMultiplier)
       | number : '1.0-1'
   }}g
 </td>
 <td>
   {{
-    dishProduct.product.fats * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+    dishProduct().product.fats * (dishProduct().customizedPortionMultiplier ?? dishProduct().portionMultiplier)
       | number : '1.0-1'
   }}g
 </td>
 <td>
   {{
-    dishProduct.product.calories * (dishProduct.customizedPortionMultiplier ?? dishProduct.portionMultiplier)
+    dishProduct().product.calories * (dishProduct().customizedPortionMultiplier ?? dishProduct().portionMultiplier)
       | number : '1.0-1'
   }}kcal
 </td>

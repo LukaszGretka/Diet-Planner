@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import {
   combineLatest,
   debounceTime,
@@ -34,8 +34,7 @@ export class SearchInputComponent {
   private readonly modalService = inject(NgbModal);
   private readonly notificationService = inject(NotificationService);
 
-  @Output()
-  public itemAddedEmitter = new EventEmitter<BaseItem>();
+  public readonly itemAddedEmitter = output<BaseItem>();
 
   //TODO: taking list of dishes might be long (need to find better solution)
   public allDishes$: Observable<Dish[]> = this.dishStore.select(DishSelectors.getDishes);

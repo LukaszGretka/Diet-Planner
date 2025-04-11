@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
@@ -6,10 +6,10 @@ import { AbstractControl } from '@angular/forms';
   templateUrl: './form-error.component.html',
 })
 export class FormErrorComponent {
-  @Input() control: AbstractControl;
+  readonly control = input<AbstractControl>(undefined);
 
   getErrorKeys(): string[] {
-    return Object.keys(this.control.errors);
+    return Object.keys(this.control().errors);
   }
 
   getControlName(control: AbstractControl): string | null {
@@ -18,8 +18,8 @@ export class FormErrorComponent {
   }
 
   getErrorMessage(errorKey: string): string {
-    const errorValue = this.control.getError(errorKey);
-    let fieldName = this.getControlName(this.control);
+    const errorValue = this.control().getError(errorKey);
+    let fieldName = this.getControlName(this.control());
     fieldName = fieldName[0].toUpperCase() + fieldName.slice(1); // Change first letter to capital.
     if (errorKey === 'required') {
       return `Field '${fieldName}' is required.`;

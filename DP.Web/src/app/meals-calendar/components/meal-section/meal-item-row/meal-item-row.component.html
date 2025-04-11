@@ -33,11 +33,11 @@
   @if (item.itemType === 1) {
   <button
     type="button"
-    id="collapse-show-button-{{ mealType }}-{{ item.id }}-{{ item.itemType }}"
+    id="collapse-show-button-{{ mealType() }}-{{ item.id }}-{{ item.itemType }}"
     class="btn delete-button-icon text-secondary mx-0"
     title="Show/Hide dish details"
     data-bs-toggle="collapse"
-    [attr.data-bs-target]="'#collapse-' + mealType + '-' + item.itemType + '-' + itemIndex"
+    [attr.data-bs-target]="'#collapse-' + mealType() + '-' + item.itemType + '-' + itemIndex()"
     aria-controls="collapseExample">
     <i class="bi bi-chevron-expand"></i>
   </button>

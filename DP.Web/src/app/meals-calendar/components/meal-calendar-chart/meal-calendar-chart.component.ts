@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { Meal } from '../../models/meal';
 import { ChartData, ChartType } from 'chart.js';
 import { MacronutrientsWithCalorties } from '../../models/macronutrients';
@@ -16,7 +16,7 @@ import { DecimalPipe } from '@angular/common';
   imports: [NgChartsModule, DecimalPipe],
 })
 export class MealCalendarChartComponent implements OnInit {
-  @Input() public meals: Observable<Meal[]>;
+  public readonly meals = input<Observable<Meal[]>>(undefined);
 
   public doughnutChartType: ChartType = 'doughnut';
   public doughnutChartData: ChartData<'doughnut'>;
@@ -25,7 +25,7 @@ export class MealCalendarChartComponent implements OnInit {
   public totalCalories: number;
 
   public ngOnInit(): void {
-    this.meals.pipe(untilDestroyed(this)).subscribe(meals => {
+    this.meals().pipe(untilDestroyed(this)).subscribe(meals => {
       const dataset = this.buildMacronutrientsChartDataset(meals);
       this.doughnutChartData = {
         labels: this.doughnutChartLabels,
