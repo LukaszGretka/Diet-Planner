@@ -26,9 +26,10 @@ import { DishState } from '../stores/dish.state';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-dish-template',
-  templateUrl: './dish-template.component.html',
-  styleUrls: ['./dish-template.component.css'],
+    selector: 'app-dish-template',
+    templateUrl: './dish-template.component.html',
+    styleUrls: ['./dish-template.component.css'],
+    standalone: false
 })
 export class DishTemplateComponent implements OnInit {
   @Input()

@@ -8,9 +8,10 @@ import { ActivatedRoute } from '@angular/router';
 import { map, take } from 'rxjs';
 
 @Component({
-  selector: 'app-edit-product',
-  templateUrl: './edit-product.component.html',
-  styleUrls: ['./edit-product.component.css'],
+    selector: 'app-edit-product',
+    templateUrl: './edit-product.component.html',
+    styleUrls: ['./edit-product.component.css'],
+    standalone: false
 })
 export class EditProductComponent implements OnInit {
   public product: Product;

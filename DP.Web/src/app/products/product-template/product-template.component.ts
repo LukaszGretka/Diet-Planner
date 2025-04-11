@@ -3,9 +3,10 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Product } from 'src/app/products/models/product';
 
 @Component({
-  selector: 'app-product-template',
-  templateUrl: './product-template.component.html',
-  styleUrls: ['./product-template.component.css'],
+    selector: 'app-product-template',
+    templateUrl: './product-template.component.html',
+    styleUrls: ['./product-template.component.css'],
+    standalone: false
 })
 export class ProductTemplateComponent implements OnInit {
   @Input()

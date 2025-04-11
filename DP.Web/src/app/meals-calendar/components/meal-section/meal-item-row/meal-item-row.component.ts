@@ -13,10 +13,9 @@ import { MealRowDetails } from 'src/app/meals-calendar/models/meal-dish-row-deta
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: '[app-meal-item-row]',
-  templateUrl: './meal-item-row.component.html',
-  standalone: true,
-  imports: [DecimalPipe, NgIf, FormsModule],
+    selector: '[app-meal-item-row]',
+    templateUrl: './meal-item-row.component.html',
+    imports: [DecimalPipe, NgIf, FormsModule]
 })
 export class MealItemRowComponent implements OnInit {
   @Input() public item: BaseItem;

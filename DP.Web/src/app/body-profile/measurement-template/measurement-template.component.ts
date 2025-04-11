@@ -3,9 +3,10 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Measurement } from 'src/app/body-profile/models/measurement';
 
 @Component({
-  selector: 'app-measurement-template',
-  templateUrl: './measurement-template.component.html',
-  styleUrls: ['./measurement-template.component.css'],
+    selector: 'app-measurement-template',
+    templateUrl: './measurement-template.component.html',
+    styleUrls: ['./measurement-template.component.css'],
+    standalone: false
 })
 export class MeasurementTemplateComponent implements OnInit {
   @Input()

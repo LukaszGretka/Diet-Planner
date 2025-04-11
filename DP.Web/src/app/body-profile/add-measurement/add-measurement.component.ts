@@ -6,9 +6,10 @@ import { GeneralState } from '../../stores/store.state';
 import * as StoreSelector from '../../stores/store.selectors';
 
 @Component({
-  selector: 'app-add-measurement',
-  templateUrl: './add-measurement.component.html',
-  styleUrls: ['./add-measurement.component.css'],
+    selector: 'app-add-measurement',
+    templateUrl: './add-measurement.component.html',
+    styleUrls: ['./add-measurement.component.css'],
+    standalone: false
 })
 export class AddMeasurementComponent {
   public errorCode$ = this.store.select(StoreSelector.getErrorCode);

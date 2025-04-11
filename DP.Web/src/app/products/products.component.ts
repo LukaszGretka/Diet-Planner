@@ -14,10 +14,11 @@ import * as ProductSelectors from './../products/stores/products.selectors';
 import { AccountService } from '../account/services/account.service';
 
 @Component({
-  selector: 'app-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css'],
-  providers: [DecimalPipe],
+    selector: 'app-products',
+    templateUrl: './products.component.html',
+    styleUrls: ['./products.component.css'],
+    providers: [DecimalPipe],
+    standalone: false
 })
 export class ProductsComponent implements OnInit {
   public filter = new UntypedFormControl('');

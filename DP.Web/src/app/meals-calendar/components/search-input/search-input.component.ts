@@ -23,11 +23,10 @@ import { FormsModule } from '@angular/forms';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
-  selector: 'app-search-input',
-  templateUrl: './search-input.component.html',
-  styleUrl: './search-input.component.css',
-  imports: [NgbTypeahead, FormsModule],
-  standalone: true,
+    selector: 'app-search-input',
+    templateUrl: './search-input.component.html',
+    styleUrl: './search-input.component.css',
+    imports: [NgbTypeahead, FormsModule]
 })
 export class SearchInputComponent {
   @Output()

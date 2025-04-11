@@ -9,8 +9,9 @@ import { Dish } from '../models/dish';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-dish-preview',
-  templateUrl: './dish-preview.component.html',
+    selector: 'app-dish-preview',
+    templateUrl: './dish-preview.component.html',
+    standalone: false
 })
 export class DishPreviewComponent {
   public dish: Dish;

@@ -5,9 +5,10 @@ import * as ProductActions from '../stores/products.actions';
 import { Product } from 'src/app/products/models/product';
 
 @Component({
-  selector: 'app-add-product',
-  templateUrl: './add-product.component.html',
-  styleUrls: ['./add-product.component.css'],
+    selector: 'app-add-product',
+    templateUrl: './add-product.component.html',
+    styleUrls: ['./add-product.component.css'],
+    standalone: false
 })
 export class AddProductComponent {
   public submitFunction: (store: any) => void;

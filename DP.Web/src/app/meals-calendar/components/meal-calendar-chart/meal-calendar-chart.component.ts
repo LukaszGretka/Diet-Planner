@@ -8,9 +8,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-meal-calendar-chart',
-  templateUrl: './meal-calendar-chart.component.html',
-  styleUrl: './meal-calendar-chart.component.css',
+    selector: 'app-meal-calendar-chart',
+    templateUrl: './meal-calendar-chart.component.html',
+    styleUrl: './meal-calendar-chart.component.css',
+    standalone: false
 })
 export class MealCalendarChartComponent implements OnInit {
   @Input() public meals: Observable<Meal[]>;

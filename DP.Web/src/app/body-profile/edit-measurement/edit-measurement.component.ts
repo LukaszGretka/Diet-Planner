@@ -9,9 +9,10 @@ import * as BodyProfileActions from './../stores/body-profile.actions';
 import * as StoreSelector from '../../stores/store.selectors';
 
 @Component({
-  selector: 'app-edit-measurement',
-  templateUrl: './edit-measurement.component.html',
-  styleUrls: ['./edit-measurement.component.css'],
+    selector: 'app-edit-measurement',
+    templateUrl: './edit-measurement.component.html',
+    styleUrls: ['./edit-measurement.component.css'],
+    standalone: false
 })
 export class EditMeasurementComponent implements OnInit {
   public measurement: Measurement;

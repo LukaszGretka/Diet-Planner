@@ -12,10 +12,9 @@ import { MealCalendarCalculator } from 'src/app/meals-calendar/services/meal-cal
 import { ItemType } from 'src/app/shared/models/base-item';
 
 @Component({
-  selector: '[app-meal-dish-row-details]',
-  templateUrl: 'meal-dish-row-details.component.html',
-  standalone: true,
-  imports: [DecimalPipe, CommonModule, FormsModule],
+    selector: '[app-meal-dish-row-details]',
+    templateUrl: 'meal-dish-row-details.component.html',
+    imports: [DecimalPipe, CommonModule, FormsModule]
 })
 export class MealDishRowDetailsComponent implements OnInit {
   @Input() public dish: Dish;

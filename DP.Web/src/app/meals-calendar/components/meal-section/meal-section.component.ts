@@ -21,19 +21,18 @@ import { MealDishRowDetailsTitleComponent } from './meal-dish-row-details-title/
 
 @UntilDestroy()
 @Component({
-  selector: 'app-meal-section',
-  templateUrl: './meal-section.component.html',
-  styleUrls: ['./meal-section.component.css'],
-  standalone: true,
-  imports: [
-    MealItemRowComponent,
-    CommonModule,
-    FormsModule,
-    SearchInputComponent,
-    MealSummaryRowComponent,
-    MealDishRowDetailsComponent,
-    MealDishRowDetailsTitleComponent,
-  ],
+    selector: 'app-meal-section',
+    templateUrl: './meal-section.component.html',
+    styleUrls: ['./meal-section.component.css'],
+    imports: [
+        MealItemRowComponent,
+        CommonModule,
+        FormsModule,
+        SearchInputComponent,
+        MealSummaryRowComponent,
+        MealDishRowDetailsComponent,
+        MealDishRowDetailsTitleComponent,
+    ]
 })
 export class MealSectionComponent implements OnInit {
   @Input() public meal: Meal;

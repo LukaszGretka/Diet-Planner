@@ -6,9 +6,10 @@ import * as AccountActions from '../stores/account.actions';
 import { take } from 'rxjs';
 
 @Component({
-  selector: 'app-confirm-email',
-  templateUrl: './confirm-email.component.html',
-  styleUrls: ['./confirm-email.component.css'],
+    selector: 'app-confirm-email',
+    templateUrl: './confirm-email.component.html',
+    styleUrls: ['./confirm-email.component.css'],
+    standalone: false
 })
 export class ConfirmEmailComponent implements OnInit {
   constructor(private route: ActivatedRoute, private accountStore: Store<AccountState>, private router: Router) {}

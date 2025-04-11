@@ -5,9 +5,10 @@ import { Dish } from '../models/dish';
 import * as DishActions from '../stores/dish.actions';
 
 @Component({
-  selector: 'app-dish-add',
-  templateUrl: './dish-add.component.html',
-  styleUrls: ['./dish-add.component.css'],
+    selector: 'app-dish-add',
+    templateUrl: './dish-add.component.html',
+    styleUrls: ['./dish-add.component.css'],
+    standalone: false
 })
 export class DishAddComponent {
   public submitFunction: (store: any) => void;

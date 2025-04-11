@@ -4,9 +4,10 @@ import { AccountState } from '../stores/account.state';
 import { Store } from '@ngrx/store';
 
 @Component({
-  selector: 'app-sign-out',
-  templateUrl: './sign-out.component.html',
-  styleUrls: ['./sign-out.component.css'],
+    selector: 'app-sign-out',
+    templateUrl: './sign-out.component.html',
+    styleUrls: ['./sign-out.component.css'],
+    standalone: false
 })
 export class SignOutComponent implements OnInit {
   constructor(private accountStore: Store<AccountState>) {}

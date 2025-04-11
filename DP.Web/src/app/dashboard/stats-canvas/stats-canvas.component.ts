@@ -11,9 +11,10 @@ import * as DashboardSelectors from "../stores/dashboard.selectors";
 
 @UntilDestroy()
 @Component({
-  selector: 'app-stats-canvas',
-  templateUrl: './stats-canvas.component.html',
-  styleUrls: ['./stats-canvas.component.css'],
+    selector: 'app-stats-canvas',
+    templateUrl: './stats-canvas.component.html',
+    styleUrls: ['./stats-canvas.component.css'],
+    standalone: false
 })
 export class StatsCanvasComponent implements OnInit {
 

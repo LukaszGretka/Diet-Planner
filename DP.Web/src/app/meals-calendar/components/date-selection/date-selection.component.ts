@@ -3,9 +3,10 @@ import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerSelection } from '../../models/date-picker-selection';
 
 @Component({
-  selector: 'app-date-selection',
-  templateUrl: './date-selection.component.html',
-  styleUrl: './date-selection.component.scss',
+    selector: 'app-date-selection',
+    templateUrl: './date-selection.component.html',
+    styleUrl: './date-selection.component.scss',
+    standalone: false
 })
 export class DateSelectionComponent implements OnInit {
   @Output()

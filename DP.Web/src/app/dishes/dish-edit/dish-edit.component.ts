@@ -9,9 +9,10 @@ import * as DishActions from '../stores/dish.actions';
 import * as DishSelectors from '../stores/dish.selectors';
 
 @Component({
-  selector: 'app-dish-edit',
-  templateUrl: './dish-edit.component.html',
-  styleUrls: ['./dish-edit.component.css'],
+    selector: 'app-dish-edit',
+    templateUrl: './dish-edit.component.html',
+    styleUrls: ['./dish-edit.component.css'],
+    standalone: false
 })
 export class DishEditComponent {
   public dish: Dish;

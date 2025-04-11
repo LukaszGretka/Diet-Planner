@@ -9,9 +9,10 @@ import * as DishActions from './stores/dish.actions';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-dishes',
-  templateUrl: './dishes.component.html',
-  styleUrls: ['./dishes.component.css'],
+    selector: 'app-dishes',
+    templateUrl: './dishes.component.html',
+    styleUrls: ['./dishes.component.css'],
+    standalone: false
 })
 export class DishesComponent implements OnInit {
   public dishes$ = this.dishStore.select(DishSelector.getDishes);

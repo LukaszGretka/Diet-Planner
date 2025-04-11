@@ -2,8 +2,9 @@ import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-form-error',
-  templateUrl: './form-error.component.html',
+    selector: 'app-form-error',
+    templateUrl: './form-error.component.html',
+    standalone: false
 })
 export class FormErrorComponent {
   @Input() control: AbstractControl;

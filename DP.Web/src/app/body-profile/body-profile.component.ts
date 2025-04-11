@@ -13,9 +13,10 @@ import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-body-profile',
-  templateUrl: './body-profile.component.html',
-  styleUrls: ['./body-profile.component.css'],
+    selector: 'app-body-profile',
+    templateUrl: './body-profile.component.html',
+    styleUrls: ['./body-profile.component.css'],
+    standalone: false
 })
 export class BodyProfileComponent implements OnInit {
   public measurements$ = this.store.select(BodyProfileSelector.getMeasurements);

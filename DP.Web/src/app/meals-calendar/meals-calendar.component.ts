@@ -14,9 +14,10 @@ import { Meal } from './models/meal';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-meals-calendar',
-  templateUrl: './meals-calendar.component.html',
-  styleUrls: ['./meals-calendar.component.css'],
+    selector: 'app-meals-calendar',
+    templateUrl: './meals-calendar.component.html',
+    styleUrls: ['./meals-calendar.component.css'],
+    standalone: false
 })
 export class MealsCalendarComponent implements OnInit {
   public mealCalendarConfig: MealConfig[] = [
