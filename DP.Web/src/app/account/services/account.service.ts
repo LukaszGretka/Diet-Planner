@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
 import { SignInRequest } from '../models/sign-in-request';
 import { SignInResult } from '../models/sign-in-result';
@@ -13,6 +13,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AccountService {
+  private readonly httpClient = inject(HttpClient);
+
   public authenticatedUser$ = new BehaviorSubject<User>(null);
 
   private baseUrl = `${environment.dietPlannerApiUri}/api/account`;
@@ -23,8 +25,6 @@ export class AccountService {
       'Content-Type': 'application/json',
     }),
   };
-
-  constructor(private httpClient: HttpClient) {}
 
   public performSignUp(signupRequest: SignUpRequest): Observable<SignUpResult> {
     return this.httpClient.post<SignUpResult>(this.baseUrl + '/sign-up', signupRequest, this.httpOptions);

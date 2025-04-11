@@ -1,7 +1,9 @@
 <div class="container-sm m-4" style="max-width: 720px">
   <div class="alert alert-info" role="alert">Add your measurement</div>
-    <app-measurement-template [submitFunction]="submitFunction"> </app-measurement-template>
-    <div *ngIf="errorCode$ | async" class="alert alert-danger d-flex align-items-center" role="alert">
-      <div>An error occurred during processing request.</div>
-    </div>
+  <app-measurement-template [submitFunction]="submitFunction"> </app-measurement-template>
+  @if (errorCode$ | async) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <div>An error occurred during processing request.</div>
+  </div>
+  }
 </div>

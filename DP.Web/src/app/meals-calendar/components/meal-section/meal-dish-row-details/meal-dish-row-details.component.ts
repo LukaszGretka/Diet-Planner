@@ -1,4 +1,4 @@
-import { CommonModule, DecimalPipe, NgIf } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { Component, inject, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -12,9 +12,9 @@ import { MealCalendarCalculator } from 'src/app/meals-calendar/services/meal-cal
 import { ItemType } from 'src/app/shared/models/base-item';
 
 @Component({
-    selector: '[app-meal-dish-row-details]',
-    templateUrl: 'meal-dish-row-details.component.html',
-    imports: [DecimalPipe, CommonModule, FormsModule]
+  selector: '[app-meal-dish-row-details]',
+  templateUrl: 'meal-dish-row-details.component.html',
+  imports: [DecimalPipe, CommonModule, FormsModule],
 })
 export class MealDishRowDetailsComponent implements OnInit {
   @Input() public dish: Dish;

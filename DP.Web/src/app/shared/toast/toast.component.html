@@ -1,8 +1,5 @@
-<ngb-toast
-  [class]="toast.classname"
-  *ngFor="let toast of notificationService.getToasts()"
-  [header]="toast.title"
-  [autohide]="true"
-  [delay]="toast.delay"
-  >{{ toast.message }}</ngb-toast
->
+@for (toast of notificationService.getToasts(); track toast) {
+<ngb-toast [class]="toast.classname" [header]="toast.title" [autohide]="true" [delay]="toast.delay">{{
+  toast.message
+}}</ngb-toast>
+}

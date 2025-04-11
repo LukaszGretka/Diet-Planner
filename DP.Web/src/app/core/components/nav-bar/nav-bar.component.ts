@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AccountService } from '../../../account/services/account.service';
 import { Observable } from 'rxjs';
 import { User } from '../../../account/models/user';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @UntilDestroy()
 @Component({
-    selector: 'app-nav-bar',
-    templateUrl: './nav-bar.component.html',
-    styleUrls: ['./nav-bar.component.css'],
-    standalone: false
+  selector: 'app-nav-bar',
+  templateUrl: './nav-bar.component.html',
+  styleUrls: ['./nav-bar.component.css'],
+  imports: [RouterLink, RouterLinkActive, AsyncPipe],
 })
 export class NavBarComponent implements OnInit {
+  private accountService = inject(AccountService);
   public user$: Observable<User>;
 
-  constructor(private accountService: AccountService) {
+  constructor() {
     this.user$ = this.accountService.authenticatedUser$;
   }
 

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { Measurement } from 'src/app/body-profile/models/measurement';
 import { environment } from 'src/environments/environment';
@@ -8,7 +8,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class MeasurementService {
-  private measurementUrl = `${environment.dietPlannerApiUri}/api/measurement`;
+  private readonly httpClient = inject(HttpClient);
+  private readonly measurementUrl = `${environment.dietPlannerApiUri}/api/measurement`;
 
   httpOptions = {
     withCredentials: true,
@@ -16,8 +17,6 @@ export class MeasurementService {
       'Content-Type': 'application/json',
     }),
   };
-
-  constructor(private httpClient: HttpClient) {}
 
   getMeasurements(): Observable<Measurement[]> {
     return this.httpClient.get<Measurement[]>(this.measurementUrl, { withCredentials: true });

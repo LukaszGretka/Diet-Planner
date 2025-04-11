@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import {
   combineLatest,
   debounceTime,
@@ -23,12 +23,17 @@ import { FormsModule } from '@angular/forms';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
-    selector: 'app-search-input',
-    templateUrl: './search-input.component.html',
-    styleUrl: './search-input.component.css',
-    imports: [NgbTypeahead, FormsModule]
+  selector: 'app-search-input',
+  templateUrl: './search-input.component.html',
+  styleUrl: './search-input.component.css',
+  imports: [NgbTypeahead, FormsModule],
 })
 export class SearchInputComponent {
+  private readonly dishStore = inject<Store<DishState>>(Store);
+  private readonly productStore = inject<Store<ProductsState>>(Store);
+  private readonly modalService = inject(NgbModal);
+  private readonly notificationService = inject(NotificationService);
+
   @Output()
   public itemAddedEmitter = new EventEmitter<BaseItem>();
 
@@ -38,13 +43,6 @@ export class SearchInputComponent {
 
   public searchItem: BaseItem;
   baseItemFormatter = (item: BaseItem) => `${item.name} (${ItemType[item.itemType]})`;
-
-  constructor(
-    private dishStore: Store<DishState>,
-    private productStore: Store<ProductsState>,
-    private modalService: NgbModal,
-    private notificationService: NotificationService,
-  ) {}
 
   public search: OperatorFunction<string, readonly BaseItem[]> = (text$: Observable<string>) =>
     text$.pipe(

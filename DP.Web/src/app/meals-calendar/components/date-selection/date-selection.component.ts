@@ -1,12 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDate, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerSelection } from '../../models/date-picker-selection';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-date-selection',
     templateUrl: './date-selection.component.html',
     styleUrl: './date-selection.component.scss',
-    standalone: false
+    imports: [NgbInputDatepicker, ReactiveFormsModule, FormsModule]
 })
 export class DateSelectionComponent implements OnInit {
   @Output()

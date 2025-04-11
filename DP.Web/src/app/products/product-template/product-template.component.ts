@@ -1,21 +1,23 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { Component, Input, OnInit, inject } from '@angular/core';
+import { UntypedFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Product } from 'src/app/products/models/product';
+import { FormErrorComponent } from '../../shared/form-error/form-error.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'app-product-template',
-    templateUrl: './product-template.component.html',
-    styleUrls: ['./product-template.component.css'],
-    standalone: false
+  selector: 'app-product-template',
+  templateUrl: './product-template.component.html',
+  styleUrls: ['./product-template.component.css'],
+  imports: [ReactiveFormsModule, FormErrorComponent, RouterLink],
 })
 export class ProductTemplateComponent implements OnInit {
+  private readonly formBuilder = inject(UntypedFormBuilder);
+
   @Input()
   public product: Product;
 
   @Input()
   public submitFunction: Function;
-
-  constructor(private formBuilder: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     if (this.product) {

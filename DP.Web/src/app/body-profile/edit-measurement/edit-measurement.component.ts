@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, take } from 'rxjs';
@@ -7,23 +7,25 @@ import { Measurement } from 'src/app/body-profile/models/measurement';
 import { MeasurementService } from 'src/app/body-profile/services/measurement.service';
 import * as BodyProfileActions from './../stores/body-profile.actions';
 import * as StoreSelector from '../../stores/store.selectors';
+import { AsyncPipe } from '@angular/common';
+import { MeasurementTemplateComponent } from '../measurement-template/measurement-template.component';
 
 @Component({
-    selector: 'app-edit-measurement',
-    templateUrl: './edit-measurement.component.html',
-    styleUrls: ['./edit-measurement.component.css'],
-    standalone: false
+  selector: 'app-edit-measurement',
+  templateUrl: './edit-measurement.component.html',
+  styleUrls: ['./edit-measurement.component.css'],
+  imports: [MeasurementTemplateComponent, AsyncPipe],
 })
 export class EditMeasurementComponent implements OnInit {
+  private readonly store = inject<Store<GeneralState>>(Store);
+  private readonly measurementService = inject(MeasurementService);
+  private readonly router = inject(ActivatedRoute);
+
   public measurement: Measurement;
   public errorCode$ = this.store.select(StoreSelector.getErrorCode);
   public submitFunction: (store: any) => void;
 
-  constructor(
-    private store: Store<GeneralState>,
-    private measurementService: MeasurementService,
-    private router: ActivatedRoute,
-  ) {
+  constructor() {
     this.submitFunction = this.getSubmitFunction();
   }
 

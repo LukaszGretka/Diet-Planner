@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Dish } from '../models/dish';
 import { environment } from 'src/environments/environment';
@@ -9,7 +9,8 @@ import { DishProduct } from '../models/dish-product';
   providedIn: 'root',
 })
 export class DishService {
-  private dishesUrl = `${environment.dietPlannerApiUri}/api/dish`;
+  private readonly httpClient = inject(HttpClient);
+  private readonly dishesUrl = `${environment.dietPlannerApiUri}/api/dish`;
 
   httpOptions = {
     withCredentials: true,
@@ -17,7 +18,6 @@ export class DishService {
       'Content-Type': 'application/json',
     }),
   };
-  constructor(private httpClient: HttpClient) {}
 
   public getUserDishes(): Observable<Dish[]> {
     return this.httpClient.get<Dish[]>(this.dishesUrl + '/all', { withCredentials: true });

@@ -1,24 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GeneralState } from '../stores/store.state';
 import * as GeneralActions from '../stores/store.actions';
 import * as BodyProfileActions from './stores/body-profile.actions';
 import * as GeneralSelector from '../stores/store.selectors';
 import * as BodyProfileSelector from './stores/body-profile.selectors';
-import { Router } from '@angular/router';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { UntypedFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserProfile } from './models/user-profile';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
+import { ImageCroppedEvent, LoadedImage, ImageCropperModule } from 'ngx-image-cropper';
+import { AsyncPipe } from '@angular/common';
+import { ErrorPageComponent } from '../shared/error-page/error-page.component';
+import { FormErrorComponent } from '../shared/form-error/form-error.component';
 
 @UntilDestroy()
 @Component({
-    selector: 'app-body-profile',
-    templateUrl: './body-profile.component.html',
-    styleUrls: ['./body-profile.component.css'],
-    standalone: false
+  selector: 'app-body-profile',
+  templateUrl: './body-profile.component.html',
+  styleUrls: ['./body-profile.component.css'],
+  imports: [ErrorPageComponent, ImageCropperModule, ReactiveFormsModule, FormErrorComponent, RouterLink, AsyncPipe],
 })
 export class BodyProfileComponent implements OnInit {
+  private readonly store = inject<Store<GeneralState>>(Store);
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(UntypedFormBuilder);
+
   public measurements$ = this.store.select(BodyProfileSelector.getMeasurements);
   public userProfile$ = this.store.select(BodyProfileSelector.getUserProfile);
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
@@ -28,10 +35,6 @@ export class BodyProfileComponent implements OnInit {
   public inAvatarEditMode: boolean = false;
 
   private processingMeasurementId: number;
-
-  constructor(private store: Store<GeneralState>,
-    private router: Router,
-    private formBuilder: UntypedFormBuilder) { }
 
   public userProfileForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(64)]],
@@ -100,7 +103,8 @@ export class BodyProfileComponent implements OnInit {
 
     let reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => this.store.dispatch(BodyProfileActions.uploadUserAvatarRequest({ base64Avatar: reader.result.toString() }));
+    reader.onload = () =>
+      this.store.dispatch(BodyProfileActions.uploadUserAvatarRequest({ base64Avatar: reader.result.toString() }));
     reader.onerror = function (error) {
       console.error('Error: ', error);
     };

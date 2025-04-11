@@ -1,23 +1,25 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { Component, Input, OnInit, inject } from '@angular/core';
+import { UntypedFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Measurement } from 'src/app/body-profile/models/measurement';
+import { FormErrorComponent } from '../../shared/form-error/form-error.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'app-measurement-template',
-    templateUrl: './measurement-template.component.html',
-    styleUrls: ['./measurement-template.component.css'],
-    standalone: false
+  selector: 'app-measurement-template',
+  templateUrl: './measurement-template.component.html',
+  styleUrls: ['./measurement-template.component.css'],
+  imports: [ReactiveFormsModule, FormErrorComponent, RouterLink],
 })
 export class MeasurementTemplateComponent implements OnInit {
+  private formBuilder = inject(UntypedFormBuilder);
+
   @Input()
   public measurement: Measurement;
 
   @Input()
   public submitFunction: Function;
 
-  private defaultMeasurementValidator = [Validators.required, Validators.maxLength(3)];
-
-  constructor(private formBuilder: UntypedFormBuilder) { }
+  private readonly defaultMeasurementValidator = [Validators.required, Validators.maxLength(3)];
 
   ngOnInit(): void {
     if (this.measurement) {

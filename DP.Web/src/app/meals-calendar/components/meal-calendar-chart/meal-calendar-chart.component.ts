@@ -1,17 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Meal } from '../../models/meal';
 import { ChartData, ChartType } from 'chart.js';
-import { Macronutrients, MacronutrientsWithCalorties } from '../../models/macronutrients';
+import { MacronutrientsWithCalorties } from '../../models/macronutrients';
 import { MealCalendarCalculator } from '../../services/meal-calendar-calculator.service';
 import { Observable } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { NgChartsModule } from 'ng2-charts';
+import { DecimalPipe } from '@angular/common';
 
 @UntilDestroy()
 @Component({
-    selector: 'app-meal-calendar-chart',
-    templateUrl: './meal-calendar-chart.component.html',
-    styleUrl: './meal-calendar-chart.component.css',
-    standalone: false
+  selector: 'app-meal-calendar-chart',
+  templateUrl: './meal-calendar-chart.component.html',
+  styleUrl: './meal-calendar-chart.component.css',
+  imports: [NgChartsModule, DecimalPipe],
 })
 export class MealCalendarChartComponent implements OnInit {
   @Input() public meals: Observable<Meal[]>;

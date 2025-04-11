@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, of, switchMap, tap } from 'rxjs';
 import { AccountService } from '../services/account.service';
@@ -8,6 +8,11 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 
 @Injectable()
 export class AccountEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly accountService = inject(AccountService);
+  private readonly router = inject(Router);
+  private readonly notificationService = inject(NotificationService);
+
   getUserEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AccountActions.getUserRequest),
@@ -166,11 +171,4 @@ export class AccountEffects {
       ),
     { dispatch: false },
   );
-
-  constructor(
-    private actions$: Actions,
-    private accountService: AccountService,
-    private router: Router,
-    private notificationService: NotificationService,
-  ) {}
 }

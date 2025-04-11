@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { DishService } from '../services/dish.service';
 import { catchError, exhaustMap, of, switchMap, tap, withLatestFrom } from 'rxjs';
@@ -11,13 +11,11 @@ import { Store } from '@ngrx/store';
 
 @Injectable()
 export class DishEffects {
-  constructor(
-    private actions$: Actions,
-    private dishService: DishService,
-    private notificationService: NotificationService,
-    private router: Router,
-    private dishStore: Store<DishState>,
-  ) {}
+  private readonly actions$ = inject(Actions);
+  private readonly dishService = inject(DishService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly router = inject(Router);
+  private readonly dishStore = inject<Store<DishState>>(Store);
 
   loadDishesEffect$ = createEffect(() =>
     this.actions$.pipe(

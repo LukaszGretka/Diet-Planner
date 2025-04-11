@@ -1,19 +1,21 @@
-<app-error-page *ngIf="errorCode$ | async; else mealCalendarTemplate" [httpsStatusError]="errorCode$ | async">
-</app-error-page>
-<ng-template #mealCalendarTemplate>
-  <div class="container-lg mt-4">
-    <app-date-selection (selectedDate)="setDate($event)"></app-date-selection>
-    <div class="row">
-      <div class="container-lg p-4 col-8 col-sm-5 col-md-5 col-lg-5 col-xl-4 text-center">
-        <app-meal-calendar-chart [meals]="allDailyMeals$"></app-meal-calendar-chart>
+@if (errorCode$ | async) {
+<app-error-page [httpsStatusError]="errorCode$ | async"> </app-error-page>
+} @else {
+<div class="container-lg mt-4">
+  <app-date-selection (selectedDate)="setDate($event)"></app-date-selection>
+  <div class="row">
+    <div class="container-lg p-4 col-8 col-sm-5 col-md-5 col-lg-5 col-xl-4 text-center">
+      <app-meal-calendar-chart [meals]="allDailyMeals$"></app-meal-calendar-chart>
+    </div>
+    <div class="container-lg m-4 col">
+      @for (mealConfig of mealCalendarConfig; track mealConfig) {
+      <div>
+        <div class="meal-type-header">{{ mealConfig.name }}</div>
+        <app-meal-section [meal]="(dailyMeals$ | async).meals[mealConfig.name]" [calendarDate]="selectedDate">
+        </app-meal-section>
       </div>
-      <div class="container-lg m-4 col">
-        <div *ngFor="let mealConfig of mealCalendarConfig">
-          <div class="meal-type-header">{{ mealConfig.name }}</div>
-          <app-meal-section [meal]="(dailyMeals$ | async).meals[mealConfig.name]" [calendarDate]="selectedDate">
-          </app-meal-section>
-        </div>
-      </div>
+      }
     </div>
   </div>
-</ng-template>
+</div>
+}

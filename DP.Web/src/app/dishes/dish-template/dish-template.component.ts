@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { Dish } from '../models/dish';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
   Observable,
@@ -23,15 +23,25 @@ import { DishProduct } from '../models/dish-product';
 import { Product } from 'src/app/products/models/product';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DishState } from '../stores/dish.state';
+import { FormErrorComponent } from '../../shared/form-error/form-error.component';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 @UntilDestroy()
 @Component({
-    selector: 'app-dish-template',
-    templateUrl: './dish-template.component.html',
-    styleUrls: ['./dish-template.component.css'],
-    standalone: false
+  selector: 'app-dish-template',
+  templateUrl: './dish-template.component.html',
+  styleUrls: ['./dish-template.component.css'],
+  imports: [ReactiveFormsModule, FormErrorComponent, FormsModule, NgbTypeahead, AsyncPipe, DecimalPipe],
 })
 export class DishTemplateComponent implements OnInit {
+  private readonly formBuilder = inject(UntypedFormBuilder);
+  private readonly productStore = inject<Store<ProductsState>>(Store);
+  private readonly dishStore = inject<Store<DishState>>(Store);
+  private readonly notificationService = inject(NotificationService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
   @Input()
   public dish: Dish;
 
@@ -47,14 +57,7 @@ export class DishTemplateComponent implements OnInit {
   private returnUrl: string;
   private callbackMealProduct$ = this.dishStore.select(DishSelectors.getCallbackMealDish);
 
-  constructor(
-    private formBuilder: UntypedFormBuilder,
-    private productStore: Store<ProductsState>,
-    private dishStore: Store<DishState>,
-    private notificationService: NotificationService,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {
+  constructor() {
     this.route.queryParams.subscribe(params => {
       if (params.hasOwnProperty('returnUrl')) {
         this.callbackMealProduct$?.subscribe(item => {
@@ -82,7 +85,7 @@ export class DishTemplateComponent implements OnInit {
       this.dishForm.get('exposeToOtherUsers').setValue(this.dish.exposeToOtherUsers);
       this.dishProducts$.next(this.dish.products);
 
-      if(!this.dish.isOwner){
+      if (!this.dish.isOwner) {
         this.dishForm.disable();
       }
     }
@@ -113,14 +116,17 @@ export class DishTemplateComponent implements OnInit {
       return;
     }
 
-    this.submitFunction({
-      name: this.dishForm.get('name').value,
-      description: this.dishForm.get('description').value,
-      imagePath: this.dishForm.get('imagePath')?.value ?? '',
-      products: this.dishProducts$.getValue(),
-      exposeToOtherUsers: this.dishForm.get('exposeToOtherUsers').value,
-      id: this.dish != null ? this.dish.id : undefined,
-    } as Dish, this.returnUrl);
+    this.submitFunction(
+      {
+        name: this.dishForm.get('name').value,
+        description: this.dishForm.get('description').value,
+        imagePath: this.dishForm.get('imagePath')?.value ?? '',
+        products: this.dishProducts$.getValue(),
+        exposeToOtherUsers: this.dishForm.get('exposeToOtherUsers').value,
+        id: this.dish != null ? this.dish.id : undefined,
+      } as Dish,
+      this.returnUrl,
+    );
   }
 
   public onBackButtonClick() {

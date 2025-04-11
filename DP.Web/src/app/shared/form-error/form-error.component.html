@@ -1,5 +1,7 @@
-<small class="text-danger" *ngIf="control.invalid && control.touched">
-  <ng-container *ngFor="let errorKey of getErrorKeys()">
-    <div>{{ getErrorMessage(errorKey) }}</div>
-  </ng-container>
+@if (control.invalid && control.touched) {
+<small class="text-danger">
+  @for (errorKey of getErrorKeys(); track errorKey) {
+  <div>{{ getErrorMessage(errorKey) }}</div>
+  }
 </small>
+}

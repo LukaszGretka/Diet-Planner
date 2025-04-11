@@ -1,4 +1,6 @@
 <div class="container-sm m-4">
   <div class="alert alert-info">Dish preview</div>
-  <app-dish-template *ngIf="dish" [dish]="dish"></app-dish-template>
+  @if (dish) {
+  <app-dish-template [dish]="dish"></app-dish-template>
+  }
 </div>
