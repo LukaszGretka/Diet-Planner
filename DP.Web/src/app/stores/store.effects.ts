@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, tap } from 'rxjs';
 import * as GeneralActions from './store.actions';
@@ -6,6 +6,9 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 
 @Injectable()
 export class GeneralEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly notificationService = inject(NotificationService);
+
   showNotificationToastOnErrorEffect$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -18,6 +21,4 @@ export class GeneralEffects {
       ),
     { dispatch: false },
   );
-
-  constructor(private actions$: Actions, private notificationService: NotificationService) {}
 }

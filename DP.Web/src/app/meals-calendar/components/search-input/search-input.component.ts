@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import {
   combineLatest,
   debounceTime,
@@ -27,11 +27,14 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
   templateUrl: './search-input.component.html',
   styleUrl: './search-input.component.css',
   imports: [NgbTypeahead, FormsModule],
-  standalone: true,
 })
 export class SearchInputComponent {
-  @Output()
-  public itemAddedEmitter = new EventEmitter<BaseItem>();
+  private readonly dishStore = inject<Store<DishState>>(Store);
+  private readonly productStore = inject<Store<ProductsState>>(Store);
+  private readonly modalService = inject(NgbModal);
+  private readonly notificationService = inject(NotificationService);
+
+  public readonly itemAddedEmitter = output<BaseItem>();
 
   //TODO: taking list of dishes might be long (need to find better solution)
   public allDishes$: Observable<Dish[]> = this.dishStore.select(DishSelectors.getDishes);
@@ -39,13 +42,6 @@ export class SearchInputComponent {
 
   public searchItem: BaseItem;
   baseItemFormatter = (item: BaseItem) => `${item.name} (${ItemType[item.itemType]})`;
-
-  constructor(
-    private dishStore: Store<DishState>,
-    private productStore: Store<ProductsState>,
-    private modalService: NgbModal,
-    private notificationService: NotificationService,
-  ) {}
 
   public search: OperatorFunction<string, readonly BaseItem[]> = (text$: Observable<string>) =>
     text$.pipe(

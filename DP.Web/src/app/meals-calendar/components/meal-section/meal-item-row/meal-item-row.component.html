@@ -15,34 +15,33 @@
   {{ calculateNutritionalValue(mealRowDetails?.calories, mealRowDetails?.portion, item.itemType) }}kcal
 </td>
 <td class="table-light">
-  <ng-container *ngIf="item.itemType === 0">
-    <input
-      [ngModel]="mealRowDetails.portion * 100"
-      (ngModelChange)="onPortionValueChange($event)"
-      [ngModelOptions]="{ updateOn: 'blur' }"
-      [attr.id]="'portion-' + item.id + '-' + item.itemType"
-      type="number"
-      id="portion"
-      class="form-control form-control-sm d-flex"
-      style="max-width: 4rem" />
-  </ng-container>
-  <ng-container *ngIf="item.itemType === 1">
-    <div class="d-flex">{{ mealRowDetails?.portion | number : '1.0-1' }}g</div>
-  </ng-container>
+  @if (item.itemType === 0) {
+  <input
+    [ngModel]="mealRowDetails.portion * 100"
+    (ngModelChange)="onPortionValueChange($event)"
+    [ngModelOptions]="{ updateOn: 'blur' }"
+    [attr.id]="'portion-' + item.id + '-' + item.itemType"
+    type="number"
+    id="portion"
+    class="form-control form-control-sm d-flex"
+    style="max-width: 4rem" />
+  } @if (item.itemType === 1) {
+  <div class="d-flex">{{ mealRowDetails?.portion | number : '1.0-1' }}g</div>
+  }
 </td>
 <td style="min-width: 90px" class="table-light">
-  <ng-container *ngIf="item.itemType === 1">
-    <button
-      type="button"
-      id="collapse-show-button-{{ mealType }}-{{ item.id }}-{{ item.itemType }}"
-      class="btn delete-button-icon text-secondary mx-0"
-      title="Show/Hide dish details"
-      data-bs-toggle="collapse"
-      [attr.data-bs-target]="'#collapse-' + mealType + '-' + item.itemType + '-' + itemIndex"
-      aria-controls="collapseExample">
-      <i class="bi bi-chevron-expand"></i>
-    </button>
-  </ng-container>
+  @if (item.itemType === 1) {
+  <button
+    type="button"
+    id="collapse-show-button-{{ mealType() }}-{{ item.id }}-{{ item.itemType }}"
+    class="btn delete-button-icon text-secondary mx-0"
+    title="Show/Hide dish details"
+    data-bs-toggle="collapse"
+    [attr.data-bs-target]="'#collapse-' + mealType() + '-' + item.itemType + '-' + itemIndex()"
+    aria-controls="collapseExample">
+    <i class="bi bi-chevron-expand"></i>
+  </button>
+  }
   <button
     type="button"
     class="btn edit-button-icon text-secondary mx-0"

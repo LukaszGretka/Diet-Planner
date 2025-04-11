@@ -1,5 +1,5 @@
-import { DecimalPipe, NgIf } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { Component, Input, OnInit, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { MealCalendarCalculator } from 'src/app/meals-calendar/services/meal-calendar-calculator.service';
 import { BaseItem, ItemType } from 'src/app/shared/models/base-item';
@@ -15,18 +15,18 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: '[app-meal-item-row]',
   templateUrl: './meal-item-row.component.html',
-  standalone: true,
-  imports: [DecimalPipe, NgIf, FormsModule],
+  imports: [DecimalPipe, FormsModule],
 })
 export class MealItemRowComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly mealCalendarStore = inject<Store<MealCalendarState>>(Store);
+
   @Input() public item: BaseItem;
-  @Input() public calendarDate: Date;
-  @Input() public mealType: MealType;
-  @Input() public itemIndex: number;
+  public readonly calendarDate = input<Date>(undefined);
+  public readonly mealType = input<MealType>(undefined);
+  public readonly itemIndex = input<number>(undefined);
 
   public mealRowDetails: MealRowDetails;
-
-  public constructor(private router: Router, private mealCalendarStore: Store<MealCalendarState>) {}
 
   //TODO fix colapse functionality because it working only for breakfast
   public ngOnInit(): void {
@@ -43,9 +43,9 @@ export class MealItemRowComponent implements OnInit {
     this.mealCalendarStore.dispatch(
       MealCalendarActions.removeMealItemRequest({
         removeMealRequest: {
-          mealType: this.mealType,
+          mealType: this.mealType(),
           mealItemId: this.item.mealItemId,
-          date: this.calendarDate,
+          date: this.calendarDate(),
           itemType: this.item.itemType,
           itemId: this.item.id,
         },
@@ -61,7 +61,7 @@ export class MealItemRowComponent implements OnInit {
           itemType: ItemType.Product,
           itemProductId: this.item.mealItemId,
           customizedPortionMultiplier: customizedPoritonSize / MealCalendarCalculator.defaultPortionSize,
-          date: this.calendarDate,
+          date: this.calendarDate(),
         },
       }),
     );

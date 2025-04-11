@@ -1,13 +1,11 @@
-<div
-  *ngIf="(isLoading$ | async) === true"
-  class="d-flex flex-column justify-content-center align-items-center"
-  style="min-height: 90vh">
+@if ((isLoading$ | async) === true) {
+<div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 90vh">
   <div class="spinner-grow text-primary" role="status">
     <span class="sr-only"></span>
   </div>
 </div>
-
-<div #noDishesTemplate *ngIf="!(dishes$ | async) || (dishes$ | async)?.length === 0; else dishesTemplate">
+} @if (!(dishes$ | async) || (dishes$ | async)?.length === 0) {
+<div #noDishesTemplate>
   <div class="m-4 d-flex align-items-center justify-content-center">
     <div class="text-center">
       <h2 class="mb-4">No dishes were added</h2>
@@ -16,121 +14,122 @@
     </div>
   </div>
 </div>
-<ng-template #dishesTemplate>
-  <div *ngIf="(isLoading$ | async) === false" class="container-lg mt-4">
-    <div class="d-flex flex-end justify-content-end">
-      <div class="btn btn-primary" role="button" routerLink="add">Add new dish</div>
-    </div>
-    <form>
-      <div class="mb-3 row">
-        <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
-        <div class="col-xs-3 col-sm-auto">
-          <input id="table-filtering-search" class="form-control" type="text" />
-        </div>
+} @else { @if ((isLoading$ | async) === false) {
+<div class="container-lg mt-4">
+  <div class="d-flex flex-end justify-content-end">
+    <div class="btn btn-primary" role="button" routerLink="add">Add new dish</div>
+  </div>
+  <form>
+    <div class="mb-3 row">
+      <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
+      <div class="col-xs-3 col-sm-auto">
+        <input id="table-filtering-search" class="form-control" type="text" />
       </div>
-    </form>
-
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Image</th>
-          <th scope="col">Name</th>
-          <th scope="col">Description</th>
-          <th scope="col">Shared</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let dish of dishes$ | async">
-          <th scope="row">
-            <div>{{ dish.id }}</div>
-          </th>
-          <td>
-            <div>
-              <img
-                *ngIf="!dish.imagePath"
-                src="./../../../assets/images/dish-placeholder.svg"
-                class="img-fluid"
-                style="width: 30px; height: 30px" />
-            </div>
-          </td>
-          <td>
-            <div>{{ dish.name }}</div>
-          </td>
-          <td>
-            <div>{{ dish.description }}</div>
-          </td>
-          <td>
-            <div class="form-check form-check-inline">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="expose-to-other-users-checkbox"
-                disabled="true"
-                [(ngModel)]="dish.exposeToOtherUsers" />
-            </div>
-          </td>
-          <td>
-            <div class="button-group">
-              <button
-                *ngIf="dish?.isOwner"
-                [ngbTooltip]="'Edit'"
-                type="button"
-                class="btn edit-button-icon"
-                (click)="onEditButtonClick(dish.id)">
-                <i class="bi bi-pen"></i>
-              </button>
-              <button
-                *ngIf="dish?.isOwner"
-                [ngbTooltip]="'Delete'"
-                type="button"
-                class="btn delete-button-icon text-danger"
-                (click)="onDeleteButtonClick(dish.id)"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteDishConfirmationModal">
-                <i class="bi bi-x-lg"></i>
-              </button>
-
-              <button
-                type="button"
-                [ngbTooltip]="'Show'"
-                *ngIf="!dish.isOwner"
-                class="btn edit-button-icon"
-                (click)="onPreviewButtonClick(dish.id)">
-                <i class="bi bi-box-arrow-up-right"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div
-      class="modal fade"
-      id="deleteDishConfirmationModal"
-      tabindex="-1"
-      aria-labelledby="deleteConfirmationModallLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation required</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+  </form>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Image</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Shared</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (dish of dishes$ | async; track dish) {
+      <tr>
+        <th scope="row">
+          <div>{{ dish.id }}</div>
+        </th>
+        <td>
+          <div>
+            @if (!dish.imagePath) {
+            <img
+              src="./../../../assets/images/dish-placeholder.svg"
+              class="img-fluid"
+              style="width: 30px; height: 30px" />
+            }
           </div>
-          <div class="modal-body">Do you really want to remove dish from the list?</div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </td>
+        <td>
+          <div>{{ dish.name }}</div>
+        </td>
+        <td>
+          <div>{{ dish.description }}</div>
+        </td>
+        <td>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="expose-to-other-users-checkbox"
+              disabled="true"
+              [(ngModel)]="dish.exposeToOtherUsers" />
+          </div>
+        </td>
+        <td>
+          <div class="button-group">
+            @if (dish?.isOwner) {
+            <button
+              [ngbTooltip]="'Edit'"
+              type="button"
+              class="btn edit-button-icon"
+              (click)="onEditButtonClick(dish.id)">
+              <i class="bi bi-pen"></i>
+            </button>
+            } @if (dish?.isOwner) {
+            <button
+              [ngbTooltip]="'Delete'"
+              type="button"
+              class="btn delete-button-icon text-danger"
+              (click)="onDeleteButtonClick(dish.id)"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteDishConfirmationModal">
+              <i class="bi bi-x-lg"></i>
+            </button>
+            } @if (!dish.isOwner) {
             <button
               type="button"
-              class="btn btn-danger"
-              (click)="removeConfirmationButtonClick()"
-              data-bs-dismiss="modal">
-              Confirm
+              [ngbTooltip]="'Show'"
+              class="btn edit-button-icon"
+              (click)="onPreviewButtonClick(dish.id)">
+              <i class="bi bi-box-arrow-up-right"></i>
             </button>
+            }
           </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  <div
+    class="modal fade"
+    id="deleteDishConfirmationModal"
+    tabindex="-1"
+    aria-labelledby="deleteConfirmationModallLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation required</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">Do you really want to remove dish from the list?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="removeConfirmationButtonClick()"
+            data-bs-dismiss="modal">
+            Confirm
+          </button>
         </div>
       </div>
     </div>
   </div>
-</ng-template>
+</div>
+} }

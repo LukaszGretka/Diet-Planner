@@ -1,8 +1,9 @@
 <!-- <app-error-page
-  *ngIf="(errorCode$ | async) >= 500; else productsTemplate"
-  [httpsStatusError]="errorCode$ | async"></app-error-page> -->
+*ngIf="(errorCode$ | async) >= 500; else productsTemplate"
+[httpsStatusError]="errorCode$ | async"></app-error-page> -->
 
-<div #noProductsTemplate *ngIf="!(products$ | async) || (products$ | async)?.length === 0; else productsTemplate">
+@if (!(products$ | async) || (products$ | async)?.length === 0) {
+<div #noProductsTemplate>
   <div class="m-4 d-flex align-items-center justify-content-center">
     <div class="text-center">
       <h2 class="mb-4">No products were added</h2>
@@ -11,104 +12,101 @@
     </div>
   </div>
 </div>
-<ng-template #productsTemplate>
-  <div *ngIf="authenticatedUser$ | async" class="container-lg mt-4">
-    <div class="d-flex flex-end justify-content-end">
-      <button type="button" class="btn btn-primary" routerLink="./add">Add new product</button>
-    </div>
-    <form>
-      <div class="mb-3 row">
-        <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
-        <div class="col-xs-3 col-sm-auto">
-          <input id="table-filtering-search" class="form-control" type="text" [formControl]="filter" />
-        </div>
+} @else { @if (authenticatedUser$ | async) {
+<div class="container-lg mt-4">
+  <div class="d-flex flex-end justify-content-end">
+    <button type="button" class="btn btn-primary" routerLink="./add">Add new product</button>
+  </div>
+  <form>
+    <div class="mb-3 row">
+      <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
+      <div class="col-xs-3 col-sm-auto">
+        <input id="table-filtering-search" class="form-control" type="text" [formControl]="filter" />
       </div>
-    </form>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Name</th>
-          <th scope="col">Description</th>
-          <th scope="col">Carbohydrates</th>
-          <th scope="col">Proteins</th>
-          <th scope="col">Fats</th>
-          <th scope="col">Calories</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let product of products$ | async">
-          <th scope="row">
-            <div>{{ product.id }}</div>
-          </th>
-          <td>
-            <div>{{ product.name }}</div>
-          </td>
-          <td>
-            <div>{{ product.description }}</div>
-          </td>
-          <td>
-            <div>{{ product.carbohydrates }} g</div>
-          </td>
-          <td>
-            <div>{{ product.proteins }} g</div>
-          </td>
-          <td>
-            <div>{{ product.fats }} g</div>
-          </td>
-          <td>
-            <div>{{ product.calories }} kcal</div>
-          </td>
-          <td>
-            <div class="button-group d-flex">
-              <button
-                type="button"
-                class="btn edit-button-icon"
-                [value]="product.id"
-                (click)="onEditButtonClick($event)">
-                <i class="bi bi-pen"></i>
-              </button>
-              <button
-                type="button"
-                class="btn delete-button-icon text-danger"
-                [value]="product.id"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteProductConfirmationModal"
-                (click)="onOpenConfirmationModal($event)">
-                <i class="bi bi-x-lg"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div
-      class="modal fade"
-      id="deleteProductConfirmationModal"
-      tabindex="-1"
-      aria-labelledby="deleteConfirmationModallLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation required</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">Do you really want to remove item from products list?</div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </form>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Carbohydrates</th>
+        <th scope="col">Proteins</th>
+        <th scope="col">Fats</th>
+        <th scope="col">Calories</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (product of products$ | async; track product) {
+      <tr>
+        <th scope="row">
+          <div>{{ product.id }}</div>
+        </th>
+        <td>
+          <div>{{ product.name }}</div>
+        </td>
+        <td>
+          <div>{{ product.description }}</div>
+        </td>
+        <td>
+          <div>{{ product.carbohydrates }} g</div>
+        </td>
+        <td>
+          <div>{{ product.proteins }} g</div>
+        </td>
+        <td>
+          <div>{{ product.fats }} g</div>
+        </td>
+        <td>
+          <div>{{ product.calories }} kcal</div>
+        </td>
+        <td>
+          <div class="button-group d-flex">
+            <button type="button" class="btn edit-button-icon" [value]="product.id" (click)="onEditButtonClick($event)">
+              <i class="bi bi-pen"></i>
+            </button>
             <button
               type="button"
-              class="btn btn-danger"
-              (click)="removeConfirmationButtonClick()"
-              data-bs-dismiss="modal">
-              Confirm
+              class="btn delete-button-icon text-danger"
+              [value]="product.id"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteProductConfirmationModal"
+              (click)="onOpenConfirmationModal($event)">
+              <i class="bi bi-x-lg"></i>
             </button>
           </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  <div
+    class="modal fade"
+    id="deleteProductConfirmationModal"
+    tabindex="-1"
+    aria-labelledby="deleteConfirmationModallLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation required</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">Do you really want to remove item from products list?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="removeConfirmationButtonClick()"
+            data-bs-dismiss="modal">
+            Confirm
+          </button>
         </div>
       </div>
     </div>
   </div>
-</ng-template>
+</div>
+} }

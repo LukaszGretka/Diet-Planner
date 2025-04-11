@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MealItemRequest, Meal, UpdateMealItemPortionRequest } from '../models/meal';
 import { environment } from 'src/environments/environment';
@@ -8,6 +8,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class MealsCalendarService {
+  private readonly httpClient = inject(HttpClient);
+
   private mealsCalendarUrl = `${environment.dietPlannerApiUri}/api/mealsCalendar`;
 
   httpOptions = {
@@ -16,8 +18,6 @@ export class MealsCalendarService {
       'Content-Type': 'application/json',
     }),
   };
-
-  public constructor(private httpClient: HttpClient) {}
 
   // Gets all meals for selected date.
   public getAllMeals(selectedDate: Date): Observable<Meal[]> {

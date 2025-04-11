@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, catchError, exhaustMap, of, switchMap } from 'rxjs';
@@ -10,6 +10,11 @@ import { UserProfile } from '../models/user-profile';
 
 @Injectable()
 export class BodyProfileEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly router = inject(Router);
+  private readonly measurementService = inject(MeasurementService);
+  private readonly userProfileService = inject(UserProfileService);
+
   getMeasurementEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BodyProfileActions.getMeasurementsRequest),
@@ -109,17 +114,14 @@ export class BodyProfileEffects {
       ofType(BodyProfileActions.uploadUserAvatarRequest),
       exhaustMap(({ payload }) => {
         return this.userProfileService.updateUserAvatar(payload.base64Avatar).pipe(
-          switchMap((userProfile: UserProfile) => of(BodyProfileActions.uploadUserAvatarRequestSuccess({  userProfile }))),
-          catchError((error: any) => of(BodyProfileActions.uploadUserAvatarRequestFailed({ error: error.error.message }))),
+          switchMap((userProfile: UserProfile) =>
+            of(BodyProfileActions.uploadUserAvatarRequestSuccess({ userProfile })),
+          ),
+          catchError((error: any) =>
+            of(BodyProfileActions.uploadUserAvatarRequestFailed({ error: error.error.message })),
+          ),
         );
       }),
     ),
   );
-
-  constructor(
-    private actions$: Actions,
-    private router: Router,
-    private measurementService: MeasurementService,
-    private userProfileService: UserProfileService,
-  ) { }
 }

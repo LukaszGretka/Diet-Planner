@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MealsCalendarService } from '../services/meals-calendar.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, mergeMap, of, switchMap, tap } from 'rxjs';
@@ -8,6 +8,10 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 
 @Injectable()
 export class MealCalendarEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly mealsCalendarService = inject(MealsCalendarService);
+  private readonly notificationService = inject(NotificationService);
+
   getMealsEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MealCalendarActions.getAllMealsRequest),
@@ -109,10 +113,4 @@ export class MealCalendarEffects {
       dispatch: false,
     },
   );
-
-  constructor(
-    private actions$: Actions,
-    private mealsCalendarService: MealsCalendarService,
-    private notificationService: NotificationService,
-  ) {}
 }

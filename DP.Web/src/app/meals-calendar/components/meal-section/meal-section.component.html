@@ -1,5 +1,6 @@
 <div class="mb-4">
-  <table *ngIf="meal.dishes?.length > 0 || meal.products?.length > 0" class="table">
+  @if (meal.dishes?.length > 0 || meal.products?.length > 0) {
+  <table class="table">
     <thead>
       <tr>
         <th scope="col">Image</th>
@@ -13,32 +14,32 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let dish of meal.dishes; let itemIndex = index">
+      @for (dish of meal.dishes; track dish; let itemIndex = $index) {
+      <tr
+        app-meal-item-row
+        [item]="dish"
+        [mealType]="meal.mealType"
+        [calendarDate]="calendarDate()"
+        [itemIndex]="itemIndex"></tr>
+      <tr
+        class="collapse"
+        [attr.id]="'collapse-' + meal.mealType + '-' + dish.itemType + '-' + itemIndex"
+        app-meal-dish-row-details-title></tr>
+      @for (dishProduct of dish.products; track dishProduct; let productIndex = $index) {
+      <ng-container class="collapse">
         <tr
-          app-meal-item-row
-          [item]="dish"
-          [mealType]="meal.mealType"
-          [calendarDate]="calendarDate"
-          [itemIndex]="itemIndex"></tr>
-        <tr
+          app-meal-dish-row-details
           class="collapse"
           [attr.id]="'collapse-' + meal.mealType + '-' + dish.itemType + '-' + itemIndex"
-          app-meal-dish-row-details-title></tr>
-        <ng-container class="collapse" *ngFor="let dishProduct of dish.products; let productIndex = index">
-          <tr
-            app-meal-dish-row-details
-            class="collapse"
-            [attr.id]="'collapse-' + meal.mealType + '-' + dish.itemType + '-' + itemIndex"
-            [dish]="dish"
-            [selectedDate]="calendarDate"
-            [dishProduct]="dishProduct"
-            [mealType]="meal.mealType"
-            [itemIndex]="itemIndex"></tr>
-        </ng-container>
+          [dish]="dish"
+          [selectedDate]="calendarDate()"
+          [dishProduct]="dishProduct"
+          [mealType]="meal.mealType"
+          [itemIndex]="itemIndex"></tr>
       </ng-container>
-      <ng-container *ngFor="let product of meal.products">
-        <tr app-meal-item-row [item]="product" [mealType]="meal.mealType" [calendarDate]="calendarDate"></tr>
-      </ng-container>
+      } } @for (product of meal.products; track product) {
+      <tr app-meal-item-row [item]="product" [mealType]="meal.mealType" [calendarDate]="calendarDate()"></tr>
+      }
     </tbody>
     <tbody>
       <ng-container>
@@ -46,5 +47,6 @@
       </ng-container>
     </tbody>
   </table>
+  }
   <app-search-input (itemAddedEmitter)="itemAddedToSearchBar($event, meal.mealType)"></app-search-input>
 </div>

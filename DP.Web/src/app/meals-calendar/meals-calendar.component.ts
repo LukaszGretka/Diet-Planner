@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject } from 'rxjs';
 import { MealType } from './models/meal-type';
@@ -11,14 +11,22 @@ import * as GeneralActions from '../stores/store.actions';
 import { MealConfig } from './models/meal-calendar-config';
 import { DailyMeals } from './models/daily-meals';
 import { Meal } from './models/meal';
+import { AsyncPipe } from '@angular/common';
+import { ErrorPageComponent } from '../shared/error-page/error-page.component';
+import { DateSelectionComponent } from './components/date-selection/date-selection.component';
+import { MealCalendarChartComponent } from './components/meal-calendar-chart/meal-calendar-chart.component';
+import { MealSectionComponent } from './components/meal-section/meal-section.component';
 
 @UntilDestroy()
 @Component({
   selector: 'app-meals-calendar',
   templateUrl: './meals-calendar.component.html',
   styleUrls: ['./meals-calendar.component.css'],
+  imports: [ErrorPageComponent, DateSelectionComponent, MealCalendarChartComponent, MealSectionComponent, AsyncPipe],
 })
 export class MealsCalendarComponent implements OnInit {
+  private readonly store = inject<Store<MealCalendarState>>(Store);
+
   public mealCalendarConfig: MealConfig[] = [
     { name: 'Breakfast', type: MealType.breakfast, isVisible: true },
     { name: 'Lunch', type: MealType.lunch, isVisible: true },
@@ -30,8 +38,6 @@ export class MealsCalendarComponent implements OnInit {
   public allDailyMeals$ = this.store.select(MealCalendarSelectors.getAllDailyMeals);
   public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
   public selectedDate: Date;
-
-  constructor(private store: Store<MealCalendarState>) {}
 
   public ngOnInit(): void {
     this.allDailyMeals$.pipe(untilDestroyed(this)).subscribe(meals => {

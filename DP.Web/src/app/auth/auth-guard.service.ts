@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountService } from '../account/services/account.service';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -8,8 +8,9 @@ import { Observable, map } from 'rxjs';
   providedIn: 'root',
 })
 @UntilDestroy()
-export class AuthGuardService  {
-  constructor(public accountService: AccountService, public router: Router) {}
+export class AuthGuardService {
+  private readonly accountService = inject(AccountService);
+  private readonly router = inject(Router);
 
   canActivate(): Observable<boolean> {
     return this.accountService.isAuthenticated().pipe(

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, catchError, exhaustMap, of, switchMap } from 'rxjs';
 import { ProductService } from '../services/product.service';
@@ -9,7 +9,9 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class ProductsEffects {
-  constructor(private actions$: Actions, private productService: ProductService, private router: Router) {}
+  private readonly actions$ = inject(Actions);
+  private readonly productService = inject(ProductService);
+  private readonly router = inject(Router);
 
   addProductEffect$ = createEffect(() =>
     this.actions$.pipe(

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Product } from 'src/app/products/models/product';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -8,6 +8,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ProductService {
+  private readonly httpClient = inject(HttpClient);
+
   private productsUrl = `${environment.dietPlannerApiUri}/api/product`;
 
   httpOptions = {
@@ -16,7 +18,6 @@ export class ProductService {
       'Content-Type': 'application/json',
     }),
   };
-  constructor(private httpClient: HttpClient) {}
 
   getProductsWithPortion(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.productsUrl + '/all', { withCredentials: true });

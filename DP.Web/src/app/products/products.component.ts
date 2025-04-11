@@ -1,6 +1,6 @@
-import { DecimalPipe } from '@angular/common';
-import { Component, OnInit, PipeTransform } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { DecimalPipe, AsyncPipe } from '@angular/common';
+import { Component, OnInit, PipeTransform, inject } from '@angular/core';
+import { UntypedFormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { filter, map, Observable, startWith } from 'rxjs';
 import { Product } from 'src/app/products/models/product';
@@ -8,7 +8,7 @@ import { GeneralState } from '../stores/store.state';
 import * as ProductsActions from '../products/stores/products.actions';
 import * as GeneralActions from '../stores/store.actions';
 import * as ProductActions from '../products/stores/products.actions';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import * as StoreSelector from '../stores/store.selectors';
 import * as ProductSelectors from './../products/stores/products.selectors';
 import { AccountService } from '../account/services/account.service';
@@ -18,8 +18,13 @@ import { AccountService } from '../account/services/account.service';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
   providers: [DecimalPipe],
+  imports: [RouterLink, ReactiveFormsModule, FormsModule, AsyncPipe],
 })
 export class ProductsComponent implements OnInit {
+  private store = inject<Store<GeneralState>>(Store);
+  private router = inject(Router);
+  private accountService = inject(AccountService);
+
   public filter = new UntypedFormControl('');
   public filteredProducts$: Observable<Product[]>;
 
@@ -28,12 +33,9 @@ export class ProductsComponent implements OnInit {
   public authenticatedUser$ = this.accountService.getUser();
   private productId: number;
 
-  constructor(
-    pipe: DecimalPipe,
-    private store: Store<GeneralState>,
-    private router: Router,
-    private accountService: AccountService,
-  ) {
+  constructor() {
+    const pipe = inject(DecimalPipe);
+
     this.filteredProducts$ = this.filter.valueChanges.pipe(
       filter(x => x !== ''),
       startWith(''),

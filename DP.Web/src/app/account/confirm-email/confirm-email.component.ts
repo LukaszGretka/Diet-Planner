@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountState } from '../stores/account.state';
 import { Store } from '@ngrx/store';
@@ -11,7 +11,9 @@ import { take } from 'rxjs';
   styleUrls: ['./confirm-email.component.css'],
 })
 export class ConfirmEmailComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private accountStore: Store<AccountState>, private router: Router) {}
+  private readonly route = inject(ActivatedRoute);
+  private readonly accountStore = inject<Store<AccountState>>(Store);
+  private readonly router = inject(Router);
 
   private email: string;
   private confirmationToken: string;
