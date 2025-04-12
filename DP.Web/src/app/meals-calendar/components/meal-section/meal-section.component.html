@@ -14,7 +14,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (dish of meal.dishes; track dish; let itemIndex = $index) {
+      @for (dish of meal.dishes; track dish.id; let itemIndex = $index) {
       <tr
         app-meal-item-row
         [item]="dish"

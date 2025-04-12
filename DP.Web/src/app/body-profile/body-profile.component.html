@@ -105,7 +105,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (measurement of measurements$ | async; track measurement) {
+      @for (measurement of measurements$ | async; track measurement.id) {
       <tr>
         <td>{{ measurement.date }}</td>
         <td>{{ measurement.weight }}</td>
