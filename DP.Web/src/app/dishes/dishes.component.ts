@@ -8,8 +8,11 @@ import { DishState } from './stores/dish.state';
 import * as DishActions from './stores/dish.actions';
 import { Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, UntypedFormControl } from '@angular/forms';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
+import { Dish } from './models/dish';
+import { filterItems } from '../shared/helpers/base-item-filter';
 
 @Component({
   selector: 'app-dishes',
@@ -22,12 +25,17 @@ export class DishesComponent implements OnInit {
   private readonly dishStore = inject<Store<DishState>>(Store);
   private readonly router = inject(Router);
 
-  public dishes$ = this.dishStore.select(DishSelector.getDishes);
-  public isLoading$ = this.dishStore.select(DishSelector.isLoading);
-
-  public errorCode$ = this.store.select(GeneralSelector.getErrorCode);
+  public filter = new UntypedFormControl('');
+  public filteredDishes$: Observable<Dish[]>;
+  public readonly dishes$ = this.dishStore.select(DishSelector.getDishes);
+  public readonly isLoading$ = this.dishStore.select(DishSelector.isLoading);
+  public readonly errorCode$ = this.store.select(GeneralSelector.getErrorCode);
 
   private dishIdToRemove: number;
+
+  public constructor() {
+    this.filteredDishes$ = filterItems(this.dishes$, this.filter.valueChanges);
+  }
 
   public ngOnInit(): void {
     this.store.dispatch(GeneralActions.clearErrors());

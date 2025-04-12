@@ -39,7 +39,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (product of products$ | async; track product) {
+      @for (product of filteredProducts$ | async; track product) {
       <tr>
         <th scope="row">
           <div>{{ product.id }}</div>
