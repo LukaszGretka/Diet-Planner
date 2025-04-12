@@ -23,7 +23,7 @@
     <div class="mb-3 row">
       <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Search:</label>
       <div class="col-xs-3 col-sm-auto">
-        <input id="table-filtering-search" class="form-control" type="text" />
+        <input id="table-filtering-search" class="form-control" type="text" [formControl]="filter" />
       </div>
     </div>
   </form>
@@ -39,7 +39,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (dish of dishes$ | async; track dish) {
+      @for (dish of filteredDishes$ | async; track dish.id) {
       <tr>
         <th scope="row">
           <div>{{ dish.id }}</div>
