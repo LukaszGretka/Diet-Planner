@@ -24,8 +24,8 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void {
     this.signInForm = this.formBuilder.group({
-      email: ['user@demo.com', { updateOn: 'blur', validators: [Validators.required, Validators.email] }],
-      password: ['user@demo.com', { updateOn: 'blur', validators: [Validators.required] }],
+      email: ['', { updateOn: 'blur', validators: [Validators.required, Validators.email] }],
+      password: ['', { updateOn: 'blur', validators: [Validators.required] }],
     });
   }
 
