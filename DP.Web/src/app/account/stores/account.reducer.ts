@@ -32,6 +32,18 @@ const reducerFactory = createReducer(
     ...state,
     isLoading: false,
   })),
+  on(accountActions.changePasswordRequest, state => ({
+    ...state,
+    isLoading: true,
+  })),
+  on(accountActions.changePasswordRequestSuccess, state => ({
+    ...state,
+    isLoading: false,
+  })),
+  on(accountActions.changePasswordRequestFailed, state => ({
+    ...state,
+    isLoading: false,
+  })),
 );
 
 export function AccountReducer(

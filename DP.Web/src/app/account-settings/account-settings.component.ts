@@ -1,35 +1,50 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormErrorComponent } from '../shared/form-error/form-error.component';
 import { Store } from '@ngrx/store';
 import { AccountState } from '../account/stores/account.state';
 import * as AccountActions from '../account/stores/account.actions';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { pipe } from 'rxjs';
 
+@UntilDestroy()
 @Component({
   selector: 'app-account-settings',
   templateUrl: './account-settings.component.html',
   styleUrls: ['./account-settings.component.css'],
   imports: [ReactiveFormsModule, FormErrorComponent],
 })
-export class AccountSettingsComponent {
+export class AccountSettingsComponent implements OnInit {
   changePasswordForm: FormGroup;
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly accountStore = inject(Store<AccountState>);
 
-  constructor() {
+  ngOnInit(): void {
     this.changePasswordForm = this.formBuilder.group(
       {
-        currentPassword: ['', { updateOn: 'blur', validators: [Validators.required] }],
-        newPassword: ['', { updateOn: 'blur', validators: [Validators.required] }],
-        newPasswordConfirmed: ['', { updateOn: 'blur', validators: [Validators.required] }],
+        currentPassword: ['', { validators: [Validators.required] }],
+        newPassword: ['', { validators: [Validators.required, Validators.minLength(6)] }],
+        newPasswordConfirmed: ['', { validators: [Validators.required, Validators.minLength(6)] }],
       },
       { validators: this.passwordsMatchValidator },
     );
+    this.accountStore
+      .select(AccountActions.changePasswordRequestSuccess)
+      .pipe(untilDestroyed(this))
+      .subscribe(success => {
+        if (success) {
+          this.changePasswordForm.reset();
+        }
+      });
   }
 
   public onSubmitPasswordChange(): void {
-    if (this.changePasswordForm.invalid) {
+    if (this.changePasswordForm.invalid || this.changePasswordForm.errors) {
+      if (this.changePasswordForm.errors?.passwordMismatch) {
+        this.changePasswordForm.get('newPasswordConfirmed').setErrors({ passwordMismatch: true });
+      }
+
       this.changePasswordForm.markAllAsTouched();
       return;
     }
@@ -44,9 +59,9 @@ export class AccountSettingsComponent {
     );
   }
 
-  private passwordsMatchValidator(group: FormGroup): { [key: string]: string } | null {
+  passwordsMatchValidator = (group: FormGroup): { [key: string]: boolean } | null => {
     const newPassword = group.get('newPassword')?.value;
     const newPasswordConfirmed = group.get('newPasswordConfirmed')?.value;
-    return newPassword === newPasswordConfirmed ? null : { error: 'passwordMismatch' };
-  }
+    return newPassword === newPasswordConfirmed ? null : { passwordMismatch: true };
+  };
 }

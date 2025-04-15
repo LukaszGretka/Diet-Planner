@@ -119,7 +119,7 @@ namespace DietPlanner.Api.Services.AccountService
             {
                 return IdentityResult.Failed(new IdentityError
                 {
-                    Code = "PasswordMissmatch",
+                    Code = "PasswordMismatch",
                     Description = $"Error during password change: {identity.Name}. New password and confirm password do not match"
                 });
             }
