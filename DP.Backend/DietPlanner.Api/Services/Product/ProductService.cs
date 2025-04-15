@@ -115,7 +115,7 @@ namespace DietPlanner.Api.Services
             }
 
             existingProduct.Name = string.IsNullOrWhiteSpace(product.Name) ? existingProduct.Name : product.Name;
-            existingProduct.Description = string.IsNullOrWhiteSpace(product.Description) ? existingProduct.Description : product.Description;
+            existingProduct.Description = product.Description;
             existingProduct.BarCode = product.BarCode ?? existingProduct.BarCode;
             existingProduct.ImagePath = string.IsNullOrWhiteSpace(product.ImagePath) ? existingProduct.ImagePath : product.ImagePath;
             existingProduct.Calories = product.Calories ?? existingProduct.Calories;

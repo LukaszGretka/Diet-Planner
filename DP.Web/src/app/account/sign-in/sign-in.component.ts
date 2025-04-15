@@ -24,8 +24,8 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void {
     this.signInForm = this.formBuilder.group({
-      email: ['user@demo.com', { updateOn: 'blur', validators: [Validators.required, Validators.email] }],
-      password: ['user@demo.com', { updateOn: 'blur', validators: [Validators.required] }],
+      username: ['', { validators: [Validators.required] }],
+      password: ['', { validators: [Validators.required] }],
     });
   }
 
@@ -38,7 +38,7 @@ export class SignInComponent implements OnInit {
     this.accountStore.dispatch(
       AccountActions.signInRequest({
         signInRequest: {
-          email: this.signInForm.get('email').value,
+          username: this.signInForm.get('username').value,
           password: this.signInForm.get('password').value,
         } as SignInRequest,
       }),

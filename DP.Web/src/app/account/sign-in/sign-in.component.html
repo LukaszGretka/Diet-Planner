@@ -2,9 +2,9 @@
   <h3>Sign in into your account</h3>
   <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
     <div class="my-4">
-      <label class="form-label" id="email-label">Email</label>
-      <input class="form-control" formControlName="email" name="email" type="email" />
-      <app-form-error [control]="signInForm.get('email')"></app-form-error>
+      <label class="form-label" id="username-label">Username</label>
+      <input class="form-control" formControlName="username" name="username" type="text" />
+      <app-form-error [control]="signInForm.get('username')"></app-form-error>
     </div>
     <div class="mb-2">
       <label class="form-label">Password</label>

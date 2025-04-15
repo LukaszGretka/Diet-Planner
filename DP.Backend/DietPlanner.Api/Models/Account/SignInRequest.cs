@@ -5,7 +5,7 @@ namespace DietPlanner.Api.Models.Account
     public class SignInRequest
     {
         [Required]
-        public string Email { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         public string Password { get; set; }
