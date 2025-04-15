@@ -34,6 +34,7 @@ export class ProductService {
   }
 
   addProduct(product: Product): Observable<Product> {
+    debugger;
     return this.httpClient.post<Product>(this.productsUrl, product, this.httpOptions);
   }
 

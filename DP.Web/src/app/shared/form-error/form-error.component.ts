@@ -33,6 +33,8 @@ export class FormErrorComponent {
       return `Value of field '${fieldName}' is too low.`;
     } else if (errorKey === 'email') {
       return `Value is not an email. Please provide valid email address.`;
+    } else if (errorKey === 'passwordMismatch') {
+      return `Password and confirmation password do not match.`;
     }
 
     return '';

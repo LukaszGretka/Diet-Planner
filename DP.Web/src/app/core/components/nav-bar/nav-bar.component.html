@@ -53,9 +53,9 @@
       <div class="navbar-dark navbar-nav">
         <div class="dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle h5"></i>
+            <i class="nav-dropdown-icon bi bi-person-circle h5"></i>
+            {{ (user$ | async).username }}
           </a>
-          <!-- --bs-dropdown-link-hover-bg -->
           <ul class="dropdown-menu dropdown-menu-end bg-dark nav-item mt-2">
             <li>
               <a

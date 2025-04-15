@@ -8,6 +8,7 @@ import { User } from '../models/user';
 import { EmailConfirmationRequest } from '../models/email-confirmation-request';
 import { SignUpResult } from '../models/sign-up-result';
 import { environment } from 'src/environments/environment';
+import { ChangePasswordRequest } from '../models/change-password-request';
 
 @Injectable({
   providedIn: 'root',
@@ -70,5 +71,9 @@ export class AccountService {
       }),
       catchError(() => of(false)),
     );
+  }
+
+  public changePassword(changePasswordRequest: ChangePasswordRequest): Observable<any> {
+    return this.httpClient.post<any>(this.baseUrl + '/change-password', changePasswordRequest, this.httpOptions);
   }
 }

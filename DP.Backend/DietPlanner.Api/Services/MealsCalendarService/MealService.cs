@@ -53,7 +53,9 @@ namespace DietPlanner.Api.Services.MealsCalendar
         public async Task<DatabaseActionResult<Meal>> AddMealItem(MealItemRequest addMealItemRequest, string userId)
         {
             Meal foundMeal = await _databaseContext.Meals
-                .Where(meal => meal.Date.Date == addMealItemRequest.Date.Date && meal.MealType == (int)addMealItemRequest.MealType)
+                .Where(meal => meal.Date.Date == addMealItemRequest.Date.Date
+                    && meal.MealType == (int)addMealItemRequest.MealType
+                    && meal.UserId == userId)
                 .SingleOrDefaultAsync();
 
             foundMeal ??= CreateNewMeal(addMealItemRequest.Date, addMealItemRequest.MealType, userId);

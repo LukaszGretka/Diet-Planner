@@ -1,38 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormErrorComponent } from '../shared/form-error/form-error.component';
+import { Store } from '@ngrx/store';
+import { AccountState } from '../account/stores/account.state';
+import * as AccountActions from '../account/stores/account.actions';
 
 @Component({
   selector: 'app-account-settings',
   templateUrl: './account-settings.component.html',
   styleUrls: ['./account-settings.component.css'],
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FormErrorComponent],
 })
 export class AccountSettingsComponent {
   changePasswordForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-    this.changePasswordForm = this.fb.group(
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly accountStore = inject(Store<AccountState>);
+
+  constructor() {
+    this.changePasswordForm = this.formBuilder.group(
       {
-        currentPassword: ['', Validators.required],
-        newPassword: ['', Validators.required],
-        confirmPassword: ['', Validators.required],
+        currentPassword: ['', { updateOn: 'blur', validators: [Validators.required] }],
+        newPassword: ['', { updateOn: 'blur', validators: [Validators.required] }],
+        newPasswordConfirmed: ['', { updateOn: 'blur', validators: [Validators.required] }],
       },
       { validators: this.passwordsMatchValidator },
     );
   }
 
   public onSubmitPasswordChange(): void {
-    if (this.changePasswordForm.valid) {
-      const { currentPassword, newPassword } = this.changePasswordForm.value;
-      console.log('Password change submitted:', { currentPassword, newPassword });
-    } else {
-      console.log('Form is invalid:', this.changePasswordForm.errors);
+    if (this.changePasswordForm.invalid) {
+      this.changePasswordForm.markAllAsTouched();
+      return;
     }
+    this.accountStore.dispatch(
+      AccountActions.changePasswordRequest({
+        changePasswordRequest: {
+          currentPassword: this.changePasswordForm.get('currentPassword').value,
+          newPassword: this.changePasswordForm.get('newPassword').value,
+          newPasswordConfirmed: this.changePasswordForm.get('newPasswordConfirmed').value,
+        },
+      }),
+    );
   }
 
-  private passwordsMatchValidator(group: FormGroup): { [key: string]: boolean } | null {
+  private passwordsMatchValidator(group: FormGroup): { [key: string]: string } | null {
     const newPassword = group.get('newPassword')?.value;
-    const confirmPassword = group.get('confirmPassword')?.value;
-    return newPassword === confirmPassword ? null : { passwordMismatch: true };
+    const newPasswordConfirmed = group.get('newPasswordConfirmed')?.value;
+    return newPassword === newPasswordConfirmed ? null : { error: 'passwordMismatch' };
   }
 }

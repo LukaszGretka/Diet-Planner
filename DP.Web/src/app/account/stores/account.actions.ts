@@ -5,6 +5,7 @@ import { User } from '../models/user';
 import { SignInResult } from '../models/sign-in-result';
 import { SignUpResult } from '../models/sign-up-result';
 import { EmailConfirmationRequest } from '../models/email-confirmation-request';
+import { ChangePasswordRequest } from '../models/change-password-request';
 
 export const getUserRequest = createAction('Get user request');
 export const getUserRequestSuccess = createAction('Get user request success', prop<{ user: User }>());
@@ -29,6 +30,14 @@ export const confirmEmailRequest = createAction(
 export const confirmEmailRequestSuccess = createAction('Confirm email request success');
 export const confirmEmailRequestFailed = createAction('Confirm email request failed', prop<{ error: string }>());
 
+export const changePasswordRequest = createAction(
+  'Change password request',
+  prop<{ changePasswordRequest: ChangePasswordRequest }>(),
+);
+
+export const changePasswordRequestSuccess = createAction('Change password request success');
+export const changePasswordRequestFailed = createAction('Change password request failed', prop<{ error: string }>());
+
 const actions = union({
   getUserRequest,
   getUserRequestSuccess,
@@ -45,6 +54,9 @@ const actions = union({
   confirmEmailRequest,
   confirmEmailRequestSuccess,
   confirmEmailRequestFailed,
+  changePasswordRequest,
+  changePasswordRequestSuccess,
+  changePasswordRequestFailed,
 });
 
 export type AccountActions = typeof actions;

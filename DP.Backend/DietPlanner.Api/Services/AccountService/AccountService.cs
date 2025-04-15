@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -32,13 +33,13 @@ namespace DietPlanner.Api.Services.AccountService
             _configuration = configuration;
         }
 
-        public async Task<IdentityUser> GetUser(string email)
+        public async Task<IdentityUser> GetUser(string userName)
         {
-            IdentityUser user = await _userManager.FindByNameAsync(email);
+            IdentityUser user = await _userManager.FindByNameAsync(userName);
 
             if (user is null)
             {
-                _logger.LogError($"User with email: {email} not found");
+                _logger.LogError($"User with user name: {userName} not found");
             }
 
             return user;
@@ -46,7 +47,7 @@ namespace DietPlanner.Api.Services.AccountService
 
         public async Task<SignInResult> SignIn(HttpContext httpContext, SignInRequest loginRequest)
         {
-            return await _signInManager.PasswordSignInAsync(loginRequest.Email,
+            return await _signInManager.PasswordSignInAsync(loginRequest.UserName,
                 loginRequest.Password, false, false);
         }
 
@@ -96,7 +97,7 @@ namespace DietPlanner.Api.Services.AccountService
         {
             IdentityUser user = await _userManager.FindByNameAsync(emailConfirmationRequest.Email);
 
-            if(user is null)
+            if (user is null)
             {
                 _logger.LogError($"Error during email confirmation for: {emailConfirmationRequest.Email}. User not found");
                 return new IdentityResult();
@@ -110,6 +111,45 @@ namespace DietPlanner.Api.Services.AccountService
             }
 
             return confirmationResult;
+        }
+
+        public async Task<IdentityResult> ChangePassword(ChangePasswordRequest changePasswordRequest, IIdentity identity)
+        {
+            if(changePasswordRequest.NewPassword != changePasswordRequest.NewPasswordConfirmed)
+            {
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Code = "PasswordMissmatch",
+                    Description = $"Error during password change: {identity.Name}. New password and confirm password do not match"
+                });
+            }
+
+            IdentityUser user = await _userManager.FindByNameAsync(identity.Name);
+
+            if (user is null)
+            {
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Code = "UserNotFound",
+                    Description = $"Error during password change: {identity.Name}. User not found"
+                });
+            }
+
+            var currentPasswordValid = await _userManager.CheckPasswordAsync(user, changePasswordRequest.CurrentPassword);
+
+            if(!currentPasswordValid)
+            {
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Code = "InvalidPassword",
+                    Description = $"Error during password change: {identity.Name}. Current password is not valid"
+                });
+            }
+
+            IdentityResult changePasswordResult = await _userManager.ChangePasswordAsync(user,
+                changePasswordRequest.CurrentPassword, changePasswordRequest.NewPassword);
+
+            return changePasswordResult;
         }
     }
 }

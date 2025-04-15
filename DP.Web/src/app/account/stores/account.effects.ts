@@ -171,4 +171,38 @@ export class AccountEffects {
       ),
     { dispatch: false },
   );
+
+  changePasswordEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AccountActions.changePasswordRequest),
+      exhaustMap(action => {
+        return this.accountService.changePassword(action.payload.changePasswordRequest).pipe(
+          switchMap(() => of(AccountActions.changePasswordRequestSuccess())),
+          catchError(error => of(AccountActions.changePasswordRequestFailed({ error }))),
+        );
+      }),
+    ),
+  );
+
+  changePasswordRequestSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.changePasswordRequestSuccess),
+        tap(() => {
+          this.notificationService.showSuccessToast('Password change', 'Password changed successfully!');
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  changePasswordRequestFailedEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountActions.changePasswordRequestFailed),
+        tap(() => {
+          this.notificationService.showErrorToast('Password change', 'Unable to change password.');
+        }),
+      ),
+    { dispatch: false },
+  );
 }
