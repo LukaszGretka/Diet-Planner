@@ -11,7 +11,9 @@ import * as MealCalendarActions from '../../../stores/meals-calendar.actions';
 import { MealType } from 'src/app/meals-calendar/models/meal-type';
 import { MealRowDetails } from 'src/app/meals-calendar/models/meal-dish-row-details';
 import { FormsModule } from '@angular/forms';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: '[app-meal-item-row]',
   templateUrl: './meal-item-row.component.html',
@@ -28,9 +30,15 @@ export class MealItemRowComponent implements OnInit {
 
   public mealRowDetails: MealRowDetails;
 
-  //TODO fix colapse functionality because it working only for breakfast
   public ngOnInit(): void {
-    this.mealRowDetails = this.calculateMealRowDetails();
+    this.mealCalendarStore
+      .select(MealCalendarSelectors.getMealByMealType(this.mealType()))
+      .pipe(untilDestroyed(this))
+      .subscribe(meal => {
+        if (meal) {
+          this.mealRowDetails = this.calculateMealRowDetails();
+        }
+      });
   }
 
   public async onEditItemButtonClick(): Promise<void> {

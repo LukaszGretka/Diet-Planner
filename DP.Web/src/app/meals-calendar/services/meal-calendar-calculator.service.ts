@@ -75,11 +75,11 @@ export class MealCalendarCalculator {
 
   public static calculateProductMacros(product: Product): MealRowDetails {
     let totalMacros = { carbs: 0, proteins: 0, fats: 0, calories: 0 } as MealRowDetails;
-    totalMacros.carbs += product.carbohydrates;
+    totalMacros.carbs += product.carbohydrates * product.portionMultiplier;
 
-    totalMacros.proteins += product.proteins;
-    totalMacros.fats += product.fats;
-    totalMacros.calories += product.calories;
+    totalMacros.proteins += product.proteins * product.portionMultiplier;
+    totalMacros.fats += product.fats * product.portionMultiplier;
+    totalMacros.calories += product.calories * product.portionMultiplier;
 
     return totalMacros;
   }
