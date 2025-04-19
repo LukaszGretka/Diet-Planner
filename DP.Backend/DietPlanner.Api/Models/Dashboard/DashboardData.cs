@@ -11,5 +11,7 @@
         public float[] FatsLastSevenDays { get; set; }
 
         public float? CurrentWeight { get; set; }
+
+        public int CaloricDemand { get; set; }
     }
 }

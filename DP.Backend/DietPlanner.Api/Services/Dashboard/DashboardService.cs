@@ -1,4 +1,5 @@
 ﻿using DietPlanner.Api.Database;
+using DietPlanner.Api.Database.Enums;
 using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.Models.Dashboard;
 using DietPlanner.Api.Services.MealProductService;
@@ -14,18 +15,23 @@ namespace DietPlanner.Api.Services.Dashboard
         private readonly IMeasurementService _measurementService;
         private readonly IMealService _mealService;
         private readonly DietPlannerDbContext _databaseContext;
+        private readonly IGoalService _goalService;
 
-        public DashboardService(IMeasurementService measurementService, IMealService mealService, DietPlannerDbContext databaseContext)
+        public DashboardService(IMeasurementService measurementService, IMealService mealService, IGoalService goalService, DietPlannerDbContext databaseContext)
         {
             _measurementService = measurementService;
             _mealService = mealService;
             _databaseContext = databaseContext;
+            _goalService = goalService;
         }
 
         public async Task<DashboardData> GetDashboardData(string userId)
         {
             var measurements = await _measurementService.GetAll(userId);
             decimal? currentWeight = measurements.LastOrDefault()?.Weight;
+
+            var goal = await _goalService.GetGoalData(userId, GoalType.CaloricDemand);
+            int caloricDemand = (int)goal.Value;
 
             var dataTimeNow = DateTime.Now.Date;
 
@@ -85,7 +91,8 @@ namespace DietPlanner.Api.Services.Dashboard
                 CaloriesLastSevenDays = caloriesLastSevenDays.ToArray(),
                 CarbsLastSevenDays = carbsLastSevenDays.ToArray(),
                 ProteinsLastSevenDays = proteinsLastSevenDays.ToArray(),
-                FatsLastSevenDays = fatsLastSevenDays.ToArray()
+                FatsLastSevenDays = fatsLastSevenDays.ToArray(),
+                CaloricDemand = caloricDemand,
             };
         }
 
