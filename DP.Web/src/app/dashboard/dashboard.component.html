@@ -11,7 +11,7 @@
           Current weight: {{ ((dashboardChartData$ | async)?.currentWeight | number : '1.0-2') ?? 'n/a' }} kg
         </div>
         <div class="m-2">
-          Total calories (today): {{ (dashboardChartData$ | async)?.caloriesLastSevenDays[6] | number : '1.0-2' }}/{{ (dashboardChartData$ | async)?.caloricDemand | number : '1.0-0' }}
+          Total calories (today): {{ (dashboardChartData$ | async)?.caloriesLastSevenDays[6] | number : '1.0-2' }}/{{ ((dashboardChartData$ | async)?.caloricDemand | number : '1.0-0') ?? 'n/a' }}
           kcal
         </div>
       </div>
