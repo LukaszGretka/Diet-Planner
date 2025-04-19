@@ -109,15 +109,14 @@ export class MealCalendarCalculator {
   }
 
   public static calculateMealProductRowDetails(product: Product): MealRowDetails {
-    let dishRowDetails = { carbs: 0, proteins: 0, fats: 0, calories: 0, portion: 0 } as MealRowDetails;
+    let productRowDetails = { carbs: 0, proteins: 0, fats: 0, calories: 0, portion: 0 } as MealRowDetails;
 
-    dishRowDetails.carbs += product.carbohydrates;
-    dishRowDetails.proteins += product.proteins;
-    dishRowDetails.fats += product.fats;
-    dishRowDetails.calories += product.calories;
-    dishRowDetails.portion +=
-      MealCalendarCalculator.defaultPortionSize * product.portionMultiplier === 0 ? 1 : product.portionMultiplier;
+    productRowDetails.carbs += product.carbohydrates * product.portionMultiplier;
+    productRowDetails.proteins += product.proteins * product.portionMultiplier;
+    productRowDetails.fats += product.fats * product.portionMultiplier;
+    productRowDetails.calories += product.calories * product.portionMultiplier;
+    productRowDetails.portion += product.portionMultiplier;
 
-    return dishRowDetails;
+    return productRowDetails;
   }
 }

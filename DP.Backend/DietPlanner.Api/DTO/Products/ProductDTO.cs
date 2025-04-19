@@ -17,6 +17,6 @@
 
         public long? BarCode { get; set; }
 
-        public decimal PortionMultiplier { get; set; }
+        public decimal? PortionMultiplier { get; set; }
     }
 }

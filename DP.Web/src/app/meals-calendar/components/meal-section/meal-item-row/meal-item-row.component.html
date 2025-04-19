@@ -1,23 +1,16 @@
+@if(mealRowDetails$) {
 <td class="table-light">
   <img src="../../../../assets/images/product-placeholder.svg" class="img-fluid" style="width: 25px; height: 25px" />
 </td>
 <td class="table-light">{{ item.name }}</td>
-<td class="table-light">
-  {{ calculateNutritionalValue(mealRowDetails?.carbs, mealRowDetails?.portion, item.itemType) }}g
-</td>
-<td class="table-light">
-  {{ calculateNutritionalValue(mealRowDetails?.proteins, mealRowDetails?.portion, item.itemType) }}g
-</td>
-<td class="table-light">
-  {{ calculateNutritionalValue(mealRowDetails?.fats, mealRowDetails?.portion, item.itemType) }}g
-</td>
-<td class="table-light">
-  {{ calculateNutritionalValue(mealRowDetails?.calories, mealRowDetails?.portion, item.itemType) }}kcal
-</td>
+<td class="table-light">{{ mealRowDetails$.getValue()?.carbs | number : '1.0-1' }}g</td>
+<td class="table-light">{{ mealRowDetails$.getValue()?.proteins | number : '1.0-1' }}g</td>
+<td class="table-light">{{ mealRowDetails$.getValue()?.fats | number : '1.0-1' }}g</td>
+<td class="table-light">{{ mealRowDetails$.getValue()?.calories | number : '1.0-1' }}kcal</td>
 <td class="table-light">
   @if (item.itemType === 0) {
   <input
-    [ngModel]="mealRowDetails.portion * 100"
+    [ngModel]="mealRowDetails$?.getValue().portion * 100"
     (ngModelChange)="onPortionValueChange($event)"
     [ngModelOptions]="{ updateOn: 'blur' }"
     [attr.id]="'portion-' + item.id + '-' + item.itemType"
@@ -26,7 +19,7 @@
     class="form-control form-control-sm d-flex"
     style="max-width: 4rem" />
   } @if (item.itemType === 1) {
-  <div class="d-flex">{{ mealRowDetails?.portion | number : '1.0-1' }}g</div>
+  <div class="d-flex">{{ mealRowDetails$?.getValue()?.portion | number : '1.0-1' }}g</div>
   }
 </td>
 <td style="min-width: 90px" class="table-light">
@@ -57,3 +50,4 @@
     <i class="bi bi-x-lg"></i>
   </button>
 </td>
+}

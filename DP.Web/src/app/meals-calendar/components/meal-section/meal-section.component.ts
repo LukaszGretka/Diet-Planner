@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, inject, input } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { BehaviorSubject } from 'rxjs';
 import * as MealCalendarActions from '../../stores/meals-calendar.actions';
 import { MealCalendarState } from '../../stores/meals-calendar.state';
 import { Store } from '@ngrx/store';
@@ -16,7 +15,6 @@ import { FormsModule } from '@angular/forms';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { MealSummaryRowComponent } from './meal-summary-row/meal-summary-row.component';
 import { MealDishRowDetailsComponent } from './meal-dish-row-details/meal-dish-row-details.component';
-import { MealDishRowDetailsTitleComponent } from './meal-dish-row-details-title/meal-dish-row-details-title.component';
 
 @UntilDestroy()
 @Component({
@@ -29,7 +27,6 @@ import { MealDishRowDetailsTitleComponent } from './meal-dish-row-details-title/
     SearchInputComponent,
     MealSummaryRowComponent,
     MealDishRowDetailsComponent,
-    MealDishRowDetailsTitleComponent,
   ],
 })
 export class MealSectionComponent implements OnInit {
