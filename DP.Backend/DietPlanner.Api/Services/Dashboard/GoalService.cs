@@ -21,12 +21,16 @@ namespace DietPlanner.Api.Services.Dashboard
         {
             var goal = await _databaseContext.Goals.Where(x => x.UserId == userId).Where(y => y.GoalType == goalType).FirstOrDefaultAsync();
 
-            return new Goals
+            if(goal != null)
             {
-                Value = goal.Value,
-                EstablishmentDate = goal.EstablishmentDate,
-                GoalType = goal.GoalType
-            };
+                return new Goals
+                {
+                    Value = goal.Value,
+                    EstablishmentDate = goal.EstablishmentDate,
+                    GoalType = goal.GoalType
+                };
+            }
+            return new Goals();
         }
     }
 }

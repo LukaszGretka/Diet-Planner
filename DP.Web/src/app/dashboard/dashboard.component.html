@@ -1,3 +1,4 @@
+@let caloricDemand = (dashboardChartData$ | async)?.caloricDemand;
 @if (errorCode$ | async) {
 <app-error-page [httpsStatusError]="errorCode$ | async" />
 } @else {
@@ -10,10 +11,12 @@
         <div class="m-2">
           Current weight: {{ ((dashboardChartData$ | async)?.currentWeight | number : '1.0-2') ?? 'n/a' }} kg
         </div>
+        @if(caloricDemand)
+        {
         <div class="m-2">
-          Total calories (today): {{ (dashboardChartData$ | async)?.caloriesLastSevenDays[6] | number : '1.0-2' }}/{{ ((dashboardChartData$ | async)?.caloricDemand | number : '1.0-0') ?? 'n/a' }}
-          kcal
+          Total calories (today): {{ (dashboardChartData$ | async)?.caloriesLastSevenDays[6] | number : '1.0-2' }}/{{ caloricDemand }} kcal
         </div>
+        }
       </div>
       <div class="border-bottom"></div>
       <div class="mt-3 text-primary">Last 3 days</div>
