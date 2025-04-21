@@ -6,14 +6,14 @@ export const getAllMealsRequestSuccess = createAction('Get all meals request suc
 export const getAllMealsRequestFailed = createAction('Get all meals request failed', prop<{ errorCode: number }>());
 
 export const addMealRequest = createAction('Add meal request', prop<{ addMealRequest: MealItemRequest }>());
-export const addMealRequestSuccess = createAction('Add meal success', prop<{ addedDate: Date }>());
+export const addMealRequestSuccess = createAction('Add meal success', prop<{ result: Meal[] }>());
 export const addMealRequestFailed = createAction('Add meal failed', prop<{ errorCode: number }>());
 
 export const removeMealItemRequest = createAction(
   'Remove meal item request',
   prop<{ removeMealRequest: MealItemRequest }>(),
 );
-export const removeMealItemSuccess = createAction('Remove meal item success', prop<{ addedDate: Date }>());
+export const removeMealItemSuccess = createAction('Remove meal item success', prop<{ result: Meal[] }>());
 export const removeMealItemFailed = createAction('Remove meal item failed', prop<{ errorCode: number }>());
 
 export const updateMealItemPortionRequest = createAction(
@@ -21,7 +21,10 @@ export const updateMealItemPortionRequest = createAction(
   prop<{ request: UpdateMealItemPortionRequest }>(),
 );
 
-export const updateMealItemPortionSuccess = createAction('Update meal item portion success');
+export const updateMealItemPortionSuccess = createAction(
+  'Update meal item portion success',
+  prop<{ result: Meal[] }>(),
+);
 export const updateMealItemPortionFailed = createAction('Update meal item portion failed', prop<{ error: number }>());
 
 const actions = union({
