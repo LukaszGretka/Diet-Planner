@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Controllers
@@ -24,22 +25,22 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpGet("{date}")]
-        public async Task<ActionResult<DailyMealsDto>> GetDailyMeals(DateTime date)
+        public async Task<ActionResult<DailyMealsDto>> GetDailyMeals(DateTime date, CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
-            var result = await _mealsCalendarService.GetMeals(date, userId);
+            var result = await _mealsCalendarService.GetMeals(date, userId, ct);
 
-            return Ok(result);
+            return Ok(result.Obj);
         }
 
         [HttpPost]
         [Route("add-meal-item")]
-        public async Task<ActionResult<DailyMealsDto>> AddMealItemRequest([FromBody] MealItemRequest addMealItemRequest)
+        public async Task<ActionResult<DailyMealsDto>> AddMealItemRequest([FromBody] MealItemRequest addMealItemRequest, CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
-            var result = await _mealsCalendarService.AddMealItem(addMealItemRequest, userId);
+            var result = await _mealsCalendarService.AddMealItem(addMealItemRequest, userId, ct);
 
             if (result.Exception != null)
             {
@@ -51,11 +52,11 @@ namespace DietPlanner.Api.Controllers
 
         [HttpDelete]
         [Route("remove-meal-item")]
-        public async Task<ActionResult<DailyMealsDto>> RemoveMealItemRequest([FromBody] MealItemRequest removeMealItemRequest)
+        public async Task<ActionResult<DailyMealsDto>> RemoveMealItemRequest([FromBody] MealItemRequest removeMealItemRequest, CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
-            var result = await _mealsCalendarService.RemoveMealItem(removeMealItemRequest, userId);
+            var result = await _mealsCalendarService.RemoveMealItem(removeMealItemRequest, userId, ct);
 
             if (result.Exception != null)
             {
@@ -67,16 +68,18 @@ namespace DietPlanner.Api.Controllers
 
         [HttpPatch]
         [Route("update-meal-item-portion")]
-        public async Task<IActionResult> UpdateMealItemPortion(UpdateMealItemPortionRequest request)
+        public async Task<IActionResult> UpdateMealItemPortion(UpdateMealItemPortionRequest request, CancellationToken ct)
         {
-            var result = await _mealsCalendarService.UpdateMealItemPortion(request);
+            string userId = HttpContext.GetUserId();
+
+            var result = await _mealsCalendarService.UpdateMealItemPortion(request, userId, ct);
 
             if (result.Exception != null)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            return Ok(result.Success);
+            return Ok(result.Obj);
         }
     }
 }

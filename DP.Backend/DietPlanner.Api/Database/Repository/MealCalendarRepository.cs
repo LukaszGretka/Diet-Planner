@@ -6,6 +6,8 @@ using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Database.Repository
 {
@@ -18,23 +20,23 @@ namespace DietPlanner.Api.Database.Repository
             _databaseContext = databaseContext;
         }
 
-        public List<DishDTO> GetMealDishes(Meal meal)
+        public async Task <List<DishDTO>> GetMealDishes(Meal meal, CancellationToken ct)
         {          
-            var mealDishes = _databaseContext.MealDishes
+            var mealDishes = await _databaseContext.MealDishes
                 .Where(md => md.MealId == meal.Id)
                 .Include(md => md.Dish)
-                .ToList();
+                .ToListAsync(ct);
 
-            var dishProducts = _databaseContext.DishProducts
+            var dishProducts = await _databaseContext.DishProducts
                 .Where(dp => mealDishes.Select(md => md.DishId).Contains(dp.DishId))
                 .Include(dp => dp.Product)
-                .ToList();
+                .ToListAsync(ct);
 
-            var customizedMealDishes = _databaseContext.CustomizedMealDishes
+            var customizedMealDishes = await _databaseContext.CustomizedMealDishes
                 .Where(cdp => mealDishes.Select(md => md.Id).Contains(cdp.MealDishId))
-                .ToList();
+                .ToListAsync(ct);
 
-            return mealDishes.Select(md => new DishDTO
+            return [.. mealDishes.Select(md => new DishDTO
             {
                 Id = md.Dish.Id,
                 MealItemId = md.Id,
@@ -44,7 +46,7 @@ namespace DietPlanner.Api.Database.Repository
                 IsOwner = md.Dish.UserId == meal.UserId,
                 ItemType = ItemType.Dish,
                 Name = md.Dish.Name,
-                Products = dishProducts
+                Products = [.. dishProducts
                     .Where(dp => dp.DishId == md.DishId)
                     .Select(dp => new DishProductsDTO
                     {
@@ -66,13 +68,13 @@ namespace DietPlanner.Api.Database.Repository
                             .Where(cdp => cdp.MealDishId == md.Id && cdp.DishProductId == dp.Id)
                             .Select(cmd => cmd.CustomizedPortionMultiplier)
                             .SingleOrDefault()
-                    }).ToList(),
-            }).ToList();
+                    })]
+            })];
         }
 
-        public List<ProductDTO> GetMealProducts(Meal meal)
+        public async Task<List<ProductDTO>> GetMealProducts(Meal meal, CancellationToken ct)
         {
-            var result = _databaseContext.MealProducts.Where(mp => mp.MealId == meal.Id)
+            List<ProductDTO> result = await _databaseContext.MealProducts.Where(mp => mp.MealId == meal.Id)
                 .Select(mp => new ProductDTO
                     {
                         MealItemId = mp.Id,
@@ -90,7 +92,7 @@ namespace DietPlanner.Api.Database.Repository
                             .Where(cmp => cmp.MealProductId == mp.Id)
                             .Select(cmp => cmp.CustomizedPortionMultiplier)
                             .FirstOrDefault()
-                    }).ToList();
+                    }).ToListAsync(ct);
 
             result.Where(r => r.PortionMultiplier is null or 0m)
                 .ToList()

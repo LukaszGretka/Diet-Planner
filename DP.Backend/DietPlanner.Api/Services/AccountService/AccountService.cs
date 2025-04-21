@@ -12,26 +12,17 @@ using System.Web;
 
 namespace DietPlanner.Api.Services.AccountService
 {
-    public class AccountService : IAccountService
+    public class AccountService(SignInManager<IdentityUser> signInManager,
+        IMessageBrokerService messageBrokerService,
+        UserManager<IdentityUser> userManager,
+        ILogger<AccountService> logger,
+        IConfiguration configuration) : IAccountService
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly IMessageBrokerService _messageBrokerService;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly ILogger<AccountService> _logger;
-        private readonly IConfiguration _configuration;
-
-        public AccountService(SignInManager<IdentityUser> signInManager,
-            IMessageBrokerService messageBrokerService,
-            UserManager<IdentityUser> userManager,
-            ILogger<AccountService> logger,
-            IConfiguration configuration)
-        {
-            _signInManager = signInManager;
-            _messageBrokerService = messageBrokerService;
-            _userManager = userManager;
-            _logger = logger;
-            _configuration = configuration;
-        }
+        private readonly SignInManager<IdentityUser> _signInManager = signInManager;
+        private readonly IMessageBrokerService _messageBrokerService = messageBrokerService;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly ILogger<AccountService> _logger = logger;
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<IdentityUser> GetUser(string userName)
         {

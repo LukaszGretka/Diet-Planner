@@ -4,6 +4,7 @@ using DietPlanner.Api.Database.Repository;
 using DietPlanner.Api.Models.Account;
 using DietPlanner.Api.Services;
 using DietPlanner.Api.Services.AccountService;
+using DietPlanner.Api.Services.Core;
 using DietPlanner.Api.Services.Dashboard;
 using DietPlanner.Api.Services.DishService;
 using DietPlanner.Api.Services.MealProductService;
@@ -21,7 +22,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api
@@ -67,9 +68,6 @@ namespace DietPlanner.Api
             // Override cookie options to work with SPA
             ConfigureCookieRedirection(services);
 
-#if DEBUG
-            services.Configure<MessageBrokerOptions>(Configuration.GetSection("MessageBroker"));
-#endif
             services.Configure<IdentityOptions>(options =>
             {
                 ConfigurePasswordPolicy(options);
@@ -77,6 +75,23 @@ namespace DietPlanner.Api
             });
 
             services.AddAuthorization();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.InstanceName = "DietPlannerRedis";
+                options.Configuration = Configuration.GetConnectionString("Redis");
+                options.ConfigurationOptions = new ConfigurationOptions
+                {
+                    ConnectTimeout = 100,
+                    SyncTimeout = 100,
+                    AbortOnConnectFail = false,
+                    EndPoints = { Configuration.GetConnectionString("Redis") }
+                };
+            });
+            services.AddSingleton<IRedisCacheService, RedisCacheService>();
+
+            services.Configure<MessageBrokerOptions>(Configuration.GetSection("MessageBroker"));
+            services.AddTransient<IMessageBrokerService, MessageBrokerService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
@@ -87,11 +102,11 @@ namespace DietPlanner.Api
             services.AddTransient<IAccountService, AccountService>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient<IMessageBrokerService, MessageBrokerService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IDashboardService, DashboardService>();
             services.AddTransient<IGoalService, GoalService>();
             services.AddTransient<IMealCalendarRepository, MealCalendarRepository>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
