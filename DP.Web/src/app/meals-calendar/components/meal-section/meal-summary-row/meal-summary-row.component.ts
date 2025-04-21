@@ -7,6 +7,7 @@ import * as MealCalendarSelectors from 'src/app/meals-calendar/stores/meals-cale
 import { Store } from '@ngrx/store';
 import { MealType } from 'src/app/meals-calendar/models/meal-type';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { BehaviorSubject } from 'rxjs';
 
 @UntilDestroy()
 @Component({
@@ -19,7 +20,8 @@ export class MealSummaryRowComponent implements OnInit {
   private readonly mealCalendarStore = inject<Store<MealCalendarState>>(Store);
 
   public readonly mealType = input<MealType>(undefined);
-  public mealMacroSummary: MacronutrientsWithCalorties;
+  public mealMacroSummary$: BehaviorSubject<MacronutrientsWithCalorties> =
+    new BehaviorSubject<MacronutrientsWithCalorties>(null);
 
   public ngOnInit(): void {
     this.mealCalendarStore
@@ -27,7 +29,7 @@ export class MealSummaryRowComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe(meal => {
         if (meal) {
-          this.mealMacroSummary = MealCalendarCalculator.calculateMealMacronutrients(meal);
+          this.mealMacroSummary$.next(MealCalendarCalculator.calculateMealMacronutrients(meal));
         }
       });
   }

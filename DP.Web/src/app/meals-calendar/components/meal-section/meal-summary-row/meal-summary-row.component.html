@@ -1,7 +1,7 @@
 <td class="text-secondary p-2" colspan="2">Meals summary:</td>
-<td class="text-secondary p-2">{{ mealMacroSummary?.carbs | number : '1.0-1' }}g</td>
-<td class="text-secondary p-2">{{ mealMacroSummary?.proteins | number : '1.0-1' }}g</td>
-<td class="text-secondary p-2">{{ mealMacroSummary?.fats | number : '1.0-1' }}g</td>
-<td class="text-secondary p-2">{{ mealMacroSummary?.calories | number : '1.0-1' }}kcal</td>
+<td class="text-secondary p-2">{{ mealMacroSummary$?.getValue().carbs | number : '1.0-1' }}g</td>
+<td class="text-secondary p-2">{{ mealMacroSummary$?.getValue().proteins | number : '1.0-1' }}g</td>
+<td class="text-secondary p-2">{{ mealMacroSummary$?.getValue().fats | number : '1.0-1' }}g</td>
+<td class="text-secondary p-2">{{ mealMacroSummary$?.getValue().calories | number : '1.0-1' }}kcal</td>
 <td class="text-secondary p-2"></td>
 <td class="text-secondary p-2"></td>

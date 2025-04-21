@@ -14,17 +14,13 @@
       </tr>
     </thead>
     <tbody>
-      @for (dish of meal.dishes; track dish.id; let itemIndex = $index) {
+      @for (dish of meal.dishes; track dish; let itemIndex = $index) {
       <tr
         app-meal-item-row
         [item]="dish"
         [mealType]="meal.mealType"
         [calendarDate]="calendarDate()"
         [itemIndex]="itemIndex"></tr>
-      <tr
-        class="collapse"
-        [attr.id]="'collapse-' + meal.mealType + '-' + dish.itemType + '-' + itemIndex"
-        app-meal-dish-row-details-title></tr>
       @for (dishProduct of dish.products; track dishProduct; let productIndex = $index) {
       <ng-container class="collapse">
         <tr

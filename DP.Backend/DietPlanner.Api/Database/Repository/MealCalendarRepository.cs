@@ -72,7 +72,7 @@ namespace DietPlanner.Api.Database.Repository
 
         public List<ProductDTO> GetMealProducts(Meal meal)
         {
-            return _databaseContext.MealProducts.Where(mp => mp.MealId == meal.Id)
+            var result = _databaseContext.MealProducts.Where(mp => mp.MealId == meal.Id)
                 .Select(mp => new ProductDTO
                     {
                         MealItemId = mp.Id,
@@ -91,6 +91,12 @@ namespace DietPlanner.Api.Database.Repository
                             .Select(cmp => cmp.CustomizedPortionMultiplier)
                             .FirstOrDefault()
                     }).ToList();
+
+            result.Where(r => r.PortionMultiplier is null or 0m)
+                .ToList()
+                .ForEach(r => r.PortionMultiplier = 1.0m);
+
+            return result;
         }
     }
 }

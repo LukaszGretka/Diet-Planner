@@ -367,3 +367,5 @@ FodyWeavers.xsd
 */package-lock.json
 *.db-shm
 *.db-wal
+
+DP.Backend/db-backup/DietPlannerDb.db
