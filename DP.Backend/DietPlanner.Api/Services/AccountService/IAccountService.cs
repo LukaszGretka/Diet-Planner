@@ -2,13 +2,14 @@
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services.AccountService
 {
     public interface IAccountService
     {
-        public Task<IdentityUser> GetUser(string email);
+        public Task<IdentityUser> GetUser(string username);
 
         public Task<DatabaseActionResult<SignUpResponse>> SignUp(SignUpRequest signUpRequestData);
 
@@ -17,5 +18,7 @@ namespace DietPlanner.Api.Services.AccountService
         public Task Logout();
 
         public Task<IdentityResult> ConfirmUserEmail(EmailConfirmationRequest activateAccountRequest);
+
+        public Task<IdentityResult> ChangePassword(ChangePasswordRequest changePasswordRequest, IIdentity identity);
     }
 }

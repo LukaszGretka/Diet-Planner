@@ -1,10 +1,9 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Component, inject, OnInit, Output, input } from '@angular/core';
+import { Component, inject, OnInit, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Dish } from 'src/app/dishes/models/dish';
 import { DishProduct } from 'src/app/dishes/models/dish-product';
-import { DishState } from 'src/app/dishes/stores/dish.state';
 import { MealType } from 'src/app/meals-calendar/models/meal-type';
 import { MealCalendarState } from 'src/app/meals-calendar/stores/meals-calendar.state';
 import * as MealCalendarActions from '../../../stores/meals-calendar.actions';

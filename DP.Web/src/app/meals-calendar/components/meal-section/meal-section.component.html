@@ -21,10 +21,6 @@
         [mealType]="meal.mealType"
         [calendarDate]="calendarDate()"
         [itemIndex]="itemIndex"></tr>
-      <tr
-        class="collapse"
-        [attr.id]="'collapse-' + meal.mealType + '-' + dish.itemType + '-' + itemIndex"
-        app-meal-dish-row-details-title></tr>
       @for (dishProduct of dish.products; track dishProduct; let productIndex = $index) {
       <ng-container class="collapse">
         <tr
@@ -43,7 +39,7 @@
     </tbody>
     <tbody>
       <ng-container>
-        <tr app-meal-summary-row [meal]="meal"></tr>
+        <tr app-meal-summary-row [mealType]="meal.mealType"></tr>
       </ng-container>
     </tbody>
   </table>

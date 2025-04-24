@@ -65,6 +65,10 @@ export class SearchInputComponent {
     );
 
   public onAddSearchItemAdd(searchItem: BaseItem): void {
+    if (!searchItem) {
+      return;
+    }
+
     const itemsCollection = combineLatest([this.allProducts$, this.allDishes$]);
 
     itemsCollection.pipe(take(1)).subscribe(([products, dishes]) => {

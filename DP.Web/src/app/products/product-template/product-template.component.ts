@@ -33,7 +33,7 @@ export class ProductTemplateComponent implements OnInit {
   public productForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(64)]],
     description: ['', [Validators.maxLength(128)]],
-    barcode: ['', [Validators.pattern('^[0-9]+$'), Validators.maxLength(20)]],
+    barcode: [null, [Validators.pattern('^[0-9]+$'), Validators.maxLength(20)]],
     calories: ['', [Validators.required, Validators.maxLength(5)]],
     carbohydrates: ['', [Validators.required, Validators.maxLength(5)]],
     proteins: ['', [Validators.required, Validators.maxLength(5)]],
@@ -50,7 +50,7 @@ export class ProductTemplateComponent implements OnInit {
       id: this.product()?.id,
       name: this.getControlValue('name'),
       description: this.getControlValue('description'),
-      barCode: this.getControlValue('barcode'),
+      barCode: this.getControlValue('barcode') === '' ? null : this.getControlValue('barcode'),
       calories: this.getControlValue('calories'),
       carbohydrates: this.getControlValue('carbohydrates'),
       proteins: this.getControlValue('proteins'),

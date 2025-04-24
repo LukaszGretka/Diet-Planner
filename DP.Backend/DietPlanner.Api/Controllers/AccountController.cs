@@ -4,6 +4,7 @@ using DietPlanner.Shared.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -71,7 +72,7 @@ namespace DietPlanner.Api.Controllers
                 return Unauthorized("invalid_credential");
             }
 
-            IdentityUser user = await _accountService.GetUser(loginRequest.Email);
+            IdentityUser user = await _accountService.GetUser(loginRequest.UserName);
 
             return Ok(new
             {
@@ -117,6 +118,24 @@ namespace DietPlanner.Api.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest changePasswordRequest)
+        {
+            if (HttpContext.User is null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await _accountService.ChangePassword(changePasswordRequest, HttpContext.User.Identity);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors.FirstOrDefault().Code);
+            }
+
+            return Ok(result.Succeeded);
         }
     }
 }

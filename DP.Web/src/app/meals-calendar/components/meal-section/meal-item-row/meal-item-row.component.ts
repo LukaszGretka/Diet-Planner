@@ -1,4 +1,4 @@
-import { DecimalPipe } from '@angular/common';
+import { AsyncPipe, DecimalPipe, JsonPipe } from '@angular/common';
 import { Component, Input, OnInit, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { MealCalendarCalculator } from 'src/app/meals-calendar/services/meal-calendar-calculator.service';
@@ -6,12 +6,14 @@ import { BaseItem, ItemType } from 'src/app/shared/models/base-item';
 import { Store } from '@ngrx/store';
 import * as MealCalendarSelectors from 'src/app/meals-calendar/stores/meals-calendar.selectors';
 import { MealCalendarState } from '../../../stores/meals-calendar.state';
-import { take } from 'rxjs';
+import { BehaviorSubject, take } from 'rxjs';
 import * as MealCalendarActions from '../../../stores/meals-calendar.actions';
 import { MealType } from 'src/app/meals-calendar/models/meal-type';
 import { MealRowDetails } from 'src/app/meals-calendar/models/meal-dish-row-details';
 import { FormsModule } from '@angular/forms';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: '[app-meal-item-row]',
   templateUrl: './meal-item-row.component.html',
@@ -26,11 +28,17 @@ export class MealItemRowComponent implements OnInit {
   public readonly mealType = input<MealType>(undefined);
   public readonly itemIndex = input<number>(undefined);
 
-  public mealRowDetails: MealRowDetails;
+  public mealRowDetails$: BehaviorSubject<MealRowDetails> = new BehaviorSubject<MealRowDetails>(null);
 
-  //TODO fix colapse functionality because it working only for breakfast
   public ngOnInit(): void {
-    this.mealRowDetails = this.calculateMealRowDetails();
+    this.mealCalendarStore
+      .select(MealCalendarSelectors.getMealByMealType(this.mealType()))
+      .pipe(untilDestroyed(this))
+      .subscribe(meal => {
+        if (meal) {
+          this.mealRowDetails$.next(this.calculateMealRowDetails());
+        }
+      });
   }
 
   public async onEditItemButtonClick(): Promise<void> {
@@ -65,10 +73,6 @@ export class MealItemRowComponent implements OnInit {
         },
       }),
     );
-  }
-
-  public calculateNutritionalValue(value: number, portion: number, itemType: number): string {
-    return itemType === 0 ? (value * portion).toFixed(1) : value.toFixed(1);
   }
 
   private calculateMealRowDetails(): MealRowDetails {

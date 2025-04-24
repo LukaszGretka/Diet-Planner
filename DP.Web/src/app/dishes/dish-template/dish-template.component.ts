@@ -199,9 +199,6 @@ export class DishTemplateComponent implements OnInit {
             } as DishProduct);
             this.dishProducts$.next(products);
             this.searchItem = '';
-          } else {
-            // TODO add functionality with adding modal later
-            console.log('trying to add no existing product');
           }
         });
     }
