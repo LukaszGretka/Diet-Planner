@@ -3,6 +3,7 @@ using System;
 using DietPlanner.Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietPlanner.Api.Migrations
 {
     [DbContext(typeof(DietPlannerDbContext))]
-    partial class DietPlannerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250415165310_Added goals structure")]
+    partial class Addedgoalsstructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");

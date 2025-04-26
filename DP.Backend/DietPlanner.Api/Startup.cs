@@ -90,6 +90,7 @@ namespace DietPlanner.Api
             services.AddTransient<IMessageBrokerService, MessageBrokerService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
             services.AddTransient<IDashboardService, DashboardService>();
+            services.AddTransient<IGoalService, GoalService>();
             services.AddTransient<IMealCalendarRepository, MealCalendarRepository>();
         }
 
