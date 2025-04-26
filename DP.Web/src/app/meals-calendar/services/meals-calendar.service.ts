@@ -26,18 +26,22 @@ export class MealsCalendarService {
   }
 
   // Adds meal item (dish or product) to a meal.
-  public addItemToMeal(request: MealItemRequest) {
-    return this.httpClient.post<MealItemRequest>(`${this.mealsCalendarUrl}/add-meal-item`, request, this.httpOptions);
+  public addItemToMeal(request: MealItemRequest): Observable<Meal[]> {
+    return this.httpClient.post<Meal[]>(`${this.mealsCalendarUrl}/add-meal-item`, request, this.httpOptions);
   }
 
-  public removeItemFromMeal(request: MealItemRequest) {
-    return this.httpClient.delete<MealItemRequest>(`${this.mealsCalendarUrl}/remove-meal-item`, {
+  public removeItemFromMeal(request: MealItemRequest): Observable<Meal[]> {
+    return this.httpClient.delete<Meal[]>(`${this.mealsCalendarUrl}/remove-meal-item`, {
       ...this.httpOptions,
       body: request,
     });
   }
 
-  public updateMealItemPortion(request: UpdateMealItemPortionRequest) {
-    return this.httpClient.patch(`${this.mealsCalendarUrl}/update-meal-item-portion`, request, this.httpOptions);
+  public updateMealItemPortion(request: UpdateMealItemPortionRequest): Observable<Meal[]> {
+    return this.httpClient.patch<Meal[]>(
+      `${this.mealsCalendarUrl}/update-meal-item-portion`,
+      request,
+      this.httpOptions,
+    );
   }
 }

@@ -1,4 +1,5 @@
 ﻿using DietPlanner.Api.DTO;
+using System;
 
 namespace DietPlanner.Api.Models.MealProductModel
 {
@@ -12,5 +13,7 @@ namespace DietPlanner.Api.Models.MealProductModel
         public ItemType ItemType { get; set; }
 
         public decimal CustomizedPortionMultiplier { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }

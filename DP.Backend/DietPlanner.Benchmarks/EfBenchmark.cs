@@ -14,7 +14,7 @@ namespace DietPlanner.Api.Benchmarks
     public class EfBenchmark
     {
         private DietPlannerDbContext? _dbContext;
-        private string userId = "77ad6a80-d92a-4a10-bf52-c834ddfef297";
+        private readonly string userId = "77ad6a80-d92a-4a10-bf52-c834ddfef297";
 
         [GlobalSetup]
         public void Setup()
@@ -51,14 +51,15 @@ namespace DietPlanner.Api.Benchmarks
 
             var repository = new MealCalendarRepository(_dbContext);
 
-            var mealDtos = meals
+
+            List<MealDto> mealDtos = [.. meals
                 .GroupBy(m => new { m.MealType })
                 .Select(g => new MealDto
                 {
                     MealType = (MealType)g.Key.MealType,
-                    Products = g.SelectMany(meal => repository.GetMealProducts(meal)).ToList(),
-                    Dishes = g.SelectMany(meal => repository.GetMealDishes(meal)).ToList()
-                }).ToList();
+                    Products = [.. g.SelectMany(meal => repository.GetMealProducts(meal, CancellationToken.None).Result)],
+                    Dishes = [.. g.SelectMany(meal => repository.GetMealDishes(meal, CancellationToken.None).Result)]
+                })];
 
             return mealDtos;
         }

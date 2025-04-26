@@ -5,6 +5,7 @@ import { catchError, exhaustMap, mergeMap, of, switchMap, tap } from 'rxjs';
 import * as MealCalendarActions from './meals-calendar.actions';
 import * as GeneralActions from './../../stores/store.actions';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { Meal } from '../models/meal';
 
 @Injectable()
 export class MealCalendarEffects {
@@ -29,24 +30,20 @@ export class MealCalendarEffects {
       ofType(MealCalendarActions.addMealRequest),
       mergeMap(({ payload }) => {
         return this.mealsCalendarService.addItemToMeal(payload.addMealRequest).pipe(
-          switchMap(() => of(MealCalendarActions.addMealRequestSuccess({ addedDate: payload.addMealRequest.date }))),
+          switchMap((result: Meal[]) => of(MealCalendarActions.addMealRequestSuccess({ result: result }))),
           catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
   );
 
-  addMealSuccessEffect$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(MealCalendarActions.addMealRequestSuccess),
-      tap(() => this.notificationService.showSuccessToast('Changes saved', 'Meals have been successfully updated.')),
-      exhaustMap(({ payload }) => {
-        return this.mealsCalendarService.getAllMeals(payload.addedDate).pipe(
-          switchMap(result => of(MealCalendarActions.getAllMealsRequestSuccess({ result }))),
-          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
-        );
-      }),
-    ),
+  addMealSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(MealCalendarActions.addMealRequestSuccess),
+        tap(() => this.notificationService.showSuccessToast('Changes saved', 'Meals have been successfully updated.')),
+      ),
+    { dispatch: false },
   );
 
   removeMealEffect$ = createEffect(() =>
@@ -54,24 +51,22 @@ export class MealCalendarEffects {
       ofType(MealCalendarActions.removeMealItemRequest),
       mergeMap(({ payload }) => {
         return this.mealsCalendarService.removeItemFromMeal(payload.removeMealRequest).pipe(
-          switchMap(() => of(MealCalendarActions.removeMealItemSuccess({ addedDate: payload.removeMealRequest.date }))),
+          switchMap((result: Meal[]) => of(MealCalendarActions.removeMealItemSuccess({ result: result }))),
           catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
         );
       }),
     ),
   );
 
-  removeMealSuccessEffect$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(MealCalendarActions.removeMealItemSuccess),
-      tap(() => this.notificationService.showSuccessToast('Changes saved', 'Meal item has been successfully removed.')),
-      exhaustMap(({ payload }) => {
-        return this.mealsCalendarService.getAllMeals(payload.addedDate).pipe(
-          switchMap(result => of(MealCalendarActions.getAllMealsRequestSuccess({ result }))),
-          catchError((error: any) => of(GeneralActions.setErrorCode({ errorCode: error.status }))),
-        );
-      }),
-    ),
+  removeMealSuccessEffect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(MealCalendarActions.removeMealItemSuccess),
+        tap(() =>
+          this.notificationService.showSuccessToast('Changes saved', 'Meal item has been successfully removed.'),
+        ),
+      ),
+    { dispatch: false },
   );
 
   updatePortionRequestEffect$ = createEffect(() =>
@@ -79,12 +74,7 @@ export class MealCalendarEffects {
       ofType(MealCalendarActions.updateMealItemPortionRequest),
       exhaustMap(({ payload }) => {
         return this.mealsCalendarService.updateMealItemPortion(payload.request).pipe(
-          switchMap(() =>
-            of(
-              MealCalendarActions.updateMealItemPortionSuccess(),
-              MealCalendarActions.getAllMealsRequest({ date: payload.request.date }),
-            ),
-          ),
+          switchMap((result: Meal[]) => of(MealCalendarActions.updateMealItemPortionSuccess({ result: result }))),
           catchError(error => of(MealCalendarActions.updateMealItemPortionFailed(error))),
         );
       }),
