@@ -1,5 +1,4 @@
-﻿using DietPlanner.EmailService;
-using DietPlanner.EmailService.MessageBroker;
+﻿using DietPlanner.EmailService.MessageBroker;
 using Microsoft.Extensions.Configuration;
 
 var configuration = new ConfigurationBuilder()

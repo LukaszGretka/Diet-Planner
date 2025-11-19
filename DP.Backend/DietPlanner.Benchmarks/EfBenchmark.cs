@@ -33,20 +33,20 @@ namespace DietPlanner.Api.Benchmarks
         [Benchmark]
         public async Task<List<Meal>> GetMeals()
         {
-            return await _dbContext.Meals.Where(x => x.UserId == userId
+            return await _dbContext!.Meals.Where(x => x.UserId == userId
                                                 && x.Date == new DateTime(2025, 02, 25)).ToListAsync();
         }
 
         [Benchmark]
         public async Task<List<Meal>> GetMealsWithoutDate()
         {
-            return await _dbContext.Meals.Where(x => x.UserId == userId).ToListAsync();
+            return await _dbContext!.Meals.Where(x => x.UserId == userId).ToListAsync();
         }
 
         [Benchmark]
         public async Task<List<MealDto>> MealServiceBenchmark()
         {
-            var meals = await _dbContext.Meals.Where(x => x.UserId == userId
+            var meals = await _dbContext!.Meals.Where(x => x.UserId == userId
                                && x.Date == new DateTime(2025, 02, 25)).ToListAsync();
 
             var repository = new MealCalendarRepository(_dbContext);
