@@ -1,7 +1,6 @@
 using BenchmarkDotNet.Running;
-using DietPlanner.Api.Benchmarks;
 
-namespace DietPlanner.Benchmarks
+namespace DietPlanner.Api.Benchmarks
 {
     public class Program
     {

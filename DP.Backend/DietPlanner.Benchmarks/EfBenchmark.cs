@@ -7,7 +7,6 @@ using DietPlanner.Api.Models.MealsCalendar.DTO;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-
 namespace DietPlanner.Api.Benchmarks
 {
     [MemoryDiagnoser]

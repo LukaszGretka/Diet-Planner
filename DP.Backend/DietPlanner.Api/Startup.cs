@@ -1,16 +1,5 @@
 using DietPlanner.Api.Configuration;
-using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Repository;
 using DietPlanner.Api.Models.Account;
-using DietPlanner.Api.Services;
-using DietPlanner.Api.Services.AccountService;
-using DietPlanner.Api.Services.Core;
-using DietPlanner.Api.Services.Dashboard;
-using DietPlanner.Api.Services.DishService;
-using DietPlanner.Api.Services.MealProductService;
-using DietPlanner.Api.Services.MealsCalendar;
-using DietPlanner.Api.Services.MessageBroker;
-using DietPlanner.Api.Services.UserProfileService;
 using DietPlanner.Api.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -27,47 +16,13 @@ using System.Threading.Tasks;
 
 namespace DietPlanner.Api
 {
-    public class Startup
+    public class Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        private IConfiguration Configuration { get; init; } = configuration;
 
-        public IConfiguration Configuration { get; }
-
-        const string CorsPolicyName = "DefaultCorsPolicy";
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: CorsPolicyName, policy =>
-                {
-                    policy.WithOrigins("http://localhost:4200",
-                        "http://192.168.0.51",
-                        "http://192.168.0.51:4200",
-                        "http://192.168.0.51:5000",
-                        "https://diet-planner.azurewebsites.net")
-                    .AllowCredentials()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-                });
-            });
-
-            services.AddHttpLogging();
-            services.AddDbContext<DietPlannerDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DietPlannerDb")));
-
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<DietPlannerDbContext>()
-                .AddSignInManager<SignInManager<IdentityUser>>()
-                .AddDefaultTokenProviders();
-
-            // Override cookie options to work with SPA
-            ConfigureCookieRedirection(services);
-
             services.Configure<IdentityOptions>(options =>
             {
                 ConfigurePasswordPolicy(options);
@@ -76,21 +31,7 @@ namespace DietPlanner.Api
 
             services.AddAuthorization();
 
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.InstanceName = "DietPlannerRedis";
-                options.Configuration = Configuration.GetConnectionString("Redis");
-                options.ConfigurationOptions = new ConfigurationOptions
-                {
-                    ConnectTimeout = 100,
-                    SyncTimeout = 100,
-                    AbortOnConnectFail = false,
-                    EndPoints = { Configuration.GetConnectionString("Redis") }
-                };
-            });
             services.AddSingleton<IRedisCacheService, RedisCacheService>();
-
-            services.Configure<MessageBrokerOptions>(Configuration.GetSection("MessageBroker"));
             services.AddTransient<IMessageBrokerService, MessageBrokerService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -106,28 +47,8 @@ namespace DietPlanner.Api
             services.AddTransient<IDashboardService, DashboardService>();
             services.AddTransient<IGoalService, GoalService>();
             services.AddTransient<IMealCalendarRepository, MealCalendarRepository>();
-
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-                
-            app.UseHttpLogging();
-            app.UseRouting();
-            app.UseCors(CorsPolicyName);
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
 
         private static void ConfigurePasswordPolicy(IdentityOptions options)
         {
@@ -136,39 +57,6 @@ namespace DietPlanner.Api
             options.Password.RequireDigit = false;
             options.Password.RequireLowercase = false;
             options.Password.RequireUppercase = false;
-        }
-
-        private static void ConfigureCookieRedirection(IServiceCollection services)
-        {
-            services.ConfigureApplicationCookie(o =>
-            {
-                o.Cookie.HttpOnly = true;
-                o.Cookie.SameSite = SameSiteMode.Lax; // Use Lax instead of None for HTTP
-                o.Cookie.SecurePolicy = CookieSecurePolicy.None; // Change to Always if using HTTPS
-
-                o.Events = new CookieAuthenticationEvents() 
-                {
-                    OnRedirectToLogin = (ctx) =>
-                    {
-                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
-                        {
-                            ctx.Response.StatusCode = 401;
-                            ctx.Response.WriteAsJsonAsync(new { redirectUri = ctx.RedirectUri });
-                        }
-
-                        return Task.CompletedTask;
-                    },
-                    OnRedirectToAccessDenied = (ctx) =>
-                    {
-                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
-                        {
-                            ctx.Response.StatusCode = 403;
-                        }
-
-                        return Task.CompletedTask;
-                    }
-                };
-            });
         }
     }
 }
