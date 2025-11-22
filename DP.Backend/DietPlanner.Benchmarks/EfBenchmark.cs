@@ -2,8 +2,8 @@
 using DietPlanner.Api.Database;
 using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Database.Repository;
-using DietPlanner.Api.Enums;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
+using DietPlanner.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 

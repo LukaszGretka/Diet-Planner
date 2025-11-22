@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Api.Enums
+﻿namespace DietPlanner.Domain.Enums
 {
     public enum MealType
     {

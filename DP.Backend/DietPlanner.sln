@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11217.181 d18.0
+VisualStudioVersion = 18.0.11217.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DietPlanner.Api", "DietPlanner.Api\DietPlanner.Api.csproj", "{CE7B150D-6DD2-4C2E-90A1-D78D1C93C70A}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DietPlanner.Api.Benchmarks", "DietPlanner.Benchmarks\DietPlanner.Api.Benchmarks.csproj", "{B5311036-2A5E-4689-9456-AA85DA28097E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DietPlanner.AppHost", "DietPlanner.AppHost\DietPlanner.AppHost.csproj", "{8970C5BE-A435-4975-8AA1-AB2473DC780E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DietPlanner.Domain", "DietPlanner.Domain\DietPlanner.Domain.csproj", "{F30A993D-9230-4A83-B698-6641BBBF5341}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{8970C5BE-A435-4975-8AA1-AB2473DC780E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8970C5BE-A435-4975-8AA1-AB2473DC780E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8970C5BE-A435-4975-8AA1-AB2473DC780E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F30A993D-9230-4A83-B698-6641BBBF5341}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F30A993D-9230-4A83-B698-6641BBBF5341}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F30A993D-9230-4A83-B698-6641BBBF5341}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F30A993D-9230-4A83-B698-6641BBBF5341}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DietPlanner.Domain.Enums;
 
 namespace DietPlanner.Api.Services
 {
@@ -81,7 +82,7 @@ namespace DietPlanner.Api.Services
                 {
                     Id = product.Id,
                     Name = product.Name,
-                    ItemType = DTO.ItemType.Product,
+                    ItemType = ItemType.Product,
                     Description = product.Description,
                     BarCode = product.BarCode,
                     ImagePath = product.ImagePath,

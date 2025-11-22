@@ -1,4 +1,6 @@
-﻿namespace DietPlanner.Api.DTO.Products
+﻿using DietPlanner.Domain.Enums;
+
+namespace DietPlanner.Api.DTO.Products
 {
     public class ProductDTO: BaseItem
     {

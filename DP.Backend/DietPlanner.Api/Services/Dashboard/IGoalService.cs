@@ -1,5 +1,5 @@
-﻿using DietPlanner.Api.Database.Enums;
-using DietPlanner.Api.Database.Models;
+﻿using DietPlanner.Api.Database.Models;
+using DietPlanner.Domain.Enums;
 using System;
 using System.Threading.Tasks;
 

@@ -1,5 +1,5 @@
 ﻿using DietPlanner.Api.DTO;
-using DietPlanner.Api.Enums;
+using DietPlanner.Domain.Enums;
 using System;
 
 namespace DietPlanner.Api.Models.MealsCalendar.Requests

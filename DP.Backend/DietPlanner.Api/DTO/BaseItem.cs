@@ -1,4 +1,6 @@
-﻿namespace DietPlanner.Api.DTO
+﻿using DietPlanner.Domain.Enums;
+
+namespace DietPlanner.Api.DTO
 {
     public class BaseItem
     {
@@ -13,11 +15,5 @@
         public string Description { get; set; }
 
         public ItemType ItemType { get; set; }
-    }
-
-    public enum ItemType
-    {
-        Product,
-        Dish,
     }
 }

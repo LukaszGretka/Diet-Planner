@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DietPlanner.Domain.Enums;
 
 namespace DietPlanner.Api.DTO.Dishes
 {

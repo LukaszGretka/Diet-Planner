@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.Database.Enums;
+﻿using DietPlanner.Domain.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 

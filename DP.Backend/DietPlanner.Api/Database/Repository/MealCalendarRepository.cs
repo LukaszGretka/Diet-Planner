@@ -3,6 +3,7 @@ using DietPlanner.Api.DTO;
 using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.DTO.Products;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using DietPlanner.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;

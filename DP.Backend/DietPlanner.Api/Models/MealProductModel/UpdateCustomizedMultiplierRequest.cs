@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.DTO;
+﻿using DietPlanner.Domain.Enums;
 using System;
 
 namespace DietPlanner.Api.Models.MealProductModel
