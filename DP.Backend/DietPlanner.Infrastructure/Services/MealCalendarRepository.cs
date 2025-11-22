@@ -1,6 +1,6 @@
 ﻿using DietPlanner.Api.DTO;
-using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using DietPlanner.Application.DTO.Dishes;
 using DietPlanner.Application.DTO.Products;
 using DietPlanner.Application.Interfaces;
 using DietPlanner.Domain.Entities.Meals;

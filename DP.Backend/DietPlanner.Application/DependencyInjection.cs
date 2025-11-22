@@ -1,15 +1,12 @@
-﻿using DietPlanner.Api.Services;
-using DietPlanner.Api.Services.Dashboard;
-using DietPlanner.Api.Services.DishService;
-using DietPlanner.Api.Services.MealsCalendar;
-using DietPlanner.Api.Services.UserProfileService;
-using DietPlanner.Api.Validators;
-using DietPlanner.Application.Interfaces;
+﻿using DietPlanner.Application.Interfaces;
 using DietPlanner.Application.Services;
+using DietPlanner.Application.Validators;
 using FluentValidation;
 using Microsoft.Extensions.Hosting;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
+#pragma warning restore IDE0130 
 {
     public static class DependencyInjection
     {

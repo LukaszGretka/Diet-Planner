@@ -1,11 +1,11 @@
 ﻿namespace DietPlanner.Api.Requests
 {
-    public class ChangePasswordRequest(string currentPassword, string newPassword, string newPasswordConfirmed)
+    public class ChangePasswordRequest
     {
-        public string CurrentPassword { get; } = currentPassword;
+        public required string CurrentPassword { get; init; }
 
-        public string NewPassword { get; } = newPassword;
+        public required string NewPassword { get; init; }
 
-        public string NewPasswordConfirmed { get; } = newPasswordConfirmed;
+        public required string NewPasswordConfirmed { get; init; }
     }
 }

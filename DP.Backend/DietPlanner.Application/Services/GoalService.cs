@@ -1,12 +1,9 @@
-﻿using DietPlanner.Api.Database;
+﻿using DietPlanner.Application.Interfaces;
 using DietPlanner.Domain.Entities.Goals;
 using DietPlanner.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.Dashboard
+namespace DietPlanner.Application.Services
 {
     public class GoalService : IGoalService
     {

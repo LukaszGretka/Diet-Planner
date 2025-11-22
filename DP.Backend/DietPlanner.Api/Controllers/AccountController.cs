@@ -14,27 +14,20 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 namespace DietPlanner.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class AccountController : Controller
+    public class AccountController(IAccountService accountService, 
+        IValidator<SignUpRequest> signUpValidator) : Controller
     {
-        private readonly IAccountService _accountService;
-        private readonly IValidator<SignUpRequest> _signUpValidator;
-
-        public AccountController(IAccountService accountService, IValidator<SignUpRequest> signUpValidator)
-        {
-            _accountService = accountService;
-            _signUpValidator = signUpValidator;
-        }
 
         [AllowAnonymous]
         [HttpPost("sign-up")]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
         {
-            if (!_signUpValidator.Validate(request).IsValid)
+            if (!signUpValidator.Validate(request).IsValid)
             {
                 return BadRequest("signup_error");
             }
 
-            SignupResult signupResult = await _accountService.SignUp(request.Username, request.Email, request.Password);
+            SignupResult signupResult = await accountService.SignUp(request.Username, request.Email, request.Password);
 
             if (!signupResult.Succeeded)
             {
@@ -60,14 +53,14 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest("invalid_input");
             }
 
-            SignInResult signInResult = await _accountService.SignIn(request.UserName, request.Password);
+            SignInResult signInResult = await accountService.SignIn(request.UserName, request.Password);
 
             if (!signInResult.Succeeded)
             {
                 return Unauthorized("invalid_credential");
             }
 
-            IdentityUser user = await _accountService.GetUser(request.UserName);
+            IdentityUser user = await accountService.GetUser(request.UserName);
 
             return Ok(new
             {
@@ -97,7 +90,7 @@ namespace DietPlanner.Api.Controllers
         [Authorize]
         public async Task<IActionResult> SignoutAsync()
         {
-            await _accountService.Logout();
+            await accountService.Logout();
 
             return Ok();
         }
@@ -105,7 +98,7 @@ namespace DietPlanner.Api.Controllers
         [HttpPost("confirm-email")]
         public async Task<IActionResult> ConfirmUserEmail([FromBody] EmailConfirmationRequest request)
         {
-            IdentityResult result = await _accountService.ConfirmUserEmail(request.Email, request.ConfirmationToken);
+            IdentityResult result = await accountService.ConfirmUserEmail(request.Email, request.ConfirmationToken);
 
             if (!result.Succeeded)
             {
@@ -123,7 +116,7 @@ namespace DietPlanner.Api.Controllers
                 return Unauthorized();
             }
 
-            IdentityResult result = await _accountService.ChangePassword(request.CurrentPassword, 
+            IdentityResult result = await accountService.ChangePassword(request.CurrentPassword, 
                 request.NewPassword, request.NewPasswordConfirmed, HttpContext.User.Identity.Name);
 
             if (!result.Succeeded)

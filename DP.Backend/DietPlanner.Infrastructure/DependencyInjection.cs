@@ -2,6 +2,7 @@
 using DietPlanner.Api.Services.Core;
 using DietPlanner.Api.Services.MessageBroker;
 using DietPlanner.Application.Interfaces;
+using DietPlanner.Application.Services;
 using DietPlanner.Domain.Options;
 using DietPlanner.Infrastructure.Database;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
+#pragma warning restore IDE0130 
 {
     public static class DependencyInjection
     {

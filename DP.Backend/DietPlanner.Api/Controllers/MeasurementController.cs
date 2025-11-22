@@ -1,7 +1,6 @@
 ﻿using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.BodyProfile.DTO;
-using DietPlanner.Api.Services;
-using DietPlanner.Domain.Entities;
+using DietPlanner.Application.DTO;
+using DietPlanner.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,21 +12,14 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class MeasurementController : Controller
+    public class MeasurementController(IMeasurementService measurementService) : Controller
     {
-        private readonly IMeasurementService _measurementService;
-
-        public MeasurementController(IMeasurementService measurementService)
-        {
-            _measurementService = measurementService;
-        }
-
         [HttpGet]
         public async Task<IEnumerable<MeasurementDto>> GetAllAsync()
         {
             string userId = HttpContext.GetUserId();
 
-            return await _measurementService.GetAll(userId);
+            return await measurementService.GetAll(userId);
         }
 
         [HttpGet("{measurementId}")]
@@ -35,7 +27,7 @@ namespace DietPlanner.Api.Controllers
         {
             string userId = HttpContext.GetUserId();
 
-            MeasurementDto measurement = await _measurementService.GetById(measurementId, userId);
+            MeasurementDto measurement = await measurementService.GetById(measurementId, userId);
 
             if (measurement is null)
             {
@@ -56,7 +48,7 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest();
             }
 
-            DatabaseActionResult<MeasurementDto> result = await _measurementService.Create(measurement, userId);
+            DatabaseActionResult<MeasurementDto> result = await measurementService.Create(measurement, userId);
 
             if (result.Exception != null)
             {
@@ -71,7 +63,7 @@ namespace DietPlanner.Api.Controllers
         {
             string userId = HttpContext.GetUserId();
 
-            DatabaseActionResult<MeasurementDto> result = await _measurementService.Update(measurementId, measurement, userId);
+            DatabaseActionResult<MeasurementDto> result = await measurementService.Update(measurementId, measurement, userId);
 
             if (result.Exception != null)
             {
@@ -91,7 +83,7 @@ namespace DietPlanner.Api.Controllers
         {
             string userId = HttpContext.GetUserId();
 
-            DatabaseActionResult<MeasurementDto> result = await _measurementService.DeleteById(id, userId);
+            DatabaseActionResult<MeasurementDto> result = await measurementService.DeleteById(id, userId);
 
             if (result.Exception != null)
             {

@@ -1,9 +1,6 @@
-﻿using DietPlanner.Api.Models.BodyProfile.DTO;
-using DietPlanner.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using DietPlanner.Application.DTO;
 
-namespace DietPlanner.Api.Services
+namespace DietPlanner.Application.Interfaces
 {
     public interface IMeasurementService
     {

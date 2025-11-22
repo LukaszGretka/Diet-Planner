@@ -1,15 +1,11 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
-using DietPlanner.Application.DTO.Products;
-using DietPlanner.Domain.Entities;
+﻿using DietPlanner.Application.DTO.Products;
+using DietPlanner.Application.Interfaces;
+using DietPlanner.Domain.Entities.Products;
+using DietPlanner.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services
+namespace DietPlanner.Application.Services
 {
     public class ProductService: IProductService
     {
@@ -81,14 +77,14 @@ namespace DietPlanner.Api.Services
                 {
                     Id = product.Id,
                     Name = product.Name,
-                    ItemType = DTO.ItemType.Product,
+                    ItemType = ItemType.Product,
                     Description = product.Description,
                     BarCode = product.BarCode,
                     ImagePath = product.ImagePath,
-                    Calories = (float)product.Calories,
-                    Carbohydrates = (float)product.Carbohydrates,
-                    Proteins = (float)product.Proteins,
-                    Fats = (float)product.Fats
+                    Calories = (float)product.Calories!,
+                    Carbohydrates = (float)product.Carbohydrates!,
+                    Proteins = (float)product.Proteins!,
+                    Fats = (float)product.Fats!
                 });
             }
 
@@ -129,7 +125,7 @@ namespace DietPlanner.Api.Services
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(message: ex.Message);
                 return new DatabaseActionResult<Product>(false, exception: ex);
             }
 

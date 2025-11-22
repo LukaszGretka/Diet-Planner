@@ -1,14 +1,11 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.DTO.UserProfile;
-using DietPlanner.Domain.Entities;
+﻿using DietPlanner.Api.DTO.UserProfile;
+using DietPlanner.Application.Interfaces;
 using DietPlanner.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.UserProfileService
+namespace DietPlanner.Application.Services
 {
     public class UserProfileService : IUserProfileService
     {
@@ -21,7 +18,7 @@ namespace DietPlanner.Api.Services.UserProfileService
             _logger = logger;
         }
 
-        public async Task<UserProfileDTO> GetUserProfile(string userId)
+        public async Task<UserProfileDTO?> GetUserProfile(string userId)
         {
             UserProfile userProfile = await _databaseContext.UserProfile.FindAsync(userId);
 
@@ -33,7 +30,7 @@ namespace DietPlanner.Api.Services.UserProfileService
 
             return new UserProfileDTO
             {
-                Name = userProfile.Name?.Trim(),
+                Name =  userProfile.Name?.Trim(),
                 Gender = (int)userProfile.Gender,
                 BirthDate = userProfile.BirthDate,
                 Height = userProfile.Height,

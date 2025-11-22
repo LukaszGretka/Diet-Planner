@@ -1,8 +1,6 @@
-﻿using DietPlanner.Api.Requests;
-using FluentValidation;
-using System.Linq;
+﻿using FluentValidation;
 
-namespace DietPlanner.Api.Validators
+namespace DietPlanner.Application.Validators
 {
     public class SignUpValidator : AbstractValidator<SignUpRequest>
     {

@@ -1,6 +1,7 @@
 ﻿using DietPlanner.Api.DTO.UserProfile;
 using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Services.UserProfileService;
+using DietPlanner.Application.DTO.UserProfile;
+using DietPlanner.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -10,15 +11,8 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UserProfileController : ControllerBase
+    public class UserProfileController(IUserProfileService userProfileService) : ControllerBase
     {
-        private readonly IUserProfileService _userProfileService;
-
-        public UserProfileController(IUserProfileService userProfileService)
-        {
-            _userProfileService = userProfileService;
-        }
-
         [HttpGet]
         public async Task<ActionResult<UserProfileDTO>> GetUserProfile()
         {
@@ -29,7 +23,7 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest();
             }
 
-            return await _userProfileService.GetUserProfile(userId);
+            return await userProfileService.GetUserProfile(userId);
         }
 
 
@@ -43,7 +37,7 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest();
             }
 
-            var result = await _userProfileService.UpdateUserProfile(userId, userProfile);
+            var result = await userProfileService.UpdateUserProfile(userId, userProfile);
 
             return result.Obj;
         }
@@ -52,7 +46,7 @@ namespace DietPlanner.Api.Controllers
         public async Task<UserProfileDTO> UploadAvatar(UserAvatarDTO userAvatar)
         {
             var userId = HttpContext.GetUserId();
-            var result = await _userProfileService.UploadAvatar(userId, userAvatar.Base64Image);
+            var result = await userProfileService.UploadAvatar(userId, userAvatar.Base64Image);
 
             return result.Obj;
         }

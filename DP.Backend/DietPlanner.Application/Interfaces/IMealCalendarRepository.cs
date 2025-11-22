@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.DTO.Dishes;
+﻿using DietPlanner.Application.DTO.Dishes;
 using DietPlanner.Application.DTO.Products;
 using DietPlanner.Domain.Entities.Meals;
 

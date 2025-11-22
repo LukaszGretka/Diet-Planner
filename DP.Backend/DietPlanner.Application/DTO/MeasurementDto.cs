@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Api.Models.BodyProfile.DTO
+namespace DietPlanner.Application.DTO
 {
     public class MeasurementDto
     {
         public int Id { get; set; }
 
-        public string Date { get; set; }
+        public required string Date { get; set; }
 
         [Range(0, 500)]
         public decimal Weight { get; set; }

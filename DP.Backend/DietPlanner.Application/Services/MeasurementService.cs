@@ -1,15 +1,10 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.BodyProfile.DTO;
-using DietPlanner.Domain.Entities;
+﻿using DietPlanner.Application.DTO;
+using DietPlanner.Application.Interfaces;
 using DietPlanner.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services
+namespace DietPlanner.Application.Services
 {
     public class MeasurementService : IMeasurementService
     {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
-using Newtonsoft.Json;
 using System.Text;
 using DietPlanner.Domain.Options;
-namespace DietPlanner.Api.Services.MessageBroker
+using DietPlanner.Api.Services.MessageBroker;
+
+namespace DietPlanner.Application.Services
 {
     public class MessageBrokerService : IMessageBrokerService
     {

@@ -1,10 +1,7 @@
-﻿using DietPlanner.Api.DTO.Dishes;
-using DietPlanner.Domain.Entities;
+﻿using DietPlanner.Application.DTO.Dishes;
 using DietPlanner.Domain.Entities.Dishes;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.DishService
+namespace DietPlanner.Application.Interfaces
 {
     public interface IDishService
     {
@@ -20,10 +17,10 @@ namespace DietPlanner.Api.Services.DishService
 
         Task<IEnumerable<DishProducts>> GetDishProducts(int dishId);
 
-        Task<DatabaseActionResult<DishDTO>> Create(PutDishRequest dish, string userId);
+        Task<DishDTO> Create(DishDTO dish, string userId);
 
-        Task<DatabaseActionResult> Update(PutDishRequest dish, string userId);
+        void Update(DishDTO dish, string userId);
 
-        Task<DatabaseActionResult> DeleteById(int id, string userId);
+        void DeleteById(int id, string userId);
     }
 }

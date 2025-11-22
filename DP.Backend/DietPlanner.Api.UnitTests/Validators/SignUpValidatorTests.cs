@@ -1,5 +1,5 @@
 ﻿using DietPlanner.Api.Models.Account;
-using DietPlanner.Api.Validators;
+using DietPlanner.Application.Validators;
 using FluentValidation.TestHelper;
 using Xunit;
 

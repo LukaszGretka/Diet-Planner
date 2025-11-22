@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Api.DTO.UserProfile
+﻿namespace DietPlanner.Application.DTO.UserProfile
 {
     public class UserAvatarDTO
     {

@@ -1,91 +1,76 @@
-﻿using DietPlanner.Api.DTO.Dishes;
+﻿using DietPlanner.Application.DTO.Dishes;
+using DietPlanner.Application.Extensions;
+using DietPlanner.Application.Interfaces;
 using DietPlanner.Application.Interfaces.Repositories;
 using DietPlanner.Domain.Entities.Dishes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace DietPlanner.Api.Services.DishService
+namespace DietPlanner.Application.Services
 {
-    public class DishService : IDishService
+    public class DishService(ILogger<DishService> logger, IDishRepository dishRepository,
+        IDishProductRepository dishProductRepository) : IDishService
     {
-        private readonly ILogger<DishService> _logger;
-        private readonly IDishRepository _dishRepository;
-
-        public DishService(ILogger<DishService> logger, IDishRepository dishRepository)
-        {
-            _logger = logger;
-            _dishRepository = dishRepository;
-        }
-
         public async Task<Dish?> GetById(int id)
         {
-            return await _dishRepository.GetByIdAsync(id);
+            return await dishRepository.GetByIdAsync(id);
         }
 
         public async Task<Dish?> GetByName(string name)
         {
-            return await _dishRepository.GetByNameAsync(name);
+            return await dishRepository.GetByNameAsync(name);
         }
 
         public async Task<bool> CheckIfExists(int id)
         {
-            return await _dishRepository.GetByIdAsync(id) is not null;
+            return await dishRepository.GetByIdAsync(id) is not null;
         }
 
-        public async Task<DatabaseActionResult<DishDTO>> Create(PutDishRequest request, string userId)
+        public async Task<DishDTO?> Create(DishDTO dishDTO, string userId)
         {
-            if (!request.Products.Any())
+            if (!dishDTO.Products.Any())
             {
-                return new DatabaseActionResult<DishDTO>(false, message: "No product were added to the dish");
+                logger.LogError("User {UserId} tried to add dish without any products", userId);
+                return null;
             }
 
             var dishProducts = new List<DishProducts>();
 
             try
             {
-                var dishResult = await _databaseContext.Dishes.AddAsync(new Dish
+                Dish createdDish = await dishRepository.CreateAsync(new Dish
                 {
-                    Name = request.Name,
-                    ImagePath = request.Image,
-                    Description = request.Description,
+                    Name = dishDTO.Name,
+                    ImagePath = dishDTO.ImagePath,
+                    Description = dishDTO.Description,
                     UserId = userId,
-                    ExposeToOtherUsers = request.ExposeToOtherUsers
+                    ExposeToOtherUsers = dishDTO.ExposeToOtherUsers
                 });
 
-                request.Products.ToList().ForEach(dishProduct =>
+                IEnumerable<DishProductsDTO> dishProductsDTO = dishDTO.Products;
+
+                dishProductsDTO.ToList().ForEach(dishProduct =>
                 {
                     dishProducts.Add(new DishProducts
                     {
                         Product = dishProduct.Product,
                         PortionMultiplier = dishProduct.PortionMultiplier,
-                        Dish = dishResult.Entity
+                        Dish = createdDish
                     });
                 });
 
-                _databaseContext.DishProducts.AttachRange(dishProducts);
+                await dishProductRepository.AttachRangeAsync(dishProducts);
 
-                await _databaseContext.SaveChangesAsync();
-
-                return new DatabaseActionResult<DishDTO>(true, obj: new DishDTO { 
-                    Id = dishResult.Entity.Id,
-                    Name =dishResult.Entity.Name,
-                    Description = dishResult.Entity.Description,
-                    ExposeToOtherUsers = dishResult.Entity.ExposeToOtherUsers,
-                    ImagePath= dishResult.Entity.ImagePath,
-                    Products = dishProducts.Select(dp => new DishProductsDTO { 
-                        Product = dp.Product, 
-                        PortionMultiplier = dp.PortionMultiplier
-                    }),
-                } );
+                return createdDish.ToDataTransferObject(dishProductsDTO);
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogError(ex.Message);
-                return new DatabaseActionResult<DishDTO>(false, exception: ex);
+                logger.LogError(ex.Message);
+                return null;
             }
         }
 
-        public async Task<DatabaseActionResult> Update(PutDishRequest requestedDish, string userId)
+        public async Task<DatabaseActionResult> Update(DishDTO requestedDish, string userId)
         {
             try
             {
@@ -136,7 +121,7 @@ namespace DietPlanner.Api.Services.DishService
             }
             catch (Exception ex)
             {
-                _logger.LogError(message: ex.Message);
+                logger.LogError(message: ex.Message);
                 return new DatabaseActionResult(false, exception: ex);
             }
 
@@ -188,7 +173,7 @@ namespace DietPlanner.Api.Services.DishService
 
             catch (Exception ex)
             {
-                _logger.LogError(message: ex.Message);
+                logger.LogError(message: ex.Message);
                 return new DatabaseActionResult(false, exception: ex);
             }
 

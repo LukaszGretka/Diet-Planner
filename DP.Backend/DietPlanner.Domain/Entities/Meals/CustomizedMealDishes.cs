@@ -5,11 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DietPlanner.Domain.Entities.Meals
 {
-    public class CustomizedMealDishes
+    public class CustomizedMealDishes : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [ForeignKey(nameof(DishProduct))]
         public int DishProductId { get; set; }
 

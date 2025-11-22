@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DietPlanner.Application.DTO.UserProfile;
+using System;
 
 namespace DietPlanner.Api.DTO.UserProfile
 {

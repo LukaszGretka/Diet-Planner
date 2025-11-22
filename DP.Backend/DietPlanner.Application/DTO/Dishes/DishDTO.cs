@@ -1,9 +1,7 @@
-﻿using DietPlanner.Application.DTO.Dishes;
-using DietPlanner.Domain.Entities;
-using System;
-using System.Collections.Generic;
+﻿using DietPlanner.Domain.Entities;
+using DietPlanner.Domain.Enums;
 
-namespace DietPlanner.Api.DTO.Dishes
+namespace DietPlanner.Application.DTO.Dishes
 {
     public class DishDTO : BaseItem
     {
@@ -17,6 +15,6 @@ namespace DietPlanner.Api.DTO.Dishes
         // This property is used to determine if the dish was created by currenly signed in user
         public bool IsOwner { get; set; }
 
-        public IEnumerable<DishProductsDTO> Products { get; set; }
+        public required IEnumerable<DishProductsDTO> Products { get; set; }
     }
 }

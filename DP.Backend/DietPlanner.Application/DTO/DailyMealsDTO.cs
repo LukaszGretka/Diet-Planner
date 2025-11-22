@@ -1,13 +1,13 @@
-﻿namespace DietPlanner.Api.Models.MealsCalendar.DTO
+﻿namespace DietPlanner.Application.DTO
 {
     public class DailyMealsDto
     {
-        public MealDto Breakfast { get; set; }
+        public required MealDto Breakfast { get; set; }
 
-        public MealDto Lunch { get; set; }
+        public required MealDto Lunch { get; set; }
 
-        public MealDto Dinner { get; set; }
+        public required MealDto Dinner { get; set; }
 
-        public MealDto Supper { get; set; }
+        public required MealDto Supper { get; set; }
     }
 }

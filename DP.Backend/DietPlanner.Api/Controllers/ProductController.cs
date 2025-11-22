@@ -1,5 +1,5 @@
-﻿using DietPlanner.Api.Services;
-using DietPlanner.Application.DTO.Products;
+﻿using DietPlanner.Application.DTO.Products;
+using DietPlanner.Application.Interfaces;
 using DietPlanner.Domain.Entities;
 using DietPlanner.Domain.Entities.Products;
 using Microsoft.AspNetCore.Authorization;
@@ -13,26 +13,19 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ProductController : ControllerBase
+    public class ProductController(IProductService productService) : ControllerBase
     {
-        private readonly IProductService _productService;
-
-        public ProductController(IProductService productService)
-        {
-            _productService = productService;
-        }
-
         [HttpGet]
         [Route("all")]
         public async Task<IEnumerable<ProductDTO>> GetAllAsync()
         {
-            return await _productService.GetAll();
+            return await productService.GetAll();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetById(int id)
         {
-            var product = await _productService.GetById(id);
+            var product = await productService.GetById(id);
 
             if (product is null)
             {
@@ -49,7 +42,7 @@ namespace DietPlanner.Api.Controllers
             {
                 return BadRequest($"Missing parameter: '{nameof(productName)}'");
             }
-            var product = await _productService.GetByName(productName);
+            var product = await productService.GetByName(productName);
 
             if (product is null)
             {
@@ -63,7 +56,7 @@ namespace DietPlanner.Api.Controllers
         [ActionName(nameof(PostAsync))]
         public async Task<IActionResult> PostAsync([FromBody] Product product)
         {
-            DatabaseActionResult<Product> result = await _productService.Create(product);
+            DatabaseActionResult<Product> result = await productService.Create(product);
 
             if (result.Exception != null)
             {
@@ -81,7 +74,7 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest();
             }
 
-            DatabaseActionResult<Product> result = await _productService.Update(id, product);
+            DatabaseActionResult<Product> result = await productService.Update(id, product);
 
             if (result.Exception != null)
             {
@@ -99,7 +92,7 @@ namespace DietPlanner.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            DatabaseActionResult<Product> result = await _productService.DeleteById(id);
+            DatabaseActionResult<Product> result = await productService.DeleteById(id);
 
             if (result?.Exception != null)
             {

@@ -6,7 +6,7 @@ namespace DietPlanner.Application.DTO.Dishes
     {
         public int DishProductId { get; set; }
 
-        public Product Product { get; set; }
+        public required Product Product { get; set; }
 
         public decimal PortionMultiplier { get; set; }
 

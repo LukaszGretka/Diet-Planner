@@ -2,10 +2,8 @@
 
 namespace DietPlanner.Domain.Entities.Meals
 {
-    public class MealDish
+    public class MealDish : BaseEntity
     {
-        public int Id { get; set; }
-
         public int DishId { get; set; }
 
         public Dish Dish { get; set; } = null!;

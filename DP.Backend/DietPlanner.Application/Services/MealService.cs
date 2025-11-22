@@ -1,24 +1,13 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.DTO;
-using DietPlanner.Api.Models.MealProductModel;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
-using DietPlanner.Api.Models.MealsCalendar.DTO;
-using DietPlanner.Api.Models.MealsCalendar.Requests;
-using DietPlanner.Api.Services.Core;
+﻿using DietPlanner.Api.Services.Core;
+using DietPlanner.Application.DTO;
 using DietPlanner.Application.Interfaces;
-using DietPlanner.Domain.Entities;
 using DietPlanner.Domain.Entities.Meals;
 using DietPlanner.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.MealsCalendar
+namespace DietPlanner.Application.Services
 {
     public class MealService(ILogger<MealService> logger, DietPlannerDbContext databaseContext, 
         IMealCalendarRepository repository, IRedisCacheService redisCacheService) : IMealService
@@ -162,7 +151,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
             if (customizedMealDishes is null)
             {
-                CustomizedMealDishes newCustomizedMealDishes = new CustomizedMealDishes
+                CustomizedMealDishes newCustomizedMealDishes = new()
                 {
                     DishProductId = request.DishProductId ??
                         throw new ArgumentNullException(nameof(request.DishProductId),
@@ -234,7 +223,8 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 return new DatabaseActionResult(false, message: $"Product with id {itemId} can't be found");
             }
 
-            MealProduct mealProduct = new MealProduct {
+            MealProduct mealProduct = new() 
+            {
                 ProductId = itemId,
                 Meal = meal,
                 Product = product,

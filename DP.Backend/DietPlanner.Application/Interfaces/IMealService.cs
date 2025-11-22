@@ -1,5 +1,4 @@
-﻿using DietPlanner.Api.Models.MealsCalendar.DTO;
-using DietPlanner.Domain.Entities;
+﻿using DietPlanner.Application.DTO;
 
 namespace DietPlanner.Application.Interfaces
 {

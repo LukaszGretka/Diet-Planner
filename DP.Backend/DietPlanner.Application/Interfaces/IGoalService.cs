@@ -1,6 +1,7 @@
-﻿using DietPlanner.Domain.Enums;
+﻿using DietPlanner.Domain.Entities.Goals;
+using DietPlanner.Domain.Enums;
 
-namespace DietPlanner.Api.Services.Dashboard
+namespace DietPlanner.Application.Interfaces
 {
     public interface IGoalService
     {

@@ -1,10 +1,11 @@
-﻿using DietPlanner.Api.DTO.Dishes;
-using DietPlanner.Api.Extensions;
+﻿using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Requests;
-using DietPlanner.Api.Services.DishService;
+using DietPlanner.Application.DTO.Dishes;
+using DietPlanner.Application.Interfaces;
 using DietPlanner.Domain.Entities;
 using DietPlanner.Domain.Entities.Dishes;
+using DietPlanner.Domain.Entities.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,26 +19,19 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class DishController : Controller
+    public class DishController(IDishService dishService) : Controller
     {
-        private readonly IDishService _dishService;
-
-        public DishController(IDishService dishService)
-        {
-            _dishService = dishService;
-        }
-
         [HttpGet("all")]
         public async Task<ActionResult<List<DishDTO>>> GetUserDishes()
         {
-            List<DishDTO> dishesDTO = new List<DishDTO>();
+            List<DishDTO> dishesDTO = [];
             string userId = HttpContext.GetUserId();
 
-            List<Dish> dishes = await _dishService.GetAllAvailableDishes(userId);
+            List<Dish> dishes = await dishService.GetAllAvailableDishes(userId);
 
             foreach (Dish dish in dishes)
             {
-                var dishProducts = await _dishService.GetDishProducts(dish.Id);
+                var dishProducts = await dishService.GetDishProducts(dish.Id);
 
                 dishesDTO.Add(new DishDTO
                 {
@@ -74,7 +68,7 @@ namespace DietPlanner.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<DishDTO>> GetDishById(int id)
         {
-            var foundDish = await _dishService.GetById(id);
+            var foundDish = await dishService.GetById(id);
 
             if (foundDish is null)
             {
@@ -87,7 +81,7 @@ namespace DietPlanner.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<DishDTO>> GetDishByName([FromQuery] string dishName)
         {
-            var foundDish = await _dishService.GetByName(dishName);
+            var foundDish = await dishService.GetByName(dishName);
 
             if (foundDish is null)
             {
@@ -97,26 +91,19 @@ namespace DietPlanner.Api.Controllers
             return Ok(await AddProductsToDish(foundDish));
         }
 
-
-
         [HttpPost]
         [ActionName(nameof(CreateDish))]
         public async Task<IActionResult> CreateDish([FromBody] PutDishRequest dishRequest)
         {
             string userId = HttpContext.GetUserId();
-            DatabaseActionResult<DishDTO> createDishResult = await _dishService.Create(dishRequest, userId);
+            DishDTO dishDTO = await dishService.Create(dishRequest, userId);
 
-            if (createDishResult.Exception != null)
+            if (dishDTO is null)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return NotFound(new { Message = "Dish could not be created" });
             }
 
-            if (!createDishResult.Success)
-            {
-                return BadRequest(createDishResult.Message);
-            }
-
-            return CreatedAtAction(nameof(CreateDish), new { id = createDishResult.Obj.Id }, createDishResult.Obj);
+            return CreatedAtAction(nameof(CreateDish), new { id = dishDTO.Id }, dishDTO);
         }
 
         [HttpPatch]
@@ -124,7 +111,7 @@ namespace DietPlanner.Api.Controllers
         public async Task<IActionResult> UpdateDish([FromBody] PutDishRequest dishRequest)
         {
             string userId = HttpContext.GetUserId();
-            DatabaseActionResult updateDishResult = await _dishService.Update(dishRequest, userId);
+            DatabaseActionResult updateDishResult = await dishService.Update(dishRequest, userId);
 
             if (updateDishResult.Exception != null)
             {
@@ -144,7 +131,7 @@ namespace DietPlanner.Api.Controllers
         public async Task<IActionResult> DeleteDish(int id)
         {
             string userId = HttpContext.GetUserId();
-            DatabaseActionResult deleteDishResult = await _dishService.DeleteById(id, userId);
+            DatabaseActionResult deleteDishResult = await dishService.DeleteById(id, userId);
 
             if (deleteDishResult.Exception != null)
             {
@@ -162,7 +149,7 @@ namespace DietPlanner.Api.Controllers
         private async Task<DishDTO> AddProductsToDish(Dish dish)
         {
             //TODO: Having it in the same query with "join" should give better performance.
-            var dishProducts = await _dishService.GetDishProducts(dish.Id);
+            var dishProducts = await dishService.GetDishProducts(dish.Id);
 
             return new DishDTO
             {

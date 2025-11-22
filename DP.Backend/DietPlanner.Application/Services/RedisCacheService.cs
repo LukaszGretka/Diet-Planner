@@ -1,11 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using DietPlanner.Api.Services.Core;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.Core
+namespace DietPlanner.Application.Services
 {
     public class RedisCacheService(IDistributedCache distributedCache, ILogger<RedisCacheService> logger) : IRedisCacheService
     {

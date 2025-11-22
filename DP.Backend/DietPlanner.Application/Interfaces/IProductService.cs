@@ -1,7 +1,7 @@
 ﻿using DietPlanner.Application.DTO.Products;
 using DietPlanner.Domain.Entities.Products;
 
-namespace DietPlanner.Api.Services
+namespace DietPlanner.Application.Interfaces
 {
     public interface IProductService
     {

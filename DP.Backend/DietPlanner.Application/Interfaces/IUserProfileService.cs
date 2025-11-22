@@ -1,9 +1,6 @@
 ﻿using DietPlanner.Api.DTO.UserProfile;
-using DietPlanner.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.UserProfileService
+namespace DietPlanner.Application.Interfaces
 {
     public interface IUserProfileService
     {

@@ -1,57 +1,26 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Models.Dashboard;
+﻿using DietPlanner.Application.DTO.Dashboard;
 using DietPlanner.Application.DTO.Dishes;
 using DietPlanner.Application.Interfaces;
+using DietPlanner.Application.Interfaces.Repositories;
 using DietPlanner.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.Dashboard
+namespace DietPlanner.Application.Services
 {
-    public class DashboardService : IDashboardService
+    public class DashboardService(IMeasurementService measurementService, 
+        IGoalService goalService, 
+        IDashboardRepository dashboardRepository) : IDashboardService
     {
-        private readonly IMeasurementService _measurementService;
-        private readonly IMealService _mealService;
-        private readonly DietPlannerDbContext _databaseContext;
-        private readonly IGoalService _goalService;
-
-        public DashboardService(IMeasurementService measurementService, IMealService mealService, IGoalService goalService, DietPlannerDbContext databaseContext)
-        {
-            _measurementService = measurementService;
-            _mealService = mealService;
-            _databaseContext = databaseContext;
-            _goalService = goalService;
-        }
-
         public async Task<DashboardData> GetDashboardData(string userId)
         {
-            var measurements = await _measurementService.GetAll(userId);
+            var measurements = await measurementService.GetAll(userId);
             decimal? currentWeight = measurements.LastOrDefault()?.Weight;
 
-            var goal = await _goalService.GetGoalData(userId, GoalType.CaloricDemand);
+            var goal = await goalService.GetGoalData(userId, GoalType.CaloricDemand);
             int caloricDemand = (int)goal.Value;
 
             var dataTimeNow = DateTime.Now.Date;
 
-            List<DatedDishProductsDto> datedDishProducts = _databaseContext.Meals
-                .Join(_databaseContext.MealDishes, m => m.Id, md => md.MealId, (m, md) => new {m.Date, m.UserId, md.DishId, mealDishId = md.Id})
-                    .Where(m => m.UserId == userId && (m.Date >= dataTimeNow.AddDays(-7) && m.Date <= dataTimeNow))
-                    .GroupBy(m => new { m.Date })
-                    .Select(gd => new DatedDishProductsDto
-                    {
-                        Date = gd.Key.Date,
-                        DishProducts = gd.Join(_databaseContext.DishProducts, x => x.DishId, dp => dp.DishId, (x, dp) => new { x.DishId, x.mealDishId, dp})
-                        .Join(_databaseContext.Products, x => x.dp.ProductId, p => p.Id, (x, p) => new DishProductsDTO
-                        {
-                            Product = p,
-                            PortionMultiplier = x.dp.PortionMultiplier,
-                            CustomizedPortionMultiplier = _databaseContext.CustomizedMealDishes
-                                .Where(e => e.MealDishId == x.mealDishId && e.DishProductId == x.dp.Id)
-                                .SingleOrDefault().CustomizedPortionMultiplier
-                        })
-                    }).ToList();
+            var datedDishProducts = await dashboardRepository.GetDatedDishProducts(userId, dataTimeNow);
 
             List<float> caloriesLastSevenDays = new(7);
             List<float> carbsLastSevenDays = new(7);

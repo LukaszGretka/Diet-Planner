@@ -1,7 +1,6 @@
-﻿using DietPlanner.Api.Models.Dashboard;
-using System.Threading.Tasks;
+﻿using DietPlanner.Application.DTO.Dashboard;
 
-namespace DietPlanner.Api.Services.Dashboard
+namespace DietPlanner.Application.Interfaces
 {
     public interface IDashboardService
     {

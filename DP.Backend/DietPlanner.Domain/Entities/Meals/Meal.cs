@@ -2,11 +2,8 @@
 
 namespace DietPlanner.Domain.Entities.Meals
 {
-    public class Meal
+    public class Meal : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         public DateTime Date { get; set; }
 
         public int MealType { get; set; }
