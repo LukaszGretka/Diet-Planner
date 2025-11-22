@@ -1,10 +1,12 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using DietPlanner.Domain.Entities.User;
+using DietPlanner.Domain.Entities.Dishes;
+using DietPlanner.Domain.Entities.Goals;
+using DietPlanner.Domain.Entities.Meals;
+using DietPlanner.Domain.Entities.Products;
 
 namespace DietPlanner.Infrastructure.Database
 {

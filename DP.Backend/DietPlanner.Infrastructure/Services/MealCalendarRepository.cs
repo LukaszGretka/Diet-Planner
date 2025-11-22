@@ -1,8 +1,9 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO;
+﻿using DietPlanner.Api.DTO;
 using DietPlanner.Api.DTO.Dishes;
-using DietPlanner.Api.DTO.Products;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using DietPlanner.Application.DTO.Products;
+using DietPlanner.Application.Interfaces;
+using DietPlanner.Domain.Entities.Meals;
 using DietPlanner.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

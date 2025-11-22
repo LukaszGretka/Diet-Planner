@@ -1,7 +1,4 @@
-﻿using DietPlanner.Api.Database.Enums;
-using DietPlanner.Api.Database.Models;
-using System;
-using System.Threading.Tasks;
+﻿using DietPlanner.Domain.Enums;
 
 namespace DietPlanner.Api.Services.Dashboard
 {

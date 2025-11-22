@@ -1,7 +1,7 @@
 ﻿using DietPlanner.Api.Database;
 using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Products;
 using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using DietPlanner.Application.DTO.Products;
 using DietPlanner.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

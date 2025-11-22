@@ -1,24 +1,20 @@
-﻿using DietPlanner.Api.Models.Account;
-using DietPlanner.Domain.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using DietPlanner.Application.DTO.Identity;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Principal;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.AccountService
+namespace DietPlanner.Application.Interfaces
 {
     public interface IAccountService
     {
-        public Task<IdentityUser> GetUser(string username);
+        public Task<IdentityUser?> GetUser(string userName);
 
-        public Task<DatabaseActionResult<SignUpResponse>> SignUp(SignUpRequest signUpRequestData);
+        public Task<SignupResult> SignUp(string userName, string email, string password);
 
-        public Task<SignInResult> SignIn(HttpContext httpContext, SignInRequest loginRequest);
+        public Task<SignInResult> SignIn(string userName, string password);
 
         public Task Logout();
 
-        public Task<IdentityResult> ConfirmUserEmail(EmailConfirmationRequest activateAccountRequest);
+        public Task<IdentityResult> ConfirmUserEmail(string email, string confirmationToken);
 
-        public Task<IdentityResult> ChangePassword(ChangePasswordRequest changePasswordRequest, IIdentity identity);
+        public Task<IdentityResult> ChangePassword(string currentPassword, string newPassword, string newConfirmedPassword, string userName);
     }
 }

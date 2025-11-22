@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DietPlanner.Domain.Entities.Dishes;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DietPlanner.Api.Database.Models
+namespace DietPlanner.Domain.Entities.Meals
 {
     public class CustomizedMealDishes
     {

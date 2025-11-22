@@ -1,13 +1,7 @@
-﻿using DietPlanner.Api.Models.MealProductModel;
-using DietPlanner.Api.Models.MealsCalendar.DTO;
-using DietPlanner.Api.Models.MealsCalendar.Requests;
+﻿using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.MealProductService
+namespace DietPlanner.Application.Interfaces
 {
     public interface IMealService
     {

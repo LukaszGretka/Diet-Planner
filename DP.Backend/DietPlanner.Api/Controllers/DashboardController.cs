@@ -1,5 +1,5 @@
 ﻿using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.Dashboard;
+using DietPlanner.Api.Responses;
 using DietPlanner.Api.Services.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<DashboardData>> GetDashboardStatsData()
+        public async Task<ActionResult<DashboardDataResponse>> GetDashboardStatsData()
         {
             string userId = HttpContext.GetUserId();
 

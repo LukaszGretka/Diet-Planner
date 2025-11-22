@@ -1,13 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace DietPlanner.Api.Database.Models
+﻿namespace DietPlanner.Domain.Entities.Dishes
 {
-    public class Dish
+    public class Dish : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string ImagePath { get; set; }

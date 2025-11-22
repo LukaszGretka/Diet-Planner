@@ -1,9 +1,9 @@
-﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
+﻿using DietPlanner.Domain.Entities.Products;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DietPlanner.Api.Database.Models
+namespace DietPlanner.Domain.Entities.Dishes
 {
     public class DishProducts
     {

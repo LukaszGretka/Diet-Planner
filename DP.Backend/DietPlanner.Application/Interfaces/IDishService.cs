@@ -1,6 +1,6 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Dishes;
+﻿using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Domain.Entities;
+using DietPlanner.Domain.Entities.Dishes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,9 +10,9 @@ namespace DietPlanner.Api.Services.DishService
     {
         Task<bool> CheckIfExists(int id);
 
-        Task<Dish> GetById(int id);
+        Task<Dish?> GetById(int id);
 
-        Task<Dish> GetByName(string name);
+        Task<Dish?> GetByName(string name);
 
         Task<List<Dish>> GetAllUserDishes(string userId);
 

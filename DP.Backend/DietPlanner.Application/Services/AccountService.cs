@@ -1,16 +1,12 @@
-﻿using DietPlanner.Api.Models.Account;
-using DietPlanner.Api.Services.MessageBroker;
-using DietPlanner.Domain.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using DietPlanner.Api.Services.MessageBroker;
+using DietPlanner.Application.DTO.Identity;
+using DietPlanner.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
 using System.Web;
 
-namespace DietPlanner.Api.Services.AccountService
+namespace DietPlanner.Application.Services
 {
     public class AccountService(SignInManager<IdentityUser> signInManager,
         IMessageBrokerService messageBrokerService,
@@ -24,9 +20,9 @@ namespace DietPlanner.Api.Services.AccountService
         private readonly ILogger<AccountService> _logger = logger;
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task<IdentityUser> GetUser(string userName)
+        public async Task<IdentityUser?> GetUser(string userName)
         {
-            IdentityUser user = await _userManager.FindByNameAsync(userName);
+            IdentityUser? user = await _userManager.FindByNameAsync(userName);
 
             if (user is null)
             {
@@ -36,10 +32,9 @@ namespace DietPlanner.Api.Services.AccountService
             return user;
         }
 
-        public async Task<SignInResult> SignIn(HttpContext httpContext, SignInRequest loginRequest)
+        public async Task<SignInResult> SignIn(string userName, string password)
         {
-            return await _signInManager.PasswordSignInAsync(loginRequest.UserName,
-                loginRequest.Password, false, false);
+            return await _signInManager.PasswordSignInAsync(userName, password, false, false);
         }
 
         public async Task Logout()
@@ -47,100 +42,115 @@ namespace DietPlanner.Api.Services.AccountService
             await _signInManager.SignOutAsync();
         }
 
-        public async Task<DatabaseActionResult<SignUpResponse>> SignUp(SignUpRequest signUpRequestData)
+        public async Task<SignupResult> SignUp(string userName, string email, string password)
         {
-            var user = new IdentityUser(signUpRequestData.Username)
+            var user = new IdentityUser(userName)
             {
-                Email = signUpRequestData.Email
+                Email = email
             };
 
-            var createUserResult = await _userManager.CreateAsync(user, signUpRequestData.Password);
+            IdentityResult createdUserResult = await _userManager.CreateAsync(user, password);
 
-            if (!createUserResult.Succeeded)
+            if (!createdUserResult.Succeeded)
             {
-                _logger.LogError(string.Join(".", createUserResult.Errors));
-                return new DatabaseActionResult<SignUpResponse>(false, "error during user creation");
+                _logger.LogError(string.Join(".", createdUserResult.Errors));
+
+                return (SignupResult) IdentityResult.Failed();
             }
 
             if (!_userManager.Options.SignIn.RequireConfirmedAccount)
             {
-                await _signInManager.SignInAsync(user, false);
+                await _signInManager.SignInAsync(user, isPersistent: false);
             }
             else
             {
-                var token = await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
-                var encodedConfirmationToken = HttpUtility.UrlEncode(token);
-                string spaHostAddress = _configuration.GetSection("SpaConfig:HostAddress").Value;
-                string emailConfirmationLink = $"{spaHostAddress}/confirm-email?" +
-                    $"email={user.Email}&confirmationToken={encodedConfirmationToken}";
+                string? emailConfirmationLink = await CreateEmailRegistrationLink(user);
+
+                if (string.IsNullOrEmpty(emailConfirmationLink))
+                {
+                    return (SignupResult) IdentityResult.Failed();
+                }
+
                 _messageBrokerService.BroadcastSignUpEmail(user.Email, emailConfirmationLink);
             }
 
-            return new DatabaseActionResult<SignUpResponse>(true,
-                obj: new SignUpResponse
-                {
-                    UserName = user.UserName,
-                    RequireEmailConfirmation = _userManager.Options.SignIn.RequireConfirmedAccount
-                });
+            return new SignupResult() 
+            {
+                RequireEmailConfirmation = _userManager.Options.SignIn.RequireConfirmedAccount
+            };
         }
 
-        public async Task<IdentityResult> ConfirmUserEmail(EmailConfirmationRequest emailConfirmationRequest)
+        public async Task<IdentityResult> ConfirmUserEmail(string email, string confirmationToken)
         {
-            IdentityUser user = await _userManager.FindByNameAsync(emailConfirmationRequest.Email);
+            IdentityUser? user = await _userManager.FindByNameAsync(email);
 
             if (user is null)
             {
-                _logger.LogError($"Error during email confirmation for: {emailConfirmationRequest.Email}. User not found");
-                return new IdentityResult();
+                _logger.LogError($"Error during email confirmation for: {email}. User not found");
+                return IdentityResult.Failed();
             }
 
-            var confirmationResult = await _userManager.ConfirmEmailAsync(user, emailConfirmationRequest.ConfirmationToken);
+            IdentityResult confirmEmailResult = await _userManager.ConfirmEmailAsync(user, confirmationToken);
 
-            if (!confirmationResult.Succeeded)
+            if (!confirmEmailResult.Succeeded)
             {
-                confirmationResult.Errors.ToList().ForEach(error => _logger.LogError(error.Description));
+                _logger.LogError($"An error occured while confirming email address for {email}.");
             }
 
-            return confirmationResult;
+            return confirmEmailResult;
         }
 
-        public async Task<IdentityResult> ChangePassword(ChangePasswordRequest changePasswordRequest, IIdentity identity)
+        public async Task<IdentityResult> ChangePassword(string currentPassword, string newPassword, string newConfirmedPassword, string userName)
         {
-            if(changePasswordRequest.NewPassword != changePasswordRequest.NewPasswordConfirmed)
+            if(newPassword != newConfirmedPassword)
             {
                 return IdentityResult.Failed(new IdentityError
                 {
                     Code = "PasswordMismatch",
-                    Description = $"Error during password change: {identity.Name}. New password and confirm password do not match"
+                    Description = $"Error during password change for user {userName}. New password and confirm password do not match."
                 });
             }
 
-            IdentityUser user = await _userManager.FindByNameAsync(identity.Name);
+            IdentityUser? user = await _userManager.FindByNameAsync(userName);
 
             if (user is null)
             {
                 return IdentityResult.Failed(new IdentityError
                 {
                     Code = "UserNotFound",
-                    Description = $"Error during password change: {identity.Name}. User not found"
+                    Description = $"Error during password change: {userName}. User not found"
                 });
             }
 
-            var currentPasswordValid = await _userManager.CheckPasswordAsync(user, changePasswordRequest.CurrentPassword);
+            var currentPasswordValid = await _userManager.CheckPasswordAsync(user, currentPassword);
 
             if(!currentPasswordValid)
             {
                 return IdentityResult.Failed(new IdentityError
                 {
                     Code = "InvalidPassword",
-                    Description = $"Error during password change: {identity.Name}. Current password is not valid"
+                    Description = $"Error during password change: {userName}. Current password is not valid"
                 });
             }
 
-            IdentityResult changePasswordResult = await _userManager.ChangePasswordAsync(user,
-                changePasswordRequest.CurrentPassword, changePasswordRequest.NewPassword);
+            return await _userManager.ChangePasswordAsync(user,currentPassword, newPassword);
+        }
 
-            return changePasswordResult;
+        private async Task<string> CreateEmailRegistrationLink(IdentityUser user)
+        {
+            string emailConfirmationToken = await _signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedConfirmationToken = HttpUtility.UrlEncode(emailConfirmationToken);
+
+            string? spaHostAddress = _configuration.GetSection("SpaConfig:HostAddress").Value;
+
+            if(spaHostAddress is null)
+            {
+                _logger.LogError("SPA host address is not configured. Cannot create email confirmation link.");
+                return string.Empty;
+            }
+
+            return $"{spaHostAddress}/confirm-email?" +
+                $"email={user.Email}&confirmationToken={encodedConfirmationToken}";
         }
     }
 }

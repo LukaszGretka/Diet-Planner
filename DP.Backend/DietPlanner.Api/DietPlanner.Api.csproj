@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="FluentValidation" Version="12.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DietPlanner.Application\DietPlanner.Application.csproj" />
+    <ProjectReference Include="..\DietPlanner.Domain\DietPlanner.Domain.csproj" />
     <ProjectReference Include="..\DietPlanner.Infrastructure\DietPlanner.Infrastructure.csproj" />
   </ItemGroup>
 

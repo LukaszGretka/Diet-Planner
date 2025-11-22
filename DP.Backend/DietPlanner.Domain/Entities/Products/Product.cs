@@ -1,8 +1,4 @@
-﻿using DietPlanner.Api.Database.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
-
-namespace DietPlanner.Api.Models.MealsCalendar.DbModel
+﻿namespace DietPlanner.Domain.Entities.Products
 {
     public class Product
     {

@@ -1,11 +1,8 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Dishes;
-using DietPlanner.Api.DTO.Products;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using DietPlanner.Api.DTO.Dishes;
+using DietPlanner.Application.DTO.Products;
+using DietPlanner.Domain.Entities.Meals;
 
-namespace DietPlanner.Api.Database.Repository
+namespace DietPlanner.Application.Interfaces
 {
     public interface IMealCalendarRepository
     {

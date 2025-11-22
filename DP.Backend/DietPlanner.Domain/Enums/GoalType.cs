@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Api.Database.Enums
+﻿namespace DietPlanner.Domain.Enums
 {
     public enum GoalType
     {

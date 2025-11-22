@@ -1,40 +1,35 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Dishes;
-using DietPlanner.Domain.Entities;
+﻿using DietPlanner.Api.DTO.Dishes;
+using DietPlanner.Application.Interfaces.Repositories;
+using DietPlanner.Domain.Entities.Dishes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services.DishService
 {
     public class DishService : IDishService
     {
         private readonly ILogger<DishService> _logger;
-        private readonly DietPlannerDbContext _databaseContext;
+        private readonly IDishRepository _dishRepository;
 
-        public DishService(ILogger<DishService> logger, DietPlannerDbContext databaseContext)
+        public DishService(ILogger<DishService> logger, IDishRepository dishRepository)
         {
             _logger = logger;
-            _databaseContext = databaseContext;
+            _dishRepository = dishRepository;
         }
 
-        public async Task<Dish> GetById(int id)
+        public async Task<Dish?> GetById(int id)
         {
-            return await _databaseContext.Dishes.FirstOrDefaultAsync(dish => dish.Id == id);
+            return await _dishRepository.GetByIdAsync(id);
         }
 
-        public async Task<Dish> GetByName(string name)
+        public async Task<Dish?> GetByName(string name)
         {
-            return await _databaseContext.Dishes.FirstOrDefaultAsync(dish => dish.Name.Equals(name));
+            return await _dishRepository.GetByNameAsync(name);
         }
 
         public async Task<bool> CheckIfExists(int id)
         {
-            return await _databaseContext.Dishes.AnyAsync(dish => dish.Id == id);
+            return await _dishRepository.GetByIdAsync(id) is not null;
         }
 
         public async Task<DatabaseActionResult<DishDTO>> Create(PutDishRequest request, string userId)

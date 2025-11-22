@@ -1,8 +1,6 @@
-﻿
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Api.Database.Models
+namespace DietPlanner.Domain.Entities.Meals
 {
     public class Meal
     {

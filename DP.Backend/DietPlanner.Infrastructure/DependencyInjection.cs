@@ -1,5 +1,7 @@
-﻿using DietPlanner.Api.Services.Core;
+﻿using DietPlanner.Api.Database.Repository;
+using DietPlanner.Api.Services.Core;
 using DietPlanner.Api.Services.MessageBroker;
+using DietPlanner.Application.Interfaces;
 using DietPlanner.Domain.Options;
 using DietPlanner.Infrastructure.Database;
 using Microsoft.AspNetCore.Identity;
@@ -14,17 +16,19 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
         {
+            IServiceCollection services = builder.Services;
+
             string? connectionString = builder.Configuration.GetConnectionString("DietPlannerDb") ?? 
                 throw new ArgumentNullException("Connection string for DietPlannerDb is not provided.");
 
-            builder.Services.AddDbContext<DietPlannerDbContext>(options => options.UseSqlite(connectionString));
+            services.AddDbContext<DietPlannerDbContext>(options => options.UseSqlite(connectionString));
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<DietPlannerDbContext>()
                 .AddSignInManager<SignInManager<IdentityUser>>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddStackExchangeRedisCache(options =>
+            services.AddStackExchangeRedisCache(options =>
             {
                 string? redisConnectionString = builder.Configuration.GetConnectionString("Redis") ??
                     throw new ArgumentNullException("Connection string for Redis is not provided.");
@@ -40,9 +44,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 };
             });
 
-            builder.Services.Configure<MessageBrokerOptions>(builder.Configuration.GetSection("MessageBroker"));
-            builder.Services.AddSingleton<IRedisCacheService, RedisCacheService>();
-            builder.Services.AddTransient<IMessageBrokerService, MessageBrokerService>();
+            services.Configure<MessageBrokerOptions>(builder.Configuration.GetSection("MessageBroker"));
+            services.AddSingleton<IRedisCacheService, RedisCacheService>();
+            services.AddTransient<IMessageBrokerService, MessageBrokerService>();
+
+            services.AddTransient<IMealCalendarRepository, MealCalendarRepository>(); //TODO: should it be here?
         }
     }
 }

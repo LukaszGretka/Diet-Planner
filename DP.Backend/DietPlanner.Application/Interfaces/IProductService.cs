@@ -1,8 +1,5 @@
-﻿using DietPlanner.Api.DTO.Products;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
-using DietPlanner.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using DietPlanner.Application.DTO.Products;
+using DietPlanner.Domain.Entities.Products;
 
 namespace DietPlanner.Api.Services
 {

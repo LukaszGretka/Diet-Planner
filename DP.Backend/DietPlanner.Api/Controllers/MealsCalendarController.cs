@@ -1,8 +1,7 @@
 ﻿using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.MealProductModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
-using DietPlanner.Api.Models.MealsCalendar.Requests;
-using DietPlanner.Api.Services.MealProductService;
+using DietPlanner.Api.Requests;
+using DietPlanner.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
