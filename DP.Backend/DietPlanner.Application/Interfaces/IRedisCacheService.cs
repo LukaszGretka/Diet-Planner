@@ -1,12 +1,8 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
-using System;
-
-namespace DietPlanner.Api.Services.Core
+﻿namespace DietPlanner.Application.Interfaces
 {
     public interface IRedisCacheService
     {
-        public Task<string> GetAsync(string key, CancellationToken ct);
+        public Task<string?> GetAsync(string key, CancellationToken ct);
 
         public Task SetAsync<T>(string key, T value, CancellationToken ct, TimeSpan? expiry = null);
 

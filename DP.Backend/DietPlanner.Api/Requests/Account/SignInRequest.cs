@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Api.Models.Account
+namespace DietPlanner.Api.Requests.Account
 {
     public class SignInRequest
     {

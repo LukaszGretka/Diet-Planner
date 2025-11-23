@@ -1,12 +1,9 @@
 ﻿using DietPlanner.Application.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.Core
+namespace DietPlanner.Infrastructure.Services
 {
     public class RedisCacheService(IDistributedCache distributedCache, ILogger<RedisCacheService> logger) : IRedisCacheService
     {
@@ -14,7 +11,7 @@ namespace DietPlanner.Api.Services.Core
         private readonly IDistributedCache _distributedCache = distributedCache;
         private readonly ILogger<RedisCacheService> _logger = logger;
 
-        public async Task<string> GetAsync(string key, CancellationToken ct)
+        public async Task<string?> GetAsync(string key, CancellationToken ct)
         {
             try
             {

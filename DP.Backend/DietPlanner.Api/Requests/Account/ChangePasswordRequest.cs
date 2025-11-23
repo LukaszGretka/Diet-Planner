@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Api.Models.Account
+﻿namespace DietPlanner.Api.Requests.Account
 {
     public class ChangePasswordRequest(string currentPassword, string newPassword, string newPasswordConfirmed)
     {

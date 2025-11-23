@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Api.Services.MessageBroker
+﻿namespace DietPlanner.Application.Interfaces.Common
 {
     public interface IMessageBrokerService
     {

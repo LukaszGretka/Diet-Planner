@@ -1,13 +1,15 @@
-﻿using DietPlanner.Api.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using Newtonsoft.Json;
 using System.Text;
-namespace DietPlanner.Api.Services.MessageBroker
+using DietPlanner.Application.Interfaces.Common;
+using DietPlanner.Infrastructure.Options;
+
+namespace DietPlanner.Infrastructure.Services
 {
     public class MessageBrokerService : IMessageBrokerService
     {
-        private readonly ConnectionFactory connectionFactory;
+        private readonly ConnectionFactory connectionFactory; //TODO: Make it singleton, inject via DI
         private readonly string _emailServiceQueueName;
 
         public MessageBrokerService(IOptions<MessageBrokerOptions> options)

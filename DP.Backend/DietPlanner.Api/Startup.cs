@@ -1,17 +1,16 @@
-using DietPlanner.Api.Configuration;
 using DietPlanner.Api.Database;
 using DietPlanner.Api.Database.Repository;
-using DietPlanner.Api.Models.Account;
+using DietPlanner.Api.Requests.Account;
 using DietPlanner.Api.Services;
-using DietPlanner.Api.Services.AccountService;
 using DietPlanner.Api.Services.Core;
 using DietPlanner.Api.Services.Dashboard;
 using DietPlanner.Api.Services.DishService;
 using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Api.Services.MealsCalendar;
-using DietPlanner.Api.Services.MessageBroker;
 using DietPlanner.Api.Services.UserProfileService;
 using DietPlanner.Api.Validators;
+using DietPlanner.Application.Interfaces;
+using DietPlanner.Application.Interfaces.Common;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -76,30 +75,12 @@ namespace DietPlanner.Api
 
             services.AddAuthorization();
 
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.InstanceName = "DietPlannerRedis";
-                options.Configuration = Configuration.GetConnectionString("Redis");
-                options.ConfigurationOptions = new ConfigurationOptions
-                {
-                    ConnectTimeout = 100,
-                    SyncTimeout = 100,
-                    AbortOnConnectFail = false,
-                    EndPoints = { Configuration.GetConnectionString("Redis") }
-                };
-            });
-            services.AddSingleton<IRedisCacheService, RedisCacheService>();
-
-            services.Configure<MessageBrokerOptions>(Configuration.GetSection("MessageBroker"));
-            services.AddTransient<IMessageBrokerService, MessageBrokerService>();
-
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddTransient<IDishService, DishService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IMeasurementService, MeasurementService>();
             services.AddTransient<IMealService, MealService>();
-            services.AddTransient<IAccountService, AccountService>();
             services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IUserProfileService, UserProfileService>();
@@ -107,6 +88,7 @@ namespace DietPlanner.Api
             services.AddTransient<IGoalService, GoalService>();
             services.AddTransient<IMealCalendarRepository, MealCalendarRepository>();
 
+            services.AddTransient<IAccountService, AccountService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

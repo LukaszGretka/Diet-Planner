@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Api.Models.Account
+﻿namespace DietPlanner.Api.Responses
 {
     public class SignUpResponse
     {
