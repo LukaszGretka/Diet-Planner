@@ -1,8 +1,8 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.DTO.Dishes;
+﻿using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.Models.Dashboard;
 using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Domain.Enums;
+using DietPlanner.Infrastructure.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;

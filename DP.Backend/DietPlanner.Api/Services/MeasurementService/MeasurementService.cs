@@ -1,7 +1,7 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.Extensions;
+﻿using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Models.BodyProfile.DTO;
+using DietPlanner.Domain.Entities;
+using DietPlanner.Infrastructure.Database;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -84,7 +84,7 @@ namespace DietPlanner.Api.Services
         {
             try
             {
-                await _databaseContext.AddAsync(new Measurement
+                await _databaseContext.AddAsync(new UserMeasurement
                 {
                     UserId = userId,
                     Belly = measurement.Belly,
@@ -114,7 +114,7 @@ namespace DietPlanner.Api.Services
 
         public async Task<DatabaseActionResult<MeasurementDto>> DeleteById(int measurementId, string userId)
         {
-            Measurement foundMeasurement = await _databaseContext.Measurements
+            UserMeasurement foundMeasurement = await _databaseContext.Measurements
                 .SingleAsync(measurement => measurement.UserId.Equals(userId) && measurement.Id == measurementId);
 
             if (foundMeasurement is null)
@@ -138,7 +138,7 @@ namespace DietPlanner.Api.Services
 
         public async Task<DatabaseActionResult<MeasurementDto>> Update(int measurementId, MeasurementDto measurement, string userId)
         {
-            Measurement existingMeasurment = await _databaseContext.Measurements
+            UserMeasurement existingMeasurment = await _databaseContext.Measurements
                 .SingleAsync(measurement => measurement.UserId.Equals(userId) && measurement.Id == measurementId);
 
             if (existingMeasurment is null)

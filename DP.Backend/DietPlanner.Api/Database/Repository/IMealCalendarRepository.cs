@@ -1,6 +1,6 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Dishes;
+﻿using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.DTO.Products;
+using DietPlanner.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

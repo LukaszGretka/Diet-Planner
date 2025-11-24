@@ -1,5 +1,4 @@
-﻿using DietPlanner.Api.Database.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DietPlanner.Api.DTO.Dishes
 {

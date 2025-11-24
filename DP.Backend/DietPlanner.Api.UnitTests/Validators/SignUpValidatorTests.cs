@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.Models.Account;
+﻿using DietPlanner.Api.Requests.Account;
 using DietPlanner.Api.Validators;
 using FluentValidation.TestHelper;
 using Xunit;

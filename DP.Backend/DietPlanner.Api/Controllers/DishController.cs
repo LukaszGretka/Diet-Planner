@@ -1,8 +1,7 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Dishes;
+﻿using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Services.DishService;
+using DietPlanner.Domain.Entities;
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

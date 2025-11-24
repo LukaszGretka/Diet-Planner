@@ -1,5 +1,5 @@
 ﻿using DietPlanner.Api.DTO.Products;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
+using DietPlanner.Domain.Entities;
 using DietPlanner.Shared.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;

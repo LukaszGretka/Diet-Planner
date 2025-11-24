@@ -1,10 +1,13 @@
-﻿using DietPlanner.Api.Models.Account;
-using DietPlanner.Api.Services.AccountService;
-using DietPlanner.Shared.Models;
+﻿using DietPlanner.Api.Extensions;
+using DietPlanner.Api.Requests.Account;
+using DietPlanner.Api.Responses;
+using DietPlanner.Application.Interfaces;
+using DietPlanner.Application.Models.Account;
+using DietPlanner.Domain.Constants;
+using DietPlanner.Domain.Entities.Results;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -14,70 +17,54 @@ using System.Threading.Tasks;
 namespace DietPlanner.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class AccountController : Controller
+    public class AccountController(IAccountService accountService, IValidator<SignUpRequest> signUpValidator) : Controller
     {
-        private readonly IAccountService _accountService;
-        private readonly IValidator<SignUpRequest> _signUpValidator;
-
-        public AccountController(IAccountService accountService, IValidator<SignUpRequest> signUpValidator)
-        {
-            _accountService = accountService;
-            _signUpValidator = signUpValidator;
-        }
-
         [AllowAnonymous]
         [HttpPost("sign-up")]
-        public async Task<IActionResult> SignUp([FromBody] SignUpRequest signUpRequest)
+        public async Task<ActionResult<SignUpResponse>> SignUp([FromBody] SignUpRequest request)
         {
-            if (!_signUpValidator.Validate(signUpRequest).IsValid)
+            if (!signUpValidator.Validate(request).IsValid)
             {
-                return BadRequest("signup_error");
+                return BadRequest(ErrorCodes.ValidationFailed);
             }
 
-            DatabaseActionResult<SignUpResponse> result = await _accountService.SignUp(signUpRequest);
+            SignUpResult signUpResult = await accountService.SignUp(request.Username, request.Email, request.Password);
 
-            if (result.Exception != null)
+            if (!signUpResult.Succeeded)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-
-            if (!result.Success)
-            {
-                return BadRequest("signup_error");
+                return BadRequest(signUpResult.ErrorCode);
             }
 
             return Ok(new
             {
                 User = new 
                 {
-                    username = result.Obj.UserName, 
+                    username = signUpResult.CreatedUser.UserName, 
                 },
-                requireEmailConfirmation = result.Obj.RequireEmailConfirmation
+                requireEmailConfirmation = signUpResult.CreatedUser.RequireEmailConfirmation
             });
         }
 
         [AllowAnonymous]
         [HttpPost("sign-in")]
-        public async Task<IActionResult> SignIn([FromBody] SignInRequest loginRequest)
+        public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("invalid_input");
+                return BadRequest(ErrorCodes.ValidationFailed);
             }
 
-            var signInResult = await _accountService.SignIn(HttpContext, loginRequest);
+            var signInResult = await accountService.SignIn(request.UserName, request.Password);
 
             if (!signInResult.Succeeded)
             {
-                return Unauthorized("invalid_credential");
+                return Unauthorized(ErrorCodes.GeneralError);
             }
-
-            IdentityUser user = await _accountService.GetUser(loginRequest.UserName);
 
             return Ok(new
             {
-                User = new { username = user.UserName },
-                loginRequest.ReturnUrl
+                User = new { username = request.UserName },
+                request.ReturnUrl
             });
         }
 
@@ -85,16 +72,13 @@ namespace DietPlanner.Api.Controllers
         [Authorize]
         public IActionResult GetUserClaims()
         {
-            if (HttpContext.User is null)
-            {
-                return Unauthorized();
-            }
-
             var claims = HttpContext.User.Claims.ToList();
 
             return Ok(new
             {
-                Username = claims.FirstOrDefault(claim => claim.Type.Equals(ClaimTypes.Name))?.Value
+                Username = claims.FirstOrDefault(claim => claim.Type.Equals(ClaimTypes.Name))?.Value,
+                Email = claims.FirstOrDefault(claim => claim.Type.Equals(ClaimTypes.Email))?.Value,
+                UserId = claims.FirstOrDefault(claim => claim.Type.Equals(ClaimTypes.NameIdentifier))?.Value
             });
         }
 
@@ -102,37 +86,40 @@ namespace DietPlanner.Api.Controllers
         [Authorize]
         public async Task<IActionResult> SignoutAsync()
         {
-            await _accountService.Logout();
+            await accountService.Logout();
 
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("confirm-email")]
-        public async Task<IActionResult> ConfirmUserEmail([FromBody] EmailConfirmationRequest emailConfirmationRequest)
+        public async Task<IActionResult> ConfirmUserEmail([FromBody] EmailConfirmationRequest request)
         {
-            var result = await _accountService.ConfirmUserEmail(emailConfirmationRequest);
+            BaseResult result = await accountService.ConfirmUserEmail(request.Email, request.ConfirmationToken);
 
             if(!result.Succeeded)
             {
-                return BadRequest("unable_to_confirm_user_email");
+                return BadRequest(result.ErrorCode.NormalizeErrorCode());
             }
 
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest changePasswordRequest)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            if (HttpContext.User is null)
+            BaseResult result = await accountService.ChangePassword(new ChangePasswordAction() 
             {
-                return Unauthorized();
-            }
-
-            var result = await _accountService.ChangePassword(changePasswordRequest, HttpContext.User.Identity);
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                CurrentPassword = request.CurrentPassword,
+                NewPassword = request.NewPassword,
+                ConfirmedNewPassword = request.NewPasswordConfirmed
+            });
 
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors.FirstOrDefault().Code);
+                return BadRequest(result.ErrorCode.NormalizeErrorCode());
             }
 
             return Ok(result.Succeeded);

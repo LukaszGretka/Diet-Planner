@@ -1,7 +1,4 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Products;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
+﻿using DietPlanner.Api.DTO.Products;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -9,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DietPlanner.Domain.Enums;
+using DietPlanner.Infrastructure.Database;
+using DietPlanner.Domain.Entities;
 
 namespace DietPlanner.Api.Services
 {

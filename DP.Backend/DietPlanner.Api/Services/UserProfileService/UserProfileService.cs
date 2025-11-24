@@ -1,6 +1,7 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.UserProfile;
+﻿using DietPlanner.Api.DTO.UserProfile;
+using DietPlanner.Domain.Entities;
+using DietPlanner.Domain.Enums;
+using DietPlanner.Infrastructure.Database;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
