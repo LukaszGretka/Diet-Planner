@@ -1,6 +1,6 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Dishes;
+﻿using DietPlanner.Api.DTO.Dishes;
+using DietPlanner.Domain.Entities;
+using DietPlanner.Infrastructure.Database;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -44,7 +44,7 @@ namespace DietPlanner.Api.Services.DishService
                 return new DatabaseActionResult<DishDTO>(false, message: "No product were added to the dish");
             }
 
-            var dishProducts = new List<DishProducts>();
+            var dishProducts = new List<DishProduct>();
 
             try
             {
@@ -59,7 +59,7 @@ namespace DietPlanner.Api.Services.DishService
 
                 request.Products.ToList().ForEach(dishProduct =>
                 {
-                    dishProducts.Add(new DishProducts
+                    dishProducts.Add(new DishProduct
                     {
                         Product = dishProduct.Product,
                         PortionMultiplier = dishProduct.PortionMultiplier,
@@ -107,11 +107,11 @@ namespace DietPlanner.Api.Services.DishService
                 existingDish.ImagePath = requestedDish.Image;
                 existingDish.ExposeToOtherUsers = requestedDish.ExposeToOtherUsers;
 
-                List<DishProducts> dishProducts = await _databaseContext.DishProducts
+                List<DishProduct> dishProducts = await _databaseContext.DishProducts
                      .Where(dishProduct => dishProduct.DishId == requestedDish.Id)
                      .ToListAsync();
 
-                var productsDoAdd = new List<DishProducts>();
+                var productsDoAdd = new List<DishProduct>();
 
                 foreach (var requestedDishProduct in requestedDish.Products)
                 {
@@ -119,7 +119,7 @@ namespace DietPlanner.Api.Services.DishService
 
                     if (existingDishProduct is null)
                     {
-                        productsDoAdd.Add(new DishProducts
+                        productsDoAdd.Add(new DishProduct
                         {
                             Product = requestedDishProduct.Product,
                             PortionMultiplier = requestedDishProduct.PortionMultiplier,
@@ -158,11 +158,11 @@ namespace DietPlanner.Api.Services.DishService
             return await _databaseContext.Dishes.Where(dish => dish.UserId.Equals(userId) || dish.ExposeToOtherUsers).ToListAsync();
         }
 
-        public async Task<IEnumerable<DishProducts>> GetDishProducts(int dishId)
+        public async Task<IEnumerable<DishProduct>> GetDishProducts(int dishId)
         {
             return await _databaseContext.DishProducts
                 .Where(dish => dish.DishId == dishId)
-                .Select(x => new DishProducts()
+                .Select(x => new DishProduct()
                 {
                     Product = x.Product,
                     PortionMultiplier = x.PortionMultiplier,
@@ -181,7 +181,7 @@ namespace DietPlanner.Api.Services.DishService
                     return new DatabaseActionResult(false, message: $"Dish with id: {id} not found.");
                 }
 
-                List<DishProducts> dishProducts = await _databaseContext.DishProducts
+                List<DishProduct> dishProducts = await _databaseContext.DishProducts
                      .Where(dishProduct => dishProduct.DishId == id)
                      .ToListAsync();
  

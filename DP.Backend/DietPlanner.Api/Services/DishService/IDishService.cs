@@ -1,5 +1,5 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.DTO.Dishes;
+﻿using DietPlanner.Api.DTO.Dishes;
+using DietPlanner.Domain.Entities;
 using DietPlanner.Shared.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace DietPlanner.Api.Services.DishService
 
         Task<List<Dish>> GetAllAvailableDishes(string userId);
 
-        Task<IEnumerable<DishProducts>> GetDishProducts(int dishId);
+        Task<IEnumerable<DishProduct>> GetDishProducts(int dishId);
 
         Task<DatabaseActionResult<DishDTO>> Create(PutDishRequest dish, string userId);
 

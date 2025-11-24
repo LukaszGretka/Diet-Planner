@@ -1,11 +1,10 @@
-﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DietPlanner.Api.Database.Models
+namespace DietPlanner.Domain.Entities
 {
-    public class DishProducts
+    public class DishProduct
     {
         [Key]
         public int Id { get; set; }
@@ -13,7 +12,7 @@ namespace DietPlanner.Api.Database.Models
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
 
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
 
         /// <summary>
         /// Default portion multiplayer which is set on dish create.
@@ -23,6 +22,6 @@ namespace DietPlanner.Api.Database.Models
 
         public int DishId { get; set; }
 
-        public Dish Dish { get; set; }
+        public Dish? Dish { get; set; }
     }
 }

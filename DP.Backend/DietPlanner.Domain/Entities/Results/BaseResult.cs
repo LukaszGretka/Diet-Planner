@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Application.Models
+﻿namespace DietPlanner.Domain.Entities.Results
 {
     public class BaseResult
     {

@@ -1,9 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
-using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
 using DietPlanner.Api.Database.Repository;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
+using DietPlanner.Domain.Entities;
 using DietPlanner.Domain.Enums;
+using DietPlanner.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 

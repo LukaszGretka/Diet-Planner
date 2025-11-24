@@ -1,13 +1,12 @@
 ﻿using DietPlanner.Domain.Enums;
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Api.Database.Models
+namespace DietPlanner.Domain.Entities
 {
     public class Goals
     {
         [Key]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         public float Value { get; set; }
 

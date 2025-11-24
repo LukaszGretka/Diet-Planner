@@ -1,8 +1,8 @@
 ﻿using DietPlanner.Application.Interfaces.Common;
-using DietPlanner.Application.Models;
 using DietPlanner.Application.Models.Account;
 using DietPlanner.Domain.Constants;
-using DietPlanner.Domain.Entities.User;
+using DietPlanner.Domain.Entities.Account;
+using DietPlanner.Domain.Entities.Results;
 using DietPlanner.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
 

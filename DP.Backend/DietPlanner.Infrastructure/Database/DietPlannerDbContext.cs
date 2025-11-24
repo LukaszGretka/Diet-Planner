@@ -1,26 +1,18 @@
-﻿using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using DietPlanner.Domain.Entities;
 
-namespace DietPlanner.Api.Database
+namespace DietPlanner.Infrastructure.Database
 {
-    public class DietPlannerDbContext : IdentityDbContext<IdentityUser>
+    public class DietPlannerDbContext(DbContextOptions<DietPlannerDbContext> options, IConfiguration configuration) : IdentityDbContext<IdentityUser>(options)
     {
-        private readonly IConfiguration _configuration;
-
-        public DietPlannerDbContext(DbContextOptions<DietPlannerDbContext> options, IConfiguration configuration) : base(options)
-        {
-            _configuration = configuration;
-        }
-
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             if (!builder.IsConfigured)
             {
-                builder.UseSqlite(_configuration.GetConnectionString("DietPlannerDb"));
+                builder.UseSqlite(configuration.GetConnectionString("DietPlannerDb"));
             }
 
             builder.EnableSensitiveDataLogging();
@@ -51,15 +43,15 @@ namespace DietPlanner.Api.Database
                    .HasIndex(u => u.Id)
                    .IsUnique();
 
-            builder.Entity<DishProducts>()
+            builder.Entity<DishProduct>()
                    .HasIndex(u => u.Id)
                    .IsUnique();
 
-            builder.Entity<DishProducts>()
+            builder.Entity<DishProduct>()
                    .Property(mp => mp.PortionMultiplier)
                    .HasDefaultValue(1.0);
 
-            builder.Entity<CustomizedMealDishes>()
+            builder.Entity<CustomizedMealDish>()
                 .HasOne(c => c.MealDish)
                 .WithMany()
                 .HasForeignKey(c => c.MealDishId)
@@ -69,11 +61,11 @@ namespace DietPlanner.Api.Database
                 .HasIndex(u => u.UserId)
                 .IsUnique();
 
-            builder.Entity<CustomizedMealDishes>()
+            builder.Entity<CustomizedMealDish>()
                .Property(mp => mp.CustomizedPortionMultiplier)
             .HasDefaultValue(1.0);
 
-            builder.Entity<Measurement>()
+            builder.Entity<UserMeasurement>()
             .HasIndex(u => u.Id)
             .IsUnique();
         }
@@ -90,11 +82,11 @@ namespace DietPlanner.Api.Database
 
         public DbSet<MealProduct> MealProducts { get; set; }
 
-        public DbSet<DishProducts> DishProducts { get; set; }
+        public DbSet<DishProduct> DishProducts { get; set; }
 
-        public DbSet<Measurement> Measurements { get; set; }
+        public DbSet<UserMeasurement> Measurements { get; set; }
 
-        public DbSet<CustomizedMealDishes> CustomizedMealDishes { get; set; }
+        public DbSet<CustomizedMealDish> CustomizedMealDishes { get; set; }
 
         public DbSet<CustomizedMealProducts> CustomizedMealProducts { get; set; }
 

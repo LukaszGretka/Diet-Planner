@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DietPlanner.Api.Database.Models
+namespace DietPlanner.Domain.Entities
 {
-    public class CustomizedMealDishes
+    public class CustomizedMealDish
     {
         [Key]
         public int Id { get; set; }
@@ -12,7 +12,7 @@ namespace DietPlanner.Api.Database.Models
         [ForeignKey(nameof(DishProduct))]
         public int DishProductId { get; set; }
 
-        public DishProducts DishProduct { get; set; } = null!;
+        public DishProduct DishProduct { get; set; } = null!;
 
         [ForeignKey(nameof(MealDish))]
         public int MealDishId { get; set; }

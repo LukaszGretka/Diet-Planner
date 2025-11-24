@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Api.Database.Models
+namespace DietPlanner.Domain.Entities
 {
-    public class Measurement
+    public class UserMeasurement
     {
         [Key]
         public int Id { get; set; }
 
         [Precision(5, 2)]
-        public string Date { get; set; }
+        public string? Date { get; set; }
 
         [Precision(5, 2)]
         public decimal Weight { get; set; }
@@ -48,6 +48,6 @@ namespace DietPlanner.Api.Database.Models
         public decimal CalfLeft { get; set; }
 
         [Precision(5, 2)]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
     }
 }

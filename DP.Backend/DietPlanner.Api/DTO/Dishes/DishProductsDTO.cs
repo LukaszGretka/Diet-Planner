@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
+﻿using DietPlanner.Domain.Entities;
 
 namespace DietPlanner.Api.DTO.Dishes
 {

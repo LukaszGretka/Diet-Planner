@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Api.Database.Models
+namespace DietPlanner.Domain.Entities
 {
     public class CustomizedMealProducts
     {

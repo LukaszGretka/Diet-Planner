@@ -1,4 +1,4 @@
-﻿namespace DietPlanner.Domain.Entities.User
+﻿namespace DietPlanner.Domain.Entities.Account
 {
     public class CreatedApplicationUser: ApplicationUser
     {

@@ -1,4 +1,5 @@
-﻿using DietPlanner.Domain.Entities.User;
+﻿using DietPlanner.Domain.Entities.Account;
+using DietPlanner.Domain.Entities.Results;
 
 namespace DietPlanner.Application.Models.Account
 {

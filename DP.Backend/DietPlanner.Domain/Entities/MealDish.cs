@@ -1,6 +1,4 @@
-﻿using DietPlanner.Api.Models.MealsCalendar.DbModel;
-
-namespace DietPlanner.Api.Database.Models
+﻿namespace DietPlanner.Domain.Entities
 {
     public class MealDish
     {

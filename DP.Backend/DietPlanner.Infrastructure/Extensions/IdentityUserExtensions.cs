@@ -1,4 +1,4 @@
-﻿using DietPlanner.Domain.Entities.User;
+﻿using DietPlanner.Domain.Entities.Account;
 using Microsoft.AspNetCore.Identity;
 
 

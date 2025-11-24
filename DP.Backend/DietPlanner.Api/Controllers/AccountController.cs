@@ -2,9 +2,9 @@
 using DietPlanner.Api.Requests.Account;
 using DietPlanner.Api.Responses;
 using DietPlanner.Application.Interfaces;
-using DietPlanner.Application.Models;
 using DietPlanner.Application.Models.Account;
 using DietPlanner.Domain.Constants;
+using DietPlanner.Domain.Entities.Results;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

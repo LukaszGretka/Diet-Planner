@@ -1,8 +1,7 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
+﻿using DietPlanner.Domain.Entities;
 using DietPlanner.Domain.Enums;
+using DietPlanner.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 

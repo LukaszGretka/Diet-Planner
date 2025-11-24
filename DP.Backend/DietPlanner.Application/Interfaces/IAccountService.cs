@@ -1,6 +1,6 @@
-﻿using DietPlanner.Application.Models;
-using DietPlanner.Application.Models.Account;
-using DietPlanner.Domain.Entities.User;
+﻿using DietPlanner.Application.Models.Account;
+using DietPlanner.Domain.Entities.Account;
+using DietPlanner.Domain.Entities.Results;
 using Microsoft.AspNetCore.Identity;
 
 namespace DietPlanner.Application.Interfaces

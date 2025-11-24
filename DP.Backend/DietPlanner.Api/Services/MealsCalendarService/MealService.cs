@@ -1,14 +1,12 @@
-﻿using DietPlanner.Api.Database;
-using DietPlanner.Api.Database.Models;
-using DietPlanner.Api.Database.Repository;
-using DietPlanner.Api.DTO;
+﻿using DietPlanner.Api.Database.Repository;
 using DietPlanner.Api.Models.MealProductModel;
-using DietPlanner.Api.Models.MealsCalendar.DbModel;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Api.Models.MealsCalendar.Requests;
 using DietPlanner.Api.Services.MealProductService;
 using DietPlanner.Application.Interfaces;
+using DietPlanner.Domain.Entities;
 using DietPlanner.Domain.Enums;
+using DietPlanner.Infrastructure.Database;
 using DietPlanner.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -157,13 +155,13 @@ namespace DietPlanner.Api.Services.MealsCalendar
 
         private async Task<DatabaseActionResult<List<MealDto>>> UpdateDishPortion(UpdateMealItemPortionRequest request, CancellationToken ct)
         {
-            CustomizedMealDishes customizedMealDishes = await _databaseContext.CustomizedMealDishes
+            CustomizedMealDish customizedMealDish = await _databaseContext.CustomizedMealDishes
                 .Where(cdp => cdp.MealDishId == request.ItemProductId && cdp.DishProductId == request.DishProductId)
                 .SingleOrDefaultAsync(ct);
 
-            if (customizedMealDishes is null)
+            if (customizedMealDish is null)
             {
-                CustomizedMealDishes newCustomizedMealDishes = new CustomizedMealDishes
+                CustomizedMealDish newCustomizedMealDishes = new CustomizedMealDish
                 {
                     DishProductId = request.DishProductId ??
                         throw new ArgumentNullException(nameof(request.DishProductId),
@@ -176,7 +174,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
             }
             else
             {
-                customizedMealDishes.CustomizedPortionMultiplier = request.CustomizedPortionMultiplier;
+                customizedMealDish.CustomizedPortionMultiplier = request.CustomizedPortionMultiplier;
             }
 
             try
@@ -319,7 +317,7 @@ namespace DietPlanner.Api.Services.MealsCalendar
                 return new DatabaseActionResult(false, message: $"Meal item with Id {mealItemId} can't be found in meal");
             }
 
-            List<CustomizedMealDishes> customizedMealDishes = await _databaseContext.CustomizedMealDishes
+            List<CustomizedMealDish> customizedMealDishes = await _databaseContext.CustomizedMealDishes
                 .Where(cmd => cmd.MealDishId == mealItemId).ToListAsync(ct);
 
             if (customizedMealDishes.Count != 0)
