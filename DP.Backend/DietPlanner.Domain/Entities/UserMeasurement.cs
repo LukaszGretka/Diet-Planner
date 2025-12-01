@@ -1,13 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace DietPlanner.Domain.Entities
 {
-    public class UserMeasurement
+    public class UserMeasurement : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [Precision(5, 2)]
         public string? Date { get; set; }
 

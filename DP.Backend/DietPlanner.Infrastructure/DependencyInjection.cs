@@ -1,8 +1,10 @@
 ﻿using DietPlanner.Application.Interfaces;
 using DietPlanner.Application.Interfaces.Common;
+using DietPlanner.Application.Interfaces.Repository;
 using DietPlanner.Infrastructure.Adapters;
 using DietPlanner.Infrastructure.Database;
 using DietPlanner.Infrastructure.Options;
+using DietPlanner.Infrastructure.Repositories;
 using DietPlanner.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +60,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IRedisCacheService, RedisCacheService>();
             services.AddTransient<IMessageBrokerService, MessageBrokerService>();
             services.AddTransient<IAccountManagerAdapter, AccountManagerAdapter>();
+
+            services.AddScoped<IMealProductRepository, MealProductRepository>();
+            services.AddScoped<IDishProductRepository, DishProductRepository>();
+            services.AddScoped<ICustomizedMealProductRepository, CustomizedMealProductRepository>();
+            services.AddScoped<IMealDishRepository, MealDishRepository>();
         }
     }
 }

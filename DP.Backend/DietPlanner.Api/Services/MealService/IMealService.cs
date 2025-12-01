@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Services.MealsCalendarService
+namespace DietPlanner.Api.Services.MealService
 {
     public interface IMealService
     {
