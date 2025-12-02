@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace DietPlanner.Api.DTO.UserProfile
+﻿namespace DietPlanner.Application.Models.UserProfile
 {
     public class UserProfileDTO : UserAvatarDTO
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public int Gender { get; set; }
 

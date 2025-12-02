@@ -1,8 +1,9 @@
-﻿using DietPlanner.Api.DTO.UserProfile;
-using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Services.UserProfileService;
+﻿using DietPlanner.Api.Extensions;
+using DietPlanner.Application.Interfaces;
+using DietPlanner.Application.Models.UserProfile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Controllers
@@ -10,17 +11,12 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UserProfileController : ControllerBase
+    public class UserProfileController(IUserProfileService userProfileService) : ControllerBase
     {
-        private readonly IUserProfileService _userProfileService;
-
-        public UserProfileController(IUserProfileService userProfileService)
-        {
-            _userProfileService = userProfileService;
-        }
+        private readonly IUserProfileService _userProfileService = userProfileService;
 
         [HttpGet]
-        public async Task<ActionResult<UserProfileDTO>> GetUserProfile()
+        public async Task<ActionResult<UserProfileDTO>> GetUserProfile(CancellationToken ct)
         {
             var userId = HttpContext.GetUserId();
 
@@ -29,12 +25,41 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest();
             }
 
-            return await _userProfileService.GetUserProfile(userId);
+            var userProfile = await _userProfileService.GetUserProfile(userId, ct);
+
+            if (userProfile is null)
+            {
+                return NotFound();
+            }
+
+            return userProfile;
         }
 
 
         [HttpPatch]
-        public async Task<ActionResult<UserProfileDTO>> UpdateUserProfile(UserProfileDTO userProfile)
+        public async Task<ActionResult<UserProfileDTO>> UpdateUserProfile(UserProfileDTO userProfile, CancellationToken ct)
+        {
+            var userId = HttpContext.GetUserId();
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest();
+            }
+            bool isUserProfileExists = (await _userProfileService.GetUserProfile(userId, ct)) is not null;
+
+            UserProfileDTO result = isUserProfileExists ? await _userProfileService.UpdateUserProfile(userId, userProfile, ct)
+                : await _userProfileService.AddUserProfile(userId, userProfile, ct);
+
+            if (result is null) 
+            {
+                return NotFound();
+            }
+
+            return result;
+        }
+
+        [HttpPatch("avatar")]
+        public async Task<ActionResult<UserProfileDTO>> UploadAvatar(UserAvatarDTO userAvatar, CancellationToken ct)
         {
             var userId = HttpContext.GetUserId();
 
@@ -43,18 +68,14 @@ namespace DietPlanner.Api.Controllers
                 return BadRequest();
             }
 
-            var result = await _userProfileService.UpdateUserProfile(userId, userProfile);
+            UserProfileDTO result = await _userProfileService.UploadAvatar(userId, userAvatar.Base64Image, ct);
 
-            return result.Obj;
-        }
+            if (result is null)
+            {
+                return NotFound();
+            }
 
-        [HttpPatch("avatar")]
-        public async Task<UserProfileDTO> UploadAvatar(UserAvatarDTO userAvatar)
-        {
-            var userId = HttpContext.GetUserId();
-            var result = await _userProfileService.UploadAvatar(userId, userAvatar.Base64Image);
-
-            return result.Obj;
+            return result;
         }
     }
 }

@@ -12,6 +12,6 @@
 
         public float? CurrentWeight { get; set; }
 
-        public int CaloricDemand { get; set; }
+        public int? CaloricDemand { get; set; }
     }
 }

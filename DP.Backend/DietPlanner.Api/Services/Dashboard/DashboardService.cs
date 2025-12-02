@@ -31,7 +31,7 @@ namespace DietPlanner.Api.Services.Dashboard
             decimal? currentWeight = measurements.LastOrDefault()?.Weight;
 
             var goal = await _goalService.GetGoalData(userId, GoalType.CaloricDemand);
-            int caloricDemand = (int)goal.Value;
+            int? caloricDemand = (int?)goal?.Value;
 
             var dataTimeNow = DateTime.Now.Date;
 
@@ -92,7 +92,7 @@ namespace DietPlanner.Api.Services.Dashboard
                 CarbsLastSevenDays = carbsLastSevenDays.ToArray(),
                 ProteinsLastSevenDays = proteinsLastSevenDays.ToArray(),
                 FatsLastSevenDays = fatsLastSevenDays.ToArray(),
-                CaloricDemand = caloricDemand,
+                CaloricDemand = caloricDemand
             };
         }
 

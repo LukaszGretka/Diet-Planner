@@ -1,13 +1,10 @@
-﻿using DietPlanner.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using DietPlanner.Domain.Entities.Base;
+using DietPlanner.Domain.Enums;
 
 namespace DietPlanner.Domain.Entities
 {
-    public class Goals
+    public class Goal: BaseUserEntity
     {
-        [Key]
-        public string? UserId { get; set; }
-
         public float Value { get; set; }
 
         public DateTime EstablishmentDate { get; set; }

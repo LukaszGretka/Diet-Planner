@@ -30,10 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DietPlanner.Application\DietPlanner.Application.csproj" />
     <ProjectReference Include="..\DietPlanner.Domain\DietPlanner.Domain.csproj" />
     <ProjectReference Include="..\DietPlanner.Infrastructure\DietPlanner.Infrastructure.csproj" />

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DietPlanner.Domain.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace DietPlanner.Domain.Entities
 {

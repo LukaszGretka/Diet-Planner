@@ -13,11 +13,11 @@ namespace Microsoft.Extensions.DependencyInjection
             IServiceCollection services = builder.Services;
 
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IUserProfileService, UserProfileService>();
             //services.AddTransient<IDishService, DishService>();
             //services.AddTransient<IProductService, ProductService>();
             //services.AddTransient<IMeasurementService, MeasurementService>();
             //services.AddTransient<IMealService, MealService>();
-            //services.AddTransient<IUserProfileService, UserProfileService>();
             //services.AddTransient<IDashboardService, DashboardService>();
             //services.AddTransient<IGoalService, GoalService>();
             //services.AddValidators();

@@ -1,4 +1,6 @@
-﻿namespace DietPlanner.Domain.Entities
+﻿using DietPlanner.Domain.Entities.Base;
+
+namespace DietPlanner.Domain.Entities
 {
     public class Product : BaseEntity
     {

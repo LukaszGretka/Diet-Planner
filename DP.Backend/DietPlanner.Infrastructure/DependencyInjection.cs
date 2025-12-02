@@ -63,6 +63,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddScoped<IMealProductRepository, MealProductRepository>();
             services.AddScoped<IDishProductRepository, DishProductRepository>();
+            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<ICustomizedMealProductRepository, CustomizedMealProductRepository>();
             services.AddScoped<IMealDishRepository, MealDishRepository>();
         }

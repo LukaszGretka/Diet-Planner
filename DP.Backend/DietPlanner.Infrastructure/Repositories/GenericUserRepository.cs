@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DietPlanner.Infrastructure.Repositories
 {
-    public class GenericRepository<T>(DietPlannerDbContext dbContext) : IGenericRepository<T> where T : BaseEntity
+    public class GenericUserRepository<T>(DietPlannerDbContext dbContext) : IGenericUserRepository<T> where T : BaseUserEntity
     {
         protected readonly DietPlannerDbContext dbContext = dbContext;
         private readonly DbSet<T> _dbSet = dbContext.Set<T>();
@@ -15,9 +15,9 @@ namespace DietPlanner.Infrastructure.Repositories
             return await _dbSet.AsNoTracking().ToListAsync(ct);
         }
 
-        public async Task<T?> GetByIdAsync(int id, CancellationToken ct)
+        public async Task<T?> GetByIdAsync(string userId, CancellationToken ct)
         {
-            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id, ct);
+            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(t => t.UserId == userId, ct);
         }
 
         public async Task<T> CreateAsync(T entity, CancellationToken ct)
@@ -39,12 +39,6 @@ namespace DietPlanner.Infrastructure.Repositories
         public async Task DeleteAsync(T entity, CancellationToken ct)
         {
             _dbSet.Remove(entity);
-            await dbContext.SaveChangesAsync(ct);
-        }
-
-        public async Task AttachRangeAsync(IEnumerable<T> entity, CancellationToken ct)
-        {
-            _dbSet.AttachRange(entity);
             await dbContext.SaveChangesAsync(ct);
         }
     }

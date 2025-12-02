@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DietPlanner.Domain.Entities
+namespace DietPlanner.Domain.Entities.Base
 {
     public class BaseEntity
     {
