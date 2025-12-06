@@ -16,11 +16,20 @@ namespace DietPlanner.Api.Services.Dashboard
 
         public async Task<GoalDTO?> GetGoalData(string userId, GoalType goalType)
         {
+            bool goalDefined = await _databaseContext.Goals.AsNoTracking()
+                                    .AnyAsync(x => x.UserId == userId);
+            
+            if (!goalDefined)
+            {
+                logger.LogTrace("No goals found for user: {UserId}", userId);
+                return null;
+            }
+
             //to be replaced with repository call
             Goal goal = await _databaseContext.Goals
-                                .Where(x => x.UserId == userId)
-                                .Where(y => y.GoalType == goalType)
-                                .FirstOrDefaultAsync();
+                            .Where(x => x.UserId == userId)
+                            .Where(y => y.GoalType == goalType)
+                            .FirstOrDefaultAsync();
 
             if (goal is null)
             {

@@ -9,7 +9,6 @@ import { AppRoutingModule } from './app/app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgChartsModule } from 'ng2-charts';
-import { ImageCropperModule } from 'ngx-image-cropper';
 import { StoreModule } from '@ngrx/store';
 import { GeneralReducer } from './app/stores/store.reducer';
 import { BodyProfileReducer } from './app/body-profile/stores/body-profile.reducer';
@@ -42,7 +41,6 @@ bootstrapApplication(AppComponent, {
       ReactiveFormsModule,
       FormsModule,
       NgChartsModule,
-      ImageCropperModule,
       StoreModule.forRoot({
         generalState: GeneralReducer,
         bodyProfileState: BodyProfileReducer,

@@ -9,7 +9,7 @@ import { Router, RouterLink } from '@angular/router';
 import { UntypedFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserProfile } from './models/user-profile';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ImageCroppedEvent, LoadedImage, ImageCropperModule } from 'ngx-image-cropper';
+import { ImageCroppedEvent, LoadedImage, ImageCropperComponent } from 'ngx-image-cropper';
 import { AsyncPipe } from '@angular/common';
 import { ErrorPageComponent } from '../shared/error-page/error-page.component';
 import { FormErrorComponent } from '../shared/form-error/form-error.component';
@@ -19,7 +19,7 @@ import { FormErrorComponent } from '../shared/form-error/form-error.component';
   selector: 'app-body-profile',
   templateUrl: './body-profile.component.html',
   styleUrls: ['./body-profile.component.css'],
-  imports: [ErrorPageComponent, ImageCropperModule, ReactiveFormsModule, FormErrorComponent, RouterLink, AsyncPipe],
+  imports: [ErrorPageComponent, ReactiveFormsModule, ImageCropperComponent, FormErrorComponent, RouterLink, AsyncPipe],
 })
 export class BodyProfileComponent implements OnInit {
   private readonly store = inject<Store<GeneralState>>(Store);
@@ -92,6 +92,7 @@ export class BodyProfileComponent implements OnInit {
   }
 
   public openFileSelection() {
+    debugger;
     const fileInput: HTMLElement = document.querySelector('input[type="file"]');
     if (fileInput) {
       fileInput.click();
@@ -99,6 +100,7 @@ export class BodyProfileComponent implements OnInit {
   }
 
   public onFileSelected(event) {
+    debugger;
     const file = event.target.files[0];
 
     let reader = new FileReader();
@@ -111,18 +113,22 @@ export class BodyProfileComponent implements OnInit {
   }
 
   public fileChangeEvent(event: any): void {
+    debugger;
     this.imageChangedEvent = event;
   }
 
   public imageCropped(event: ImageCroppedEvent) {
+    debugger;
     this.croppedImage = event.base64;
   }
 
   public imageLoaded(image: LoadedImage) {
+    debugger;
     this.inAvatarEditMode = true;
   }
 
   public saveCroppedFile() {
+    debugger;
     this.store.dispatch(BodyProfileActions.uploadUserAvatarRequest({ base64Avatar: this.croppedImage.toString() }));
     this.inAvatarEditMode = false;
     this.imageChangedEvent = null;
