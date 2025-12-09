@@ -1,11 +1,13 @@
 ﻿using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.Models.Dashboard;
 using DietPlanner.Api.Services.MealsCalendarService;
+using DietPlanner.Application.Interfaces;
 using DietPlanner.Domain.Enums;
 using DietPlanner.Infrastructure.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Services.Dashboard
@@ -25,9 +27,9 @@ namespace DietPlanner.Api.Services.Dashboard
             _goalService = goalService;
         }
 
-        public async Task<DashboardData> GetDashboardData(string userId)
+        public async Task<DashboardData> GetDashboardData(string userId, CancellationToken ct)
         {
-            var measurements = await _measurementService.GetAll(userId);
+            var measurements = await _measurementService.GetAll(userId, ct);
             decimal? currentWeight = measurements.LastOrDefault()?.Weight;
 
             var goal = await _goalService.GetGoalData(userId, GoalType.CaloricDemand);

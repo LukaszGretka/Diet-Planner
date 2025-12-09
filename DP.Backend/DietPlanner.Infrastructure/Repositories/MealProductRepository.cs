@@ -2,19 +2,31 @@
 using DietPlanner.Domain.Entities;
 using DietPlanner.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DietPlanner.Infrastructure.Repositories
 {
     public class MealProductRepository : GenericRepository<MealProduct>, IMealProductRepository
     {
-        public MealProductRepository(DietPlannerDbContext dbContext) : base(dbContext)
-        {
+        private readonly ILogger<MealProductRepository> logger;
 
+        public MealProductRepository(DietPlannerDbContext dbContext,
+            ILogger<MealProductRepository> logger) : base(dbContext, logger)
+        {
+            this.logger = logger;
         }
 
         public async Task<List<MealProduct>> GetMealProducts(int mealId, CancellationToken ct)
         {
-            return await dbContext.MealProducts.Where(mp => mp.MealId == mealId).ToListAsync(ct);
+            try
+            {
+                return await dbContext.MealProducts.Where(mp => mp.MealId == mealId).ToListAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error retrieving meal products for mealId {MealId}", mealId);
+                return [];
+            }
         }
     }
 }

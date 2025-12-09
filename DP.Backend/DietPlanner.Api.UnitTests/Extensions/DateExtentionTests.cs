@@ -1,4 +1,4 @@
-﻿using DietPlanner.Api.Extensions;
+﻿using DietPlanner.Application.Extensions;
 using System;
 using Xunit;
 

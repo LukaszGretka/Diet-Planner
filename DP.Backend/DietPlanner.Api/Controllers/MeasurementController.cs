@@ -1,11 +1,12 @@
 ﻿using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.BodyProfile.DTO;
-using DietPlanner.Api.Services;
-using DietPlanner.Shared.Models;
+using DietPlanner.Application.Interfaces;
+using DietPlanner.Application.Models.UserMeasurement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Controllers
@@ -13,29 +14,22 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class MeasurementController : Controller
+    public class MeasurementController(IMeasurementService measurementService) : Controller
     {
-        private readonly IMeasurementService _measurementService;
-
-        public MeasurementController(IMeasurementService measurementService)
-        {
-            _measurementService = measurementService;
-        }
-
         [HttpGet]
-        public async Task<IEnumerable<MeasurementDto>> GetAllAsync()
+        public async Task<List<MeasurementDto>> GetAllAsync(CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
-            return await _measurementService.GetAll(userId);
+            return await measurementService.GetAll(userId, ct);
         }
 
         [HttpGet("{measurementId}")]
-        public async Task<ActionResult<MeasurementDto>> GetById(int measurementId)
+        public async Task<ActionResult<MeasurementDto>> GetById(int measurementId, CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
-            MeasurementDto measurement = await _measurementService.GetById(measurementId, userId);
+            MeasurementDto measurement = await measurementService.GetById(measurementId, userId, ct);
 
             if (measurement is null)
             {
@@ -47,60 +41,45 @@ namespace DietPlanner.Api.Controllers
 
         [HttpPost]
         [ActionName(nameof(AddMeasurement))]
-        public async Task<IActionResult> AddMeasurement([FromBody] MeasurementDto measurement)
+        public async Task<IActionResult> AddMeasurement([FromBody][Required] MeasurementDto measurement, CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
-            if (measurement is null || userId is null)
+            MeasurementDto result = await measurementService.Create(measurement, userId, ct);
+
+            if (result is null)
             {
-                return BadRequest();
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
-            DatabaseActionResult<MeasurementDto> result = await _measurementService.Create(measurement, userId);
-
-            if (result.Exception != null)
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-
-            return CreatedAtAction(nameof(AddMeasurement), new { id = result.Obj.Id }, result.Obj);
+            return CreatedAtAction(nameof(AddMeasurement), result);
         }
 
         [HttpPut("{measurementId}")]
-        public async Task<IActionResult> UpdateMeasurement(int measurementId, [FromBody] MeasurementDto measurement)
+        public async Task<IActionResult> UpdateMeasurement(int measurementId, [FromBody][Required] MeasurementDto measurement, CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
-            DatabaseActionResult<MeasurementDto> result = await _measurementService.Update(measurementId, measurement, userId);
+            MeasurementDto result = await measurementService.Update(measurementId, measurement, userId, ct);
 
-            if (result.Exception != null)
+            if (result is null)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-
-            if (!result.Success)
-            {
-                return NotFound(new { Message = "Measurement no found" });
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
-            DatabaseActionResult<MeasurementDto> result = await _measurementService.DeleteById(id, userId);
+            bool success = await measurementService.DeleteById(id, userId, ct);
 
-            if (result.Exception != null)
+            if (!success)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-
-            if (!result.Success)
-            {
-                return NotFound(new { Message = "Measurement no found" });
+                return BadRequest(new { Message = "Unable to delete measurement" });
             }
 
             return NoContent();

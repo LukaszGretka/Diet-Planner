@@ -3,6 +3,7 @@ using DietPlanner.Api.Models.Dashboard;
 using DietPlanner.Api.Services.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Controllers
@@ -10,17 +11,10 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class DashboardController : Controller
+    public class DashboardController(IDashboardService dashboardService) : Controller
     {
-        private readonly IDashboardService _dashboardService;
-
-        public DashboardController(IDashboardService dashboardService)
-        {
-            _dashboardService = dashboardService;
-        }
-
         [HttpGet]
-        public async Task<ActionResult<DashboardData>> GetDashboardStatsData()
+        public async Task<ActionResult<DashboardData>> GetDashboardStatsData(CancellationToken ct)
         {
             string userId = HttpContext.GetUserId();
 
@@ -29,7 +23,7 @@ namespace DietPlanner.Api.Controllers
                 return Unauthorized();
             }
 
-            var result = await _dashboardService.GetDashboardData(userId);
+            var result = await dashboardService.GetDashboardData(userId, ct);
 
             return Ok(result);
         }

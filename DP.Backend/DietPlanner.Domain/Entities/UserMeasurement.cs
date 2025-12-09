@@ -6,7 +6,7 @@ namespace DietPlanner.Domain.Entities
     public class UserMeasurement : BaseEntity
     {
         [Precision(5, 2)]
-        public string? Date { get; set; }
+        public string Date { get; set; }
 
         [Precision(5, 2)]
         public decimal Weight { get; set; }
@@ -44,7 +44,6 @@ namespace DietPlanner.Domain.Entities
         [Precision(5, 2)]
         public decimal CalfLeft { get; set; }
 
-        [Precision(5, 2)]
-        public string? UserId { get; set; }
+        public required string UserId { get; set; }
     }
 }

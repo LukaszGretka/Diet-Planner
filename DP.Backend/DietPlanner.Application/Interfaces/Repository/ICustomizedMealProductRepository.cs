@@ -2,6 +2,6 @@
 {
     public interface ICustomizedMealProductRepository
     {
-        Task<decimal> GetPortionMultiplierAsync(int mealProductId, CancellationToken ct);
+        Task<decimal?> GetPortionMultiplierAsync(int mealProductId, CancellationToken ct);
     }
 }
