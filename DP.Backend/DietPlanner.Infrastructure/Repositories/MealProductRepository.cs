@@ -1,4 +1,4 @@
-﻿using DietPlanner.Application.Interfaces.Repository;
+﻿using DietPlanner.Application.Interfaces.Repositories;
 using DietPlanner.Domain.Entities;
 using DietPlanner.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -6,16 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace DietPlanner.Infrastructure.Repositories
 {
-    public class MealProductRepository : GenericRepository<MealProduct>, IMealProductRepository
+    public class MealProductRepository(DietPlannerDbContext dbContext,
+        ILogger<MealProductRepository> logger) : GenericRepository<MealProduct>(dbContext, logger), IMealProductRepository
     {
-        private readonly ILogger<MealProductRepository> logger;
-
-        public MealProductRepository(DietPlannerDbContext dbContext,
-            ILogger<MealProductRepository> logger) : base(dbContext, logger)
-        {
-            this.logger = logger;
-        }
-
         public async Task<List<MealProduct>> GetMealProducts(int mealId, CancellationToken ct)
         {
             try

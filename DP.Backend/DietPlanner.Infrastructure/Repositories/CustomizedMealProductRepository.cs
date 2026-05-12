@@ -1,34 +1,33 @@
-﻿using DietPlanner.Application.Interfaces.Repository;
+﻿using DietPlanner.Application.Interfaces.Repositories;
 using DietPlanner.Domain.Entities;
 using DietPlanner.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace DietPlanner.Infrastructure.Repositories
+namespace DietPlanner.Infrastructure.Repositories;
+
+public class CustomizedMealProductRepository : GenericRepository<CustomizedMealProducts>, ICustomizedMealProductRepository
 {
-    public class CustomizedMealProductRepository : GenericRepository<CustomizedMealProducts>, ICustomizedMealProductRepository
+    private readonly ILogger<CustomizedMealProductRepository> logger;
+
+    public CustomizedMealProductRepository(DietPlannerDbContext dbContext,
+        ILogger<CustomizedMealProductRepository> logger) : base(dbContext, logger)
     {
-        private readonly ILogger<CustomizedMealProductRepository> logger;
+        this.logger = logger;
+    }
 
-        public CustomizedMealProductRepository(DietPlannerDbContext dbContext,
-            ILogger<CustomizedMealProductRepository> logger) : base(dbContext, logger)
+    public Task<decimal?> GetPortionMultiplierAsync(int mealProductId, CancellationToken ct)
+    {
+        try
         {
-            this.logger = logger;
+            return dbContext.CustomizedMealProducts.Where(cmp => cmp.MealProductId == mealProductId)
+                    .Select(cmp => cmp.CustomizedPortionMultiplier)
+                    .FirstOrDefaultAsync(ct);
         }
-
-        public Task<decimal?> GetPortionMultiplierAsync(int mealProductId, CancellationToken ct)
+        catch (Exception ex)
         {
-            try
-            {
-                return dbContext.CustomizedMealProducts.Where(cmp => cmp.MealProductId == mealProductId)
-                        .Select(cmp => cmp.CustomizedPortionMultiplier)
-                        .FirstOrDefaultAsync(ct);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error retrieving portion multiplier for MealProductId {MealProductId}", mealProductId);
-                return null;
-            }
+            logger.LogError(ex, "Error retrieving portion multiplier for MealProductId {MealProductId}", mealProductId);
+            return null;
         }
     }
 }

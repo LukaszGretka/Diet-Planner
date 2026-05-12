@@ -1,8 +1,8 @@
-﻿using DietPlanner.Domain.Entities.Base;
+using DietPlanner.Domain.Entities.Base;
 
-namespace DietPlanner.Application.Interfaces.Common
+namespace DietPlanner.Domain.Repositories
 {
-    public interface IGenericRepository<T> where T : BaseEntity
+    public interface IRepository<T> where T : BaseEntity
     {
         Task<IReadOnlyList<T>?> GetAllAsync(CancellationToken ct);
 

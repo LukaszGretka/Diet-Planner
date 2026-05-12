@@ -1,6 +1,6 @@
-﻿using DietPlanner.Application.Interfaces;
-using DietPlanner.Application.Interfaces.Common;
-using DietPlanner.Application.Interfaces.Repository;
+﻿using DietPlanner.Application.Interfaces.Services;
+using DietPlanner.Application.Interfaces.Adapters;
+using DietPlanner.Application.Interfaces.Repositories;
 using DietPlanner.Infrastructure.Adapters;
 using DietPlanner.Infrastructure.Database;
 using DietPlanner.Infrastructure.Options;
