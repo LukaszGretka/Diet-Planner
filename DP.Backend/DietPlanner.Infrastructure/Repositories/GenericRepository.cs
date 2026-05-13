@@ -98,4 +98,9 @@ public class GenericRepository<T>(DietPlannerDbContext dbContext,
             logger.LogError(ex, "Error attaching range of entities of type {EntityType}", typeof(T).Name);
         }
     }
+
+    public IQueryable<T> GetQuery()
+    {
+        return _dbSet.AsQueryable();
+    }
 }

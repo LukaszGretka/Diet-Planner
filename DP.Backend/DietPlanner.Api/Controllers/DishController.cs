@@ -1,6 +1,7 @@
 ﻿using DietPlanner.Api.DTO.Dishes;
 using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Services.DishService;
+using DietPlanner.Application.Models.Dishes;
 using DietPlanner.Domain.Entities;
 using DietPlanner.Shared.Models;
 using Microsoft.AspNetCore.Authorization;

@@ -25,5 +25,22 @@ namespace DietPlanner.Infrastructure.Repositories
                 return [];
             }
         }
+
+        public async Task<List<MealDish>> GetMealDishesByMealIdsAsync(IEnumerable<int> mealIds, CancellationToken ct)
+        {
+            try
+            {
+                return await dbContext.MealDishes
+                    .Where(md => mealIds.Contains(md.MealId))
+                    .Include(md => md.Dish)
+                    .AsNoTracking()
+                    .ToListAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error retrieving MealDishes for MealIds");
+                return [];
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using DietPlanner.Application.Models.Dishes;
 using DietPlanner.Domain.Enums;
 
 namespace DietPlanner.Api.DTO.Dishes

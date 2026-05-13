@@ -1,6 +1,6 @@
 ﻿using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.Dashboard;
-using DietPlanner.Api.Services.Dashboard;
+using DietPlanner.Application.Interfaces.Services;
+using DietPlanner.Application.Models.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;

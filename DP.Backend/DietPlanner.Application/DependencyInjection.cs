@@ -1,4 +1,5 @@
 ﻿using DietPlanner.Application.Interfaces;
+using DietPlanner.Application.Interfaces.Services;
 using DietPlanner.Application.Services;
 using Microsoft.Extensions.Hosting;
 
@@ -14,12 +15,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IUserProfileService, UserProfileService>();
+            services.AddScoped<IMealService, MealService>();
+            services.AddTransient<IGoalService, GoalService>();
+            services.AddScoped<IProductService, ProductService>();
             //services.AddTransient<IDishService, DishService>();
-            //services.AddTransient<IProductService, ProductService>();
             //services.AddTransient<IMeasurementService, MeasurementService>();
-            //services.AddTransient<IMealService, MealService>();
-            //services.AddTransient<IDashboardService, DashboardService>();
-            //services.AddTransient<IGoalService, GoalService>();
             //services.AddValidators();
         }
 
@@ -29,3 +29,4 @@ namespace Microsoft.Extensions.DependencyInjection
         //}
     }
 }
+

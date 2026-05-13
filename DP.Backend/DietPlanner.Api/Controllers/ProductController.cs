@@ -1,11 +1,12 @@
-﻿using DietPlanner.Api.DTO.Products;
-using DietPlanner.Api.Services;
+﻿using DietPlanner.Application.Models.Products;
+using DietPlanner.Application.Interfaces.Services;
 using DietPlanner.Domain.Entities;
-using DietPlanner.Shared.Models;
+using DietPlanner.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DietPlanner.Api.Controllers
@@ -13,43 +14,37 @@ namespace DietPlanner.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ProductController : ControllerBase
+    public class ProductController(IProductService productService) : ControllerBase
     {
-        private readonly IProductService _productService;
-
-        public ProductController(IProductService productService)
-        {
-            _productService = productService;
-        }
 
         [HttpGet]
         [Route("all")]
-        public async Task<IEnumerable<ProductDTO>> GetAllAsync()
+        public async Task<IEnumerable<ProductDTO>> GetAllAsync(CancellationToken ct)
         {
-            return await _productService.GetAll();
+            return await productService.GetAllAsync(ct);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetById(int id)
+        public async Task<ActionResult<Product>> GetById(int id, CancellationToken ct)
         {
-            var product = await _productService.GetById(id);
+            var product = await productService.GetByIdAsync(id, ct);
 
             if (product is null)
             {
-                return NotFound(new { Message = $"Product with id {id} no found" });
+                return NotFound(new { Message = $"Product with id {id} not found" });
             }
 
             return product;
         }
 
         [HttpGet]
-        public async Task<ActionResult<Product>> GetByName([FromQuery] string productName)
+        public async Task<ActionResult<Product>> GetByName([FromQuery] string productName, CancellationToken ct)
         {
             if (productName is null)
             {
                 return BadRequest($"Missing parameter: '{nameof(productName)}'");
             }
-            var product = await _productService.GetByName(productName);
+            var product = await productService.GetByNameAsync(productName, ct);
 
             if (product is null)
             {
@@ -61,9 +56,9 @@ namespace DietPlanner.Api.Controllers
 
         [HttpPost]
         [ActionName(nameof(PostAsync))]
-        public async Task<IActionResult> PostAsync([FromBody] Product product)
+        public async Task<IActionResult> PostAsync([FromBody] Product product, CancellationToken ct)
         {
-            DatabaseActionResult<Product> result = await _productService.Create(product);
+            DatabaseActionResult<Product> result = await productService.CreateAsync(product, ct);
 
             if (result.Exception != null)
             {
@@ -74,14 +69,14 @@ namespace DietPlanner.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Product product)
+        public async Task<IActionResult> Put(int id, [FromBody] Product product, CancellationToken ct)
         {
             if (id != product.Id)
             {
                 return BadRequest();
             }
 
-            DatabaseActionResult<Product> result = await _productService.Update(id, product);
+            DatabaseActionResult<Product> result = await productService.UpdateAsync(id, product, ct);
 
             if (result.Exception != null)
             {
@@ -90,16 +85,16 @@ namespace DietPlanner.Api.Controllers
 
             if (!result.Success)
             {
-                return NotFound(new { Message = "Product no found" });
+                return NotFound(new { Message = result.Message });
             }
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
-            DatabaseActionResult<Product> result = await _productService.DeleteById(id);
+            DatabaseActionResult<Product> result = await productService.DeleteByIdAsync(id, ct);
 
             if (result?.Exception != null)
             {

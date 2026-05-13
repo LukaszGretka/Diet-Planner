@@ -1,9 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
-using DietPlanner.Api.Database.Repository;
 using DietPlanner.Api.Models.MealsCalendar.DTO;
 using DietPlanner.Domain.Entities;
 using DietPlanner.Domain.Enums;
 using DietPlanner.Infrastructure.Database;
+using DietPlanner.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
@@ -43,25 +43,25 @@ namespace DietPlanner.Api.Benchmarks
             return await _dbContext!.Meals.Where(x => x.UserId == userId).ToListAsync();
         }
 
-        [Benchmark]
-        public async Task<List<MealDto>> MealServiceBenchmark()
-        {
-            var meals = await _dbContext!.Meals.Where(x => x.UserId == userId
-                               && x.Date == new DateTime(2025, 02, 25)).ToListAsync();
+        //[Benchmark]
+        //public async Task<List<MealDto>> MealServiceBenchmark()
+        //{
+        //    var meals = await _dbContext!.Meals.Where(x => x.UserId == userId
+        //                       && x.Date == new DateTime(2025, 02, 25)).ToListAsync();
 
-            var repository = new MealCalendarRepository(_dbContext);
+        //    var repository = new MealCalendarRepository(_dbContext);
 
 
-            List<MealDto> mealDtos = [.. meals
-                .GroupBy(m => new { m.MealType })
-                .Select(g => new MealDto
-                {
-                    MealType = (MealType)g.Key.MealType,
-                    Products = [.. g.SelectMany(meal => repository.GetMealProducts(meal, CancellationToken.None).Result)],
-                    Dishes = [.. g.SelectMany(meal => repository.GetMealDishes(meal, CancellationToken.None).Result)]
-                })];
+        //    List<MealDto> mealDtos = [.. meals
+        //        .GroupBy(m => new { m.MealType })
+        //        .Select(g => new MealDto
+        //        {
+        //            MealType = (MealType)g.Key.MealType,
+        //            Products = [.. g.SelectMany(meal => repository.GetMealProducts(meal, CancellationToken.None).Result)],
+        //            Dishes = [.. g.SelectMany(meal => repository.GetMealDishes(meal, CancellationToken.None).Result)]
+        //        })];
 
-            return mealDtos;
-        }
+        //    return mealDtos;
+        //}
     }
 }

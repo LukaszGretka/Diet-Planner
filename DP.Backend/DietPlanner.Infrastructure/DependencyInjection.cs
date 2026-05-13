@@ -65,8 +65,13 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IDishProductRepository, DishProductRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<ICustomizedMealProductRepository, CustomizedMealProductRepository>();
+            services.AddScoped<ICustomizedMealDishRepository, CustomizedMealDishRepository>();
             services.AddScoped<IMealDishRepository, MealDishRepository>();
+            services.AddScoped<IMealRepository, MealRepository>();
             services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+            services.AddScoped<IMealCalendarRepository, MealCalendarRepository>();
+            services.AddScoped<IGoalRepository, GoalRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
     }
 }

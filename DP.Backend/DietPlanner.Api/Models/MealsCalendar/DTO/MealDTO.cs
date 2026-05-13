@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DietPlanner.Api.DTO.Dishes;
-using DietPlanner.Api.DTO.Products;
+using DietPlanner.Application.Models.Products;
 using DietPlanner.Domain.Enums;
 
 namespace DietPlanner.Api.Models.MealsCalendar.DTO

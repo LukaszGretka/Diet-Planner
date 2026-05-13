@@ -1,4 +1,5 @@
 ﻿using DietPlanner.Api.DTO.Dishes;
+using DietPlanner.Application.Models.Dishes;
 using DietPlanner.Domain.Entities;
 using DietPlanner.Infrastructure.Database;
 using DietPlanner.Shared.Models;

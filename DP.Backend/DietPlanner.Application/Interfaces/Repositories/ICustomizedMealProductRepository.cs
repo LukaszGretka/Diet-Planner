@@ -5,4 +5,5 @@ namespace DietPlanner.Application.Interfaces.Repositories;
 
 public interface ICustomizedMealProductRepository : IRepository<CustomizedMealProducts>
 {
+
 }

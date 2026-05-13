@@ -1,10 +1,7 @@
-using DietPlanner.Api.Database.Repository;
 using DietPlanner.Api.Extensions;
 using DietPlanner.Api.Requests.Account;
 using DietPlanner.Api.Services;
-using DietPlanner.Api.Services.Dashboard;
 using DietPlanner.Api.Services.DishService;
-using DietPlanner.Api.Services.MealsCalendarService;
 using DietPlanner.Api.Validators;
 using DietPlanner.Application.Interfaces;
 using DietPlanner.Application.Services;
@@ -28,22 +25,13 @@ builder.Services.AddAuthorization();
 
 builder.AddInfrastructureServices();
 
-//TODO move all repositories to Infrastructure layer and register them there
-#region should be moved to interfaces layer
-builder.Services.AddTransient<IMealCalendarRepository, MealCalendarRepository>();
-#endregion
-
-builder.AddApplicationServices(); // TODO register it and move all required services to Application layer
+builder.AddApplicationServices();
 
 //TODO move to Application layer and register them there
 #region should be moved to application services (DI) later
 
 builder.Services.AddTransient<IDishService, DishService>();
-builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IMeasurementService, MeasurementService>();
-builder.Services.AddTransient<IMealService, MealService>();
-builder.Services.AddTransient<IDashboardService, DashboardService>();
-builder.Services.AddTransient<IGoalService, GoalService>();
 builder.Services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
 
 #endregion
