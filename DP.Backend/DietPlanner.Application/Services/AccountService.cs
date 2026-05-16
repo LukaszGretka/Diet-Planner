@@ -1,5 +1,4 @@
-﻿using DietPlanner.Application.Interfaces;
-using DietPlanner.Application.Interfaces.Services;
+﻿using DietPlanner.Application.Interfaces.Services;
 using DietPlanner.Application.Interfaces.Adapters;
 using DietPlanner.Application.Models.Account;
 using DietPlanner.Domain.Constants;

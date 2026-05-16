@@ -72,6 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IMealCalendarRepository, MealCalendarRepository>();
             services.AddScoped<IGoalRepository, GoalRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IDishRepository, DishRepository>();
         }
     }
 }

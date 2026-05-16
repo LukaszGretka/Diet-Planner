@@ -1,7 +1,6 @@
-﻿namespace DietPlanner.Application.Models.UserProfile
+﻿namespace DietPlanner.Application.Models.UserProfile;
+
+public class UserAvatarDTO
 {
-    public class UserAvatarDTO
-    {
-        public string? Base64Image { get; set; }
-    }
+    public string? Base64Image { get; set; }
 }

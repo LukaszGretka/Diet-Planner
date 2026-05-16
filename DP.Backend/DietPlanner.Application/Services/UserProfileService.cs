@@ -1,5 +1,5 @@
-﻿using DietPlanner.Application.Interfaces;
-using DietPlanner.Application.Interfaces.Repositories;
+﻿using DietPlanner.Application.Interfaces.Repositories;
+using DietPlanner.Application.Interfaces.Services;
 using DietPlanner.Application.Models.UserProfile;
 using DietPlanner.Domain.Entities;
 using DietPlanner.Domain.Enums;

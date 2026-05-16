@@ -58,12 +58,12 @@ export class BodyProfileComponent implements OnInit {
     });
   }
 
-  onEditButtonClick($event: any): void {
-    this.router.navigate(['body-profile/edit/' + ($event.target.parentElement as HTMLInputElement).value]);
+  onEditButtonClick(measurementId: number): void {
+    this.router.navigate(['body-profile/edit/' + measurementId]);
   }
 
-  onRemoveButtonClick($event: any): void {
-    this.processingMeasurementId = Number(($event.target.parentElement as HTMLInputElement).value);
+  onRemoveButtonClick(measurementId: number): void {
+    this.processingMeasurementId = measurementId;
   }
 
   removeConfirmationButtonClick(): void {
@@ -92,7 +92,6 @@ export class BodyProfileComponent implements OnInit {
   }
 
   public openFileSelection() {
-    debugger;
     const fileInput: HTMLElement = document.querySelector('input[type="file"]');
     if (fileInput) {
       fileInput.click();
@@ -100,7 +99,6 @@ export class BodyProfileComponent implements OnInit {
   }
 
   public onFileSelected(event) {
-    debugger;
     const file = event.target.files[0];
 
     let reader = new FileReader();
@@ -113,22 +111,18 @@ export class BodyProfileComponent implements OnInit {
   }
 
   public fileChangeEvent(event: any): void {
-    debugger;
     this.imageChangedEvent = event;
   }
 
   public imageCropped(event: ImageCroppedEvent) {
-    debugger;
     this.croppedImage = event.base64;
   }
 
   public imageLoaded(image: LoadedImage) {
-    debugger;
     this.inAvatarEditMode = true;
   }
 
   public saveCroppedFile() {
-    debugger;
     this.store.dispatch(BodyProfileActions.uploadUserAvatarRequest({ base64Avatar: this.croppedImage.toString() }));
     this.inAvatarEditMode = false;
     this.imageChangedEvent = null;

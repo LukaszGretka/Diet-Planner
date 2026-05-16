@@ -1,6 +1,6 @@
 ﻿using DietPlanner.Application.Extensions;
-using DietPlanner.Application.Interfaces;
 using DietPlanner.Application.Interfaces.Repositories;
+using DietPlanner.Application.Interfaces.Services;
 using DietPlanner.Application.Models.UserMeasurement;
 using DietPlanner.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -17,6 +17,7 @@ public class MeasurementService(ILogger<MeasurementService> logger,
 
         return userMeasurements.Select(x => new MeasurementDto
         {
+            Id = x.Id,
             Belly = x.Belly,
             BicepsLeft = x.BicepsLeft,
             BicepsRight = x.BicepsRight,
@@ -46,6 +47,7 @@ public class MeasurementService(ILogger<MeasurementService> logger,
 
         return new MeasurementDto
         {
+            Id = measurement.Id,
             Belly = measurement.Belly,
             BicepsLeft = measurement.BicepsLeft,
             BicepsRight = measurement.BicepsRight,

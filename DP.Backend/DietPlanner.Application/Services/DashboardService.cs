@@ -3,7 +3,6 @@ using DietPlanner.Application.Models.Dashboard;
 using DietPlanner.Application.Interfaces.Services;
 using DietPlanner.Domain.Enums;
 using DietPlanner.Application.Interfaces.Repositories;
-using DietPlanner.Application.Interfaces;
 
 namespace DietPlanner.Application.Services;
 
