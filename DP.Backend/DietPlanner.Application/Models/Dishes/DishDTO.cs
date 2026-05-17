@@ -8,9 +8,9 @@ public class DishDTO
 
     public required string Name { get; set; }
 
-    public required string ImagePath { get; set; }
+    public string? ImagePath { get; set; }
 
-    public required string Description { get; set; }
+    public string? Description { get; set; }
 
     public ItemType ItemType => ItemType.Dish;
 

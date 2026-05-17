@@ -14,7 +14,9 @@ public interface IRepository<T> where T : BaseEntity
 
     Task<bool> DeleteAsync(T entity, CancellationToken ct);
 
-    Task AttachRangeAsync(IEnumerable<T> entity, CancellationToken ct);
+    Task AttachRangeAsync(IEnumerable<T> entities, CancellationToken ct);
+
+    Task RemoveRangeAsync(IEnumerable<T> entities, CancellationToken ct);
 
     IQueryable<T> GetQuery();
 }

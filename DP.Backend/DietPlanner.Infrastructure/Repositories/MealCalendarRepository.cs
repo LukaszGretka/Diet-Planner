@@ -56,7 +56,7 @@ public class MealCalendarRepository(DietPlannerDbContext databaseContext) : IMea
                     CustomizedPortionMultiplier = customizedMealDishes
                         .Where(cdp => cdp.MealDishId == md.Id && cdp.DishProductId == dp.Id)
                         .Select(cmd => cmd.CustomizedPortionMultiplier)
-                        .SingleOrDefault()
+                        .SingleOrDefault(1.0m)
                 })]
         })];
     }
@@ -80,12 +80,8 @@ public class MealCalendarRepository(DietPlannerDbContext databaseContext) : IMea
                 PortionMultiplier = databaseContext.CustomizedMealProducts
                     .Where(cmp => cmp.MealProductId == mp.Id)
                     .Select(cmp => cmp.CustomizedPortionMultiplier)
-                    .FirstOrDefault()
+                    .FirstOrDefault(1.0m)
             }).ToListAsync(ct);
-
-        result.Where(r => r.PortionMultiplier is null or 0m)
-            .ToList()
-            .ForEach(r => r.PortionMultiplier = 1.0m);
 
         return result;
     }

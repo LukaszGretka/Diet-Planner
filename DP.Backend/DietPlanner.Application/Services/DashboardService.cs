@@ -107,7 +107,7 @@ public class DashboardService(
 
     private static float CalculateMultiplierValue(float? stat, DishProductsDTO dishProductDTO)
     {
-        var result = (stat * (float)(dishProductDTO.CustomizedPortionMultiplier ?? dishProductDTO.PortionMultiplier)) ?? 0f;
+        var result = (stat * (float)(dishProductDTO.CustomizedPortionMultiplier ?? dishProductDTO.PortionMultiplier)) ?? 1;
         return result;
     }
 }

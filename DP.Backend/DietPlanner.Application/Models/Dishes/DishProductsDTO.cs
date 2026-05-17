@@ -13,6 +13,6 @@ public class DishProductsDTO
     public decimal? CustomizedPortionMultiplier
     {
         get;
-        set => field = value <= 0 ? null : value;
+        set => field = value <= 0 ? 1 : value;
     }
 }

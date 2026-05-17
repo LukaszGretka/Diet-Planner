@@ -86,16 +86,41 @@ public class GenericRepository<T>(DietPlannerDbContext dbContext,
         }
     }
 
-    public async Task AttachRangeAsync(IEnumerable<T> entity, CancellationToken ct)
+    public async Task AttachRangeAsync(IEnumerable<T> entities, CancellationToken ct)
     {
         try
         {
-            _dbSet.AttachRange(entity);
+            if (!entities.Any()) 
+            { 
+                logger.LogWarning("No entities to attach for type {EntityType}", typeof(T).Name);
+                return;
+            }
+
+            _dbSet.AttachRange(entities);
             await dbContext.SaveChangesAsync(ct);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error attaching range of entities of type {EntityType}", typeof(T).Name);
+        }
+    }
+
+    public async Task RemoveRangeAsync(IEnumerable<T> entities, CancellationToken ct)
+    {
+        try
+        {
+            if (!entities.Any())
+            {
+                logger.LogWarning("No entities to delete for type {EntityType}", typeof(T).Name);
+                return;
+            }
+
+            _dbSet.RemoveRange(entities);
+            await dbContext.SaveChangesAsync(ct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error removing range of entities of type {EntityType}", typeof(T).Name);
         }
     }
 

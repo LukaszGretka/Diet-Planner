@@ -16,7 +16,7 @@ public class CustomizedMealProductRepository : GenericRepository<CustomizedMealP
         this.logger = logger;
     }
 
-    public Task<decimal?> GetPortionMultiplierAsync(int mealProductId, CancellationToken ct)
+    public Task<decimal> GetPortionMultiplierAsync(int mealProductId, CancellationToken ct)
     {
         try
         {

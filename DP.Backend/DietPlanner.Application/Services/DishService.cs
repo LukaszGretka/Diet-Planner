@@ -151,15 +151,8 @@ public class DishService(
 
             var productsToRemove = existingDishProducts.Where(a => !requestedDish.Products.Any(b => b.Product.Id == a.ProductId));
 
-            foreach (var product in productsToAdd)
-            {
-                await dishProductRepository.CreateAsync(product, ct);
-            }
-
-            foreach (var product in productsToRemove)
-            {
-                await dishProductRepository.DeleteAsync(product, ct);
-            }
+            await dishProductRepository.AttachRangeAsync(productsToAdd, ct);
+            await dishProductRepository.RemoveRangeAsync(productsToRemove, ct);
 
             return new DatabaseActionResult(true);
         }

@@ -12,6 +12,6 @@ namespace DietPlanner.Domain.Entities
         public MealProduct MealProduct { get; set; } = null!;
 
         [Precision(6, 2)]
-        public decimal? CustomizedPortionMultiplier { get; set; }
+        public decimal CustomizedPortionMultiplier { get; set; }
     }
 }

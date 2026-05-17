@@ -20,7 +20,7 @@ public class MealDishProductDto
     public int DishProductId { get; set; }
     public MealProductDto Product { get; set; }
     public decimal PortionMultiplier { get; set; }
-    public decimal? CustomizedPortionMultiplier { get; set; }
+    public decimal CustomizedPortionMultiplier { get; set; }
 }
 
 public class MealProductDto

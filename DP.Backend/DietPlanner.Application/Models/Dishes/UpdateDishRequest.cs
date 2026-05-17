@@ -2,13 +2,13 @@ namespace DietPlanner.Application.Models.Dishes;
 
 public class UpdateDishRequest
 {
-    public int Id { get; set; }
+    public required int Id { get; set; }
 
     public required string Name { get; set; }
 
-    public required string Image { get; set; }
+    public string? Image { get; set; }
 
-    public required string Description { get; set; }
+    public string? Description { get; set; }
 
     public required ICollection<DishProductsDTO> Products { get; set; }
 
