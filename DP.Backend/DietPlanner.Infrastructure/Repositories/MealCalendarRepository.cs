@@ -63,25 +63,33 @@ public class MealCalendarRepository(DietPlannerDbContext databaseContext) : IMea
 
     public async Task<List<MealProductDto>> GetMealProducts(Meal meal, CancellationToken ct)
     {
-        List<MealProductDto> result = await databaseContext.MealProducts.Where(mp => mp.MealId == meal.Id)
-            .Select(mp => new MealProductDto
-            {
-                MealItemId = mp.Id,
-                Id = mp.Product.Id,
-                Name = mp.Product.Name,
-                Description = mp.Product.Description,
-                ImagePath = mp.Product.ImagePath,
-                ItemType = ItemType.Product,
-                BarCode = mp.Product.BarCode,
-                Calories = (float)mp.Product.Calories,
-                Carbohydrates = (float)mp.Product.Carbohydrates,
-                Proteins = (float)mp.Product.Proteins,
-                Fats = (float)mp.Product.Fats,
-                PortionMultiplier = databaseContext.CustomizedMealProducts
-                    .Where(cmp => cmp.MealProductId == mp.Id)
-                    .Select(cmp => cmp.CustomizedPortionMultiplier)
-                    .FirstOrDefault(1.0m)
-            }).ToListAsync(ct);
+        var mealProducts = await databaseContext.MealProducts
+            .Where(mp => mp.MealId == meal.Id)
+            .Include(mp => mp.Product)
+            .ToListAsync(ct);
+
+        var customizedMealProducts = await databaseContext.CustomizedMealProducts
+            .Where(cmp => mealProducts.Select(mp => mp.Id).Contains(cmp.MealProductId))
+            .ToListAsync(ct);
+
+        var result = mealProducts.Select(mp => new MealProductDto
+        {
+            MealItemId = mp.Id,
+            Id = mp.Product.Id,
+            Name = mp.Product.Name,
+            Description = mp.Product.Description,
+            ImagePath = mp.Product.ImagePath,
+            ItemType = ItemType.Product,
+            BarCode = mp.Product.BarCode,
+            Calories = (float)mp.Product.Calories,
+            Carbohydrates = (float)mp.Product.Carbohydrates,
+            Proteins = (float)mp.Product.Proteins,
+            Fats = (float)mp.Product.Fats,
+            PortionMultiplier = customizedMealProducts
+                .Where(cmp => cmp.MealProductId == mp.Id)
+                .Select(cmp => cmp.CustomizedPortionMultiplier)
+                .FirstOrDefault(1.0m)
+        }).ToList();
 
         return result;
     }
