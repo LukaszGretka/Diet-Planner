@@ -1,8 +1,10 @@
-﻿using DietPlanner.Application.Interfaces;
-using DietPlanner.Application.Interfaces.Common;
+﻿using DietPlanner.Application.Interfaces.Services;
+using DietPlanner.Application.Interfaces.Adapters;
+using DietPlanner.Application.Interfaces.Repositories;
 using DietPlanner.Infrastructure.Adapters;
 using DietPlanner.Infrastructure.Database;
 using DietPlanner.Infrastructure.Options;
+using DietPlanner.Infrastructure.Repositories;
 using DietPlanner.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +60,19 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IRedisCacheService, RedisCacheService>();
             services.AddTransient<IMessageBrokerService, MessageBrokerService>();
             services.AddTransient<IAccountManagerAdapter, AccountManagerAdapter>();
+
+            services.AddScoped<IMealProductRepository, MealProductRepository>();
+            services.AddScoped<IDishProductRepository, DishProductRepository>();
+            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+            services.AddScoped<ICustomizedMealProductRepository, CustomizedMealProductRepository>();
+            services.AddScoped<ICustomizedMealDishRepository, CustomizedMealDishRepository>();
+            services.AddScoped<IMealDishRepository, MealDishRepository>();
+            services.AddScoped<IMealRepository, MealRepository>();
+            services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+            services.AddScoped<IMealCalendarRepository, MealCalendarRepository>();
+            services.AddScoped<IGoalRepository, GoalRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IDishRepository, DishRepository>();
         }
     }
 }

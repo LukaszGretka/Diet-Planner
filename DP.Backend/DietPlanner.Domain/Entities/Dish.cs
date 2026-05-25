@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DietPlanner.Domain.Entities.Base;
 
 namespace DietPlanner.Domain.Entities
 {
-    public class Dish
+    public class Dish : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         public string? Name { get; set; }
 
         public string? ImagePath { get; set; }

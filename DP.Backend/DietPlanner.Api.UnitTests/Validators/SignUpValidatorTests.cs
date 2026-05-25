@@ -1,27 +1,20 @@
-﻿using DietPlanner.Api.Requests.Account;
-using DietPlanner.Api.Validators;
+﻿using DietPlanner.Application.Requests.Account;
+using DietPlanner.Application.Validators;
 using FluentValidation.TestHelper;
 using Xunit;
 
 namespace DietPlanner.Api.UnitTests.Validators
 {
-    public class SignUpValidatorTests
+    public class SignUpValidatorTests(SignUpValidator validator)
     {
-        private readonly SignUpValidator _validator;
-
-        public SignUpValidatorTests()
-        {
-            _validator = new SignUpValidator();
-        }
-
         [Fact]
-        public void Should_HaveError_When_UsernameIsEmpty()
+        public void ValidateSignupRequest_WhenUsernameIsEmpty_ShouldReturnError()
         {
             // Arrange
-            var model = new SignUpRequest { Email = "test@test.com", Username = string.Empty };
+            var model = new SignUpRequest { Email = "test@test.com", Username = string.Empty , Password = "password" };
 
             // Act
-            var result = _validator.TestValidate(model);
+            var result = validator.TestValidate(model);
 
             // Assert
             result.ShouldHaveValidationErrorFor(x => x.Username)
@@ -29,13 +22,13 @@ namespace DietPlanner.Api.UnitTests.Validators
         }
 
         [Fact]
-        public void Should_HaveError_When_UsernameIsTooShort()
+        public void ValidateSignupRequest_UsernameIsTooShort_ShouldReturnError()
         {
             // Arrange
-            var model = new SignUpRequest { Email = "test@test.com", Username = "abc" };
+            var model = new SignUpRequest { Email = "test@test.com", Username = "abc", Password = "password" };
 
             // Act
-            var result = _validator.TestValidate(model);
+            var result = validator.TestValidate(model);
 
             // Assert
             result.ShouldHaveValidationErrorFor(x => x.Username)
@@ -43,13 +36,13 @@ namespace DietPlanner.Api.UnitTests.Validators
         }
 
         [Fact]
-        public void Should_HaveError_When_UsernameIsTooLong()
+        public void ValidateSignupRequest_WhenUsernameIsTooLong_ShouldReturnError()
         {
             // Arrange
-            var model = new SignUpRequest { Email = "test@test.com", Username = new string('a', 21) };
+            var model = new SignUpRequest { Email = "test@test.com", Username = new string('a', 21), Password = "password" };
 
             // Act
-            var result = _validator.TestValidate(model);
+            var result = validator.TestValidate(model);
 
             // Assert
             result.ShouldHaveValidationErrorFor(x => x.Username)
@@ -57,13 +50,13 @@ namespace DietPlanner.Api.UnitTests.Validators
         }
 
         [Fact]
-        public void Should_HaveError_When_EmailIsEmpty()
+        public void ValidateSignupRequest_WhenEmailIsEmpty_ShouldReturnError()
         {
             // Arrange
-            var model = new SignUpRequest { Email = string.Empty };
+            var model = new SignUpRequest { Email = string.Empty, Password = "password", Username = "username" };
 
             // Act
-            var result = _validator.TestValidate(model);
+            var result = validator.TestValidate(model);
 
             // Assert
             result.ShouldHaveValidationErrorFor(x => x.Email)
@@ -71,13 +64,13 @@ namespace DietPlanner.Api.UnitTests.Validators
         }
 
         [Fact]
-        public void Should_HaveError_When_EmailIsInvalid()
+        public void ValidateSignupRequest_WhenEmailIsInvalid_ShouldReturnError()
         {
             // Arrange
-            var model = new SignUpRequest { Email = "invalid-email" };
+            var model = new SignUpRequest { Email = "invalid-email", Password = "password", Username = "username" };
 
             // Act
-            var result = _validator.TestValidate(model);
+            var result = validator.TestValidate(model);
 
             // Assert
             result.ShouldHaveValidationErrorFor(x => x.Email)
@@ -85,26 +78,26 @@ namespace DietPlanner.Api.UnitTests.Validators
         }
 
         [Fact]
-        public void Should_NotHaveError_When_EmailIsValid()
+        public void ValidateSignupRequest_WhenEmailValid_ShouldReturnSuccess()
         {
             // Arrange
-            var model = new SignUpRequest { Email = "test@example.com" };
+            var model = new SignUpRequest { Email = "test@example.com", Password = "password", Username = "username" };
 
             // Act
-            var result = _validator.TestValidate(model);
+            var result = validator.TestValidate(model);
 
             // Assert
             result.ShouldNotHaveValidationErrorFor(x => x.Email);
         }
 
         [Fact]
-        public void Should_NotHaveError_When_UsernameIsValid()
+        public void ValidateSignupRequest_WhenUsernameIsValid_ShouldReturnSuccess()
         {
             // Arrange
-            var model = new SignUpRequest { Email = "test@test.com", Username = "ValidUser" };
+            var model = new SignUpRequest { Email = "test@test.com",  Username = "username", Password = "password" };
 
             // Act
-            var result = _validator.TestValidate(model);
+            var result = validator.TestValidate(model);
 
             // Assert
             result.ShouldNotHaveValidationErrorFor(x => x.Username);

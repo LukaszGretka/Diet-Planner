@@ -9,7 +9,7 @@ import { Router, RouterLink } from '@angular/router';
 import { UntypedFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserProfile } from './models/user-profile';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ImageCroppedEvent, LoadedImage, ImageCropperModule } from 'ngx-image-cropper';
+import { ImageCroppedEvent, LoadedImage, ImageCropperComponent } from 'ngx-image-cropper';
 import { AsyncPipe } from '@angular/common';
 import { ErrorPageComponent } from '../shared/error-page/error-page.component';
 import { FormErrorComponent } from '../shared/form-error/form-error.component';
@@ -19,7 +19,7 @@ import { FormErrorComponent } from '../shared/form-error/form-error.component';
   selector: 'app-body-profile',
   templateUrl: './body-profile.component.html',
   styleUrls: ['./body-profile.component.css'],
-  imports: [ErrorPageComponent, ImageCropperModule, ReactiveFormsModule, FormErrorComponent, RouterLink, AsyncPipe],
+  imports: [ErrorPageComponent, ReactiveFormsModule, ImageCropperComponent, FormErrorComponent, RouterLink, AsyncPipe],
 })
 export class BodyProfileComponent implements OnInit {
   private readonly store = inject<Store<GeneralState>>(Store);
@@ -58,12 +58,12 @@ export class BodyProfileComponent implements OnInit {
     });
   }
 
-  onEditButtonClick($event: any): void {
-    this.router.navigate(['body-profile/edit/' + ($event.target.parentElement as HTMLInputElement).value]);
+  onEditButtonClick(measurementId: number): void {
+    this.router.navigate(['body-profile/edit/' + measurementId]);
   }
 
-  onRemoveButtonClick($event: any): void {
-    this.processingMeasurementId = Number(($event.target.parentElement as HTMLInputElement).value);
+  onRemoveButtonClick(measurementId: number): void {
+    this.processingMeasurementId = measurementId;
   }
 
   removeConfirmationButtonClick(): void {

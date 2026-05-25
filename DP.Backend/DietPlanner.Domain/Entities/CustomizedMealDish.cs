@@ -1,14 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using DietPlanner.Domain.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DietPlanner.Domain.Entities
 {
-    public class CustomizedMealDish
+    public class CustomizedMealDish : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [ForeignKey(nameof(DishProduct))]
         public int DishProductId { get; set; }
 
