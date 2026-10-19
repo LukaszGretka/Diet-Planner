@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DietPlanner.Domain.Entities.Base;
 
 namespace DietPlanner.Domain.Entities
 {
-    public class Meal
+    public class Meal : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         public DateTime Date { get; set; }
 
         public int MealType { get; set; }

@@ -1,7 +1,6 @@
-﻿namespace DietPlanner.Api.Configuration
+﻿namespace DietPlanner.Api.Configuration;
+
+public static class CorsPolicy
 {
-    public static class CorsPolicy
-    {
-        public const string Name = "DefaultCorsPolicy";
-    }
+    public const string Name = "DefaultCorsPolicy";
 }

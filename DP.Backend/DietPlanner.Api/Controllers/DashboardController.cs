@@ -1,37 +1,30 @@
 ﻿using DietPlanner.Api.Extensions;
-using DietPlanner.Api.Models.Dashboard;
-using DietPlanner.Api.Services.Dashboard;
+using DietPlanner.Application.Interfaces.Services;
+using DietPlanner.Application.Models.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace DietPlanner.Api.Controllers
+namespace DietPlanner.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[Authorize]
+public class DashboardController(IDashboardService dashboardService) : Controller
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class DashboardController : Controller
+    [HttpGet]
+    public async Task<ActionResult<DashboardData>> GetDashboardStatsData(CancellationToken ct)
     {
-        private readonly IDashboardService _dashboardService;
+        string userId = HttpContext.GetUserId();
 
-        public DashboardController(IDashboardService dashboardService)
+        if(string.IsNullOrEmpty(userId))
         {
-            _dashboardService = dashboardService;
+            return Unauthorized();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<DashboardData>> GetDashboardStatsData()
-        {
-            string userId = HttpContext.GetUserId();
+        var result = await dashboardService.GetDashboardData(userId, ct);
 
-            if(string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
-            var result = await _dashboardService.GetDashboardData(userId);
-
-            return Ok(result);
-        }
+        return Ok(result);
     }
 }

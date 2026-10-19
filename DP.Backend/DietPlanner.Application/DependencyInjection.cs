@@ -1,31 +1,34 @@
-﻿using DietPlanner.Application.Interfaces;
+﻿using DietPlanner.Application.Interfaces.Services;
+using DietPlanner.Application.Requests.Account;
 using DietPlanner.Application.Services;
+using DietPlanner.Application.Validators;
+using FluentValidation;
 using Microsoft.Extensions.Hosting;
 
 #pragma warning disable IDE0130
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
 #pragma warning restore IDE0130 
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
-        public static void AddApplicationServices(this IHostApplicationBuilder builder)
-        {
-            IServiceCollection services = builder.Services;
+        IServiceCollection services = builder.Services;
 
-            services.AddTransient<IAccountService, AccountService>();
-            //services.AddTransient<IDishService, DishService>();
-            //services.AddTransient<IProductService, ProductService>();
-            //services.AddTransient<IMeasurementService, MeasurementService>();
-            //services.AddTransient<IMealService, MealService>();
-            //services.AddTransient<IUserProfileService, UserProfileService>();
-            //services.AddTransient<IDashboardService, DashboardService>();
-            //services.AddTransient<IGoalService, GoalService>();
-            //services.AddValidators();
-        }
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<IUserProfileService, UserProfileService>();
+        services.AddScoped<IMealService, MealService>();
+        services.AddScoped<IGoalService, GoalService>();
+        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IDishService, DishService>();
+        services.AddScoped<IMeasurementService, MeasurementService>();
+        services.AddScoped<IDashboardService, DashboardService>();
+        services.AddValidators();
+    }
 
-        //private static void AddValidators(this IServiceCollection services)
-        //{
-        //    services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
-        //}
+    private static void AddValidators(this IServiceCollection services)
+    {
+        services.AddTransient<IValidator<SignUpRequest>, SignUpValidator>();
     }
 }
+

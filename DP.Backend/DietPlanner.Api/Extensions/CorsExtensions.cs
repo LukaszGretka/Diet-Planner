@@ -2,30 +2,29 @@
 using Microsoft.Extensions.DependencyInjection;
 using CorsPolicy = DietPlanner.Api.Configuration.CorsPolicy;
 
-namespace DietPlanner.Api.Extensions
+namespace DietPlanner.Api.Extensions;
+
+public static class CorsExtensions
 {
-    public static class CorsExtensions
+    public static IServiceCollection AddCorsPolicies(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddCorsPolicies(this IServiceCollection services, IConfiguration configuration)
+        string spaHostAddress = configuration.GetSection("SpaConfig:HostAddress").Value;
+
+        services.AddCors(options =>
         {
-            string spaHostAddress = configuration.GetSection("SpaConfig:HostAddress").Value;
-
-            services.AddCors(options =>
+            options.AddPolicy(name: CorsPolicy.Name, policy =>
             {
-                options.AddPolicy(name: CorsPolicy.Name, policy =>
-                {
-                    policy.WithOrigins(
-                        spaHostAddress,
-                        "http://192.168.0.51",
-                        "http://192.168.0.51:4200",
-                        "http://192.168.0.51:5000")
-                    .AllowCredentials()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-                });
+                policy.WithOrigins(
+                    spaHostAddress,
+                    "http://192.168.0.51",
+                    "http://192.168.0.51:4200",
+                    "http://192.168.0.51:5000")
+                .AllowCredentials()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
             });
+        });
 
-            return services;
-        }
+        return services;
     }
 }

@@ -1,9 +1,9 @@
-﻿namespace DietPlanner.Domain.Entities
-{
-    public class MealProduct
-    {
-        public int Id { get; set; }
+﻿using DietPlanner.Domain.Entities.Base;
 
+namespace DietPlanner.Domain.Entities
+{
+    public class MealProduct : BaseEntity
+    {
         public int ProductId { get; set; }
 
         public Product Product { get; set; } = null!;

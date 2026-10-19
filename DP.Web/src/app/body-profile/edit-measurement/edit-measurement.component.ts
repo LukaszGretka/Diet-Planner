@@ -30,6 +30,7 @@ export class EditMeasurementComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //TODO need to fix this - id is missing on page initial load
     this.router.params.pipe(take(1)).subscribe(params => {
       this.measurementService
         .getById(params['id'])
